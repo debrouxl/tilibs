@@ -27,6 +27,7 @@
 #include "../logging.h"
 #include "../error.h"
 #include "../gettext.h"
+#include "../internal.h"
 #include "detect.h"
 #include "ioports.h"
 
@@ -38,13 +39,19 @@
 
 static int ser_prepare(CableHandle *h)
 {
+	const char * device;
 	switch(h->port)
 	{
-	case PORT_1: h->address = 0x3f8; h->device = strdup("COM1"); break;
-	case PORT_2: h->address = 0x2f8; h->device = strdup("COM2"); break;
-	case PORT_3: h->address = 0x3e8; h->device = strdup("COM3"); break;
-	case PORT_4: h->address = 0x3e8; h->device = strdup("COM4"); break;
+	case PORT_1: h->address = 0x3f8; device = "COM1"; break;
+	case PORT_2: h->address = 0x2f8; device = "COM2"; break;
+	case PORT_3: h->address = 0x3e8; device = "COM3"; break;
+	case PORT_4: h->address = 0x3e8; device = "COM4"; break;
 	default: return ERR_ILLEGAL_ARG;
+	}
+
+	if (h->device == NULL)
+	{
+		h->device = strdup(device);
 	}
 
 	// detect OS 
@@ -68,7 +75,6 @@ static int ser_prepare(CableHandle *h)
 	return 0;
 }
 
-static int ser_reset(CableHandle *h);
 static int ser_open(CableHandle *h)
 {
 	// Under Win2k: if we do not open the serial device as a COM
@@ -342,6 +348,7 @@ static int ser_set_device(CableHandle *h, const char * device)
 		char * device2 = strdup(device);
 		if (device2 != NULL)
 		{
+			free(h->device);
 			h->device = device2;
 		}
 		else

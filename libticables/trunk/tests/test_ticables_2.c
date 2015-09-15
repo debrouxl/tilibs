@@ -39,12 +39,11 @@ static void print_lc_error(int errnum)
 {
 	char *msg;
 
-	ticables_error_get(errnum, &msg);
-	fprintf(stderr, "Link cable error (code %i)...\n<<%s>>\n", 
-		errnum, msg);
-
-	//free(msg);
-
+	if (!ticables_error_get(errnum, &msg))
+	{
+		fprintf(stderr, "Link cable error (code %i)...\n<<%s>>\n", errnum, msg);
+		ticables_error_free(msg);
+	}
 }
 
 # define  to_START(ref)         { (ref) = ((1000*clock()) / CLOCKS_PER_SEC); }
@@ -69,7 +68,7 @@ int main(int argc, char **argv)
 	//	uint8_t scr[3840 + 6];
 	//	int **probing = NULL;
 
- #if 0
+#if 0
 	tiTIME ref, end;
 	unsigned long k;
 
@@ -88,13 +87,14 @@ int main(int argc, char **argv)
 	// init lib
 	ticables_library_init();
 
-
-print_lc_error(1);
+	print_lc_error(1);
 
 #if 0
 	ticables_probing_do(&probing, 5, PROBE_ALL);
-	for(i = 1; i <= 7; i++) 
+	for (i = 1; i <= 7; i++)
+	{
 		printf("%i: %i %i %i %i\n", i, probing[i][1], probing[i][2], probing[i][3], probing[i][4]);
+	}
 	ticables_probing_finish(&probing);
 #endif
 
@@ -107,14 +107,18 @@ print_lc_error(1);
 		ticables_get_usb_devices(&list, &n);
 		printf("List of devices:\n");
 		for(i = 0; i < n; i++)
-		    printf("%i: %04x\n", i, list[i]);
+		{
+			printf("%i: %04x\n", i, list[i]);
+		}
 	}
 #endif
 
 	// set cable
 	handle = ticables_handle_new(CABLE_PAR, PORT_1);
-	if(handle == NULL)
-	    return -1;
+	if (handle == NULL)
+	{
+		return -1;
+	}
 
 	ticables_options_set_timeout(handle, 15);
 	ticables_options_set_delay(handle, 10);
@@ -122,23 +126,37 @@ print_lc_error(1);
 
 	// open cable
 	err = ticables_cable_open(handle);
-	if(err) print_lc_error(err);
-	if(err) return -1;
+	if (err)
+	{
+		print_lc_error(err);
+	}
+	if (err)
+	{
+		return -1;
+	}
 #if 0
 	// simple test with DirectLink hand-helds (buf size req/neg)
 	buf[0]=0x00; buf[1]=0x00; buf[2]=0x00; buf[3]=0x04;
 	buf[4]=0x01;
 	buf[5]=0x00; buf[6]=0x00; buf[7]=0x04; buf[8]=0x00;
 	err = ticables_cable_send(handle, buf, 9);
-        if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
 
 	// display answer
 	memset(buf, 0, sizeof(buf));
 	err = ticables_cable_recv(handle, buf, 9);
-	if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
 
-	for(i = 0; i < 9; i++)
-	    printf("%02x ", buf[i]);
+	for (i = 0; i < 9; i++)
+	{
+		printf("%02x ", buf[i]);
+	}
 	printf("\n");
 #endif
 
@@ -156,19 +174,34 @@ print_lc_error(1);
 	buf[i++]=0x07; buf[i++]=0xd0;
 
 	err = ticables_cable_send(handle, buf, i);
-	if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
 
 	err = ticables_cable_recv(handle, buf, 7);
-	if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
+
 	for(i = 0; i < 7; i++)
-	    printf("%02x ", buf[i]);
+	{
+		printf("%02x ", buf[i]);
+	}
 	printf("\n");
 
 	// mode ack
 	err = ticables_cable_recv(handle, buf, 15);
-	if(err) print_lc_error(err);
-	for(i = 0; i < 15; i++)
+	if (err)
+	{
+		print_lc_error(err);
+	}
+
+	for (i = 0; i < 15; i++)
+	{
 		printf("%02x ", buf[i]);
+	}
 	printf("\n");
 
 	i = 0;
@@ -177,7 +210,11 @@ print_lc_error(1);
 	buf[i++]=0xe0; buf[i++]=0x00;
 
 	err = ticables_cable_send(handle, buf, i);
-	if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
+
 	PAUSE(500);
 #endif
 
@@ -192,19 +229,34 @@ print_lc_error(1);
 	buf[i++]=0x00; buf[i++]=0x22;
 
 	err = ticables_cable_send(handle, buf, i);
-	if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
 
 	err = ticables_cable_recv(handle, buf, 7);
-	if(err) print_lc_error(err);
-	for(i = 0; i < 7; i++)
+	if (err)
+	{
+		print_lc_error(err);
+	}
+
+	for (i = 0; i < 7; i++)
+	{
 		printf("%02x ", buf[i]);
+	}
 	printf("\n");
 
 	// delay ack
 	err = ticables_cable_recv(handle, buf, 15);
-	if(err) print_lc_error(err);
-	for(i = 0; i < 15; i++)
-	    printf("%02x ", buf[i]);
+	if (err)
+	{
+		print_lc_error(err);
+	}
+
+	for (i = 0; i < 15; i++)
+	{
+		printf("%02x ", buf[i]);
+	}
 	printf("\n");
 
 	i = 0;
@@ -213,15 +265,24 @@ print_lc_error(1);
 	buf[i++]=0xe0; buf[i++]=0x00;
 
 	err = ticables_cable_send(handle, buf, i);
-	if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
 
 	// param data
-	for(j = 0; j < 3; j++)
+	for (j = 0; j < 3; j++)
 	{
 		err = ticables_cable_recv(handle, buf, 255);
-		if(err) print_lc_error(err);
-		for(i = 0; i < 16; i++)
+		if (err)
+		{
+			print_lc_error(err);
+		}
+
+		for (i = 0; i < 16; i++)
+		{
 			printf("%02x ", buf[i]);
+		}
 		printf("\n");
 
 		i = 0;
@@ -230,13 +291,23 @@ print_lc_error(1);
 		buf[i++]=0xe0; buf[i++]=0x00;
 
 		err = ticables_cable_send(handle, buf, i);
-		if(err) print_lc_error(err);
+		if (err)
+		{
+			print_lc_error(err);
+		}
+
 	}
 	{
 		err = ticables_cable_recv(handle, buf, 36);
-		if(err) print_lc_error(err);
-		for(i = 0; i < 16; i++)
+		if (err)
+		{
+			print_lc_error(err);
+		}
+
+		for (i = 0; i < 16; i++)
+		{
 			printf("%02x ", buf[i]);
+		}
 		printf("\n");
 
 		i = 0;
@@ -245,7 +316,11 @@ print_lc_error(1);
 		buf[i++]=0xe0; buf[i++]=0x00;
 
 		err = ticables_cable_send(handle, buf, i);
-		if(err) print_lc_error(err);
+		if (err)
+		{
+			print_lc_error(err);
+		}
+
 	}
 	PAUSE(500);
 #endif
@@ -254,15 +329,23 @@ print_lc_error(1);
 	// do a simple test with a TI89/92+ calculator
 	buf[0] = 0x08; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;	// RDY
 	err = ticables_cable_send(handle, buf, 4);
-	if(err) print_lc_error(err);
-	 
+	if (err)
+	{
+		print_lc_error(err);
+	}
+
 	// display answer
 	memset(buf, 0xff, 4);
 	err = ticables_cable_recv(handle, buf, 4);
-	if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
 
-	for(i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
+	{
 		printf("%02x ", buf[i]);
+	}
 	printf("\n");
 #endif
 
@@ -270,59 +353,92 @@ print_lc_error(1);
 	// do a screendump
 	buf[0] = 0x08;  buf[1] = 0x6D; buf[2] = 0x00; buf[3] = 0x00;	// SCR
 	err = ticables_cable_send(handle, buf, 4);
-	if(err) print_lc_error(err);
-	
+	if (err)
+	{
+		print_lc_error(err);
+	}
+
 	memset(buf, 0xff, 4);
 	err = ticables_cable_recv(handle, buf, 4);	// ACK
-	if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
 
 	err = ticables_cable_recv(handle, scr, 0x0f00 + 6);	// XDP
-	if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
+
 	printf("%02x %02x\n", scr[2], scr[3]);
 
 	buf[0] = 0x08;  buf[1] = 0x56; buf[2] = 0x00; buf[3] = 0x00;	// ACK
 	err = ticables_cable_send(handle, buf, 4);
-	if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
+
 #endif
 
 #if 0
 	// simple test for data arrival detection
 	buf[0] = 0x08;  buf[1] = 0x87; buf[2] = 'A'; buf[3] = 0x00;		// KEY
 	err = ticables_cable_send(handle, buf, 4);
-	if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
 
 	for(status = 0; !status;)
 	{
 		err = ticables_cable_check(handle, &status);
-		if(err) print_lc_error(err);
+		if (err)
+		{
+			print_lc_error(err);
+		}
 	}
 
 	// display answer
 	memset(buf, 0xff, 4);
 	err = ticables_cable_recv(handle, buf, 4);
-	if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
 
-	for(i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
+	{
 		printf("%02x ", buf[i]);
+	}
 	printf("\n");
 #endif
 
 #if 0
 	for(status = 0; !status;)
 	{
-	    //fprintf(stdout, "$\n");
-	    //fflush(stdout);
+		//fprintf(stdout, "$\n");
+		//fflush(stdout);
 		err = ticables_cable_check(handle, &status);
-		if(err) print_lc_error(err);
+		if (err)
+		{
+			print_lc_error(err);
+		}
 	}
 
 	// display answer
 	memset(buf, 0xff, 4);
 	err = ticables_cable_recv(handle, buf, 4);
-	if(err) print_lc_error(err);
+	if (err)
+	{
+		print_lc_error(err);
+	}
 
-	for(i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
+	{
 		printf("%02x ", buf[i]);
+	}
 	printf("\n");
 #endif
 
@@ -330,7 +446,7 @@ print_lc_error(1);
 	ticables_cable_close(handle);
 	// release handle
 	ticables_handle_del(handle);
-	
+
 	// exit lib
 	ticables_library_exit();
 #ifdef __WIN32__

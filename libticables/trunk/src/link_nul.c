@@ -31,70 +31,84 @@
 
 #include "ticables.h"
 #include "gettext.h"
+#include "internal.h"
 
-static int nul_prepare(CableHandle *h)
+int noop_prepare(CableHandle *h)
 {
+	(void)h;
 	return 0;
 }
 
-static int nul_probe(CableHandle *h)
+int noop_probe(CableHandle *h)
 {
+	(void)h;
 	return 0;
 }
 
-static int nul_open(CableHandle *h)
+int noop_open(CableHandle *h)
 {
+	(void)h;
 	return 0;
 }
 
-static int nul_close(CableHandle *h)
+int noop_close(CableHandle *h)
 {
+	(void)h;
 	return 0;
 }
 
-static int nul_reset(CableHandle *h)
+int noop_reset(CableHandle *h)
 {
+	(void)h;
 	return 0;
 }
 
-static int nul_put(CableHandle *h, uint8_t *data, uint32_t len)
+int noop_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
+	(void)h, (void)data, (void)len;
 	return 0;
 }
 
-static int nul_get(CableHandle *h, uint8_t *data, uint32_t len)
+int noop_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
+	(void)h, (void)data, (void)len;
 	return 0;
 }
 
-static int nul_check(CableHandle *h, int *status)
+int noop_check(CableHandle *h, int *status)
 {
+	(void)h;
 	*status = STATUS_NONE;
 	return 0;
 }
 
-static int nul_set_red_wire(CableHandle *h, int b)
+int noop_set_red_wire(CableHandle *h, int b)
 {
+	(void)h, (void)b;
 	return 0;
 }
 
-static int nul_set_white_wire(CableHandle *h, int b)
+int noop_set_white_wire(CableHandle *h, int b)
 {
+	(void)h, (void)b;
 	return 0;
 }
 
-static int nul_get_red_wire(CableHandle *h)
+int noop_get_red_wire(CableHandle *h)
 {
+	(void)h;
 	return 1;
 }
 
-static int nul_get_white_wire(CableHandle *h)
+int noop_get_white_wire(CableHandle *h)
 {
+	(void)h;
 	return 1;
 }
 
-static int nul_set_device(CableHandle *h, const char * device)
+int noop_set_device(CableHandle *h, const char * device)
 {
+	(void)h, (void)device;
 	return 0;
 }
 
@@ -105,13 +119,13 @@ const CableFncts cable_nul =
 	N_("Dummy link"),
 	N_("Dummy link used when no cable is set"),
 	0,
-	&nul_prepare,
-	&nul_open, &nul_close, &nul_reset, &nul_probe, NULL,
-	&nul_put, &nul_get, &nul_check,
-	&nul_set_red_wire, &nul_set_white_wire,
-	&nul_get_red_wire, &nul_get_white_wire,
+	&noop_prepare,
+	&noop_open, &noop_close, &noop_reset, &noop_probe, NULL,
+	&noop_put, &noop_get, &noop_check,
+	&noop_set_red_wire, &noop_set_white_wire,
+	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&nul_set_device
+	&noop_set_device
 };
 
 /* no const ! */ CableFncts cable_ilp =
@@ -121,11 +135,11 @@ const CableFncts cable_nul =
 	N_("Dummy link for TiEmu"),
 	N_("Internal Link Port cable for TiEmu (internal use)"),
 	!0,
-	&nul_prepare,
-	&nul_open, &nul_close, &nul_reset, &nul_probe, NULL,
-	&nul_put, &nul_get, &nul_check,
-	&nul_set_red_wire, &nul_set_white_wire,
-	&nul_get_red_wire, &nul_get_white_wire,
+	&noop_prepare,
+	&noop_open, &noop_close, &noop_reset, &noop_probe, NULL,
+	&noop_put, &noop_get, &noop_check,
+	&noop_set_red_wire, &noop_set_white_wire,
+	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&nul_set_device
+	&noop_set_device
 };

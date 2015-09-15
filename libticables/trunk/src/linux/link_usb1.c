@@ -60,6 +60,7 @@
 #include "../logging.h"
 #include "../error.h"
 #include "../gettext.h"
+#include "../internal.h"
 #if defined(__WIN32__)
 #include "../win32/detect.h"
 #elif defined(__MACOSX__)
@@ -70,7 +71,6 @@
 #include "detect.h"
 #endif
 #include "../timeout.h"
-#include "../internal.h"
 
 /* Constants */
 
@@ -246,7 +246,7 @@ static int tigl_find(void)
 		{
 			for(k = 0; k < (int)(sizeof(tigl_infos) / sizeof(tigl_infos[0])); k++)
 			{
-				if(desc.idProduct == tigl_infos[k].pid)
+				if (desc.idProduct == tigl_infos[k].pid)
 				{
 					tigl_devices[j].vid = desc.idVendor;
 					tigl_devices[j].pid = desc.idProduct;
@@ -292,7 +292,7 @@ static int tigl_open(int id, libusb_device_handle ** udh)
 
 	tigl_enum();
 
-	if(tigl_devices[id].dev == NULL)
+	if (tigl_devices[id].dev == NULL)
 	{
 		return ERR_LIBUSB_OPEN;
 	}
@@ -388,7 +388,7 @@ static int slv_prepare(CableHandle *h)
 	TRYC(linux_check_libusb());
 #endif
 
-	if(h->port >= MAX_CABLES)
+	if (h->port >= MAX_CABLES)
 	{
 		return ERR_ILLEGAL_ARG;
 	}
@@ -535,7 +535,6 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
 			return ERR_WRITE_ERROR;
 		}
 	}
-
 
 	return 0;
 }
@@ -743,7 +742,7 @@ static int slv_probe(CableHandle *h)
 
 	for(i = 0; i < MAX_CABLES; i++)
 	{
-		if(tigl_devices[h->address].pid == PID_TIGLUSB)
+		if (tigl_devices[h->address].pid == PID_TIGLUSB)
 		{
 			return 0;
 		}
@@ -781,7 +780,7 @@ static int slv_check(CableHandle *h, int *status)
 	int r;
 	struct timeval tv;
 
-	if(nBytesRead > 0)
+	if (nBytesRead > 0)
 	{
 		*status = TRUE;
 		return 0;
@@ -855,31 +854,6 @@ static int slv_check(CableHandle *h, int *status)
 	return 0;
 }
 
-static int slv_set_red_wire(CableHandle *h, int b)
-{
-	return 0;
-}
-
-static int slv_set_white_wire(CableHandle *h, int b)
-{
-	return 0;
-}
-
-static int slv_get_red_wire(CableHandle *h)
-{
-	return 1;
-}
-
-static int slv_get_white_wire(CableHandle *h)
-{
-	return 1;
-}
-
-static int slv_set_device(CableHandle *h, const char * device)
-{
-	return 0;
-}
-
 const CableFncts cable_slv =
 {
 	CABLE_SLV,
@@ -890,10 +864,10 @@ const CableFncts cable_slv =
 	&slv_prepare,
 	&slv_open, &slv_close, &slv_reset, &slv_probe, NULL,
 	&slv_put, &slv_get, &slv_check,
-	&slv_set_red_wire, &slv_set_white_wire,
-	&slv_get_red_wire, &slv_get_white_wire,
+	&noop_set_red_wire, &noop_set_white_wire,
+	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&slv_set_device
+	&noop_set_device
 };
 
 const CableFncts cable_raw =
@@ -906,10 +880,10 @@ const CableFncts cable_raw =
 	&slv_prepare,
 	&slv_open, &slv_close, &slv_reset, &raw_probe, NULL,
 	&slv_put, &slv_get, &slv_check,
-	&slv_set_red_wire, &slv_set_white_wire,
-	&slv_get_red_wire, &slv_get_white_wire,
+	&noop_set_red_wire, &noop_set_white_wire,
+	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&slv_set_device
+	&noop_set_device
 };
 
 //=======================

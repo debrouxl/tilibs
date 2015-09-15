@@ -57,18 +57,18 @@ void (*io_wr) (unsigned int addr, int data);
 #ifdef __WIN32__
 static void print_last_error(char *s)
 {
-        LPTSTR lpMsgBuf;
+	LPTSTR lpMsgBuf;
 
-        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
 		FORMAT_MESSAGE_FROM_SYSTEM |
 		FORMAT_MESSAGE_IGNORE_INSERTS,
 		NULL, GetLastError(),
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		(LPTSTR) & lpMsgBuf, 0, NULL);
 
-		lpMsgBuf[strlen(lpMsgBuf)-2] = '\0';
+	lpMsgBuf[strlen(lpMsgBuf)-2] = '\0';
 
-        ticables_info("%s (%i -> %s)", s, GetLastError(), lpMsgBuf);
+	ticables_info("%s (%i -> %s)", s, GetLastError(), lpMsgBuf);
 }
 #endif				//__WIN32__
 
@@ -77,28 +77,26 @@ static void print_last_error(char *s)
 
 static int win32_read_io(unsigned int addr)
 {
-        int c;
+	int c;
 
 #ifdef __GNUC__
-asm("movl $0,%%eax \n movw %1,%%dx \n inb %%dx,%%al \n movl %%eax,%0": "=g"(c): "g"(addr):"eax",
-      "dx");
+asm("movl $0,%%eax \n movw %1,%%dx \n inb %%dx,%%al \n movl %%eax,%0": "=g"(c): "g"(addr): "eax", "dx");
 #else
-        __asm {
+	__asm {
 	 mov eax, 0 
 	 mov edx, addr 
 	 in al, dx 
 	 mov c, eax}
 #endif
-        return c;
+	return c;
 }
 
 static void win32_write_io(unsigned int addr, int data)
 {
 #ifdef __GNUC__
-asm("movw %0,%%dx \n movw %1,%%ax \n outb %%al,%%dx"::"g"(addr), "g"(data):"ax",
-      "dx");
+asm("movw %0,%%dx \n movw %1,%%ax \n outb %%al,%%dx"::"g"(addr), "g"(data):"ax", "dx");
 #else
-        __asm {
+	__asm {
 	  mov edx, addr 
 	  mov eax, data 
 	  out dx, al}
@@ -190,96 +188,96 @@ int io_close(unsigned long from)
 
 int win32_comport_open(char *comPort, PHANDLE hCom)
 {
-  DCB dcb;
-  BOOL fSuccess;
-  COMMTIMEOUTS cto;
+	DCB dcb;
+	BOOL fSuccess;
+	COMMTIMEOUTS cto;
 
-  /* Open COM port */
-  *hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0,
+	/* Open COM port */
+	*hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0,
 		     NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-  if (hCom == INVALID_HANDLE_VALUE) 
-  {
-    ticables_info("CreateFile");
-    print_last_error("CreateFile");
-    return ERR_GRY_CREATEFILE;
-  }
-  // Setup buffer size
-  fSuccess = SetupComm(*hCom, 1024, 1024);
-  if (!fSuccess) 
-  {
-    ticables_info("SetupComm");
-    print_last_error("SetupComm");
-    return ERR_GRY_SETUPCOMM;
-  }
-  // Retrieve config structure
-  fSuccess = GetCommState(*hCom, &dcb);
-  if (!fSuccess) 
-  {
-    ticables_info("GetCommState");
-    print_last_error("GetCOmmState");
-    return ERR_GRY_GETCOMMSTATE;
-  }
-  // Fills the structure with config
-  dcb.BaudRate = CBR_9600;	// 9600 bauds
-  dcb.fBinary = TRUE;		// Binary mode
-  dcb.fParity = FALSE;		// Parity checking disabled
-  dcb.fOutxCtsFlow = FALSE;	// No output flow control
-  dcb.fOutxDsrFlow = FALSE;	// Idem
-  dcb.fDtrControl = DTR_CONTROL_ENABLE;	// Provide power supply
-  dcb.fDsrSensitivity = FALSE;	// ignore DSR status
-  dcb.fOutX = FALSE;		// no XON/XOFF flow control
-  dcb.fInX = FALSE;		// idem
-  dcb.fErrorChar = FALSE;	// no replacement
-  dcb.fNull = FALSE;		// don't discard null chars
-  dcb.fRtsControl = RTS_CONTROL_ENABLE;	// Provide power supply
-  dcb.fAbortOnError = FALSE;	// do not report errors
+	if (hCom == INVALID_HANDLE_VALUE) 
+	{
+		ticables_info("CreateFile");
+		print_last_error("CreateFile");
+		return ERR_GRY_CREATEFILE;
+	}
+	// Setup buffer size
+	fSuccess = SetupComm(*hCom, 1024, 1024);
+	if (!fSuccess)
+	{
+		ticables_info("SetupComm");
+		print_last_error("SetupComm");
+		return ERR_GRY_SETUPCOMM;
+	}
+	// Retrieve config structure
+	fSuccess = GetCommState(*hCom, &dcb);
+	if (!fSuccess)
+	{
+		ticables_info("GetCommState");
+		print_last_error("GetCommState");
+	return ERR_GRY_GETCOMMSTATE;
+	}
+	// Fills the structure with config
+	dcb.BaudRate = CBR_9600;	// 9600 bauds
+	dcb.fBinary = TRUE;		// Binary mode
+	dcb.fParity = FALSE;		// Parity checking disabled
+	dcb.fOutxCtsFlow = FALSE;	// No output flow control
+	dcb.fOutxDsrFlow = FALSE;	// Idem
+	dcb.fDtrControl = DTR_CONTROL_ENABLE;	// Provide power supply
+	dcb.fDsrSensitivity = FALSE;	// ignore DSR status
+	dcb.fOutX = FALSE;		// no XON/XOFF flow control
+	dcb.fInX = FALSE;		// idem
+	dcb.fErrorChar = FALSE;	// no replacement
+	dcb.fNull = FALSE;		// don't discard null chars
+	dcb.fRtsControl = RTS_CONTROL_ENABLE;	// Provide power supply
+	dcb.fAbortOnError = FALSE;	// do not report errors
 
-  dcb.ByteSize = 8;		// 8 bits
-  dcb.Parity = NOPARITY;	// no parity checking
-  dcb.StopBits = ONESTOPBIT;	// 1 stop bit
+	dcb.ByteSize = 8;		// 8 bits
+	dcb.Parity = NOPARITY;	// no parity checking
+	dcb.StopBits = ONESTOPBIT;	// 1 stop bit
 
-  // Config COM port
-  fSuccess = SetCommState(*hCom, &dcb);
-  if (!fSuccess) 
-  {
-    ticables_info("SetCommState");
-    print_last_error("SetCOmmState");
-    return ERR_GRY_SETCOMMSTATE;
-  }
+	// Config COM port
+	fSuccess = SetCommState(*hCom, &dcb);
+	if (!fSuccess) 
+	{
+		ticables_info("SetCommState");
+		print_last_error("SetCommState");
+		return ERR_GRY_SETCOMMSTATE;
+	}
 
-  fSuccess = GetCommTimeouts(*hCom, &cto);
-  if (!fSuccess) 
-  {
-    ticables_info("GetCommTimeouts");
-    print_last_error("GetCommTimeouts");
-    return ERR_GRY_GETCOMMTIMEOUT;
-  }
+	fSuccess = GetCommTimeouts(*hCom, &cto);
+	if (!fSuccess) 
+	{
+		ticables_info("GetCommTimeouts");
+		print_last_error("GetCommTimeouts");
+		return ERR_GRY_GETCOMMTIMEOUT;
+	}
 
-  cto.ReadIntervalTimeout = MAXDWORD;
-  cto.ReadTotalTimeoutMultiplier = 0;
-  cto.ReadTotalTimeoutConstant = 100 * 10/*time_out*/;
-  cto.WriteTotalTimeoutMultiplier = 0;
-  cto.WriteTotalTimeoutConstant = 0;	// 0 make non-blocking
+	cto.ReadIntervalTimeout = MAXDWORD;
+	cto.ReadTotalTimeoutMultiplier = 0;
+	cto.ReadTotalTimeoutConstant = 100 * 10/*time_out*/;
+	cto.WriteTotalTimeoutMultiplier = 0;
+	cto.WriteTotalTimeoutConstant = 0;	// 0 make non-blocking
 
-  fSuccess = SetCommTimeouts(*hCom, &cto);
-  if (!fSuccess) 
-  {
-    ticables_info("SetCommTimeouts");
-    print_last_error("SetCommTimeouts");
-    return ERR_GRY_SETCOMMTIMEOUT;
-  }
+	fSuccess = SetCommTimeouts(*hCom, &cto);
+	if (!fSuccess) 
+	{
+		ticables_info("SetCommTimeouts");
+		print_last_error("SetCommTimeouts");
+		return ERR_GRY_SETCOMMTIMEOUT;
+	}
 
-  return 0;
+	return 0;
 }
 
 int win32_comport_close(PHANDLE hCom)
 {
-  if (*hCom) 
-  {
-    CloseHandle(*hCom);
-    *hCom = INVALID_HANDLE_VALUE;
-  }
+	if (*hCom) 
+	{
+		CloseHandle(*hCom);
+		*hCom = INVALID_HANDLE_VALUE;
+	}
 
-  return 0;
+	return 0;
 }
 

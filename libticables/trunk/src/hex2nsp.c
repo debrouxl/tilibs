@@ -23,8 +23,8 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#include "ticables.h"
 #include "logging.h"
-#include "stdints1.h"
 #include "internal.h"
 
 #define HEXDUMP_SIZE	12
@@ -112,20 +112,30 @@ static const ServiceId sids[] =
 static const char* name_of_sid(uint16_t id)
 {
 	int i;
-  
-	for(i=0; sids[i].name; i++)
-		if(id == sids[i].value)
+
+	for (i=0; sids[i].name; i++)
+	{
+		if (id == sids[i].value)
+		{
 			return sids[i].name;
+		}
+	}
+
 	return "???";
 }
 
 static const char* name_of_addr(uint16_t addr)
 {
 	int i;
-  
-	for(i=0; addrs[i].name; i++)
-		if(addr == addrs[i].value)
+
+	for (i=0; addrs[i].name; i++)
+	{
+		if (addr == addrs[i].value)
+		{
 			return addrs[i].name;
+		}
+	}
+
 	return "??";
 }
 
@@ -141,9 +151,13 @@ static const char* name_of_addr(uint16_t addr)
 static int add_sid(uint16_t* array, uint16_t id, int *count)
 {
 	int i;
-	for(i = 0; i < *count; i++)
-		if(array[i] == id)
+	for (i = 0; i < *count; i++)
+	{
+		if (array[i] == id)
+		{
 			return 0;
+		}
+	}
 
 	if (i < ARRAY_SIZE - 1)
 	{
@@ -166,10 +180,14 @@ static int add_sid(uint16_t* array, uint16_t id, int *count)
 static int add_addr(uint16_t* array, uint16_t addr, int *count)
 {
 	int i;
-	
-	for(i = 0; i < *count; i++)
-		if(array[i] == addr)
+
+	for (i = 0; i < *count; i++)
+	{
+		if (array[i] == addr)
+		{
 			return 0;
+		}
+	}
 
 	if (i < ARRAY_SIZE - 1)
 	{
@@ -200,23 +218,35 @@ static int hex_read(unsigned char *data)
 	int ret;
 	int data2;
 
-	if(feof(hex))
+	if (feof(hex))
+	{
 		return -1;
+	}
 
 	ret = fscanf(hex, "%02X", &data2);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return -1;
+	}
 	*data = data2 & 0xFF;
-	fgetc(hex);
+	if (fgetc(hex) < 0)
+	{
+		return -1;
+	}
 	idx++;
 
-	if(idx >= 16)
+	if (idx >= 16)
 	{
 		int i;
 
 		idx = 0;
-		for(i = 0; (i < 67-49) && !feof(hex); i++)
-			fgetc(hex);
+		for (i = 0; (i < 67-49) && !feof(hex); i++)
+		{
+			if (fgetc(hex) < 0)
+			{
+				return -1;
+			}
+		}
 	}
     
 	return 0;
@@ -237,8 +267,10 @@ static int dusb_write(int dir, uint8_t data)
 	static int cnt;
 	static uint8_t ascii[HEXDUMP_SIZE+1];
 
-  	if (logfile == NULL)
-    		return -1;
+	if (logfile == NULL)
+	{
+		return -1;
+	}
 
 	array[i++ % 16] = data;
 
@@ -279,10 +311,10 @@ static int dusb_write(int dir, uint8_t data)
 		fprintf(logfile, "%04x ", dst_id);
 		add_sid(sid_found, src_id, &sif);
 		break;
-		
+
 	case 11: break;	// data checksum
 	case 12: break;
-		
+
 	case 13:		// data size
 		data_size = array[12];
 		break;
@@ -305,33 +337,43 @@ static int dusb_write(int dir, uint8_t data)
 			name_of_addr(src_addr), name_of_sid(src_id), 
 			name_of_addr(dst_addr), name_of_sid(dst_id));
 
-		if(data_size == 0)
+		if (data_size == 0)
+		{
 			state = 0;
+		}
 		break;
 
 	default:
-		if(!cnt)
+		if (!cnt)
+		{
 			fprintf(logfile, "\t\t");
+		}
 
 		fprintf(logfile, "%02X ", data);
 		ascii[cnt % HEXDUMP_SIZE] = data;
 
-		if(!(++cnt % HEXDUMP_SIZE))
+		if (!(++cnt % HEXDUMP_SIZE))
 		{
 			fprintf(logfile, " | ");
-			for(i = 0; i < HEXDUMP_SIZE; i++)
+			for (i = 0; i < HEXDUMP_SIZE; i++)
+			{
 				fprintf(logfile, "%c", isalnum(ascii[i]) ? ascii[i] : '.');
+			}
 
 			fprintf(logfile, "\n\t\t");
 		}
-		
-		if(--data_size == 0)
+
+		if (--data_size == 0)
 		{
-			for(i = 0; i < HEXDUMP_SIZE - (cnt%HEXDUMP_SIZE); i++)
+			for (i = 0; i < HEXDUMP_SIZE - (cnt%HEXDUMP_SIZE); i++)
+			{
 				fprintf(logfile, "   ");
+			}
 			fprintf(logfile, " | ");
-			for(i = 0; i < (cnt%HEXDUMP_SIZE); i++)
+			for (i = 0; i < (cnt%HEXDUMP_SIZE); i++)
+			{
 				fprintf(logfile, "%c", isalnum(ascii[i]) ? ascii[i] : '.');
+			}
 
 			fprintf(logfile, "\n");
 			state = 0;
@@ -354,7 +396,7 @@ int nsp_decomp(const char *filename)
 	char src_name[1024];
 	char dst_name[1024];
 	char line[256];
-	unsigned char data;
+	unsigned char data = 0;
 	int i;
 
 	snprintf(src_name, sizeof(src_name) - 1, "%s.hex", filename);
@@ -364,36 +406,46 @@ int nsp_decomp(const char *filename)
 	dst_name[sizeof(dst_name) - 1] = 0;
 
 	hex = fopen(src_name, "rt");
-	if(hex == NULL)
+	if (hex == NULL)
 	{
 		fprintf(stderr, "Unable to open this file: %s\n", src_name);
 		return -1;
 	}
 
 	logfile = fopen(dst_name, "wt");
-	if(logfile == NULL)
+	if (logfile == NULL)
 	{
 		fprintf(stderr, "Unable to open this file: %s\n", dst_name);
 		fclose(hex);
 		return -1;
 	}
 
-	if (fgets(line, sizeof(line), hex) == NULL) goto exit;
-	if (fgets(line, sizeof(line), hex) == NULL) goto exit;
-	if (fgets(line, sizeof(line), hex) == NULL) goto exit;
-
 	fprintf(logfile, "TI packet decompiler for NSpire, version 1.0\n");
 
-	while(hex_read(&data) != -1)
+	// skip comments
+	if (   fgets(line, sizeof(line), hex) == NULL
+	    || fgets(line, sizeof(line), hex) == NULL
+	    || fgets(line, sizeof(line), hex) == NULL)
+	{
+		goto exit;
+	}
+
+	while (hex_read(&data) != -1)
 	{
 		dusb_write(0, data);
 	}
 
 	fprintf(logfile, "() Service IDs found: ");
-	for(i = 0; i < sif; i++) fprintf(logfile, "%04x ", sid_found[i]);
+	for(i = 0; i < sif; i++)
+	{
+		fprintf(logfile, "%04x ", sid_found[i]);
+	}
 	fprintf(logfile, "\n");
 	fprintf(logfile, "() Addresses found: ");
-	for(i = 0; i < af; i++) fprintf(logfile, "%04x ", addr_found[i]);
+	for(i = 0; i < af; i++)
+	{
+		fprintf(logfile, "%04x ", addr_found[i]);
+	}
 	fprintf(logfile, "\n");
 
 exit:
@@ -406,8 +458,6 @@ exit:
 #if 0
 int main(int argc, char **argv)
 {
-
-
 	if(argc < 2)
 	{
 		fprintf(stderr, "Usage: hex2nsp [file]\n");

@@ -28,12 +28,13 @@
 #include "../logging.h"
 #include "../error.h"
 #include "../gettext.h"
+#include "../internal.h"
 #include "detect.h"
 
 typedef struct 
 {
-  uint8_t	data;
-  BOOL		avail;
+	uint8_t	data;
+	BOOL		avail;
 } CHK;
 
 #define hCom	((HANDLE)(h->priv))
@@ -41,13 +42,19 @@ typedef struct
 
 static int gry_prepare(CableHandle *h)
 {
+	const char * device;
 	switch(h->port)
 	{
-	case PORT_1: h->address = 0x3f8; h->device = strdup("COM1"); break;
-	case PORT_2: h->address = 0x2f8; h->device = strdup("COM2"); break;
-	case PORT_3: h->address = 0x3e8; h->device = strdup("COM3"); break;
-	case PORT_4: h->address = 0x3e8; h->device = strdup("COM4"); break;
+	case PORT_1: h->address = 0x3f8; device = "COM1"; break;
+	case PORT_2: h->address = 0x2f8; device = "COM2"; break;
+	case PORT_3: h->address = 0x3e8; device = "COM3"; break;
+	case PORT_4: h->address = 0x3e8; device = "COM4"; break;
 	default: return ERR_ILLEGAL_ARG;
+	}
+
+	if (h->device == NULL)
+	{
+		h->device = strdup(device);
 	}
 
 	h->priv2 = calloc(1, sizeof(CHK));
@@ -90,64 +97,64 @@ static int gry_open(CableHandle *h)
 
 	// Fills the structure with config
 	dcb.BaudRate = CBR_9600;	// 9600 bauds
-    dcb.fBinary = TRUE;			// Binary mode
-    dcb.fParity = FALSE;		// Parity checking disabled
-    dcb.fOutxCtsFlow = FALSE;	// No output flow control
-    dcb.fOutxDsrFlow = FALSE;	// Idem
-    dcb.fDtrControl = DTR_CONTROL_ENABLE;	// Provide power supply
-    dcb.fDsrSensitivity = FALSE;	// ignore DSR status
-    dcb.fOutX = FALSE;			// no XON/XOFF flow control
-    dcb.fInX = FALSE;			// idem
-    dcb.fErrorChar = FALSE;		// no replacement
-    dcb.fNull = FALSE;			// don't discard null chars
-    dcb.fRtsControl = RTS_CONTROL_ENABLE;	// Provide power supply
-    dcb.fAbortOnError = FALSE;	// do not report errors
+	dcb.fBinary = TRUE;			// Binary mode
+	dcb.fParity = FALSE;		// Parity checking disabled
+	dcb.fOutxCtsFlow = FALSE;	// No output flow control
+	dcb.fOutxDsrFlow = FALSE;	// Idem
+	dcb.fDtrControl = DTR_CONTROL_ENABLE;	// Provide power supply
+	dcb.fDsrSensitivity = FALSE;	// ignore DSR status
+	dcb.fOutX = FALSE;			// no XON/XOFF flow control
+	dcb.fInX = FALSE;			// idem
+	dcb.fErrorChar = FALSE;		// no replacement
+	dcb.fNull = FALSE;			// don't discard null chars
+	dcb.fRtsControl = RTS_CONTROL_ENABLE;	// Provide power supply
+	dcb.fAbortOnError = FALSE;	// do not report errors
 
-    dcb.ByteSize = 8;			// 8 bits
-    dcb.Parity = NOPARITY;		// no parity checking
-    dcb.StopBits = ONESTOPBIT;	// 1 stop bit
+	dcb.ByteSize = 8;			// 8 bits
+	dcb.Parity = NOPARITY;		// no parity checking
+	dcb.StopBits = ONESTOPBIT;	// 1 stop bit
 
-    // Config COM port
-    fSuccess = SetCommState(hCom, &dcb);
-    if (!fSuccess) 
-    {
+	// Config COM port
+	fSuccess = SetCommState(hCom, &dcb);
+	if (!fSuccess) 
+	{
 		ticables_warning("SetCommState");
 		return ERR_GRY_SETCOMMSTATE;
-    }
+	}
 
 	// Wait for GrayLink to be ready
 	Sleep(250);
-  
+
 	// Set timeouts
-    fSuccess = GetCommTimeouts(hCom, &cto);
-    if (!fSuccess) 
-    {
+	fSuccess = GetCommTimeouts(hCom, &cto);
+	if (!fSuccess) 
+	{
 		ticables_warning("GetCommTimeouts");
 		return ERR_GRY_GETCOMMTIMEOUT;
-    }
-  
-    cto.ReadIntervalTimeout = MAXDWORD;	// don't use time-outs (make non-blocking)
+	}
 
-    cto.ReadTotalTimeoutMultiplier = 0;
-    cto.ReadTotalTimeoutConstant = 0;	
-    
-    cto.WriteTotalTimeoutMultiplier = 0;
-    cto.WriteTotalTimeoutConstant = 100 * h->timeout;
-  
-    fSuccess = SetCommTimeouts(hCom, &cto);
-    if (!fSuccess) 
-    {
+	cto.ReadIntervalTimeout = MAXDWORD;	// don't use time-outs (make non-blocking)
+
+	cto.ReadTotalTimeoutMultiplier = 0;
+	cto.ReadTotalTimeoutConstant = 0;
+
+	cto.WriteTotalTimeoutMultiplier = 0;
+	cto.WriteTotalTimeoutConstant = 100 * h->timeout;
+
+	fSuccess = SetCommTimeouts(hCom, &cto);
+	if (!fSuccess) 
+	{
 		ticables_warning("SetCommTimeouts");
 		return ERR_GRY_SETCOMMTIMEOUT;
-    }
+	}
 
 	// Monitor receiving of chars
 	fSuccess = SetCommMask(hCom, EV_RXCHAR);
 	if (!fSuccess)
-    {
+	{
 		ticables_warning("SetCommMask");
 		return ERR_GRY_SETCOMMMASK;
-    }
+	}
 
 	// Flush/Dicard buffers (= gry_reset)
 	fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
@@ -192,35 +199,45 @@ static int gry_probe(CableHandle *h)
 {
 	DWORD status;			//MS_CTS_ON or MS_DTR_ON
 
-    EscapeCommFunction(hCom, SETDTR);
-    EscapeCommFunction(hCom, SETRTS);
-    GetCommModemStatus(hCom, &status);	// Get MCR values
-    if (status != 0x20)
-      return ERR_PROBE_FAILED;
-  
-    EscapeCommFunction(hCom, SETDTR);
-    EscapeCommFunction(hCom, CLRRTS);
-    GetCommModemStatus(hCom, &status);
-    if (status != 0x20)
-      return ERR_PROBE_FAILED;
-  
-    EscapeCommFunction(hCom, CLRDTR);
-    EscapeCommFunction(hCom, CLRRTS);
-    GetCommModemStatus(hCom, &status);
-    if (status != 0x00)
-      return ERR_PROBE_FAILED;
-
-    EscapeCommFunction(hCom, CLRDTR);
-    EscapeCommFunction(hCom, SETRTS);
-    GetCommModemStatus(hCom, &status);
-    if (status != 0x00)
-      return ERR_PROBE_FAILED;
-  
-    EscapeCommFunction(hCom, SETDTR);
-    EscapeCommFunction(hCom, SETRTS);
-    GetCommModemStatus(hCom, &status);
+	EscapeCommFunction(hCom, SETDTR);
+	EscapeCommFunction(hCom, SETRTS);
+	GetCommModemStatus(hCom, &status);	// Get MCR values
 	if (status != 0x20)
+	{
 		return ERR_PROBE_FAILED;
+	}
+
+	EscapeCommFunction(hCom, SETDTR);
+	EscapeCommFunction(hCom, CLRRTS);
+	GetCommModemStatus(hCom, &status);
+	if (status != 0x20)
+	{
+		return ERR_PROBE_FAILED;
+	}
+
+	EscapeCommFunction(hCom, CLRDTR);
+	EscapeCommFunction(hCom, CLRRTS);
+	GetCommModemStatus(hCom, &status);
+	if (status != 0x00)
+	{
+		return ERR_PROBE_FAILED;
+	}
+
+	EscapeCommFunction(hCom, CLRDTR);
+	EscapeCommFunction(hCom, SETRTS);
+	GetCommModemStatus(hCom, &status);
+	if (status != 0x00)
+	{
+		return ERR_PROBE_FAILED;
+	}
+
+	EscapeCommFunction(hCom, SETDTR);
+	EscapeCommFunction(hCom, SETRTS);
+	GetCommModemStatus(hCom, &status);
+	if (status != 0x20)
+	{
+		return ERR_PROBE_FAILED;
+	}
 
 	return 0;
 }
@@ -230,18 +247,18 @@ static int gry_put(CableHandle* h, uint8_t *data, uint32_t len)
 	BOOL fSuccess;
 	DWORD nBytesWritten;
 
-    fSuccess = WriteFile(hCom, data, len, &nBytesWritten, NULL);
+	fSuccess = WriteFile(hCom, data, len, &nBytesWritten, NULL);
 
-    if (!fSuccess) 
-    {
+	if (!fSuccess) 
+	{
 		ticables_warning("WriteFile");
 		return ERR_WRITE_ERROR;
-    } 
-    else if (nBytesWritten == 0) 
-    {
+	}
+	else if (nBytesWritten == 0) 
+	{
 		ticables_warning("WriteFile");
 		return ERR_WRITE_TIMEOUT;
-    }
+	}
 	else if (nBytesWritten < len)
 	{
 		ticables_warning("WriteFile");
@@ -258,7 +275,7 @@ static int gry_get(CableHandle* h, uint8_t *data, uint32_t len)
 	tiTIME clk;
 	uint32_t i;
 
-	if(sCheck->avail) 
+	if (sCheck->avail) 
 	{
 		*data = sCheck->data;
 		sCheck->avail = FALSE;
@@ -275,7 +292,9 @@ static int gry_get(CableHandle* h, uint8_t *data, uint32_t len)
 		{
 			fSuccess = ReadFile(hCom, data + i, len - i, &nBytesRead, NULL);
 			if (TO_ELAPSED(clk, h->timeout))
+			{
 				return ERR_READ_TIMEOUT;
+			}
 		}
 		while(nBytesRead == 0);
 
@@ -292,8 +311,8 @@ static int gry_get(CableHandle* h, uint8_t *data, uint32_t len)
 
 		i += nBytesRead;
 	}
-  	
-  	return 0;
+
+	return 0;
 }
 
 static int gry_check(CableHandle *h, int *status)
@@ -301,40 +320,20 @@ static int gry_check(CableHandle *h, int *status)
 	BOOL fSuccess;
 	DWORD nBytesRead;
 	uint8_t data;
-	
+
 	*status = 0;
 	fSuccess = ReadFile(hCom, &sCheck->data, 1, &nBytesRead, NULL);
 
-    if (fSuccess && (nBytesRead == 1)) 
+	if (fSuccess && (nBytesRead == 1)) 
 	{
 		data = sCheck->data;
 		sCheck->avail = TRUE;
 		*status = STATUS_RX;
 
 		return 0;
-    } 
+	}
 
 	return 0;
-}
-
-static int gry_set_red_wire(CableHandle *h, int b)
-{
-	return 0;
-}
-
-static int gry_set_white_wire(CableHandle *h, int b)
-{
-	return 0;
-}
-
-static int gry_get_red_wire(CableHandle *h)
-{
-	return 1;
-}
-
-static int gry_get_white_wire(CableHandle *h)
-{
-	return 1;
 }
 
 static int gry_timeout(CableHandle *h)
@@ -342,20 +341,20 @@ static int gry_timeout(CableHandle *h)
 	BOOL fSuccess;
 	COMMTIMEOUTS cto;
 
-    cto.ReadIntervalTimeout = MAXDWORD;	// don't use time-outs (make non-blocking)
+	cto.ReadIntervalTimeout = MAXDWORD;	// don't use time-outs (make non-blocking)
 
-    cto.ReadTotalTimeoutMultiplier = 0;
-    cto.ReadTotalTimeoutConstant = 0;	
-    
-    cto.WriteTotalTimeoutMultiplier = 0;
-    cto.WriteTotalTimeoutConstant = 100 * h->timeout;
-  
-    fSuccess = SetCommTimeouts(hCom, &cto);
-    if (!fSuccess) 
-    {
+	cto.ReadTotalTimeoutMultiplier = 0;
+	cto.ReadTotalTimeoutConstant = 0;
+
+	cto.WriteTotalTimeoutMultiplier = 0;
+	cto.WriteTotalTimeoutConstant = 100 * h->timeout;
+
+	fSuccess = SetCommTimeouts(hCom, &cto);
+	if (!fSuccess) 
+	{
 		ticables_warning("SetCommTimeouts");
 		return ERR_GRY_SETCOMMTIMEOUT;
-    }
+	}
 
 	return 0;
 }
@@ -367,6 +366,7 @@ static int gry_set_device(CableHandle *h, const char * device)
 		char * device2 = strdup(device);
 		if (device2 != NULL)
 		{
+			free(h->device);
 			h->device = device2;
 		}
 		else
@@ -388,8 +388,8 @@ const CableFncts cable_gry =
 	&gry_prepare,
 	&gry_open, &gry_close, &gry_reset, &gry_probe, &gry_timeout,
 	&gry_put, &gry_get, &gry_check,
-	&gry_set_red_wire, &gry_set_white_wire,
-	&gry_get_red_wire, &gry_get_white_wire,
+	&noop_set_red_wire, &noop_set_white_wire,
+	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
 	&gry_set_device
 };

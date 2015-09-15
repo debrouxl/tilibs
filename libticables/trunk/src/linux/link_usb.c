@@ -88,6 +88,8 @@
 #include <sys/ioctl.h>
 #endif
 
+#include "../ticables.h"
+#include "../internal.h"
 #ifdef _MSC_VER
 # include "../win32/usb.h"
 #else
@@ -111,16 +113,16 @@ static void *context = 0;
 #ifdef __LINUX__
 /* the libusb internal structure from usbi.h */
 struct usb_dev_handle {
-  int fd;
+	int fd;
 
-  struct usb_bus *bus;
-  struct usb_device *device;
+	struct usb_bus *bus;
+	struct usb_device *device;
 
-  int config;
-  int interface;
-  int altsetting;
+	int config;
+	int interface;
+	int altsetting;
 
-  void *impl_info;
+	void *impl_info;
 };
 
 /* another pair of libusb internal structures from linux.h */
@@ -169,9 +171,9 @@ struct usb_urb {
 
 /* definitions to set the libusb error string from the libusb error.h */
 typedef enum {
-  USB_ERROR_TYPE_NONE = 0,
-  USB_ERROR_TYPE_STRING,
-  USB_ERROR_TYPE_ERRNO,
+	USB_ERROR_TYPE_NONE = 0,
+	USB_ERROR_TYPE_STRING,
+	USB_ERROR_TYPE_ERRNO,
 } usb_error_type_t;
 
 extern char usb_error_str[1024];
@@ -181,18 +183,20 @@ extern int usb_debug;
 
 #define USB_ERROR(x) \
 	do { \
-          usb_error_type = USB_ERROR_TYPE_ERRNO; \
-          usb_error_errno = x; \
-	  return x; \
+		usb_error_type = USB_ERROR_TYPE_ERRNO; \
+		usb_error_errno = x; \
+		return x; \
 	} while (0)
 
 #define USB_ERROR_STR(x, format, args...) \
 	do { \
-	  usb_error_type = USB_ERROR_TYPE_STRING; \
-	  snprintf(usb_error_str, sizeof(usb_error_str) - 1, format, ## args); \
-          if (usb_debug >= 2) \
-            fprintf(stderr, "USB error: %s\n", usb_error_str); \
-	  return x; \
+		usb_error_type = USB_ERROR_TYPE_STRING; \
+		snprintf(usb_error_str, sizeof(usb_error_str) - 1, format, ## args); \
+		if (usb_debug >= 2) \
+		{ \
+			fprintf(stderr, "USB error: %s\n", usb_error_str); \
+		} \
+		return x; \
 	} while (0)
 
 /* variables for slv_check and slv_bulk_read2 */
@@ -231,11 +235,11 @@ static struct usb_urb urb;
 // device infos
 typedef struct
 {
-    uint16_t    vid;
-    uint16_t    pid;
-    const char* str;
+	uint16_t    vid;
+	uint16_t    pid;
+	const char* str;
 
-    struct usb_device *dev;
+	struct usb_device *dev;
 } usb_infos;
 
 // list of known devices
@@ -256,16 +260,16 @@ static int tigl_n_devices;
 // internal structure for holding data
 typedef struct
 {
-    struct usb_device *device;
-    usb_dev_handle    *handle;
+	struct usb_device *device;
+	usb_dev_handle    *handle;
 
-    int               nBytesRead;
-    uint8_t           rBuf[64];
-    uint8_t*          rBufPtr;
-    int               in_endpoint;
-    int               out_endpoint;
-    int               max_ps;
-    int               was_max_size_packet;
+	int               nBytesRead;
+	uint8_t           rBuf[64];
+	uint8_t*          rBufPtr;
+	int               in_endpoint;
+	int               out_endpoint;
+	int               max_ps;
+	int               was_max_size_packet;
 } usb_struct;
 
 // convenient macros
@@ -285,140 +289,143 @@ static void tigl_get_product(char * string, size_t maxlen, struct usb_device *de
 {
 /* The code below causes problems on FreeBSD (libusb bug?). */
 #ifndef __BSD__
-    struct usb_dev_handle *han;
-    int ret;
+	struct usb_dev_handle *han;
+	int ret;
 
-    string[0] = 0;
+	string[0] = 0;
 
-    if (dev->descriptor.iProduct)
-    {
-	han = usb_open(dev);
-	ret = usb_get_string_simple(han, dev->descriptor.iProduct, 
-				    string, maxlen);
-	usb_close(han);
-    }
+	if (dev->descriptor.iProduct)
+	{
+		han = usb_open(dev);
+		ret = usb_get_string_simple(han, dev->descriptor.iProduct, string, maxlen);
+		usb_close(han);
+	}
 #endif
 }
 
 static int tigl_find(void)
 {
-    struct usb_bus    *bus;
-    struct usb_device *dev;
-    int i, j;
+	struct usb_bus    *bus;
+	struct usb_device *dev;
+	int i, j;
 
-    memset(tigl_devices, 0, sizeof(tigl_devices));
-    j = tigl_n_devices = 0;
+	memset(tigl_devices, 0, sizeof(tigl_devices));
+	j = tigl_n_devices = 0;
 
-    /* loop taken from testlibusb.c */
-    for (bus = usb_busses; bus; bus = bus->next)
-    {
-	for (dev = bus->devices; dev; dev = dev->next)
+	/* loop taken from testlibusb.c */
+	for (bus = usb_busses; bus; bus = bus->next)
 	{
-	    if (dev->descriptor.idVendor == VID_TI)
-	    {
-		for(i = 0; i < (int)(sizeof(tigl_infos) / sizeof(tigl_infos[0])); i++)
+		for (dev = bus->devices; dev; dev = dev->next)
 		{
-		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
-		    {
-			tigl_devices[j].vid = dev->descriptor.idVendor;
-			tigl_devices[j].pid = dev->descriptor.idProduct;
-			tigl_devices[j].version = dev->descriptor.bcdDevice;
-
-			tigl_get_product(tigl_devices[j].product_str, sizeof(tigl_devices[j].product_str), dev);
-			ticables_info(" found %s on #%i, version <%x.%02x>",
-			              tigl_devices[j].product_str, j+1,
-			              dev->descriptor.bcdDevice >> 8,
-			              dev->descriptor.bcdDevice & 0xff);
-
-			tigl_devices[j++].dev = dev;
-			tigl_n_devices = j;
-
-			if (j >= MAX_CABLES)
+			if (dev->descriptor.idVendor == VID_TI)
 			{
-			    return j;
-			}
-		    }
-		}
-	    }
-	}
-    }
+				for(i = 0; i < (int)(sizeof(tigl_infos) / sizeof(tigl_infos[0])); i++)
+				{
+					if (dev->descriptor.idProduct == tigl_infos[i].pid)
+					{
+						tigl_devices[j].vid = dev->descriptor.idVendor;
+						tigl_devices[j].pid = dev->descriptor.idProduct;
+						tigl_devices[j].version = dev->descriptor.bcdDevice;
 
-    return j;
+						tigl_get_product(tigl_devices[j].product_str, sizeof(tigl_devices[j].product_str), dev);
+						ticables_info(" found %s on #%i, version <%x.%02x>",
+						tigl_devices[j].product_str, j+1,
+						dev->descriptor.bcdDevice >> 8,
+						dev->descriptor.bcdDevice & 0xff);
+
+						tigl_devices[j++].dev = dev;
+						tigl_n_devices = j;
+
+						if (j >= MAX_CABLES)
+						{
+							return j;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return j;
 }
 
 static int tigl_enum(void)
 {
-    int ret = 0;
-    
-    /* find all usb busses on the system */
-    ret = usb_find_busses();
-    if (ret < 0)
-    {
-	ticables_warning(_("usb_find_busses (%s).\n"), usb_strerror());
-	return ERR_LIBUSB_OPEN;
-    }
-    
-    /* find all usb devices on all discovered busses */
-    ret = usb_find_devices();
-    if (ret < 0)
-    {
-	ticables_warning(_("usb_find_devices (%s).\n"), usb_strerror());
-	return ERR_LIBUSB_OPEN;
-    }
-    
-    /* find all TI products on all discovered busses/devices */
-    ret = tigl_find();
-    if(ret == 0)
-    {
-	ticables_warning(_("no devices found!\n"));
-	return ERR_LIBUSB_OPEN;
-    }
+	int ret = 0;
 
-    return 0;
-}    
-
-static int tigl_open(int id, usb_dev_handle **udh)
-{
-    int ret; 
-
-    TRYC(tigl_enum());
-
-    if(tigl_devices[id].dev == NULL)
-	return ERR_LIBUSB_OPEN;
-
-    *udh = usb_open(tigl_devices[id].dev);
-    if (*udh != NULL) 
-    {
-	/* only one configuration: #1 */
-	ret = usb_set_configuration(*udh, 1);
-        if (ret < 0)
-        {
-            ticables_warning("usb_set_configuration (%s).\n", usb_strerror());
-        }
-
-	/* configuration #1, interface #0 */
-	ret = usb_claim_interface(*udh, 0);
-	if (ret < 0) 
+	/* find all usb busses on the system */
+	ret = usb_find_busses();
+	if (ret < 0)
 	{
-	    ticables_warning("usb_claim_interface (%s).\n", usb_strerror());
-	    return ERR_LIBUSB_CLAIM;
+		ticables_warning(_("usb_find_busses (%s).\n"), usb_strerror());
+		return ERR_LIBUSB_OPEN;
+	}
+
+	/* find all usb devices on all discovered busses */
+	ret = usb_find_devices();
+	if (ret < 0)
+	{
+		ticables_warning(_("usb_find_devices (%s).\n"), usb_strerror());
+		return ERR_LIBUSB_OPEN;
+	}
+
+	/* find all TI products on all discovered busses/devices */
+	ret = tigl_find();
+	if (ret == 0)
+	{
+		ticables_warning(_("no devices found!\n"));
+		return ERR_LIBUSB_OPEN;
 	}
 
 	return 0;
-    } 
-    else
-	return ERR_LIBUSB_OPEN;
+}
 
-    return 0;
+static int tigl_open(int id, usb_dev_handle **udh)
+{
+	int ret;
+
+	TRYC(tigl_enum());
+
+	if (tigl_devices[id].dev == NULL)
+	{
+		return ERR_LIBUSB_OPEN;
+	}
+
+	*udh = usb_open(tigl_devices[id].dev);
+	if (*udh != NULL) 
+	{
+		/* only one configuration: #1 */
+		ret = usb_set_configuration(*udh, 1);
+		if (ret < 0)
+		{
+			ticables_warning("usb_set_configuration (%s).\n", usb_strerror());
+		}
+
+		/* configuration #1, interface #0 */
+		ret = usb_claim_interface(*udh, 0);
+		if (ret < 0) 
+		{
+			ticables_warning("usb_claim_interface (%s).\n", usb_strerror());
+			return ERR_LIBUSB_CLAIM;
+		}
+
+		return 0;
+	}
+	else
+	{
+	return ERR_LIBUSB_OPEN;
+	}
+
+	return 0;
 }
 
 static int tigl_close(usb_dev_handle **udh)
 {
-    usb_release_interface(*udh, 0);
-    usb_close(*udh);
-    *udh = NULL;
+	usb_release_interface(*udh, 0);
+	usb_close(*udh);
+	*udh = NULL;
 
-    return 0;
+	return 0;
 }
 
 static int tigl_reset(CableHandle *h)
@@ -429,14 +436,14 @@ static int tigl_reset(CableHandle *h)
 	ret = usb_clear_halt(uHdl, uOutEnd);
 	if (ret < 0) 
 	{
-	    ticables_warning("usb_clear_halt of out pipe (%s).\n", usb_strerror());
+		ticables_warning("usb_clear_halt of out pipe (%s).\n", usb_strerror());
 	}
 	
 	// Reset in pipe
 	ret = usb_clear_halt(uHdl, uInEnd);
 	if (ret < 0) 
 	{
-	    ticables_warning("usb_clear_halt of in pipe (%s).\n", usb_strerror());
+		ticables_warning("usb_clear_halt of in pipe (%s).\n", usb_strerror());
 	}
 
 	return 0;
@@ -457,8 +464,10 @@ static int slv_prepare(CableHandle *h)
 	TRYC(linux_check_libusb());
 #endif
 
-	if(h->port >= MAX_CABLES)
-	    return ERR_ILLEGAL_ARG;
+	if (h->port >= MAX_CABLES)
+	{
+		return ERR_ILLEGAL_ARG;
+	}
 
 	h->address = h->port-1;
 	sprintf(str, "TiglUsb #%i", h->port);
@@ -470,65 +479,67 @@ static int slv_prepare(CableHandle *h)
 
 static int slv_open(CableHandle *h)
 {
-    int i;
-    struct usb_config_descriptor *config;
-    struct usb_interface *interface_;
-    struct usb_interface_descriptor *interface;
-    struct usb_endpoint_descriptor *endpoint;    
+	int i;
+	struct usb_config_descriptor *config;
+	struct usb_interface *interface_;
+	struct usb_interface_descriptor *interface;
+	struct usb_endpoint_descriptor *endpoint;    
 
-    // open device
-    TRYC(tigl_open(h->address, &uHdl));
-    uDev = tigl_devices[h->address].dev;
-    uInEnd  = 0x81;
-    uOutEnd = 0x02;
+	// open device
+	TRYC(tigl_open(h->address, &uHdl));
+	uDev = tigl_devices[h->address].dev;
+	uInEnd  = 0x81;
+	uOutEnd = 0x02;
 
-    // get max packet size
-    config = &(uDev->config[0]);
-    interface_ = &(config->interface[0]);
-    interface = &(interface_->altsetting[0]);
-    endpoint = &(interface->endpoint[0]);
-    max_ps = endpoint->wMaxPacketSize;
-    // Enumerate endpoints.
-    for (i = 0; i < interface->bNumEndpoints; i++)
-    {
-        if ((endpoint->bmAttributes & USB_ENDPOINT_TYPE_MASK) == USB_ENDPOINT_TYPE_BULK)
-        {
-            if (endpoint->bEndpointAddress & USB_ENDPOINT_DIR_MASK)
-            {
-                if (endpoint->bEndpointAddress != 0x83) // Some Nspire OS use that seemingly bogus endpoint.
-                {
-                    uInEnd = endpoint->bEndpointAddress;
-                    ticables_info("found bulk in endpoint 0x%02X\n", uInEnd);
-                }
-                else
-                {
-                    ticables_info("XXX: swallowing bulk in endpoint 0x83, advertised by Nspire (CAS and non-CAS) 1.x but seemingly not working\n");
-                }
-            }
-            else
-            {
-                uOutEnd = endpoint->bEndpointAddress;
-                ticables_info("found bulk out endpoint 0x%02X\n", uOutEnd);
-            }
-        }
-        endpoint++;
-    }
-    nBytesRead = 0;
-    was_max_size_packet = 0;
+	// get max packet size
+	config = &(uDev->config[0]);
+	interface_ = &(config->interface[0]);
+	interface = &(interface_->altsetting[0]);
+	endpoint = &(interface->endpoint[0]);
+	max_ps = endpoint->wMaxPacketSize;
+	// Enumerate endpoints.
+	for (i = 0; i < interface->bNumEndpoints; i++)
+	{
+		if ((endpoint->bmAttributes & USB_ENDPOINT_TYPE_MASK) == USB_ENDPOINT_TYPE_BULK)
+		{
+			if (endpoint->bEndpointAddress & USB_ENDPOINT_DIR_MASK)
+			{
+				if (endpoint->bEndpointAddress != 0x83) // Some Nspire OS use that seemingly bogus endpoint.
+				{
+					uInEnd = endpoint->bEndpointAddress;
+					ticables_info("found bulk in endpoint 0x%02X\n", uInEnd);
+				}
+				else
+				{
+					ticables_info("XXX: swallowing bulk in endpoint 0x83, advertised by Nspire (CAS and non-CAS) 1.x but seemingly not working\n");
+				}
+			}
+			else
+			{
+				uOutEnd = endpoint->bEndpointAddress;
+				ticables_info("found bulk out endpoint 0x%02X\n", uOutEnd);
+			}
+		}
+		endpoint++;
+	}
+	nBytesRead = 0;
+	was_max_size_packet = 0;
 
-    return 0;
+	return 0;
 }
 
 static int slv_close(CableHandle *h)
 {
-    if (uHdl != NULL) 
-	tigl_close(&uHdl);
-    uDev = NULL; 
+	if (uHdl != NULL) 
+	{
+		tigl_close(&uHdl);
+	}
+	uDev = NULL; 
 
-    free(h->priv2);
-    h->priv2 = NULL;
-    
-    return 0;
+	free(h->priv2);
+	h->priv2 = NULL;
+
+	return 0;
 }
 
 static int slv_reset(CableHandle *h)
@@ -565,52 +576,51 @@ static int slv_reset(CableHandle *h)
 		TRYC(slv_close(h));
 
 		h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
-		TRYC(slv_open(h));
+		return slv_open(h);
 	}
 #endif
-    return 0;
 }
 
 // convenient function which send one or more bytes
 static int send_block(CableHandle *h, uint8_t *data, int length)
 {
-    int ret;
-    
-    ret = usb_bulk_write(uHdl, uOutEnd, (char*)data, length, to);
-    
-    if(ret == -ETIMEDOUT) 
-    {
-        ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
-        return ERR_WRITE_TIMEOUT;
-    } 
-    else if(ret == -EPIPE) 
-    {
-        ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
-        return ERR_WRITE_ERROR;
-    } 
-    else if(ret < 0) 
-    {
-        ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
-        return ERR_WRITE_ERROR;
-    }
+	int ret;
 
-    if (tigl_devices[h->address].pid == PID_NSPIRE && length % max_ps == 0)
-    {
-        ticables_info("XXX triggering an extra bulk write");
-        ret = usb_bulk_write(uHdl, uOutEnd, (char*)data, 0, to);
-        if (ret < 0)
-        {
-            ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
-            return ERR_WRITE_ERROR;
-        }
-    }
+	ret = usb_bulk_write(uHdl, uOutEnd, (char*)data, length, to);
 
-    return 0;
+	if (ret == -ETIMEDOUT) 
+	{
+		ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+		return ERR_WRITE_TIMEOUT;
+	}
+	else if (ret == -EPIPE) 
+	{
+		ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+		return ERR_WRITE_ERROR;
+	}
+	else if (ret < 0) 
+	{
+		ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+		return ERR_WRITE_ERROR;
+	}
+
+	if (tigl_devices[h->address].pid == PID_NSPIRE && length % max_ps == 0)
+	{
+		ticables_info("XXX triggering an extra bulk write");
+		ret = usb_bulk_write(uHdl, uOutEnd, (char*)data, 0, to);
+		if (ret < 0)
+		{
+			ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+			return ERR_WRITE_ERROR;
+		}
+	}
+
+	return 0;
 }
 
 static int slv_put(CableHandle* h, uint8_t *data, uint32_t len)
 {
-    return send_block(h, data, len);
+	return send_block(h, data, len);
 }
 
 #ifdef __LINUX__
@@ -650,10 +660,14 @@ static int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
 
 		requested = size - bytesdone;
 		if (requested > MAX_READ_WRITE)
+		{
 			requested = MAX_READ_WRITE;
+		}
 
 		if (io_pending)
+		{
 			io_pending = FALSE;
+		}
 		else
 		{
 			urb.type = USB_URB_TYPE_BULK;
@@ -687,7 +701,9 @@ static int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
 
 			if ((tv_now.tv_sec > tv_ref.tv_sec) ||
 			    ((tv_now.tv_sec == tv_ref.tv_sec) && (tv_now.tv_usec >= tv_ref.tv_usec)))
+			{
 				waiting = 0;
+			}
 		}
 
 		/*
@@ -696,7 +712,9 @@ static int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
 		 * error now
 		 */
 		if (ret < 0 && errno != EAGAIN)
+		{
 			USB_ERROR_STR(-errno, "error reaping URB: %s", strerror(errno));
+		}
 
 		bytesdone += urb.actual_length;
 	} while (ret == 0 && bytesdone < size && urb.actual_length == requested);
@@ -706,13 +724,19 @@ static int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
 		int rc;
 
 		if (!waiting)
+		{
 			rc = -ETIMEDOUT;
+		}
 		else
+		{
 			rc = urb.status;
+		}
 
 		ret = ioctl(dev->fd, IOCTL_USB_DISCARDURB, &urb);
 		if (ret < 0 && errno != EINVAL && usb_debug >= 1)
+		{
 			fprintf(stderr, "error discarding URB: %s", strerror(errno));
+		}
 
 		/*
 		 * When the URB is unlinked, it gets moved to the completed list and
@@ -733,205 +757,217 @@ static int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
 int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
                    int timeout)
 {
-  // This is a variant of usb_bulk_read in libusb-win32, edited to take the
-  // io_pending variable set in slv_check into account and to use the public
-  // async API instead of the private one.
+	// This is a variant of usb_bulk_read in libusb-win32, edited to take the
+	// io_pending variable set in slv_check into account and to use the public
+	// async API instead of the private one.
 
-  int transmitted = 0;
-  int ret;
-  int requested;
+	int transmitted = 0;
+	int ret;
+	int requested;
 
-  if (!io_pending)
-    {
-      ret = usb_bulk_setup_async(dev, &context, (unsigned char)ep);
+	if (!io_pending)
+	{
+		ret = usb_bulk_setup_async(dev, &context, (unsigned char)ep);
 
-      if(ret < 0)
-        {
-          return ret;
-        }
-    }
+		if (ret < 0)
+		{
+			return ret;
+		}
+	}
 
-  do {
-    requested = size > LIBUSB_MAX_READ_WRITE ? LIBUSB_MAX_READ_WRITE : size;
+	do
+	{
+		requested = size > LIBUSB_MAX_READ_WRITE ? LIBUSB_MAX_READ_WRITE : size;
 
-    if (io_pending)
-      io_pending = FALSE;
-    else
-      {
-        ret = usb_submit_async(context, bytes, requested);
+		if (io_pending)
+		{
+			io_pending = FALSE;
+		}
+		else
+		{
+			ret = usb_submit_async(context, bytes, requested);
 
-        if(ret < 0)
-          {
-            transmitted = ret;
-            break;
-          }
-      }
+			if (ret < 0)
+			{
+				transmitted = ret;
+				break;
+			}
+		}
 
-    ret = usb_reap_async(context, timeout);
+		ret = usb_reap_async(context, timeout);
 
-    if(ret < 0)
-      {
-        transmitted = ret;
-        break;
-      }
+		if (ret < 0)
+		{
+			transmitted = ret;
+			break;
+		}
 
-    transmitted += ret;
-    bytes += ret;
-    size -= ret;
-  } while(size > 0 && ret == requested);
-  
-  usb_free_async(&context);
+		transmitted += ret;
+		bytes += ret;
+		size -= ret;
+	} while(size > 0 && ret == requested);
 
-  return transmitted;
+	usb_free_async(&context);
+
+	return transmitted;
 }
 #endif
 
 static int slv_get_(CableHandle *h, uint8_t *data)
 {
-    int ret = 0;
-    tiTIME clk;
+	int ret = 0;
+	tiTIME clk;
 
-    /* Read up to 32/64 bytes and store them in a buffer for 
-       subsequent accesses */
-    if (nBytesRead <= 0) 
-    {
-	TO_START(clk);
-	do 
+	/* Read up to 32/64 bytes and store them in a buffer for subsequent accesses */
+	if (nBytesRead <= 0) 
 	{
+		TO_START(clk);
+		do
+		{
 #if defined(__LINUX__) || defined(__WIN32__)
-	    ret = slv_bulk_read2(uHdl, uInEnd, (char*)rBuf, 
-				max_ps, to);
+			ret = slv_bulk_read2(uHdl, uInEnd, (char*)rBuf, max_ps, to);
 #else
-	    ret = usb_bulk_read(uHdl, uInEnd, (char*)rBuf, 
-				max_ps, to);
+			ret = usb_bulk_read(uHdl, uInEnd, (char*)rBuf, max_ps, to);
 #endif
 
-	    if (ret == max_ps)
-		was_max_size_packet = 1;
-	    else
-		was_max_size_packet = 0;
+			if (ret == max_ps)
+			{
+				was_max_size_packet = 1;
+			}
+			else
+			{
+				was_max_size_packet = 0;
+			}
 
-	    if (TO_ELAPSED(clk, h->timeout))
-	    {
-		nBytesRead = 0;
-		return ERR_READ_TIMEOUT;
-	    }
+			if (TO_ELAPSED(clk, h->timeout))
+			{
+				nBytesRead = 0;
+				return ERR_READ_TIMEOUT;
+			}
 /*
-	    if (ret == 0)
-		ticables_warning("\nweird, usb_bulk_read returns without any data & error; retrying...\n");
+			if (ret == 0)
+			{
+				ticables_warning("\nweird, usb_bulk_read returns without any data & error; retrying...\n");
+			}
 */
+		}
+		while(!ret);
+
+		if (ret == -ETIMEDOUT) 
+		{
+			ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
+			nBytesRead = 0;
+			return ERR_READ_TIMEOUT;
+		} 
+		else if (ret == -EPIPE) 
+		{
+			ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
+			nBytesRead = 0;
+			return ERR_READ_ERROR;
+		} 
+		else if (ret < 0) 
+		{
+			ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
+			nBytesRead = 0;
+			return ERR_READ_ERROR;
+		}
+
+		nBytesRead = ret;
+		rBufPtr = rBuf;
 	}
-	while(!ret);
-	
-	if(ret == -ETIMEDOUT) 
-	{
-	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
-	    nBytesRead = 0;
-	    return ERR_READ_TIMEOUT;
-	} 
-	else if(ret == -EPIPE) 
-	{
-	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
-	    nBytesRead = 0;
-	    return ERR_READ_ERROR;
-	} 
-	else if(ret < 0) 
-	{
-	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
-	    nBytesRead = 0;
-	    return ERR_READ_ERROR;
-	}
 
-	nBytesRead = ret;
-	rBufPtr = rBuf;
-    }
+	*data = *rBufPtr++;
+	nBytesRead--;
 
-    *data = *rBufPtr++;
-    nBytesRead--;
-
-    return 0;
+	return 0;
 }
 
 static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
 {
-    int i, ret;
+	int i, ret;
 
-    // we can't do that in any other way because slv_get_ can returns
-    // 1, 2, ..., len bytes.
-    for(i = 0; i < (int)len; i++)
-        TRYC(slv_get_(h, data+i));
+	// we can't do that in any other way because slv_get_ can returns
+	// 1, 2, ..., len bytes.
+	for(i = 0; i < (int)len; i++)
+	{
+		TRYC(slv_get_(h, data+i));
+	}
 
-    if (   (tigl_devices[h->address].pid == PID_NSPIRE   && was_max_size_packet != 0 && nBytesRead == 0)
-        || (len == 0 && (   (tigl_devices[h->address].pid == PID_TI89TM   && was_max_size_packet != 0 && nBytesRead == 0)
-                         || (tigl_devices[h->address].pid == PID_TI84P    && was_max_size_packet != 0 && nBytesRead == 0)
-                         || (tigl_devices[h->address].pid == PID_TI84P_SE && was_max_size_packet != 0 && nBytesRead == 0)
-                        )
-           )
-       )
-    {
-        ticables_info("XXX triggering an extra bulk read");
+	if (   (tigl_devices[h->address].pid == PID_NSPIRE   && was_max_size_packet != 0 && nBytesRead == 0)
+	    || (len == 0 && (   (tigl_devices[h->address].pid == PID_TI89TM   && was_max_size_packet != 0 && nBytesRead == 0)
+			     || (tigl_devices[h->address].pid == PID_TI84P    && was_max_size_packet != 0 && nBytesRead == 0)
+			     || (tigl_devices[h->address].pid == PID_TI84P_SE && was_max_size_packet != 0 && nBytesRead == 0)
+			    )
+	       )
+	   )
+	{
+		ticables_info("XXX triggering an extra bulk read");
 #if defined(__LINUX__) || defined(__WIN32__)
-        ret = slv_bulk_read2(uHdl, uInEnd, (char*)rBuf, max_ps, to);
+		ret = slv_bulk_read2(uHdl, uInEnd, (char*)rBuf, max_ps, to);
 #else
-        ret = usb_bulk_read(uHdl, uInEnd, (char*)rBuf, max_ps, to);
+		ret = usb_bulk_read(uHdl, uInEnd, (char*)rBuf, max_ps, to);
 #endif
-        if (ret < 0) {
-            ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
-            return ERR_READ_ERROR;
-        }
-    }
+		if (ret < 0) {
+			ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
+			return ERR_READ_ERROR;
+		}
+	}
 
-    return 0;
+	return 0;
 }
 
 static int slv_probe(CableHandle *h)
 {
-    int i;
-    
-    TRYC(tigl_enum());
+	int i;
 
-    for(i = 0; i < MAX_CABLES; i++)
-    {
-	if(tigl_devices[h->address].pid == PID_TIGLUSB)
-	    return 0;
-    }
-    
-    return ERR_PROBE_FAILED;
+	TRYC(tigl_enum());
+
+	for(i = 0; i < MAX_CABLES; i++)
+	{
+		if (tigl_devices[h->address].pid == PID_TIGLUSB)
+		{
+			return 0;
+		}
+	}
+
+	return ERR_PROBE_FAILED;
 }
 
 static int raw_probe(CableHandle *h)
 {
-    int i;
+	int i;
 
-    TRYC(tigl_enum());
+	TRYC(tigl_enum());
 
-    for(i = 0; i < MAX_CABLES; i++)
-    {
-      if(tigl_devices[h->address].pid == PID_TI89TM ||
-         tigl_devices[h->address].pid == PID_TI84P ||
-         tigl_devices[h->address].pid == PID_TI84P_SE ||
-         tigl_devices[h->address].pid == PID_NSPIRE)
-	    return 0;
-    }    
+	for(i = 0; i < MAX_CABLES; i++)
+	{
+		if (tigl_devices[h->address].pid == PID_TI89TM ||
+		    tigl_devices[h->address].pid == PID_TI84P ||
+		    tigl_devices[h->address].pid == PID_TI84P_SE ||
+		    tigl_devices[h->address].pid == PID_NSPIRE)
+		{
+			return 0;
+		}
+	}
 
-    return ERR_PROBE_FAILED;
+	return ERR_PROBE_FAILED;
 }
 
 static int slv_check(CableHandle *h, int *status)
 {
 #if defined(__LINUX__)
-    // This really should be in libusb, but alas it isn't, so their code was
-    // adapted by Kevin Kofler for use here. It's required to get TiEmu 3 to
-    // work with the SilverLink.
+	// This really should be in libusb, but alas it isn't, so their code was
+	// adapted by Kevin Kofler for use here. It's required to get TiEmu 3 to
+	// work with the SilverLink.
 
 	void *context;
 	int ret;
 
-	if(nBytesRead > 0)
-        {
-	    *status = !0;
-	    return 0;
-        }
+	if (nBytesRead > 0)
+	{
+		*status = !0;
+		return 0;
+	}
 
 	if (!io_pending)
 	{
@@ -947,7 +983,9 @@ static int slv_check(CableHandle *h, int *status)
 
 		ret = ioctl(uHdl->fd, IOCTL_USB_SUBMITURB, &urb);
 		if (ret < 0)
+		{
 			return ERR_READ_ERROR;
+		}
 		io_pending = TRUE;
 	}
 
@@ -982,17 +1020,19 @@ static int slv_check(CableHandle *h, int *status)
 #elif defined(__WIN32__)
 	int ret;
 
-	if(nBytesRead > 0)
-        {
-	    *status = !0;
-	    return 0;
-        }
+	if (nBytesRead > 0)
+	{
+		*status = !0;
+		return 0;
+	}
 
 	if (!io_pending)
 	{
 		ret = usb_bulk_setup_async(uHdl, &context, uInEnd);
 		if (ret < 0)
+		{
 			return ERR_READ_ERROR;
+		}
 		ret = usb_submit_async(context, (char*)rBuf, max_ps);
 		if (ret < 0)
 		{
@@ -1030,31 +1070,6 @@ static int slv_check(CableHandle *h, int *status)
 #endif
 }
 
-static int slv_set_red_wire(CableHandle *h, int b)
-{
-	return 0;
-}
-
-static int slv_set_white_wire(CableHandle *h, int b)
-{
-	return 0;
-}
-
-static int slv_get_red_wire(CableHandle *h)
-{
-	return 1;
-}
-
-static int slv_get_white_wire(CableHandle *h)
-{
-	return 1;
-}
-
-static int slv_set_device(CableHandle *h, const char * device)
-{
-	return 0;
-}
-
 const CableFncts cable_slv =
 {
 	CABLE_SLV,
@@ -1065,10 +1080,10 @@ const CableFncts cable_slv =
 	&slv_prepare,
 	&slv_open, &slv_close, &slv_reset, &slv_probe, NULL,
 	&slv_put, &slv_get, &slv_check,
-	&slv_set_red_wire, &slv_set_white_wire,
-	&slv_get_red_wire, &slv_get_white_wire,
+	&noop_set_red_wire, &noop_set_white_wire,
+	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&slv_set_device
+	&noop_set_device
 };
 
 const CableFncts cable_raw =
@@ -1081,10 +1096,10 @@ const CableFncts cable_raw =
 	&slv_prepare,
 	&slv_open, &slv_close, &slv_reset, &raw_probe, NULL,
 	&slv_put, &slv_get, &slv_check,
-	&slv_set_red_wire, &slv_set_white_wire,
-	&slv_get_red_wire, &slv_get_white_wire,
+	&noop_set_red_wire, &noop_set_white_wire,
+	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&slv_set_device
+	&noop_set_device
 };
 
 //=======================

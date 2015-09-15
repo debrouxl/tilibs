@@ -33,6 +33,7 @@
 #include "../logging.h"
 #include "../error.h"
 #include "../gettext.h"
+#include "../internal.h"
 #include "detect.h"
 
 // VTi messages
@@ -91,12 +92,16 @@ static int vti_open(CableHandle *h)
 	/* Get an handle on the VTi window */
 	otherWnd = FindWindow("TEmuWnd", NULL);
 	if (!otherWnd)
+	{
 		return ERR_VTI_FINDWINDOW;
+	}
 
 	/* Get the current DLL handle */
 	Handle = GetModuleHandle("libticables2.dll");
-	if(!Handle)
+	if (!Handle)
+	{
 		Handle = GetModuleHandle("libticables2-7.dll");
+	}
 
 	if (!Handle)
 	{
@@ -114,7 +119,9 @@ static int vti_open(CableHandle *h)
 				      sizeof(LinkBuffer), vLinkFileName);
   
 		if (GetLastError() != ERROR_ALREADY_EXISTS)
+		{
 			break;
+		}
 	}
 
 	ticables_info("Virtual Link L->V %i", i);
@@ -138,7 +145,9 @@ static int vti_open(CableHandle *h)
 		vRecvBuf = (LinkBuffer *)MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
 	}
 	else
+	{
 		return ERR_VTI_OPENFILEMAPPING;
+	}
 
 	/* Send to VTi the name of our virtual link. VTi should open it (lib -> Vti) */
 	a = GlobalAddAtom(vLinkFileName);
@@ -147,7 +156,9 @@ static int vti_open(CableHandle *h)
 
 	/* Enable linking (check the VTi's Virtual Link|Enable cable link' item) */
 	if (otherWnd)
+	{
 		SendMessage(otherWnd, WM_ENABLE_LINK, 0, 0);
+	}
 
 	vSendBuf->start = vSendBuf->end = 0;
 	vRecvBuf->start = vRecvBuf->end = 0;
@@ -182,16 +193,27 @@ static int vti_close(CableHandle *h)
 
 static int vti_reset(CableHandle *h)
 {
-	if(!hMap) return 0;
+	if (!hMap)
+	{
+		return 0;
+	}
 
 	if (vSendBuf)
+	{
 		vSendBuf->start = vSendBuf->end = 0;
+	}
 	else
+	{
 		ticables_critical("vti_reset(): send buffer busted !\n");
+	}
 	if (vRecvBuf)
+	{
 		vRecvBuf->start = vRecvBuf->end = 0;
+	}
 	else
+	{
 		ticables_critical("vti_reset(): receive buffer busted !\n");
+	}
 
 	return 0;
 }
@@ -199,11 +221,15 @@ static int vti_reset(CableHandle *h)
 static int vti_probe(CableHandle *h)
 {
 	/* Get an handle on the VTi window */
-    otherWnd = FindWindow("TEmuWnd", NULL);
-    if (!otherWnd)
+	otherWnd = FindWindow("TEmuWnd", NULL);
+	if (!otherWnd)
+	{
 		return ERR_VTI_FINDWINDOW;
+	}
 	else
+	{
 		otherWnd = NULL;
+	}
 
 	return 0;
 }
@@ -213,8 +239,11 @@ static int vti_put(CableHandle *h, uint8_t *data, uint32_t len)
 	unsigned int i;
 	tiTIME clk;
 
-	if(!hMap) return 0;
-	if(vSendBuf)
+	if (!hMap)
+	{
+		return 0;
+	}
+	if (vSendBuf)
 	{
 		for(i = 0; i < len; i++)
 		{
@@ -222,7 +251,9 @@ static int vti_put(CableHandle *h, uint8_t *data, uint32_t len)
 			do
 			{
 				if (TO_ELAPSED(clk, h->timeout))
+				{
 					return ERR_WRITE_TIMEOUT;
+				}
 			}
 			while (((vSendBuf->end + 1) & (BUFSIZE-1)) == vSendBuf->start);
 
@@ -243,8 +274,11 @@ static int vti_get(CableHandle *h, uint8_t *data, uint32_t len)
 	unsigned int i;
 	tiTIME clk;
 
-	if(!hMap) return 0;
-	if(vRecvBuf)
+	if (!hMap)
+	{
+		return 0;
+	}
+	if (vRecvBuf)
 	{
 		/* Wait that the buffer has been filled */
 		for(i = 0; i < len; i++)
@@ -253,7 +287,9 @@ static int vti_get(CableHandle *h, uint8_t *data, uint32_t len)
 			do
 			{
 				if (TO_ELAPSED(clk, h->timeout))
+				{
 					return ERR_READ_TIMEOUT;
+				}
 			}
 			while (vRecvBuf->start == vRecvBuf->end);
 
@@ -272,8 +308,11 @@ static int vti_get(CableHandle *h, uint8_t *data, uint32_t len)
 
 static int vti_check(CableHandle *h, int *status)
 {
-	if(!hMap) return 0;
-	if(vRecvBuf)
+	if (!hMap)
+	{
+		return 0;
+	}
+	if (vRecvBuf)
 	{
 		*status = !(vRecvBuf->start == vRecvBuf->end);
 	}
@@ -282,31 +321,6 @@ static int vti_check(CableHandle *h, int *status)
 		ticables_critical("vti_check(): receive buffer busted !\n");
 	}
 
-	return 0;
-}
-
-static int vti_set_red_wire(CableHandle *h, int b)
-{
-	return 0;
-}
-
-static int vti_set_white_wire(CableHandle *h, int b)
-{
-	return 0;
-}
-
-static int vti_get_red_wire(CableHandle *h)
-{
-	return 1;
-}
-
-static int vti_get_white_wire(CableHandle *h)
-{
-	return 1;
-}
-
-static int vti_set_device(CableHandle *h, const char * device)
-{
 	return 0;
 }
 
@@ -320,8 +334,8 @@ const CableFncts cable_vti =
 	&vti_prepare,
 	&vti_open, &vti_close, &vti_reset, &vti_probe, NULL,
 	&vti_put, &vti_get, &vti_check,
-	&vti_set_red_wire, &vti_set_white_wire,
-	&vti_get_red_wire, &vti_get_white_wire,
+	&noop_set_red_wire, &noop_set_white_wire,
+	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&vti_set_device
+	&noop_set_device
 };

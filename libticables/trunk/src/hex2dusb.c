@@ -22,8 +22,8 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#include "ticables.h"
 #include "logging.h"
-#include "stdints1.h"
 #include "internal.h"
 
 #define ARRAY_SIZE (256)
@@ -31,11 +31,11 @@
 /*
 	Format:
 
-	| packet header    | data												 |
-	|				   | data header         |								 |
-	| size		  | ty | size		 | code	 | data							 |
-	|			  |    |			 |		 |								 |
-	| 00 00 00 10 | 04 | 00 00 00 0A | 00 01 | 00 03 00 01 00 00 00 00 07 D0 |	
+	| packet header    | data                                                |
+	|                  | data header         |                               |
+	| size        | ty | size        | code  | data                          |
+	|             |    |             |       |                               |
+	| 00 00 00 10 | 04 | 00 00 00 0A | 00 01 | 00 03 00 01 00 00 00 00 07 D0 |
 */
 
 typedef struct
@@ -91,54 +91,74 @@ static const Opcode opcodes[] =
 
 /*static int is_a_packet(uint8_t id)
 {
-  int i;
-  
-  for(i=0; packets[i].name; i++)
-    if(id == packets[i].type)
-      break;
-  return i;
+	int i;
+
+	for (i=0; packets[i].name; i++)
+	{
+		if (id == packets[i].type)
+		{
+			break;
+		}
+	}
+
+	return i;
 }*/
 
 static const char* name_of_packet(uint8_t id)
 {
 	int i;
-  
-	for(i=0; packets[i].name; i++)
-		if(id == packets[i].type)
+
+	for (i=0; packets[i].name; i++)
+	{
+		if (id == packets[i].type)
+		{
 			return packets[i].name;
+		}
+	}
+
 	return "";
 }
 
 /*static int is_a_packet_with_data_header(uint8_t id)
 {
 	int i;
-  
-  for(i=0; packets[i].name; i++)
-    if(id == packets[i].type)
-		if(packets[i].data_hdr)
-			return 1;
 
-  return 0;
+	for (i=0; packets[i].name; i++)
+	{
+		if (id == packets[i].type)
+		{
+			if (packets[i].data_hdr)
+			{
+				return 1;
+			}
+		}
+	}
+
+	return 0;
 }*/
 
 /*static int is_a_opcode(uint16_t id)
 {
-  int i;
+	int i;
 
-  for(i=0; opcodes[i].name; i++)
-    if(id == opcodes[i].type)
-      break;
+	for (i=0; opcodes[i].name; i++)
+	{
+		if (id == opcodes[i].type)
+		{
+			break;
+		}
+	}
 
-  return i;
+	return i;
 }*/
 
 static const char* name_of_data(uint16_t id)
 {
 	unsigned int i;
-  
-	for(i=0; opcodes[i].name != NULL; i++)
+
+	for (i=0; opcodes[i].name != NULL; i++)
 	{
-		if(id == opcodes[i].type)
+		if (id == opcodes[i].type)
 		{
 			return opcodes[i].name;
 		}
@@ -149,9 +169,18 @@ static const char* name_of_data(uint16_t id)
 
 static const char* ep_way(int ep)
 {
-	if(ep == 0x01) return "TI>PC";
-	else if(ep == 0x02) return "PC>TI";
-	else return "XX>XX";
+	if (ep == 0x01)
+	{
+		return "TI>PC";
+	}
+	else if (ep == 0x02)
+	{
+		return "PC>TI";
+	}
+	else
+	{
+		return "XX>XX";
+	}
 }
 
 /* */
@@ -165,9 +194,13 @@ static int add_pkt_type(uint8_t type)
 {
 	unsigned int i;
 
-	for(i = 0; i < ptf; i++)
-		if(pkt_type_found[i] == type)
+	for (i = 0; i < ptf; i++)
+	{
+		if (pkt_type_found[i] == type)
+		{
 			return 0;
+		}
+	}
 
 	if (i < (sizeof(pkt_type_found)/sizeof(pkt_type_found[0])) - 1)
 	{
@@ -192,9 +225,13 @@ static int add_data_code(uint16_t code)
 {
 	unsigned int i;
 
-	for(i = 0; i < dcf; i++)
-		if(data_code_found[i] == code)
+	for (i = 0; i < dcf; i++)
+	{
+		if (data_code_found[i] == code)
+		{
 			return 0;
+		}
+	}
 
 	if (i < (sizeof(data_code_found)/sizeof(data_code_found[0])) - 1)
 	{
@@ -226,25 +263,37 @@ static int hex_read(unsigned char *data)
 	int ret;
 	int data2;
 
-	if(feof(hex))
+	if (feof(hex))
+	{
 		return -1;
+	}
 
 	ret = fscanf(hex, "%02X", &data2);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return -1;
+	}
 	*data = data2 & 0xFF;
-	fgetc(hex);
+	if (fgetc(hex) < 0)
+	{
+		return -1;
+	}
 	idx++;
 
-	if(idx >= 16)
+	if (idx >= 16)
 	{
 		int i;
 
 		idx = 0;
-		for(i = 0; (i < 67-49) && !feof(hex); i++)
-			fgetc(hex);
+		for (i = 0; (i < 67-49) && !feof(hex); i++)
+		{
+			if (fgetc(hex) < 0)
+			{
+				return -1;
+			}
+		}
 	}
-    
+
 	return 0;
 }
 
@@ -260,8 +309,10 @@ static int dusb_write(int dir, uint8_t data)
 	static int cnt;
 	static int first = 1;
 
-  	if (logfile == NULL)
-    		return -1;
+	if (logfile == NULL)
+	{
+		return -1;
+	}
 
 	//printf("<%i %i> ", i, state);
 	array[i++ % 16] = data;
@@ -271,7 +322,7 @@ static int dusb_write(int dir, uint8_t data)
 	case 1: break;
 	case 2: break;
 	case 3: break;
-	case 4: 
+	case 4:
 		raw_size = (((uint32_t)(array[0])) << 24) | (((uint32_t)(array[1])) << 16) | (((uint32_t)(array[2])) << 8) | ((uint32_t)(array[3]));
 		fprintf(logfile, "%08x ", (unsigned int)raw_size);
 		break;
@@ -286,7 +337,7 @@ static int dusb_write(int dir, uint8_t data)
 		break;
 	case 6: break;
 	case 7:
-		if(raw_type == 5)
+		if (raw_type == 5)
 		{
 			uint16_t tmp = (((uint32_t)(array[5])) << 8) | ((uint32_t)(array[6]));
 			fprintf(logfile, "\t[%04x]\n", tmp);
@@ -295,13 +346,13 @@ static int dusb_write(int dir, uint8_t data)
 		break;
 	case 8: break;
 	case 9:
-		if(raw_type == 1 || raw_type == 2)
+		if (raw_type == 1 || raw_type == 2)
 		{
 			uint32_t tmp = (((uint32_t)(array[5])) << 24) | (((uint32_t)(array[6])) << 16) | (((uint32_t)(array[7])) << 8) | ((uint32_t)(array[8]));
 			fprintf(logfile, "\t[%08x]\n", (unsigned int)tmp);
 			state = 0;
 		}
-		else if(first && ((raw_type == 3) || (raw_type == 4)))
+		else if (first && ((raw_type == 3) || (raw_type == 4)))
 		{
 			vtl_size = (((uint32_t)(array[5])) << 24) | (((uint32_t)(array[6])) << 16) | (((uint32_t)(array[7])) << 8) | ((uint32_t)(array[8]));
 			fprintf(logfile, "\t%08x ", (unsigned int)vtl_size);
@@ -309,7 +360,7 @@ static int dusb_write(int dir, uint8_t data)
 			first = (raw_type == 3) ? 0 : 1;
 			raw_size -= 6;
 		}
-		else if(!first && ((raw_type == 3) || (raw_type == 4)))
+		else if (!first && ((raw_type == 3) || (raw_type == 4)))
 		{
 			fprintf(logfile, "\t");
 			fprintf(logfile, "%02X %02X %02X ", array[5], array[6], array[7]);
@@ -330,7 +381,7 @@ static int dusb_write(int dir, uint8_t data)
 		fprintf(logfile, "| %s: %s\n\t\t", "CMD", name_of_data(vtl_type));
 		add_data_code(vtl_type);
 
-		if(!vtl_size)
+		if (!vtl_size)
 		{
 			fprintf(logfile, "\n");
 			state = 0;
@@ -339,10 +390,12 @@ static int dusb_write(int dir, uint8_t data)
 	default: push:
 		fprintf(logfile, "%02X ", data);
 
-		if(!(++cnt % 12))
+		if (!(++cnt % 12))
+		{
 			fprintf(logfile, "\n\t\t");
-		
-		if(--raw_size == 0)
+		}
+
+		if (--raw_size == 0)
 		{
 			fprintf(logfile, "\n");
 			state = 0;
@@ -350,7 +403,7 @@ static int dusb_write(int dir, uint8_t data)
 		break;
 	}
 
-	if(state == 0)
+	if (state == 0)
 	{
 		fprintf(logfile, "\n");
 		i = 0;
@@ -365,7 +418,7 @@ int dusb_decomp(const char *filename)
 	char src_name[1024];
 	char dst_name[1024];
 	char line[256];
-	unsigned char data;
+	unsigned char data = 0;
 	unsigned int i;
 
 	snprintf(src_name, sizeof(src_name) - 1, "%s.hex", filename);
@@ -375,36 +428,46 @@ int dusb_decomp(const char *filename)
 	dst_name[sizeof(dst_name) - 1] = 0;
 
 	hex = fopen(src_name, "rt");
-	if(hex == NULL)
+	if (hex == NULL)
 	{
 		fprintf(stderr, "Unable to open input file: %s\n", src_name);
 		return -1;
 	}
 
 	logfile = fopen(dst_name, "wt");
-	if(logfile == NULL)
+	if (logfile == NULL)
 	{
 		fprintf(stderr, "Unable to open output file: %s\n", dst_name);
 		fclose(hex);
 		return -1;
 	}
 
-	if (fgets(line, sizeof(line), hex) == NULL) goto exit;
-	if (fgets(line, sizeof(line), hex) == NULL) goto exit;
-	if (fgets(line, sizeof(line), hex) == NULL) goto exit;
-
 	fprintf(logfile, "TI packet decompiler for D-USB, version 1.0\n");
 
-	while(hex_read(&data) != -1)
+	// skip comments
+	if (   fgets(line, sizeof(line), hex) == NULL
+	    || fgets(line, sizeof(line), hex) == NULL
+	    || fgets(line, sizeof(line), hex) == NULL)
+	{
+		goto exit;
+	}
+
+	while (hex_read(&data) != -1)
 	{
 		dusb_write(0, data);
 	}
 
 	fprintf(logfile, "() Packet types found: ");
-	for(i = 0; i < ptf; i++) fprintf(logfile, "%02x ", pkt_type_found[i]);
+	for (i = 0; i < ptf; i++)
+	{
+		fprintf(logfile, "%02x ", pkt_type_found[i]);
+	}
 	fprintf(logfile, "\n");
 	fprintf(logfile, "{} Data codes found: ");
-	for(i = 0; i < dcf; i++) fprintf(logfile, "%04x ", data_code_found[i]);
+	for (i = 0; i < dcf; i++)
+	{
+		fprintf(logfile, "%04x ", data_code_found[i]);
+	}
 	fprintf(logfile, "\n");
 
 exit:
@@ -417,9 +480,7 @@ exit:
 #if 0
 int main(int argc, char **argv)
 {
-
-
-	if(argc < 2)
+	if (argc < 2)
 	{
 		fprintf(stderr, "Usage: hex2dusb [file]\n");
 		exit(0);

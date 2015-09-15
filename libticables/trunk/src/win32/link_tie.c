@@ -37,6 +37,7 @@
 #include "../logging.h"
 #include "../error.h"
 #include "../gettext.h"
+#include "../internal.h"
 #include "detect.h"
 
 #define BUFSIZE 256
@@ -69,11 +70,15 @@ static int shm_check(void)
 	int ret;
 
 	hRefCnt = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(int), (LPCTSTR) cnt_name);
-	if (hRefCnt == NULL) 
+	if (hRefCnt == NULL)
+	{
 		return ERR_TIE_OPENFILEMAPPING;
+	}
 	ret = GetLastError() == ERROR_ALREADY_EXISTS ? 1 : 0;
-	if(GetLastError() != ERROR_ALREADY_EXISTS)
+	if (GetLastError() != ERROR_ALREADY_EXISTS)
+	{
 		CloseHandle(hRefCnt);
+	}
 
 	return ret ? 1 : 0;
 }
@@ -111,26 +116,36 @@ static int tie_open(CableHandle *h)
 	/* Create shared counter */
 	hRefCnt = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(int), (LPCTSTR) cnt_name);
 	if (hRefCnt == NULL)
+	{
 		return ERR_TIE_OPENFILEMAPPING;
+	}
 	ret = GetLastError() == ERROR_ALREADY_EXISTS;
 
 	/* Create a FileMapping objects */
 	hSendBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 0]);
 	if (hSendBuf == NULL)
+	{
 		return ERR_TIE_OPENFILEMAPPING;
+	}
 
 	hRecvBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 1]);
 	if (hRecvBuf == NULL)
+	{
 		return ERR_TIE_OPENFILEMAPPING;
+	}
 
 	/* Map them */
 	pSendBuf = (LinkBuffer *) MapViewOfFile(hSendBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
 	if (pSendBuf == NULL)
+	{
 		return ERR_TIE_MAPVIEWOFFILE;
+	}
 
 	pRecvBuf = (LinkBuffer *) MapViewOfFile(hRecvBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
 	if (pRecvBuf == NULL)
+	{
 		return ERR_TIE_MAPVIEWOFFILE;
+	}
 
 	/* Reset buffers */
 	pSendBuf->start = pSendBuf->end = 0;
@@ -166,7 +181,7 @@ static int tie_close(CableHandle *h)
 	if (pRefCnt)
 	{
 		(*pRefCnt)--;
-		if(*pRefCnt == 0)
+		if (*pRefCnt == 0)
 		{
 			UnmapViewOfFile(pRecvBuf);
 			CloseHandle(hRefCnt);
@@ -185,19 +200,31 @@ static int tie_reset(CableHandle *h)
 	if (pRefCnt)
 	{
 		if (*pRefCnt < 2)
+		{
 			return 0;
+		}
 
-		if(!hSendBuf) return 0;
-		if(!hRecvBuf) return 0;
+		if (!hSendBuf || !hRecvBuf)
+		{
+			return 0;
+		}
 
 		if (pSendBuf)
+		{
 			pSendBuf->start = pSendBuf->end = 0;
+		}
 		else
+		{
 			ticables_critical("tie_reset(): send buffer busted !\n");
+		}
 		if (pRecvBuf)
+		{
 			pRecvBuf->start = pRecvBuf->end = 0;
+		}
 		else
+		{
 			ticables_critical("tie_reset(): receive buffer busted !\n");
+		}
 	}
 	else
 	{
@@ -219,10 +246,15 @@ static int tie_put(CableHandle *h, uint8_t *data, uint32_t len)
 
 	if (pRefCnt)
 	{
-		if(*pRefCnt < 2)
+		if (*pRefCnt < 2)
+		{
 			return 0;
+		}
 
-		if(!hSendBuf) return 0;
+		if (!hSendBuf)
+		{
+			return 0;
+		}
 		if (pSendBuf)
 		{
 			for(i = 0; i < len; i++)
@@ -231,7 +263,9 @@ static int tie_put(CableHandle *h, uint8_t *data, uint32_t len)
 				do
 				{
 					if (TO_ELAPSED(clk, h->timeout))
+					{
 						return ERR_WRITE_TIMEOUT;
+					}
 				}
 				while (((pSendBuf->end + 1) & (BUFSIZE-1)) == pSendBuf->start);
 
@@ -259,10 +293,15 @@ static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 
 	if (pRefCnt)
 	{
-		if(*pRefCnt < 2)
+		if (*pRefCnt < 2)
+		{
 			return 0;
+		}
 
-		if(!hRecvBuf) return 0;
+		if (!hRecvBuf)
+		{
+			return 0;
+		}
 		if (pRecvBuf)
 		{
 			for(i = 0; i < len; i++)
@@ -271,7 +310,9 @@ static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 				do
 				{
 					if (TO_ELAPSED(clk, h->timeout))
+					{
 						return ERR_READ_TIMEOUT;
+					}
 				}
 				while (pRecvBuf->start == pRecvBuf->end);
 
@@ -296,10 +337,15 @@ static int tie_check(CableHandle *h, int *status)
 {
 	if (pRefCnt)
 	{
-		if(*pRefCnt < 2)
+		if (*pRefCnt < 2)
+		{
 			return 0;
+		}
 
-		if(!hRecvBuf) return 0;
+		if (!hRecvBuf)
+		{
+			return 0;
+		}
 		if (pRecvBuf)
 		{
 			*status = !(pRecvBuf->start == pRecvBuf->end);
@@ -317,31 +363,6 @@ static int tie_check(CableHandle *h, int *status)
 	return 0;
 }
 
-static int tie_set_red_wire(CableHandle *h, int b)
-{
-	return 0;
-}
-
-static int tie_set_white_wire(CableHandle *h, int b)
-{
-	return 0;
-}
-
-static int tie_get_red_wire(CableHandle *h)
-{
-	return 1;
-}
-
-static int tie_get_white_wire(CableHandle *h)
-{
-	return 1;
-}
-
-static int tie_set_device(CableHandle *h, const char * device)
-{
-	return 0;
-}
-
 const CableFncts cable_tie = 
 {
 	CABLE_TIE,
@@ -352,8 +373,8 @@ const CableFncts cable_tie =
 	&tie_prepare,
 	&tie_open, &tie_close, &tie_reset, &tie_probe, NULL,
 	&tie_put, &tie_get, &tie_check,
-	&tie_set_red_wire, &tie_set_white_wire,
-	&tie_get_red_wire, &tie_get_white_wire,
+	&noop_set_red_wire, &noop_set_white_wire,
+	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&tie_set_device
+	&noop_set_device
 };

@@ -36,4 +36,19 @@ int dbus_decomp(const char *filename, int resync);
 int dusb_decomp(const char *filename);
 int nsp_decomp(const char *filename);
 
+// link_nul.c
+int noop_prepare(CableHandle *h);
+int noop_probe(CableHandle *h);
+int noop_open(CableHandle *h);
+int noop_close(CableHandle *h);
+int noop_reset(CableHandle *h);
+int noop_put(CableHandle *h, uint8_t *data, uint32_t len);
+int noop_get(CableHandle *h, uint8_t *data, uint32_t len);
+int noop_check(CableHandle *h, int *status);
+int noop_set_red_wire(CableHandle *h, int b);
+int noop_set_white_wire(CableHandle *h, int b);
+int noop_get_red_wire(CableHandle *h);
+int noop_get_white_wire(CableHandle *h);
+int noop_set_device(CableHandle *h, const char * device);
+
 #endif

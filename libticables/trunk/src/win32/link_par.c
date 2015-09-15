@@ -27,6 +27,7 @@
 #include "../logging.h"
 #include "../error.h"
 #include "../gettext.h"
+#include "../internal.h"
 #include "detect.h"
 #include "ioports.h"
 
@@ -36,12 +37,18 @@
 
 static int par_prepare(CableHandle *h)
 {
+	const char * device;
 	switch(h->port)
 	{
-	case PORT_1: h->address = 0x378; h->device = strdup("LPT1"); break;
-	case PORT_2: h->address = 0x278; h->device = strdup("LPT2"); break;
-	case PORT_3: h->address = 0x3bc; h->device = strdup("LPT3"); break;
+	case PORT_1: h->address = 0x378; device = "LPT1"; break;
+	case PORT_2: h->address = 0x278; device = "LPT2"; break;
+	case PORT_3: h->address = 0x3bc; device = "LPT3"; break;
 	default: return ERR_ILLEGAL_ARG;
+	}
+
+	if (h->device == NULL)
+	{
+		h->device = strdup(device);
 	}
 
 	if(win32_check_os() == WIN_NT)
@@ -328,6 +335,7 @@ static int par_set_device(CableHandle *h, const char * device)
 		char * device2 = strdup(device);
 		if (device2 != NULL)
 		{
+			free(h->device);
 			h->device = device2;
 		}
 		else

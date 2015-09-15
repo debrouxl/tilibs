@@ -82,7 +82,10 @@ int log_dusb_stop(void)
 	ifn = ifn2;
 
 	g_unlink(ofn);
-	g_rename(ifn, ofn);
+	if (g_rename(ifn, ofn) < 0)
+	{
+		fprintf(stderr, "Failed to rename output file\n");
+	}
 
 	g_free(ifn); 
 	ifn = NULL;
