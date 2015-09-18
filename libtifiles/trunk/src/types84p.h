@@ -25,6 +25,9 @@
 #include "types83p.h"
 
 #define TI84p_MAXTYPES 48
+#define TI84pc_MAXTYPES 48
+#define TI83pce_MAXTYPES 48
+#define TI84pce_MAXTYPES 48
 
 #define TI84p_REAL   0x00
 #define TI84p_LIST   0x01
@@ -47,139 +50,23 @@
 #define TI84p_APPVAR 0x15	//deprecated
 #define TI84p_APPV   0x15
 #define TI84p_GROUP  0x17
+#define TI83pce_SIMPLEFRAC 0x18
 #define TI84p_DIR    0x19
 #define TI84p_IMAGE  0x1A
+#define TI83pce_CPLXSIMPLEFRAC 0x1B
+#define TI83pce_RADICAL 0x1C
+#define TI83pce_CPLXRADICAL 0x1D
+#define TI83pce_CPLXPI 0x1E
+#define TI83pce_CPLXPISIMPLEFRAC 0x1F
+#define TI83pce_PI 0x20
+#define TI83pce_PISIMPLEFRAC 0x21
 #define TI84p_AMS    0x23
 #define TI84p_APPL   0x24
 #define TI84p_CERTIF 0x25	//deprecated
 #define TI84p_CERT	 0x25
 #define TI84p_IDLIST 0x26
-#define TI83p_GETCERT 0x27
+#define TI84p_GETCERT 0x27
 #define TI84p_CLK    0x29
 #define TI84p_LICENSE	0x3e
-
-// libtifiles: for internal use only, not exported !
-
-// Return the type corresponding to the value
-static inline const char *ti84p_byte2type(uint8_t data)
-{
-	return ti83p_byte2type(data);
-}
-
-static inline const char *ti84pc_byte2type(uint8_t data)
-{
-	return ti83p_byte2type(data);
-}
-
-static inline const char *ti83pce_byte2type(uint8_t data)
-{
-	return ti83p_byte2type(data);
-}
-
-static inline const char *ti84pce_byte2type(uint8_t data)
-{
-	return ti83p_byte2type(data);
-}
-
-
-// Return the value corresponding to the type
-static inline uint8_t ti84p_type2byte(const char *s)
-{
-	return ti83p_type2byte(s);
-}
-
-static inline uint8_t ti84pc_type2byte(const char *s)
-{
-	return ti83p_type2byte(s);
-}
-
-static inline uint8_t ti83pce_type2byte(const char *s)
-{
-	return ti83p_type2byte(s);
-}
-
-static inline uint8_t ti84pce_type2byte(const char *s)
-{
-	return ti83p_type2byte(s);
-}
-
-
-// Return the file extension corresponding to the value
-static inline const char *ti84p_byte2fext(uint8_t data)
-{
-	return ti83p_byte2fext(data);
-}
-
-static inline const char *ti84pc_byte2fext(uint8_t data)
-{
-	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].fext84pc : "8C?";
-}
-
-static inline const char *ti83pce_byte2fext(uint8_t data)
-{
-	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].fext83pce : "8C?";
-}
-
-static inline const char *ti84pce_byte2fext(uint8_t data)
-{
-	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].fext84pce : "8C?";
-}
-
-
-// Return the value corresponding to the file extension
-static inline uint8_t ti84p_fext2byte(const char *s)
-{
-	return ti83p_fext2byte(s);
-}
-
-uint8_t ti84pc_fext2byte(const char *s);
-
-uint8_t ti83pce_fext2byte(const char *s);
-
-uint8_t ti84pce_fext2byte(const char *s);
-
-
-// Return the description associated with the vartype
-static inline const char *ti84p_byte2desc(uint8_t data)
-{
-	return ti83p_byte2desc(data);
-}
-
-static inline const char *ti84pc_byte2desc(uint8_t data)
-{
-	return ti83p_byte2desc(data);
-}
-
-static inline const char *ti83pce_byte2desc(uint8_t data)
-{
-	return ti83p_byte2desc(data);
-}
-
-static inline const char *ti84pce_byte2desc(uint8_t data)
-{
-	return ti83p_byte2desc(data);
-}
-
-
-// Return the icon name associated with the vartype
-static inline const char *ti84p_byte2icon(uint8_t data)
-{
-	return ti83p_byte2icon(data);
-}
-
-static inline const char *ti84pc_byte2icon(uint8_t data)
-{
-	return ti83p_byte2icon(data);
-}
-
-static inline const char *ti83pce_byte2icon(uint8_t data)
-{
-	return ti83p_byte2icon(data);
-}
-
-static inline const char *ti84pce_byte2icon(uint8_t data)
-{
-	return ti83p_byte2icon(data);
-}
 
 #endif

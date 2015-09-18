@@ -25,49 +25,12 @@
 
 #include <string.h>
 #include "gettext.h"
-#include "typesnsp.h"
 #include "logging.h"
+#include "internal.h"
 
-const char *NSP_CONST[NSP_MAXTYPES + 1][4] = {
-	{"TNS", "tns", "Document", N_("TIicon1")},
+const TIXX_DATA NSP_CONST[NSP_MAXTYPES + 1] =
+{
+	{"TNS", "tns", "TIicon1", N_("Document")},
 	{"DIR", "???", "Directory", N_("Directory")},
 	{NULL, NULL, NULL, NULL}
 };
-
-uint8_t nsp_type2byte(const char *s)
-{
-	int i;
-
-	for (i = 0; i < NSP_MAXTYPES; i++) 
-	{
-		if (!strcmp(NSP_CONST[i][0], s))
-		{
-			break;
-		}
-	}
-
-	//if (i == NSP_MAXTYPES) tifiles_warning(_("nsp_type2byte: unknown type."));
-	return i;
-}
-
-uint8_t nsp_fext2byte(const char *s)
-{
-	int i;
-
-	for (i = 0; i < NSP_MAXTYPES; i++) 
-	{
-		if (!g_ascii_strcasecmp(NSP_CONST[i][1], s))
-		{
-			break;
-		}
-	}
-
-	//if (i == NSP_MAXTYPES) tifiles_warning(_("nsp_fext2byte: unknown type."));
-	return i;
-}
-
-const char *nsp_byte2desc(uint8_t data)
-{
-	//if(data >= NSP_MAXTYPES) tifiles_warning(_("nsp_byte2desc: unknown type (%02x)."), data);
-	return (data < NSP_MAXTYPES) ? NSP_CONST[data][2] : _("Unknown");
-}

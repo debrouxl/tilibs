@@ -15,18 +15,10 @@ src/rwfile.c
 src/tifiles.c
 src/tigroup.c
 src/type2str.c
-src/types73.c
-src/types82.c
-src/types83.c
+src/types68k.c
 src/types83p.c
-src/types85.c
-src/types86.c
-src/types89.c
-src/types89t.c
-src/types92.c
-src/types92p.c
 src/typesnsp.c
-src/typesv2.c
+src/typesoldz80.c
 src/typesxx.c
 src/ve_fp.c
 

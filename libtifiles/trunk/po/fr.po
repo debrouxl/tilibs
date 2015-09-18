@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles2 1.1.6\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-07-14 12:13+0200\n"
+"POT-Creation-Date: 2015-09-15 22:07+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -110,21 +110,20 @@ msgstr ""
 "Cause: le programme qui utilise cette librairie est buggé. Virez le "
 "développeur!"
 
-#: src/filetypes.c:1375 src/filetypes.c:1474 src/types73.c:75
-#: src/types83p.c:71 src/types89.c:78 src/types89t.c:78 src/types92p.c:78
-#: src/typesv2.c:77
+#: src/filetypes.c:1376 src/filetypes.c:1477 src/types68k.c:74
+#: src/types83p.c:70 src/typesoldz80.c:75
 msgid "OS upgrade"
 msgstr "maj OS"
 
-#: src/filetypes.c:1385 src/filetypes.c:1484
+#: src/filetypes.c:1386 src/filetypes.c:1487
 msgid "TIGroup"
 msgstr "TIGroup"
 
-#: src/filetypes.c:1397 src/filetypes.c:1496
+#: src/filetypes.c:1398 src/filetypes.c:1499
 msgid "Group/Backup"
 msgstr "Groupe/sauvegarde"
 
-#: src/filetypes.c:1399 src/filetypes.c:1498
+#: src/filetypes.c:1400 src/filetypes.c:1501
 msgid "Group"
 msgstr "Groupe"
 
@@ -185,294 +184,270 @@ msgstr "flash"
 msgid "unknown"
 msgstr "inconnu"
 
-#: src/types73.c:40 src/types82.c:35 src/types83.c:35 src/types83p.c:36
-#: src/types83p.c:60 src/types83p.c:64 src/types83p.c:68 src/types83p.c:69
-#: src/types85.c:35 src/types86.c:35
-msgid "Real"
-msgstr "Réel"
-
-#: src/types73.c:41 src/types82.c:36 src/types83.c:36 src/types83p.c:37
-#: src/types83p.c:49 src/types85.c:39 src/types86.c:39 src/types89.c:47
-#: src/types89t.c:47 src/types92.c:47 src/types92p.c:47 src/typesv2.c:46
-msgid "List"
-msgstr "Liste"
-
-#: src/types73.c:42 src/types82.c:37 src/types83.c:37 src/types83p.c:38
-#: src/types85.c:41 src/types86.c:41 src/types89.c:49 src/types89t.c:49
-#: src/types92.c:49 src/types92p.c:49 src/typesv2.c:48
-msgid "Matrix"
-msgstr "Matrice"
-
-#: src/types73.c:43 src/types83p.c:39 src/types83p.c:47 src/types85.c:45
-#: src/types86.c:45
-msgid "Equation"
-msgstr "Équation"
-
-#: src/types73.c:44 src/types83.c:39 src/types83p.c:40 src/types85.c:47
-#: src/types86.c:47 src/types89.c:55 src/types89t.c:55 src/types92.c:55
-#: src/types92p.c:55 src/typesv2.c:54
-msgid "String"
-msgstr "Chaîne"
-
-#: src/types73.c:45 src/types82.c:40 src/types83.c:40 src/types83p.c:41
-#: src/types83p.c:42 src/types83p.c:58 src/types85.c:53 src/types86.c:53
-#: src/types89.c:61 src/types89t.c:61 src/types92.c:61 src/types92p.c:61
-#: src/typesv2.c:60
-msgid "Program"
-msgstr "Programme"
-
-#: src/types73.c:46 src/types83.c:41 src/types89.c:76 src/types89t.c:76
-#: src/types92.c:76 src/types92p.c:76 src/typesv2.c:75
-msgid "Asm Program"
-msgstr "Programme Asm"
-
-#: src/types73.c:47 src/types82.c:42 src/types83.c:42 src/types83p.c:43
-#: src/types85.c:52 src/types86.c:52 src/types89.c:59 src/types89t.c:59
-#: src/types92.c:59 src/types92p.c:59 src/typesv2.c:58
-msgid "Picture"
-msgstr "Image"
-
-#: src/types73.c:48 src/types82.c:43 src/types83.c:43 src/types83p.c:44
-#: src/types85.c:48 src/types85.c:49 src/types85.c:50 src/types85.c:51
-#: src/types86.c:48 src/types86.c:49 src/types86.c:50 src/types86.c:51
-#: src/types89.c:56 src/types89t.c:56 src/types92.c:56 src/types92p.c:56
-#: src/typesv2.c:55
-msgid "GDB"
-msgstr "GDB"
-
-#: src/types73.c:49 src/types73.c:50 src/types73.c:53 src/types73.c:54
-#: src/types73.c:58 src/types73.c:60 src/types73.c:61 src/types73.c:62
-#: src/types73.c:63 src/types73.c:64 src/types73.c:65 src/types73.c:67
-#: src/types73.c:68 src/types73.c:69 src/types73.c:70 src/types73.c:71
-#: src/types73.c:72 src/types73.c:73 src/types73.c:74 src/types73.c:78
-#: src/types73.c:79 src/types73.c:80 src/types73.c:81 src/types73.c:82
-#: src/types73.c:83 src/types73.c:84 src/types73.c:85 src/types73.c:86
-#: src/types73.c:87 src/types73.c:126 src/types82.c:39 src/types82.c:44
-#: src/types82.c:45 src/types82.c:51 src/types82.c:52 src/types82.c:53
-#: src/types82.c:54 src/types82.c:55 src/types82.c:56 src/types82.c:57
-#: src/types82.c:58 src/types82.c:59 src/types82.c:60 src/types82.c:61
-#: src/types82.c:62 src/types82.c:63 src/types82.c:64 src/types82.c:65
-#: src/types82.c:66 src/types82.c:67 src/types82.c:68 src/types82.c:69
-#: src/types82.c:70 src/types82.c:71 src/types82.c:72 src/types82.c:73
-#: src/types82.c:74 src/types82.c:75 src/types82.c:76 src/types82.c:77
-#: src/types82.c:78 src/types82.c:79 src/types82.c:80 src/types82.c:81
-#: src/types82.c:82 src/types82.c:121 src/types83.c:44 src/types83.c:45
-#: src/types83.c:46 src/types83.c:48 src/types83.c:49 src/types83.c:53
-#: src/types83.c:55 src/types83.c:56 src/types83.c:57 src/types83.c:58
-#: src/types83.c:59 src/types83.c:60 src/types83.c:61 src/types83.c:62
-#: src/types83.c:63 src/types83.c:64 src/types83.c:65 src/types83.c:66
-#: src/types83.c:67 src/types83.c:68 src/types83.c:69 src/types83.c:70
-#: src/types83.c:71 src/types83.c:72 src/types83.c:73 src/types83.c:74
-#: src/types83.c:75 src/types83.c:76 src/types83.c:77 src/types83.c:78
-#: src/types83.c:79 src/types83.c:80 src/types83.c:81 src/types83.c:82
-#: src/types83.c:121 src/types83p.c:45 src/types83p.c:46 src/types83p.c:50
-#: src/types83p.c:54 src/types83p.c:56 src/types83p.c:61 src/types83p.c:70
-#: src/types83p.c:74 src/types83p.c:75 src/types83p.c:76 src/types83p.c:77
-#: src/types83p.c:78 src/types83p.c:79 src/types83p.c:80 src/types83p.c:81
-#: src/types83p.c:82 src/types83p.c:83 src/types83p.c:173 src/types85.c:46
-#: src/types85.c:57 src/types85.c:63 src/types85.c:65 src/types85.c:66
-#: src/types85.c:67 src/types85.c:68 src/types85.c:69 src/types85.c:70
-#: src/types85.c:71 src/types85.c:72 src/types85.c:73 src/types85.c:74
-#: src/types85.c:75 src/types85.c:76 src/types85.c:78 src/types85.c:79
-#: src/types85.c:80 src/types85.c:81 src/types85.c:82 src/types85.c:121
-#: src/types86.c:46 src/types86.c:57 src/types86.c:63 src/types86.c:65
-#: src/types86.c:66 src/types86.c:67 src/types86.c:68 src/types86.c:69
-#: src/types86.c:70 src/types86.c:71 src/types86.c:72 src/types86.c:73
-#: src/types86.c:74 src/types86.c:75 src/types86.c:76 src/types86.c:77
-#: src/types86.c:78 src/types86.c:79 src/types86.c:80 src/types86.c:81
-#: src/types86.c:82 src/types86.c:121 src/types89.c:44 src/types89.c:45
-#: src/types89.c:46 src/types89.c:48 src/types89.c:50 src/types89.c:51
-#: src/types89.c:52 src/types89.c:58 src/types89.c:60 src/types89.c:64
-#: src/types89.c:65 src/types89.c:66 src/types89.c:67 src/types89.c:68
-#: src/types89.c:69 src/types89.c:70 src/types89.c:73 src/types89.c:74
-#: src/types89.c:75 src/types89.c:81 src/types89.c:82 src/types89.c:83
-#: src/types89.c:84 src/types89.c:85 src/types89.c:86 src/types89.c:87
-#: src/types89.c:88 src/types89.c:89 src/types89.c:90 src/types89.c:129
-#: src/types89t.c:44 src/types89t.c:45 src/types89t.c:46 src/types89t.c:48
-#: src/types89t.c:50 src/types89t.c:51 src/types89t.c:52 src/types89t.c:58
-#: src/types89t.c:60 src/types89t.c:64 src/types89t.c:65 src/types89t.c:66
-#: src/types89t.c:67 src/types89t.c:68 src/types89t.c:69 src/types89t.c:70
-#: src/types89t.c:73 src/types89t.c:74 src/types89t.c:75 src/types89t.c:81
-#: src/types89t.c:82 src/types89t.c:83 src/types89t.c:84 src/types89t.c:85
-#: src/types89t.c:86 src/types89t.c:87 src/types89t.c:88 src/types89t.c:89
-#: src/types89t.c:90 src/types89t.c:129 src/types92.c:44 src/types92.c:45
-#: src/types92.c:46 src/types92.c:48 src/types92.c:50 src/types92.c:51
-#: src/types92.c:52 src/types92.c:58 src/types92.c:60 src/types92.c:64
-#: src/types92.c:65 src/types92.c:66 src/types92.c:67 src/types92.c:68
-#: src/types92.c:69 src/types92.c:70 src/types92.c:73 src/types92.c:74
-#: src/types92.c:75 src/types92.c:77 src/types92.c:78 src/types92.c:79
-#: src/types92.c:80 src/types92.c:81 src/types92.c:82 src/types92.c:83
-#: src/types92.c:84 src/types92.c:85 src/types92.c:86 src/types92.c:87
-#: src/types92.c:88 src/types92.c:89 src/types92.c:90 src/types92.c:129
-#: src/types92p.c:44 src/types92p.c:45 src/types92p.c:46 src/types92p.c:48
-#: src/types92p.c:50 src/types92p.c:51 src/types92p.c:52 src/types92p.c:58
-#: src/types92p.c:60 src/types92p.c:64 src/types92p.c:65 src/types92p.c:66
-#: src/types92p.c:67 src/types92p.c:68 src/types92p.c:69 src/types92p.c:70
-#: src/types92p.c:73 src/types92p.c:74 src/types92p.c:75 src/types92p.c:81
-#: src/types92p.c:82 src/types92p.c:83 src/types92p.c:84 src/types92p.c:85
-#: src/types92p.c:86 src/types92p.c:87 src/types92p.c:88 src/types92p.c:89
-#: src/types92p.c:90 src/types92p.c:129 src/typesnsp.c:72 src/typesv2.c:43
-#: src/typesv2.c:44 src/typesv2.c:45 src/typesv2.c:47 src/typesv2.c:49
-#: src/typesv2.c:50 src/typesv2.c:51 src/typesv2.c:57 src/typesv2.c:59
-#: src/typesv2.c:63 src/typesv2.c:64 src/typesv2.c:65 src/typesv2.c:66
-#: src/typesv2.c:67 src/typesv2.c:72 src/typesv2.c:73 src/typesv2.c:74
-#: src/typesv2.c:82 src/typesv2.c:83 src/typesv2.c:84 src/typesv2.c:85
-#: src/typesv2.c:86 src/typesv2.c:87 src/typesv2.c:88 src/typesv2.c:89
-#: src/typesv2.c:128
-msgid "Unknown"
-msgstr "Inconnu"
-
-#: src/types73.c:51 src/types73.c:55 src/types82.c:46 src/types83.c:50
-#: src/types83p.c:51 src/types85.c:58 src/types86.c:58 src/types86.c:59
-#: src/types86.c:60 src/types86.c:61 src/types86.c:62
-msgid "Window Setup"
-msgstr "Config fenêtre"
-
-#: src/types73.c:52 src/types83.c:47 src/types83p.c:48 src/types83p.c:63
-#: src/types83p.c:65 src/types83p.c:66 src/types83p.c:67 src/types85.c:36
-#: src/types86.c:36
-msgid "Complex"
-msgstr "Complexe"
-
-#: src/types73.c:56 src/types82.c:47 src/types83.c:51 src/types83p.c:52
-#: src/types85.c:62
-msgid "Zoom"
-msgstr "Zoom"
-
-#: src/types73.c:57 src/types82.c:48 src/types83.c:52 src/types83p.c:53
-msgid "Table Setup"
-msgstr "Config Table"
-
-#: src/types73.c:59 src/types82.c:50 src/types83.c:54 src/types83p.c:55
-#: src/types85.c:64 src/types86.c:64 src/types89.c:72 src/types89t.c:72
-#: src/types92.c:72 src/types92p.c:72 src/typesv2.c:71
-msgid "Backup"
-msgstr "Sauvegarde"
-
-#: src/types73.c:66 src/types83p.c:57
-msgid "App Var"
-msgstr "Variable Application"
-
-#: src/types73.c:76 src/types83p.c:72 src/types89.c:79 src/types89t.c:79
-#: src/types92p.c:79 src/typesv2.c:78
-msgid "Application"
-msgstr "Application"
-
-#: src/types73.c:77 src/types83p.c:73 src/types89.c:80 src/types89t.c:80
-#: src/types92p.c:80 src/typesv2.c:79
-msgid "Certificate"
-msgstr "Certificat"
-
-#: src/types82.c:38 src/types83.c:38 src/types85.c:77
-msgid "Y-Var"
-msgstr "Var-Y"
-
-#: src/types82.c:41
-msgid "Protected Program"
-msgstr "Programme Protégé"
-
-#: src/types82.c:49
-msgid "LCD"
-msgstr "LCD"
-
-#: src/types83p.c:59
-msgid "Group Var"
-msgstr "Groupe de Variables"
-
-#: src/types83p.c:62
-msgid "Image"
-msgstr "Image (de fond)"
-
-#: src/types85.c:37 src/types86.c:37
-msgid "Vector"
-msgstr "Vecteur"
-
-#: src/types85.c:38 src/types86.c:38
-msgid "Complex Vector"
-msgstr "Vecteur Complexe"
-
-#: src/types85.c:40 src/types86.c:40
-msgid "Complex List"
-msgstr "Liste Complexe"
-
-#: src/types85.c:42 src/types86.c:42
-msgid "Complex Matrix"
-msgstr "Matrice Complexe"
-
-#: src/types85.c:43 src/types86.c:43
-msgid "Constant"
-msgstr "Constante"
-
-#: src/types85.c:44 src/types86.c:44
-msgid "Complex Constant"
-msgstr "Constante Complexe"
-
-#: src/types85.c:54 src/types86.c:54
-msgid "Range"
-msgstr "Intervalle"
-
-#: src/types85.c:55 src/types86.c:55
-msgid "Screen"
-msgstr "Ecran"
-
-#: src/types85.c:56 src/types86.c:56 src/typesnsp.c:33
-msgid "Directory"
-msgstr "Répertoire"
-
-#: src/types85.c:59
-msgid "Polar"
-msgstr "Polaire"
-
-#: src/types85.c:60
-msgid "Parametric"
-msgstr "Paramétrique"
-
-#: src/types85.c:61
-msgid "Diff Equ"
-msgstr "Equa diff"
-
-#: src/types89.c:43 src/types89t.c:43 src/types92.c:43 src/types92p.c:43
-#: src/typesv2.c:42
+#: src/types68k.c:39
 msgid "Expression"
 msgstr "Expression"
 
-#: src/types89.c:53 src/types89t.c:53 src/types92.c:53 src/types92p.c:53
-#: src/typesv2.c:52
+#: src/types68k.c:40 src/types68k.c:41 src/types68k.c:42 src/types68k.c:44
+#: src/types68k.c:46 src/types68k.c:47 src/types68k.c:48 src/types68k.c:54
+#: src/types68k.c:56 src/types68k.c:60 src/types68k.c:61 src/types68k.c:62
+#: src/types68k.c:63 src/types68k.c:64 src/types68k.c:65 src/types68k.c:66
+#: src/types68k.c:69 src/types68k.c:70 src/types68k.c:71 src/types68k.c:77
+#: src/types68k.c:78 src/types68k.c:79 src/types68k.c:80 src/types68k.c:81
+#: src/types68k.c:82 src/types68k.c:83 src/types68k.c:84 src/types68k.c:85
+#: src/types68k.c:86 src/types83p.c:44 src/types83p.c:45 src/types83p.c:49
+#: src/types83p.c:53 src/types83p.c:55 src/types83p.c:60 src/types83p.c:69
+#: src/types83p.c:73 src/types83p.c:74 src/types83p.c:75 src/types83p.c:76
+#: src/types83p.c:77 src/types83p.c:78 src/types83p.c:79 src/types83p.c:80
+#: src/types83p.c:81 src/types83p.c:82 src/typesoldz80.c:49
+#: src/typesoldz80.c:50 src/typesoldz80.c:53 src/typesoldz80.c:54
+#: src/typesoldz80.c:58 src/typesoldz80.c:60 src/typesoldz80.c:61
+#: src/typesoldz80.c:62 src/typesoldz80.c:63 src/typesoldz80.c:64
+#: src/typesoldz80.c:65 src/typesoldz80.c:67 src/typesoldz80.c:68
+#: src/typesoldz80.c:69 src/typesoldz80.c:70 src/typesoldz80.c:71
+#: src/typesoldz80.c:72 src/typesoldz80.c:73 src/typesoldz80.c:74
+#: src/typesoldz80.c:78 src/typesoldz80.c:79 src/typesoldz80.c:80
+#: src/typesoldz80.c:81 src/typesoldz80.c:82 src/typesoldz80.c:83
+#: src/typesoldz80.c:84 src/typesoldz80.c:85 src/typesoldz80.c:86
+#: src/typesoldz80.c:87 src/typesoldz80.c:97 src/typesoldz80.c:102
+#: src/typesoldz80.c:103 src/typesoldz80.c:109 src/typesoldz80.c:110
+#: src/typesoldz80.c:111 src/typesoldz80.c:112 src/typesoldz80.c:113
+#: src/typesoldz80.c:114 src/typesoldz80.c:115 src/typesoldz80.c:116
+#: src/typesoldz80.c:117 src/typesoldz80.c:118 src/typesoldz80.c:119
+#: src/typesoldz80.c:120 src/typesoldz80.c:121 src/typesoldz80.c:122
+#: src/typesoldz80.c:123 src/typesoldz80.c:124 src/typesoldz80.c:125
+#: src/typesoldz80.c:126 src/typesoldz80.c:127 src/typesoldz80.c:128
+#: src/typesoldz80.c:129 src/typesoldz80.c:130 src/typesoldz80.c:131
+#: src/typesoldz80.c:132 src/typesoldz80.c:133 src/typesoldz80.c:134
+#: src/typesoldz80.c:135 src/typesoldz80.c:136 src/typesoldz80.c:137
+#: src/typesoldz80.c:138 src/typesoldz80.c:139 src/typesoldz80.c:140
+#: src/typesoldz80.c:155 src/typesoldz80.c:156 src/typesoldz80.c:157
+#: src/typesoldz80.c:159 src/typesoldz80.c:160 src/typesoldz80.c:164
+#: src/typesoldz80.c:166 src/typesoldz80.c:167 src/typesoldz80.c:168
+#: src/typesoldz80.c:169 src/typesoldz80.c:170 src/typesoldz80.c:171
+#: src/typesoldz80.c:172 src/typesoldz80.c:173 src/typesoldz80.c:174
+#: src/typesoldz80.c:175 src/typesoldz80.c:176 src/typesoldz80.c:177
+#: src/typesoldz80.c:178 src/typesoldz80.c:179 src/typesoldz80.c:180
+#: src/typesoldz80.c:181 src/typesoldz80.c:182 src/typesoldz80.c:183
+#: src/typesoldz80.c:184 src/typesoldz80.c:185 src/typesoldz80.c:186
+#: src/typesoldz80.c:187 src/typesoldz80.c:188 src/typesoldz80.c:189
+#: src/typesoldz80.c:190 src/typesoldz80.c:191 src/typesoldz80.c:192
+#: src/typesoldz80.c:193 src/typesoldz80.c:210 src/typesoldz80.c:221
+#: src/typesoldz80.c:227 src/typesoldz80.c:229 src/typesoldz80.c:230
+#: src/typesoldz80.c:231 src/typesoldz80.c:232 src/typesoldz80.c:233
+#: src/typesoldz80.c:234 src/typesoldz80.c:235 src/typesoldz80.c:236
+#: src/typesoldz80.c:237 src/typesoldz80.c:238 src/typesoldz80.c:239
+#: src/typesoldz80.c:240 src/typesoldz80.c:242 src/typesoldz80.c:243
+#: src/typesoldz80.c:244 src/typesoldz80.c:245 src/typesoldz80.c:246
+#: src/typesoldz80.c:263 src/typesoldz80.c:274 src/typesoldz80.c:280
+#: src/typesoldz80.c:282 src/typesoldz80.c:283 src/typesoldz80.c:284
+#: src/typesoldz80.c:285 src/typesoldz80.c:286 src/typesoldz80.c:287
+#: src/typesoldz80.c:288 src/typesoldz80.c:289 src/typesoldz80.c:290
+#: src/typesoldz80.c:291 src/typesoldz80.c:292 src/typesoldz80.c:293
+#: src/typesoldz80.c:294 src/typesoldz80.c:295 src/typesoldz80.c:296
+#: src/typesoldz80.c:297 src/typesoldz80.c:298 src/typesoldz80.c:299
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: src/types68k.c:43 src/types83p.c:36 src/types83p.c:48 src/typesoldz80.c:41
+#: src/typesoldz80.c:94 src/typesoldz80.c:147 src/typesoldz80.c:203
+#: src/typesoldz80.c:256
+msgid "List"
+msgstr "Liste"
+
+#: src/types68k.c:45 src/types83p.c:37 src/typesoldz80.c:42
+#: src/typesoldz80.c:95 src/typesoldz80.c:148 src/typesoldz80.c:205
+#: src/typesoldz80.c:258
+msgid "Matrix"
+msgstr "Matrice"
+
+#: src/types68k.c:49
 msgid "Data"
 msgstr "Donnée"
 
-#: src/types89.c:54 src/types89t.c:54 src/types92.c:54 src/types92p.c:54
-#: src/typesv2.c:53
+#: src/types68k.c:50
 msgid "Text"
 msgstr "Texte"
 
-#: src/types89.c:57 src/types89t.c:57 src/types92.c:57 src/types92p.c:57
-#: src/typesv2.c:56
+#: src/types68k.c:51 src/types83p.c:39 src/typesoldz80.c:44
+#: src/typesoldz80.c:150 src/typesoldz80.c:211 src/typesoldz80.c:264
+msgid "String"
+msgstr "Chaîne"
+
+#: src/types68k.c:52 src/types83p.c:43 src/typesoldz80.c:48
+#: src/typesoldz80.c:101 src/typesoldz80.c:154 src/typesoldz80.c:212
+#: src/typesoldz80.c:213 src/typesoldz80.c:214 src/typesoldz80.c:215
+#: src/typesoldz80.c:265 src/typesoldz80.c:266 src/typesoldz80.c:267
+#: src/typesoldz80.c:268
+msgid "GDB"
+msgstr "GDB"
+
+#: src/types68k.c:53
 msgid "Figure"
 msgstr "Figure"
 
-#: src/types89.c:62 src/types89t.c:62 src/types92.c:62 src/types92p.c:62
-#: src/typesv2.c:61
+#: src/types68k.c:55 src/types83p.c:42 src/typesoldz80.c:47
+#: src/typesoldz80.c:100 src/typesoldz80.c:153 src/typesoldz80.c:216
+#: src/typesoldz80.c:269
+msgid "Picture"
+msgstr "Image"
+
+#: src/types68k.c:57 src/types83p.c:40 src/types83p.c:57 src/typesoldz80.c:45
+#: src/typesoldz80.c:98 src/typesoldz80.c:151 src/typesoldz80.c:217
+#: src/typesoldz80.c:270
+msgid "Program"
+msgstr "Programme"
+
+#: src/types68k.c:58
 msgid "Function"
 msgstr "Fonction"
 
-#: src/types89.c:63 src/types89t.c:63 src/types92.c:63 src/types92p.c:63
-#: src/typesv2.c:62
+#: src/types68k.c:59
 msgid "Macro"
 msgstr "Macro"
 
-#: src/types89.c:71 src/types89t.c:71 src/types92.c:71 src/types92p.c:71
-#: src/typesv2.c:70
-msgid "Zipped"
-msgstr "Compressé"
+#: src/types68k.c:67
+msgid "Other (Zipped, etc.)"
+msgstr ""
 
-#: src/types89.c:77 src/types89t.c:77 src/types92p.c:77 src/typesv2.c:76
+#: src/types68k.c:68 src/types83p.c:54 src/typesoldz80.c:59
+#: src/typesoldz80.c:108 src/typesoldz80.c:165 src/typesoldz80.c:228
+#: src/typesoldz80.c:281
+msgid "Backup"
+msgstr "Sauvegarde"
+
+#: src/types68k.c:72 src/types83p.c:41 src/typesoldz80.c:46
+#: src/typesoldz80.c:152
+msgid "Asm Program"
+msgstr "Programme Asm"
+
+#: src/types68k.c:73
 msgid "ID-LIST"
 msgstr "ID-LIST"
 
-#: src/typesnsp.c:32
-msgid "TIicon1"
-msgstr "TIicon1"
+#: src/types68k.c:75 src/types83p.c:71 src/typesoldz80.c:76
+msgid "Application"
+msgstr "Application"
+
+#: src/types68k.c:76 src/types83p.c:72 src/typesoldz80.c:77
+msgid "Certificate"
+msgstr "Certificat"
+
+#: src/types83p.c:35 src/types83p.c:59 src/types83p.c:63 src/types83p.c:67
+#: src/types83p.c:68 src/typesoldz80.c:40 src/typesoldz80.c:93
+#: src/typesoldz80.c:146 src/typesoldz80.c:199 src/typesoldz80.c:252
+msgid "Real"
+msgstr "Réel"
+
+#: src/types83p.c:38 src/types83p.c:46 src/typesoldz80.c:43
+#: src/typesoldz80.c:209 src/typesoldz80.c:262
+msgid "Equation"
+msgstr "Équation"
+
+#: src/types83p.c:47 src/types83p.c:62 src/types83p.c:64 src/types83p.c:65
+#: src/types83p.c:66 src/typesoldz80.c:52 src/typesoldz80.c:158
+#: src/typesoldz80.c:200 src/typesoldz80.c:253
+msgid "Complex"
+msgstr "Complexe"
+
+#: src/types83p.c:50 src/typesoldz80.c:51 src/typesoldz80.c:55
+#: src/typesoldz80.c:104 src/typesoldz80.c:161 src/typesoldz80.c:222
+#: src/typesoldz80.c:275 src/typesoldz80.c:276 src/typesoldz80.c:277
+#: src/typesoldz80.c:278 src/typesoldz80.c:279
+msgid "Window Setup"
+msgstr "Config fenêtre"
+
+#: src/types83p.c:51 src/typesoldz80.c:56 src/typesoldz80.c:105
+#: src/typesoldz80.c:162 src/typesoldz80.c:226
+msgid "Zoom"
+msgstr "Zoom"
+
+#: src/types83p.c:52 src/typesoldz80.c:57 src/typesoldz80.c:106
+#: src/typesoldz80.c:163
+msgid "Table Setup"
+msgstr "Config Table"
+
+#: src/types83p.c:56 src/typesoldz80.c:66
+msgid "App Var"
+msgstr "Variable Application"
+
+#: src/types83p.c:58
+msgid "Group Var"
+msgstr "Groupe de Variables"
+
+#: src/types83p.c:61
+msgid "Image"
+msgstr "Image (de fond)"
+
+#: src/typesnsp.c:33
+msgid "Document"
+msgstr ""
+
+#: src/typesnsp.c:34 src/typesoldz80.c:220 src/typesoldz80.c:273
+msgid "Directory"
+msgstr "Répertoire"
+
+#: src/typesoldz80.c:96 src/typesoldz80.c:149 src/typesoldz80.c:241
+msgid "Y-Var"
+msgstr "Var-Y"
+
+#: src/typesoldz80.c:99
+msgid "Protected Program"
+msgstr "Programme Protégé"
+
+#: src/typesoldz80.c:107
+msgid "LCD"
+msgstr "LCD"
+
+#: src/typesoldz80.c:201 src/typesoldz80.c:254
+msgid "Vector"
+msgstr "Vecteur"
+
+#: src/typesoldz80.c:202 src/typesoldz80.c:255
+msgid "Complex Vector"
+msgstr "Vecteur Complexe"
+
+#: src/typesoldz80.c:204 src/typesoldz80.c:257
+msgid "Complex List"
+msgstr "Liste Complexe"
+
+#: src/typesoldz80.c:206 src/typesoldz80.c:259
+msgid "Complex Matrix"
+msgstr "Matrice Complexe"
+
+#: src/typesoldz80.c:207 src/typesoldz80.c:260
+msgid "Constant"
+msgstr "Constante"
+
+#: src/typesoldz80.c:208 src/typesoldz80.c:261
+msgid "Complex Constant"
+msgstr "Constante Complexe"
+
+#: src/typesoldz80.c:218 src/typesoldz80.c:271
+msgid "Range"
+msgstr "Intervalle"
+
+#: src/typesoldz80.c:219 src/typesoldz80.c:272
+msgid "Screen"
+msgstr "Ecran"
+
+#: src/typesoldz80.c:223
+msgid "Polar"
+msgstr "Polaire"
+
+#: src/typesoldz80.c:224
+msgid "Parametric"
+msgstr "Paramétrique"
+
+#: src/typesoldz80.c:225
+msgid "Diff Equ"
+msgstr "Equa diff"
+
+#~ msgid "Zipped"
+#~ msgstr "Compressé"
+
+#~ msgid "TIicon1"
+#~ msgstr "TIicon1"
 
 #~ msgid "types92p: unknown type (%02x).\n"
 #~ msgstr "types92p: type inconnu (%02x).\n"

@@ -27,9 +27,10 @@
 #include "gettext.h"
 #include "tifiles.h"
 #include "logging.h"
+#include "internal.h"
+#include "typesxx.h"
 #include "error.h"
 #include "rwfile.h"
-#include "typesxx.h"
 
 // Whether to enable strict file extension checking.
 #define CHECK_FILE_EXTENSIONS
@@ -90,7 +91,7 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_group (CalcModel model)
 		case CALC_TI83PCE_USB:
 		case CALC_TI84PCE_USB:
 		case CALC_TI82A_USB:
-			return "8Xg";
+			return "8Xg"; // There's also 8Cg.
 		case CALC_TI85:
 			return "85g";
 		case CALC_TI86:
@@ -201,6 +202,7 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_flash_app (CalcModel model)
 		case CALC_TI84PC_USB:
 			return "8Ck";
 		case CALC_TI83PCE_USB:
+			return "8Pk";
 		case CALC_TI84PCE_USB:
 			return "8Ek";
 		case CALC_TI82A_USB:
@@ -1269,11 +1271,11 @@ TIEXPORT2 CalcModel TICALL tifiles_file_get_model(const char *filename)
 	{
 		type = CALC_TI84PC;
 	}
-	else if (!g_ascii_strcasecmp(str, "8e"))
+	else if (!g_ascii_strcasecmp(str, "8p"))
 	{
 		type = CALC_TI83PCE_USB;
 	}
-	else if (!g_ascii_strcasecmp(str, "8p"))
+	else if (!g_ascii_strcasecmp(str, "8e"))
 	{
 		type = CALC_TI84PCE_USB;
 	}
@@ -1403,16 +1405,17 @@ TIEXPORT2 const char *TICALL tifiles_file_get_type(const char *filename)
 	{
 #ifndef DISABLE_TI8X
 		case CALC_TI73:
-			return ti73_byte2desc(ti73_fext2byte(e));
+			return tixx_byte2desc(TI73_CONST, TI73_MAXTYPES, tixx_fext2byte(TI73_CONST, TI73_MAXTYPES, e));
 		case CALC_TI82:
-			return ti82_byte2desc(ti82_fext2byte(e));
+			return tixx_byte2desc(TI82_CONST, TI82_MAXTYPES, tixx_fext2byte(TI82_CONST, TI82_MAXTYPES, e));
 		case CALC_TI83:
-			return ti83_byte2desc(ti83_fext2byte(e));
+			return tixx_byte2desc(TI83_CONST, TI83_MAXTYPES, tixx_fext2byte(TI83_CONST, TI83_MAXTYPES, e));
 		case CALC_TI83P:
+			return ti83p_byte2desc(ti83p_fext2byte(e));
 		case CALC_TI84P:
 		case CALC_TI84P_USB:
 		case CALC_TI82A_USB:
-			return ti83p_byte2desc(ti83p_fext2byte(e));
+			return ti84p_byte2desc(ti84p_fext2byte(e));
 		case CALC_TI84PC:
 		case CALC_TI84PC_USB:
 			return ti84pc_byte2desc(ti84pc_fext2byte(e));
@@ -1421,15 +1424,16 @@ TIEXPORT2 const char *TICALL tifiles_file_get_type(const char *filename)
 		case CALC_TI84PCE_USB:
 			return ti84pce_byte2desc(ti84pce_fext2byte(e));
 		case CALC_TI85:
-			return ti85_byte2desc(ti85_fext2byte(e));
+			return tixx_byte2desc(TI85_CONST, TI85_MAXTYPES, tixx_fext2byte(TI85_CONST, TI85_MAXTYPES, e));
 		case CALC_TI86:
-			return ti86_byte2desc(ti86_fext2byte(e));
+			return tixx_byte2desc(TI86_CONST, TI86_MAXTYPES, tixx_fext2byte(TI86_CONST, TI86_MAXTYPES, e));
 #endif
 #ifndef DISABLE_TI9X
 		case CALC_TI89:
+			return ti89_byte2desc(ti89_fext2byte(e));
 		case CALC_TI89T:
 		case CALC_TI89T_USB:
-			return ti89_byte2desc(ti89_fext2byte(e));
+			return ti89t_byte2desc(ti89_fext2byte(e));
 		case CALC_TI92:
 			return ti92_byte2desc(ti92_fext2byte(e));
 		case CALC_TI92P:
@@ -1438,7 +1442,7 @@ TIEXPORT2 const char *TICALL tifiles_file_get_type(const char *filename)
 			return v200_byte2desc(v200_fext2byte(e));
 #endif
 		case CALC_NSPIRE:
-			return nsp_byte2desc(nsp_fext2byte(e));
+			return tixx_byte2desc(NSP_CONST, NSP_MAXTYPES, tixx_fext2byte(NSP_CONST, NSP_MAXTYPES, e));
 		case CALC_NONE:
 		default:
 			return "";
@@ -1502,16 +1506,17 @@ TIEXPORT2 const char *TICALL tifiles_file_get_icon(const char *filename)
 	{
 #ifndef DISABLE_TI8X
 		case CALC_TI73:
-			return ti73_byte2icon(ti73_fext2byte(e));
+			return tixx_byte2icon(TI73_CONST, TI73_MAXTYPES, tixx_fext2byte(TI73_CONST, TI73_MAXTYPES, e));
 		case CALC_TI82:
-			return ti82_byte2icon(ti82_fext2byte(e));
+			return tixx_byte2icon(TI82_CONST, TI82_MAXTYPES, tixx_fext2byte(TI82_CONST, TI82_MAXTYPES, e));
 		case CALC_TI83:
-			return ti83_byte2icon(ti83_fext2byte(e));
+			return tixx_byte2icon(TI83_CONST, TI83_MAXTYPES, tixx_fext2byte(TI83_CONST, TI83_MAXTYPES, e));
 		case CALC_TI83P:
+			return ti83p_byte2icon(ti83p_fext2byte(e));
 		case CALC_TI84P:
 		case CALC_TI84P_USB:
 		case CALC_TI82A_USB:
-			return ti83p_byte2icon(ti83p_fext2byte(e));
+			return ti84p_byte2icon(ti83p_fext2byte(e));
 		case CALC_TI84PC:
 		case CALC_TI84PC_USB:
 			return ti84pc_byte2icon(ti84pc_fext2byte(e));
@@ -1520,15 +1525,16 @@ TIEXPORT2 const char *TICALL tifiles_file_get_icon(const char *filename)
 		case CALC_TI84PCE_USB:
 			return ti84pce_byte2icon(ti84pce_fext2byte(e));
 		case CALC_TI85:
-			return ti85_byte2icon(ti85_fext2byte(e));
+			return tixx_byte2icon(TI85_CONST, TI85_MAXTYPES, tixx_fext2byte(TI85_CONST, TI85_MAXTYPES, e));
 		case CALC_TI86:
-			return ti86_byte2icon(ti86_fext2byte(e));
+			return tixx_byte2icon(TI86_CONST, TI86_MAXTYPES, tixx_fext2byte(TI86_CONST, TI86_MAXTYPES, e));
 #endif
 #ifndef DISABLE_TI9X
 		case CALC_TI89:
+			return ti89_byte2icon(ti89_fext2byte(e));
 		case CALC_TI89T:
 		case CALC_TI89T_USB:
-			return ti89_byte2icon(ti89_fext2byte(e));
+			return ti89t_byte2icon(ti89_fext2byte(e));
 		case CALC_TI92:
 			return ti92_byte2icon(ti92_fext2byte(e));
 		case CALC_TI92P:
@@ -1537,7 +1543,7 @@ TIEXPORT2 const char *TICALL tifiles_file_get_icon(const char *filename)
 			return v200_byte2icon(v200_fext2byte(e));
 #endif
 		case CALC_NSPIRE:
-			return nsp_byte2icon(nsp_fext2byte(e));
+			return tixx_byte2icon(NSP_CONST, NSP_MAXTYPES, tixx_fext2byte(NSP_CONST, NSP_MAXTYPES, e));
 		case CALC_NONE:
 		default:
 			return "";

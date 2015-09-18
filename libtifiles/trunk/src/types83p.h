@@ -57,48 +57,4 @@
 #define TI83p_CLK    0x29
 #define TI83p_LICENSE 0x3e
 
-// libtifiles: for internal use only, not exported !
-
-typedef struct {
-	const char * type;
-	const char * fext83p;
-	const char * fext84pc;
-	const char * fext83pce;
-	const char * fext84pce;
-	const char * icon;
-	const char * desc;
-} TI83p_DATA;
-
-extern TI83p_DATA TI83p_CONST[TI83p_MAXTYPES + 1];
-
-// Return the type corresponding to the value
-static inline const char *ti83p_byte2type(uint8_t data)
-{
-	//if(data >= TI83p_MAXTYPES) tifiles_warning(_("ti83p_byte2type: unknown type (%02x)."), data);
-	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].type : "";
-}
-
-// Return the value corresponding to the type
-uint8_t ti83p_type2byte(const char *s);
-
-// Return the file extension corresponding to the value
-static inline const char *ti83p_byte2fext(uint8_t data)
-{
-	//if(data >= TI83p_MAXTYPES) tifiles_warning(_("ti83p_byte2fext: unknown type (%02x)."), data);
-	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].fext83p : "8X?";
-}
-
-// Return the value corresponding to the file extension
-uint8_t ti83p_fext2byte(const char *s);
-
-// Return the description associated with the vartype
-const char *ti83p_byte2desc(uint8_t data);
-
-// Return the icon name associated with the vartype
-static inline const char *ti83p_byte2icon(uint8_t data)
-{
-	//if(data >= TI83p_MAXTYPES) tifiles_warning(_("ti83p_byte2icon: unknown type (%02x)."), data);
-	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].icon : "Unknown";
-}
-
 #endif

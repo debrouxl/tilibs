@@ -55,38 +55,4 @@
 #define TI86_BKUP  0x1D
 #define TI86_UNKN  0x1E
 
-// libtifiles: for internal use only, not exported !
-
-extern const char *TI86_CONST[TI86_MAXTYPES + 1][4];
-
-// Return the type corresponding to the value
-static inline const char *ti86_byte2type(uint8_t data)
-{
-	//if(data >= TI86_MAXTYPES) tifiles_warning(_("ti86_byte2type: unknown type (%02x)."), data);
-	return (data < TI86_MAXTYPES) ? TI86_CONST[data][0] : "";
-}
-
-// Return the value corresponding to the type
-uint8_t ti86_type2byte(const char *s);
-
-// Return the file extension corresponding to the value
-static inline const char *ti86_byte2fext(uint8_t data)
-{
-	//if(data >= TI86_MAXTYPES) tifiles_warning(_("ti86_byte2fext: unknown type (%02x)."), data);
-	return (data < TI86_MAXTYPES) ? TI86_CONST[data][1] : "86?";
-}
-
-// Return the value corresponding to the file extension
-uint8_t ti86_fext2byte(const char *s);
-
-// Return the descriptive associated with the vartype
-const char *ti86_byte2desc(uint8_t data);
-
-// Return the icon name associated with the vartype
-static inline const char *ti86_byte2icon(uint8_t data)
-{
-	//if(data >= TI86_MAXTYPES) tifiles_warning(_("ti86_byte2icon: unknown type (%02x)."), data);
-	return (data < TI86_MAXTYPES) ? TI86_CONST[data][3] : "Unknown";
-}
-
 #endif

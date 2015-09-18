@@ -27,11 +27,10 @@
 
 #include <string.h>
 #include "gettext.h"
-#include "types83p.h"
-#include "types84p.h"
 #include "logging.h"
+#include "internal.h"
 
-TI83p_DATA TI83p_CONST[TI83p_MAXTYPES + 1] =
+const TI83p_DATA TI83p_CONST[TI83p_MAXTYPES + 1] =
 {
 	{"REAL",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "Real",         N_("Real")}, // 0
 	{"LIST",   "8Xl",   "8Xl",   "8Xl",   "8Xl",   "List",         N_("List")},
@@ -39,7 +38,7 @@ TI83p_DATA TI83p_CONST[TI83p_MAXTYPES + 1] =
 	{"EQU",    "8Xe",   "8Xe",   "8Xe",   "8Xe",   "Equation",     N_("Equation")}, // Also 8Xy
 	{"STR",    "8Xs",   "8Xs",   "8Xs",   "8Xs",   "String",       N_("String")},
 	{"PRGM",   "8Xp",   "8Xp",   "8Xp",   "8Xp",   "Program",      N_("Program")},  // 5
-	{"PPRGM",  "8Xp",   "8Xp",   "8Xp",   "8Xp",   "Program",      N_("Program")},
+	{"PPRGM",  "8Xp",   "8Xp",   "8Xp",   "8Xp",   "Asm Program",  N_("Asm Program")},
 	{"PIC",    "8Xi",   "8Ci",   "8Ci",   "8Ci",   "Picture",      N_("Picture")},
 	{"GDB",    "8Xd",   "8Xd",   "8Xd",   "8Xd",   "GDB",          N_("GDB")},
 	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
@@ -83,94 +82,5 @@ TI83p_DATA TI83p_CONST[TI83p_MAXTYPES + 1] =
 	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
 	{NULL,     NULL,    NULL,    NULL,    NULL,    NULL,           NULL}
 };
-
-uint8_t ti83p_type2byte(const char *s)
-{
-	int i;
-
-	for (i = 0; i < TI83p_MAXTYPES; i++) 
-	{
-		if (!strcmp(TI83p_CONST[i].type, s))
-		{
-			break;
-		}
-	}
-
-	//if (i == TI83p_MAXTYPES) tifiles_warning(_("ti83p_byte2type: unknown type."));
-
-	return i;
-}
-
-
-uint8_t ti83p_fext2byte(const char *s)
-{
-	int i;
-
-	for (i = 0; i < TI83p_MAXTYPES; i++) 
-	{
-		if (!g_ascii_strcasecmp(TI83p_CONST[i].fext83p, s))
-		{
-			break;
-		}
-	}
-
-	//if (i == TI83p_MAXTYPES) tifiles_warning(_("ti83p_fext2byte: unknown type."));
-	return i;
-}
-
-uint8_t ti84pc_fext2byte(const char *s)
-{
-	int i;
-
-	for (i = 0; i < TI83p_MAXTYPES; i++) 
-	{
-		if (!g_ascii_strcasecmp(TI83p_CONST[i].fext84pc, s))
-		{
-			break;
-		}
-	}
-
-	//if (i == TI83p_MAXTYPES) tifiles_warning(_("ti84pc_fext2byte: unknown type."));
-	return i;
-}
-
-uint8_t ti83pce_fext2byte(const char *s)
-{
-	int i;
-
-	for (i = 0; i < TI83p_MAXTYPES; i++) 
-	{
-		if (!g_ascii_strcasecmp(TI83p_CONST[i].fext83pce, s))
-		{
-			break;
-		}
-	}
-
-	//if (i == TI83p_MAXTYPES) tifiles_warning(_("ti83pce_fext2byte: unknown type."));
-	return i;
-}
-
-uint8_t ti84pce_fext2byte(const char *s)
-{
-	int i;
-
-	for (i = 0; i < TI83p_MAXTYPES; i++) 
-	{
-		if (!g_ascii_strcasecmp(TI83p_CONST[i].fext84pce, s))
-		{
-			break;
-		}
-	}
-
-	//if (i == TI83p_MAXTYPES) tifiles_warning(_("ti84pce_fext2byte: unknown type."));
-	return i;
-}
-
-
-const char *ti83p_byte2desc(uint8_t data)
-{
-	//if(data >= TI83p_MAXTYPES) tifiles_warning(_("ti83p_byte2desc: unknown type (%02x)."), data);
-	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].desc : _("Unknown");
-}
 
 #endif
