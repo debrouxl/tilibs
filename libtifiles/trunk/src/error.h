@@ -38,7 +38,8 @@ typedef enum {
 	ERR_FILE_ZIP,			// (Un)Zip internal error
 	ERR_UNSUPPORTED,		// Function not supported
 	ERR_FILE_IO,				// Stream error
-	ERR_INVALID_PARAM		// Invalid parameter.
+	ERR_INVALID_PARAM,		// Invalid parameter.
+	ERR_CERT_TRUNCATED		// Invalid certificate memory block.
 } FileError;
 
 #endif

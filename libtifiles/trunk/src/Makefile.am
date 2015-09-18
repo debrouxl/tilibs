@@ -21,6 +21,7 @@ libtifiles2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @ARCHIVE_LIBS@ @TICONV_LIBS@
 libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libtifiles2_la_SOURCES = *.h \
+	cert.c \
 	comments.c \
 	error.c \
 	files8x.c files9x.c filesnsp.c filesxx.c \

@@ -552,6 +552,12 @@ extern "C" {
 	TIEXPORT2 FlashPage**	TICALL tifiles_fp_resize_array(FlashPage**, unsigned int nelts);
 	TIEXPORT2 void		TICALL tifiles_fp_delete_array(FlashPage**);
 
+	// cert.c
+	TIEXPORT2 int TICALL tifiles_cert_field_get(const uint8_t *data, uint32_t length, uint16_t *field_type, const uint8_t **contents, uint32_t *field_size);
+	TIEXPORT2 int TICALL tifiles_cert_field_next(const uint8_t **data, uint32_t *length);
+	TIEXPORT2 int TICALL tifiles_cert_field_find(const uint8_t *data, uint32_t length, uint16_t field_type, const uint8_t **contents, uint32_t *field_size);
+	TIEXPORT2 int TICALL tifiles_cert_field_find_path(const uint8_t *data, uint32_t length, const uint16_t *field_path, uint16_t field_path_len, const uint8_t **contents, uint32_t *field_size);
+
 	// undocumented
 	TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, unsigned int *nfolders);
 	TIEXPORT2 void tifiles_free_table_of_entries(int ** table);
