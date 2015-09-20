@@ -713,6 +713,6 @@
 #define KEY83P_Lx		    k83_00End +  96
 #define KEY83P_Ly		    k83_00End +  97
 #define KEY83P_Lz		    k83_00End +  98
-#define KEY83P_GarbageC	  k83_00End +  99 ; GarbageCollect
+#define KEY83P_GarbageC	  k83_00End +  99
 
 #endif

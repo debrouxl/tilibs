@@ -74,7 +74,7 @@
 
 
 
-#define KEY74_AreYouSure			0x2c
+#define KEY73_AreYouSure			0x2c
 #define KEY73_Prgm                  0x2D
 #define KEY73_Zoom                  0x2E
 #define KEY73_Draw                  0x2F
