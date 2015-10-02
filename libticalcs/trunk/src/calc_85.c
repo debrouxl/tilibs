@@ -85,6 +85,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
+	(void)handle;
 	*ram = *flash = -1;
 	return 0;
 }

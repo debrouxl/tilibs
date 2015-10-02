@@ -41,6 +41,7 @@
 #endif
 
 #include "export4.h"
+#include "stdints4.h"
 
 	/***********************/
 	/* Types & Definitions */
@@ -133,6 +134,8 @@ extern "C" {
 	TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char *ti, unsigned short *utf16);
 	TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti);
 	// The free function corresponding to ticonv_charset_ti_to_utf16() is ticonv_utf16_free().
+
+	TIEXPORT4 int TICALL ticonv_model_uses_utf8(CalcModel model);
 
 	TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned char type);
 	TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16  (CalcModel model, const char *src, unsigned char type);

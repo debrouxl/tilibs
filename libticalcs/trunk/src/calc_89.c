@@ -335,6 +335,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t *flash)
 {
+	(void)handle;
 	*ram = *flash = -1;
 	return 0;
 }

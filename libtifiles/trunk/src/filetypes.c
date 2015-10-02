@@ -1228,6 +1228,105 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 /* Misc */
 /********/
 
+/**
+ * tifiles_fext_to_model:
+ * @filename: a file extension.
+ *
+ * Returns the calculator model corresponding best to this file extension.
+ *
+ * Return value: a model taken in #CalcModel.
+ **/
+TIEXPORT2 CalcModel TICALL tifiles_fext_to_model(const char *ext)
+{
+	int type = CALC_NONE;
+
+	if (ext == NULL)
+	{
+		tifiles_critical("%s(NULL)", __FUNCTION__);
+		return CALC_NONE;
+	}
+
+	if (ext[0] != 0 && ext[1] != 0)
+	{
+		char c1 = g_ascii_tolower(ext[0]);
+		char c2 = g_ascii_tolower(ext[1]);
+
+		if (c1 == '7' && c2 == '3')
+		{
+			type = CALC_TI73;
+		}
+		else if (c1 == '8')
+		{
+			if (c2 == '2')
+			{
+				type = CALC_TI82;
+			}
+			else if (c2 == '3')
+			{
+				type = CALC_TI83;
+			}
+			else if (c2 == 'x')
+			{
+				type = CALC_TI83P;
+			}
+			else if (c2 == 'c')
+			{
+				type = CALC_TI84PC;
+			}
+			else if (c2 == 'p')
+			{
+				type = CALC_TI83PCE_USB;
+			}
+			else if (c2 == 'e')
+			{
+				type = CALC_TI84PCE_USB;
+			}
+			else if (c2 == '5')
+			{
+				type = CALC_TI85;
+			}
+			else if (c2 == '6')
+			{
+				type = CALC_TI86;
+			}
+			else if (c2 == '9')
+			{
+				type = CALC_TI89;
+			}
+			// else fall through.
+		}
+		else if (c1 == '9')
+		{
+			if (c2 == '2')
+			{
+				type = CALC_TI92;
+			}
+			else if (c2 == 'x')
+			{
+				type = CALC_TI92P;
+			}
+			// else fall through.
+		}
+		else if (c1 == 'v' && c2 == '2')
+		{
+			type = CALC_V200;
+		}
+		//else if (!g_ascii_strcasecmp(str, "tib"))
+			//type = CALC_TI89;	// consider .tib as TI89
+		else if (c1 == 't')
+		{
+			if (c2 == 'n' || c2 == 'c' || c2 == 'm')
+			{
+				type = CALC_NSPIRE;
+			}
+			// else fall through.
+		}
+		// else fall through.
+	}
+
+	return type;
+}
+
 /* Note: a better way should be to open the file and read the signature */
 /**
  * tifiles_file_get_model:
@@ -1240,85 +1339,14 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 TIEXPORT2 CalcModel TICALL tifiles_file_get_model(const char *filename)
 {
 	char *e = tifiles_fext_get(filename);
-	int type = CALC_NONE;
-	char str[4];
-
-	if (!strcmp(e, ""))
-	{
-		return CALC_NONE;
-	}
-
-	strncpy(str, e, 2);
-	str[2] = '\0';
-
-	if (!g_ascii_strcasecmp(str, "73"))
-	{
-		type = CALC_TI73;
-	}
-	else if (!g_ascii_strcasecmp(str, "82"))
-	{
-		type = CALC_TI82;
-	}
-	else if (!g_ascii_strcasecmp(str, "83"))
-	{
-		type = CALC_TI83;
-	}
-	else if (!g_ascii_strcasecmp(str, "8x"))
-	{
-		type = CALC_TI83P;
-	}
-	else if (!g_ascii_strcasecmp(str, "8c"))
-	{
-		type = CALC_TI84PC;
-	}
-	else if (!g_ascii_strcasecmp(str, "8p"))
-	{
-		type = CALC_TI83PCE_USB;
-	}
-	else if (!g_ascii_strcasecmp(str, "8e"))
-	{
-		type = CALC_TI84PCE_USB;
-	}
-	else if (!g_ascii_strcasecmp(str, "85"))
-	{
-		type = CALC_TI85;
-	}
-	else if (!g_ascii_strcasecmp(str, "86"))
-	{
-		type = CALC_TI86;
-	}
-	else if (!g_ascii_strcasecmp(str, "89"))
-	{
-		type = CALC_TI89;
-	}
-	else if (!g_ascii_strcasecmp(str, "92"))
-	{
-		type = CALC_TI92;
-	}
-	else if (!g_ascii_strcasecmp(str, "9X"))
-	{
-		type = CALC_TI92P;
-	}
-	else if (!g_ascii_strcasecmp(str, "V2"))
-	{
-		type = CALC_V200;
-	}
-	//else if (!g_ascii_strcasecmp(str, "tib"))
-		//type = CALC_TI89;	// consider .tib as TI89
-	else if (!g_ascii_strcasecmp(str, "tn") || !g_ascii_strcasecmp(str, "tc") || !g_ascii_strcasecmp(str, "tm"))
-	{
-		type = CALC_NSPIRE;
-	}
-	// else fall through.
-
-	return type;
+	return tifiles_fext_to_model(e);
 }
 
 /**
  * tifiles_file_get_class:
  * @filename: a filename as string.
  *
- * Returns the file class (single, group, backup, flash).
+ * Returns the file class (single, group, backup, flash, tigroup).
  *
  * Return value: a value in #FileClass.
  **/

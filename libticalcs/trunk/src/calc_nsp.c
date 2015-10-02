@@ -811,6 +811,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 
 static int		dump_rom_1	(CalcHandle* handle)
 {
+	(void)handle;
 	return 0;
 }
 

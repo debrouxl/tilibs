@@ -56,8 +56,7 @@ TIEXPORT4 const char *TICALL ticonv_version_get(void)
  *
  * UTF-16 version of strlen (same as wcslen if wchar_t is UTF-16, but portable).
  *
- * Return value: number of characters. Surrogate pairs are counted as 2
- *               characters each.
+ * Return value: number of characters. Surrogate pairs are counted as 2 characters each.
  **/
 TIEXPORT4 size_t TICALL ticonv_utf16_strlen(const unsigned short *str)
 {
@@ -178,19 +177,20 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
 			case CALC_TI82: return ticonv_utf16_to_ti82(utf16, ti); break;
 			case CALC_TI83: return ticonv_utf16_to_ti83(utf16, ti); break;
 			case CALC_TI83P:
-			case CALC_TI84PC:
-			case CALC_TI84P: return ticonv_utf16_to_ti83p(utf16, ti); break;
+			case CALC_TI84P:
+			case CALC_TI84PC: return ticonv_utf16_to_ti83p(utf16, ti); break;
 			case CALC_TI85: return ticonv_utf16_to_ti85(utf16, ti); break;
+			case CALC_TI86: return ticonv_utf16_to_ti86(utf16, ti); break;
 			case CALC_TI89:
 			case CALC_TI89T:
 			case CALC_TI92:
 			case CALC_TI92P:
 			case CALC_V200: return ticonv_utf16_to_ti9x(utf16, ti); break;
+			case CALC_TI84P_USB:
 			case CALC_TI84PC_USB:
 			case CALC_TI83PCE_USB:
 			case CALC_TI84PCE_USB:
-			case CALC_TI82A_USB:
-			case CALC_TI84P_USB: return ticonv_utf16_to_ti84pusb(utf16, ti); break;
+			case CALC_TI82A_USB: return ticonv_utf16_to_ti84pusb(utf16, ti); break;
 			case CALC_TI89T_USB: return ticonv_utf16_to_ti89tusb(utf16, ti); break;
 			case CALC_NSPIRE:
 			{
@@ -280,8 +280,8 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
 			case CALC_TI82: return ticonv_ti82_to_utf16(ti, utf16); break;
 			case CALC_TI83: return ticonv_ti83_to_utf16(ti, utf16); break;
 			case CALC_TI83P:
-			case CALC_TI84PC:
-			case CALC_TI84P:return ticonv_ti83p_to_utf16(ti, utf16); break;
+			case CALC_TI84P:
+			case CALC_TI84PC: return ticonv_ti83p_to_utf16(ti, utf16); break;
 			case CALC_TI85: return ticonv_ti85_to_utf16(ti, utf16); break;
 			case CALC_TI86: return ticonv_ti86_to_utf16(ti, utf16); break;
 			case CALC_TI89:
@@ -289,11 +289,11 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
 			case CALC_TI92:
 			case CALC_TI92P:
 			case CALC_V200: return ticonv_ti9x_to_utf16(ti, utf16); break;
+			case CALC_TI84P_USB:
 			case CALC_TI84PC_USB:
 			case CALC_TI83PCE_USB:
 			case CALC_TI84PCE_USB:
-			case CALC_TI82A_USB:
-			case CALC_TI84P_USB: return ticonv_ti84pusb_to_utf16(ti, utf16); break;
+			case CALC_TI82A_USB: return ticonv_ti84pusb_to_utf16(ti, utf16); break;
 			case CALC_TI89T_USB: return ticonv_ti89tusb_to_utf16(ti, utf16); break;
 			case CALC_NSPIRE:
 			{
@@ -483,12 +483,12 @@ TIEXPORT4 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src
  * This function converts a varname into a valid filename (depends on locale).
  * Example: 'foobar' => foobar, 'alpha' => _alpha_/alpha.
  * 
- * Greeks characters need conversion if the locale is not UTF-8 (Windows for sure, Linux
+ * Greek characters need conversion if the locale is not UTF-8 (Windows for sure, Linux
  * if locale is different of UTF-8) because greek characters are often missed or mis-converted
  * when converting to locale.
  *
  * Return value: %dst as a newly allocated string or NULL if error.
- **/ 
+ **/
 TIEXPORT4 char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src, unsigned char type)
 {
 	if (src != NULL)
@@ -513,8 +513,8 @@ TIEXPORT4 char* TICALL ticonv_varname_to_filename(CalcModel model, const char *s
  *
  * This function converts a varname into a valid filename (depends on locale).
  * Example: 'foobar' => foobar, 'alpha' => _alpha_/alpha.
- * 
- * Greeks characters need conversion if the locale is not UTF-8 (Windows for sure, Linux
+ *
+ * Greek characters need conversion if the locale is not UTF-8 (Windows for sure, Linux
  * if locale is different of UTF-8) because greek characters are often missed or mis-converted
  * when converting to locale.
  *
@@ -553,7 +553,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char 
  * raw varname encoding.
  *
  * Return value: %dst as a newly allocated string or NULL if error.
- **/ 
+ **/
 TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src, unsigned char type)
 {
 	unsigned short *utf16;
@@ -605,7 +605,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src
  * raw varname encoding.
  *
  * Return value: %dst or NULL if error.
- **/ 
+ **/
 TIEXPORT4 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type)
 {
 	if (src != NULL && dst != NULL)
@@ -639,7 +639,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *s
  * raw varname encoding.
  *
  * Return value: %dst as a newly allocated string or NULL if error.
- **/ 
+ **/
 TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *src, unsigned char type)
 {
 	unsigned short *utf16;
@@ -686,9 +686,9 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *s
  * This function converts a raw varname into a TI file varname.
  * Needed because USB hand-helds use TI-UTF-8 while TI files are still encoded in
  * raw varname encoding.
- * 
+ *
  * Return value: %dst as a newly allocated string or NULL if error.
- **/ 
+ **/
 TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type)
 {
 	if (src != NULL && dst != NULL)
@@ -712,3 +712,31 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char 
 	}
 }
 
+/**
+ * ticonv_model_uses_utf8:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model uses UTF-8.
+ *
+ * Return value: nonzero if the calculator uses UTF-8, zero if it doesn't.
+ */
+TIEXPORT4 int TICALL ticonv_model_uses_utf8(CalcModel model)
+{
+	// In 2015, the blacklist condition about twice longer than the equivalent whitelist condition,
+	// but less likely to get future models (most of which should have exclusively direct USB connectivity) wrong.
+	return (   model != CALC_NONE
+	        && model != CALC_TI73
+	        && model != CALC_TI82
+	        && model != CALC_TI83
+	        && model != CALC_TI83P
+	        && model != CALC_TI84P
+	        && model != CALC_TI85
+	        && model != CALC_TI86
+	        && model != CALC_TI89
+	        && model != CALC_TI89T
+	        && model != CALC_TI92
+	        && model != CALC_TI92P
+	        && model != CALC_V200
+	        && model != CALC_TI80
+	        && model != CALC_TI84PC);
+}

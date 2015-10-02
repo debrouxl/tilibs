@@ -887,6 +887,10 @@ typedef struct
 
 	TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model, int all);
 
+	TIEXPORT3 CalcModel TICALL ticalcs_device_info_to_model(CableDeviceInfo *info);
+	TIEXPORT3 CalcModel TICALL ticalcs_remap_model_from_usb(CableModel cable, CalcModel calc);
+	TIEXPORT3 CalcModel TICALL ticalcs_remap_model_to_usb(CableModel cable, CalcModel calc);
+
 	// dbus_pkt.c
 	TIEXPORT3 int TICALL dbus_send(CalcHandle *handle, uint8_t target, uint8_t cmd, uint16_t length, const uint8_t* data);
 	TIEXPORT3 int TICALL dbus_recv(CalcHandle *handle, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data);

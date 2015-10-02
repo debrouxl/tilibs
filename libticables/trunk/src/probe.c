@@ -235,8 +235,8 @@ TIEXPORT1 int TICALL ticables_is_usb_enabled(void)
 
 /**
  * ticables_get_usb_devices:
- * @array: address of a NULL-terminated allocated array of integers (PIDs).
- * @length: number of detected USB devices.
+ * @list: out address of a NULL-terminated allocated array of integers (PIDs).
+ * @len: out pointer to number of detected USB devices.
  *
  * Returns the list of detected USB PIDs. Note that list is in the 
  * same order as PORT#x.

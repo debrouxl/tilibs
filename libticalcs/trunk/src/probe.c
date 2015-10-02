@@ -610,3 +610,143 @@ TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcMod
 
 	return ret;
 }
+
+/**
+ * ticalcs_device_info_to_model:
+ * @info: pointer to device info
+ *
+ * Converts a cable device info to a CalcModel, if possible.
+ *
+ * Return value: != CALC_NONE if a precise calculator model can be determined through the cable+device info, CALC_NONE if invalid argument or SilverLink cable.
+ */
+TIEXPORT3 CalcModel TICALL ticalcs_device_info_to_model(CableDeviceInfo *info)
+{
+	CalcModel model = CALC_NONE;
+
+	if (info != NULL)
+	{
+		if (info->family == CABLE_FAMILY_DBUS)
+		{
+			// Can't determine calc model through the sole cable model. That's a job for the upper layers.
+			// Fall through.
+		}
+		else if (info->family == CABLE_FAMILY_USB_TI8X)
+		{
+			if (info->variant == CABLE_VARIANT_TI84P || info->variant == CABLE_VARIANT_TI84PSE)
+			{
+				model = CALC_TI84P_USB;
+			}
+			else if (info->variant == CABLE_VARIANT_TI84PCSE)
+			{
+				model = CALC_TI84PC_USB;
+			}
+			else if (info->variant == CABLE_VARIANT_TI84PCE)
+			{
+				model = CALC_TI84PCE_USB;
+			}
+			else if (info->variant == CABLE_VARIANT_TI83PCE)
+			{
+				model = CALC_TI83PCE_USB;
+			}
+			else if (info->variant == CABLE_VARIANT_TI82A)
+			{
+				model = CALC_TI82A_USB;
+			}
+			else
+			{
+				ticalcs_warning("Unexpected variant for TI-(e)Z80 USB cable");
+				// Fall through.
+			}
+		}
+		else if (info->family == CABLE_FAMILY_USB_TI9X)
+		{
+			// This cable family has a single corresponding calc model.
+			if (info->variant != CABLE_VARIANT_TI89TM)
+			{
+				ticalcs_warning("Unexpected variant for TI-68k USB cable");
+			}
+			model = CALC_TI89T_USB;
+		}
+		else if (info->family == CABLE_FAMILY_USB_NSPIRE)
+		{
+			// This cable family has a single corresponding calc model.
+			if (info->variant != CABLE_VARIANT_NSPIRE)
+			{
+				ticalcs_warning("Unexpected variant for Nspire USB cable");
+			}
+			model = CALC_NSPIRE;
+		}
+		else
+		{
+			ticalcs_critical("Unexpected cable family");
+			// Fall through.
+		}
+	}
+	// else fall through.
+
+	return model;
+}
+
+/**
+ * ticalcs_remap_model_from_usb:
+ * @cable: a cable model model taken in #CableModel.
+ * @cable: a calc model model taken in #CalcModel.
+ *
+ * This function remaps a CALC_*_USB model to the corresponding CALC_* model, if said CALC_* model exists and the selected cable is USB.
+ *
+ * Return value: the new calculator model, which can be the same as the passed one.
+ **/
+TIEXPORT3 CalcModel TICALL ticalcs_remap_model_from_usb(CableModel cable, CalcModel calc)
+{
+	if (cable == CABLE_USB)
+	{
+		if (calc == CALC_TI84P_USB)
+		{
+			return CALC_TI84P;
+		}
+		else if (calc == CALC_TI84PC_USB)
+		{
+			return CALC_TI84PC;
+		}
+		else if (calc == CALC_TI89T_USB)
+		{
+			return CALC_TI89T;
+		}
+		// else fall through.
+	}
+	// else fall through.
+
+	return calc;
+}
+
+/**
+ * ticalcs_remap_model_from_usb:
+ * @cable: a cable model model taken in #CableModel.
+ * @cable: a calc model model taken in #CalcModel.
+ *
+ * This function remaps a CALC_* model to the corresponding CALC_*_USB model, if said CALC_*_USB model exists and the selected cable is USB.
+ *
+ * Return value: the new calculator model, which can be the same as the passed one.
+ **/
+TIEXPORT3 CalcModel TICALL ticalcs_remap_model_to_usb(CableModel cable, CalcModel calc)
+{
+	if (cable == CABLE_USB)
+	{
+		if (calc == CALC_TI84P)
+		{
+			return CALC_TI84P_USB;
+		}
+		else if (calc == CALC_TI84PC)
+		{
+			return CALC_TI84PC_USB;
+		}
+		else if (calc== CALC_TI89T)
+		{
+			return CALC_TI89T_USB;
+		}
+		// else fall through.
+	}
+	// else fall through.
+
+	return calc;
+}

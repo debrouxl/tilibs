@@ -355,21 +355,21 @@ extern "C" {
 	/*********************/
 
 	// tifiles.c
-	TIEXPORT2 const char* TICALL tifiles_version_get (void);
+	TIEXPORT2 const char* TICALL tifiles_version_get(void);
 
 	// error.c
-	TIEXPORT2 int         TICALL tifiles_error_get (int number, char **message);
-	TIEXPORT2 int         TICALL tifiles_error_free (char *message);
+	TIEXPORT2 int         TICALL tifiles_error_get(int number, char **message);
+	TIEXPORT2 int         TICALL tifiles_error_free(char *message);
 
 	// type2str.c
-	TIEXPORT2 const char* TICALL tifiles_model_to_string (CalcModel type);
-	TIEXPORT2 CalcModel   TICALL tifiles_string_to_model (const char *str);
+	TIEXPORT2 const char* TICALL tifiles_model_to_string(CalcModel type);
+	TIEXPORT2 CalcModel   TICALL tifiles_string_to_model(const char *str);
 
-	TIEXPORT2 const char* TICALL tifiles_attribute_to_string (FileAttr atrb);
-	TIEXPORT2 FileAttr    TICALL tifiles_string_to_attribute (const char *str);
+	TIEXPORT2 const char* TICALL tifiles_attribute_to_string(FileAttr atrb);
+	TIEXPORT2 FileAttr    TICALL tifiles_string_to_attribute(const char *str);
 
-	TIEXPORT2 const char* TICALL tifiles_class_to_string (FileClass type);
-	TIEXPORT2 FileClass   TICALL tifiles_string_to_class (const char *str);
+	TIEXPORT2 const char* TICALL tifiles_class_to_string(FileClass type);
+	TIEXPORT2 FileClass   TICALL tifiles_string_to_class(const char *str);
 
 	// filetypes.c
 	TIEXPORT2 const char* TICALL tifiles_fext_of_group    (CalcModel model);
@@ -380,61 +380,63 @@ extern "C" {
 
 	TIEXPORT2 char* TICALL tifiles_fext_get (const char *filename);
 	TIEXPORT2 char* TICALL tifiles_fext_dup (const char *filename);
-	TIEXPORT2 void  TICALL tifiles_fext_free (char *filename);
+	TIEXPORT2 void  TICALL tifiles_fext_free(char *filename);
 
-	TIEXPORT2 int TICALL tifiles_file_is_ti (const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_is_ti     (const char *filename);
 	TIEXPORT2 int TICALL tifiles_file_is_single (const char *filename);
-	TIEXPORT2 int TICALL tifiles_file_is_group (const char *filename);
-	TIEXPORT2 int TICALL tifiles_file_is_regular (const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_is_group  (const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_is_regular(const char *filename);
 	TIEXPORT2 int TICALL tifiles_file_is_backup (const char *filename);
-	TIEXPORT2 int TICALL tifiles_file_is_os(const char *filename);
-	TIEXPORT2 int TICALL tifiles_file_is_app(const char *filename);
-	TIEXPORT2 int TICALL tifiles_file_is_tib (const char *filename);
-	TIEXPORT2 int TICALL tifiles_file_is_flash (const char *filename);
-	TIEXPORT2 int TICALL tifiles_file_is_tigroup (const char *filename);
-	TIEXPORT2 int TICALL tifiles_file_is_tno(const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_is_os     (const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_is_app    (const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_is_tib    (const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_is_flash  (const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_is_tigroup(const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_is_tno    (const char *filename);
 
-	TIEXPORT2 int TICALL tifiles_file_has_ti_header(const char *filename);
-	TIEXPORT2 int TICALL tifiles_file_has_tib_header(const char *filename);
-	TIEXPORT2 int TICALL tifiles_file_has_tig_header(const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_has_ti_header  (const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_has_tib_header (const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_has_tig_header (const char *filename);
 	TIEXPORT2 int TICALL tifiles_file_has_tifl_header(const char *filename, uint8_t *dev_type, uint8_t *data_type);
-	TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_has_tno_header (const char *filename);
 
 	TIEXPORT2 int TICALL tifiles_model_to_dev_type(CalcModel model);
 
 	TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target);
 
-	TIEXPORT2 CalcModel TICALL tifiles_file_get_model (const char *filename);
-	TIEXPORT2 FileClass TICALL tifiles_file_get_class (const char *filename);
+	TIEXPORT2 CalcModel TICALL tifiles_fext_to_model(const char *ext);
 
-	TIEXPORT2 const char* TICALL tifiles_file_get_type (const char *filename);
-	TIEXPORT2 const char* TICALL tifiles_file_get_icon (const char *filename);
+	TIEXPORT2 CalcModel TICALL tifiles_file_get_model(const char *filename);
+	TIEXPORT2 FileClass TICALL tifiles_file_get_class(const char *filename);
+
+	TIEXPORT2 const char* TICALL tifiles_file_get_type(const char *filename);
+	TIEXPORT2 const char* TICALL tifiles_file_get_icon(const char *filename);
 
 	// typesXX.c
-	TIEXPORT2 const char* TICALL tifiles_vartype2string (CalcModel model, uint8_t data);
-	TIEXPORT2 uint8_t     TICALL tifiles_string2vartype (CalcModel model, const char *s);
+	TIEXPORT2 const char* TICALL tifiles_vartype2string(CalcModel model, uint8_t data);
+	TIEXPORT2 uint8_t     TICALL tifiles_string2vartype(CalcModel model, const char *s);
 
-	TIEXPORT2 const char* TICALL tifiles_vartype2fext (CalcModel model, uint8_t data);
-	TIEXPORT2 uint8_t     TICALL tifiles_fext2vartype (CalcModel model, const char *s);
+	TIEXPORT2 const char* TICALL tifiles_vartype2fext(CalcModel model, uint8_t data);
+	TIEXPORT2 uint8_t     TICALL tifiles_fext2vartype(CalcModel model, const char *s);
 
-	TIEXPORT2 const char* TICALL tifiles_vartype2type (CalcModel model, uint8_t id);
-	TIEXPORT2 const char* TICALL tifiles_vartype2icon (CalcModel model, uint8_t id);
+	TIEXPORT2 const char* TICALL tifiles_vartype2type(CalcModel model, uint8_t id);
+	TIEXPORT2 const char* TICALL tifiles_vartype2icon(CalcModel model, uint8_t id);
 
-	TIEXPORT2 const char*  TICALL tifiles_calctype2signature (CalcModel model);
-	TIEXPORT2 CalcModel    TICALL tifiles_signature2calctype (const char *signature);
+	TIEXPORT2 const char*  TICALL tifiles_calctype2signature(CalcModel model);
+	TIEXPORT2 CalcModel    TICALL tifiles_signature2calctype(const char *signature);
 
-	TIEXPORT2 uint8_t TICALL tifiles_folder_type (CalcModel model);
-	TIEXPORT2 uint8_t TICALL tifiles_flash_type (CalcModel model);
-	TIEXPORT2 uint8_t TICALL tifiles_idlist_type (CalcModel model);
+	TIEXPORT2 uint8_t TICALL tifiles_folder_type(CalcModel model);
+	TIEXPORT2 uint8_t TICALL tifiles_flash_type(CalcModel model);
+	TIEXPORT2 uint8_t TICALL tifiles_idlist_type(CalcModel model);
 
 	// misc.c
-	TIEXPORT2 int TICALL tifiles_calc_is_ti8x (CalcModel model);
-	TIEXPORT2 int TICALL tifiles_calc_is_ti9x (CalcModel model);
+	TIEXPORT2 int TICALL tifiles_calc_is_ti8x(CalcModel model);
+	TIEXPORT2 int TICALL tifiles_calc_is_ti9x(CalcModel model);
 
 	TIEXPORT2 int TICALL tifiles_calc_are_compat(CalcModel model1, CalcModel model2);
 
-	TIEXPORT2 int TICALL tifiles_has_folder (CalcModel model);
-	TIEXPORT2 int TICALL tifiles_is_flash (CalcModel model);
+	TIEXPORT2 int TICALL tifiles_has_folder(CalcModel model);
+	TIEXPORT2 int TICALL tifiles_is_flash  (CalcModel model);
 	TIEXPORT2 int TICALL tifiles_has_backup(CalcModel model);
 
 	TIEXPORT2 uint16_t TICALL tifiles_checksum(const uint8_t * buffer, unsigned int size);
@@ -461,9 +463,9 @@ extern "C" {
 
 	TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model);
 	TIEXPORT2 int           TICALL tifiles_content_delete_flash(FlashContent *content);
-	TIEXPORT2 int TICALL tifiles_file_read_flash(const char *filename, FlashContent *content);
-	TIEXPORT2 int TICALL tifiles_file_write_flash (const char *filename, FlashContent *content);
-	TIEXPORT2 int TICALL tifiles_file_write_flash2(const char *filename, FlashContent *content, char **filename2);
+	TIEXPORT2 int TICALL tifiles_file_read_flash   (const char *filename, FlashContent *content);
+	TIEXPORT2 int TICALL tifiles_file_write_flash  (const char *filename, FlashContent *content);
+	TIEXPORT2 int TICALL tifiles_file_write_flash2 (const char *filename, FlashContent *content, char **filename2);
 	TIEXPORT2 int TICALL tifiles_file_display_flash(FlashContent *content);
 
 	TIEXPORT2 FileContent*  TICALL tifiles_content_dup_regular(FileContent *content);

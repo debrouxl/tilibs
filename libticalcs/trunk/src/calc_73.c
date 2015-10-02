@@ -426,7 +426,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = content->entries[i];
-		
+
 		if(entry->action == ACT_SKIP)
 			continue;
 
