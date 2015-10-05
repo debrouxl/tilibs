@@ -232,6 +232,11 @@ struct _CableFncts
 	int (*set_device) (CableHandle*, const char*);
 };
 
+typedef int (*ticables_pre_send_hook_type)(CableHandle * handle, uint8_t * data, uint32_t len);
+typedef int (*ticables_post_send_hook_type)(CableHandle * handle, uint8_t * data, uint32_t len, int retval);
+typedef int (*ticables_pre_recv_hook_type)(CableHandle * handle, uint8_t * data, uint32_t len);
+typedef int (*ticables_post_recv_hook_type)(CableHandle * handle, uint8_t * data, uint32_t len, int retval);
+
 /**
  * CableHandle:
  * @model: cable model
@@ -247,6 +252,10 @@ struct _CableFncts
  * @priv3: idem (static)
  * @open: set if cable has been open
  * @busy: set if cable is busy
+ * @pre_send_hook: callback fired before sending a block of data
+ * @post_send_hook: callback fired after sending a block of data.
+ * @pre_recv_hook: callback fired before receiving a block of data
+ * @post_recv_hook: callback fired after receiving a block of data.
  *
  * A structure used to store information as an handle.
  * !!! This structure is for private use !!!
@@ -270,6 +279,11 @@ struct _CableHandle
 
 	int				open;
 	int				busy;
+
+	ticables_pre_send_hook_type pre_send_hook;
+	ticables_post_send_hook_type post_send_hook;
+	ticables_pre_recv_hook_type pre_recv_hook;
+	ticables_post_recv_hook_type post_recv_hook;
 };
 
 /**
@@ -369,6 +383,16 @@ typedef struct
 
 	TIEXPORT1 int TICALL ticables_cable_put(CableHandle *handle, uint8_t data);
 	TIEXPORT1 int TICALL ticables_cable_get(CableHandle *handle, uint8_t *data);
+
+	TIEXPORT1 ticables_pre_send_hook_type TICALL ticables_cable_get_pre_send_hook(CableHandle *handle);
+	TIEXPORT1 ticables_pre_send_hook_type TICALL ticables_cable_set_pre_send_hook(CableHandle *handle, ticables_pre_send_hook_type hook);
+	TIEXPORT1 ticables_post_send_hook_type TICALL ticables_cable_get_post_send_hook(CableHandle *handle);
+	TIEXPORT1 ticables_post_send_hook_type TICALL ticables_cable_set_post_send_hook(CableHandle *handle, ticables_post_send_hook_type hook);
+
+	TIEXPORT1 ticables_pre_recv_hook_type TICALL ticables_cable_get_pre_recv_hook(CableHandle *handle);
+	TIEXPORT1 ticables_pre_recv_hook_type TICALL ticables_cable_set_pre_recv_hook(CableHandle *handle, ticables_pre_recv_hook_type hook);
+	TIEXPORT1 ticables_post_recv_hook_type TICALL ticables_cable_get_post_recv_hook(CableHandle *handle);
+	TIEXPORT1 ticables_post_recv_hook_type TICALL ticables_cable_set_post_recv_hook(CableHandle *handle, ticables_post_recv_hook_type hook);
 
 	// type2str.c
 	TIEXPORT1 const char * TICALL ticables_model_to_string(CableModel model);

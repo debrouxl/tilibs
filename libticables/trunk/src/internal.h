@@ -22,6 +22,59 @@
 #ifndef __TICABLES_INTERNAL__
 #define __TICABLES_INTERNAL__
 
+#define VALIDATE_NONNULL(ptr) \
+	do \
+	{ \
+		if (ptr == NULL) \
+		{ \
+			ticables_critical("%s: " #ptr " is NULL", __FUNCTION__); \
+			return ERR_ILLEGAL_ARG; \
+		} \
+	} while(0);
+#define VALIDATE_HANDLE(handle) \
+	do \
+	{ \
+		if (handle == NULL) \
+		{ \
+			ticables_critical("%s: " #handle " is NULL", __FUNCTION__); \
+			return ERR_ILLEGAL_ARG; \
+		} \
+	} while(0);
+#define VALIDATE_CABLEFNCTS(cable) \
+	do \
+	{ \
+		if (cable == NULL) \
+		{ \
+			ticables_critical("%s: " # cable " is NULL", __FUNCTION__); \
+			return ERR_ILLEGAL_ARG; \
+		} \
+	} while(0);
+
+#define RETURN_IF_HANDLE_OPEN(handle) \
+	do \
+	{ \
+		if (handle->open) \
+		{ \
+			return ERR_BUSY; \
+		} \
+	} while(0);
+#define RETURN_IF_HANDLE_NOT_OPEN(handle) \
+	do \
+	{ \
+		if (!handle->open) \
+		{ \
+			return ERR_NOT_OPEN; \
+		} \
+	} while(0);
+#define RETURN_IF_HANDLE_BUSY(handle) \
+	do \
+	{ \
+		if (handle->busy) \
+		{ \
+			return ERR_BUSY; \
+		} \
+	} while(0);
+
 typedef struct {
 	uint16_t    vid;
 	uint16_t    pid;

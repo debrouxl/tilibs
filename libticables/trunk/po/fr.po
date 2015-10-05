@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.3.4\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-09-20 21:40+0200\n"
+"POT-Creation-Date: 2015-10-05 20:01+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@list.sf.net>\n"
@@ -626,41 +626,41 @@ msgstr " %i: %i %i %i %i"
 msgid "Link cable probing:"
 msgstr "Recherche de câble de connexion:"
 
-#: src/ticables.c:161
+#: src/ticables.c:162
 #, c-format
 msgid "ticables library version %s"
 msgstr "librairie ticables version %s"
 
-#: src/ticables.c:496
+#: src/ticables.c:524
 msgid "Link cable handle details:"
 msgstr "Détails sur le descripteur du câble de connexion:"
 
-#: src/ticables.c:497
+#: src/ticables.c:525
 #, c-format
 msgid "  model   : %s"
 msgstr "  modèle  : %s"
 
-#: src/ticables.c:498
+#: src/ticables.c:526
 #, c-format
 msgid "  port    : %s"
 msgstr "  port    : %s"
 
-#: src/ticables.c:499
+#: src/ticables.c:527
 #, c-format
 msgid "  timeout : %2.1fs"
 msgstr "  timeout  : %2.1fs"
 
-#: src/ticables.c:500
+#: src/ticables.c:528
 #, c-format
 msgid "  delay   : %i us"
 msgstr "  délai   : %i us"
 
-#: src/ticables.c:503
+#: src/ticables.c:531
 #, c-format
 msgid "  device  : %s"
 msgstr "  périph  : %s"
 
-#: src/ticables.c:504
+#: src/ticables.c:532
 #, c-format
 msgid "  address : 0x%03x"
 msgstr "  adresse : 0x%03x"

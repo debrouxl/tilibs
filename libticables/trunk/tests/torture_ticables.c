@@ -57,20 +57,29 @@ int main(int argc, char **argv)
     PRINTF(ticables_cable_put, INT, NULL, -1);
     PRINTF(ticables_cable_get, INT, NULL, (void *)0x12345678);
 // 31
+    PRINTF(ticables_cable_get_pre_send_hook, PTR, NULL);
+    PRINTF(ticables_cable_set_pre_send_hook, PTR, NULL, (void *)0x12345678);
+    PRINTF(ticables_cable_get_post_send_hook, PTR, NULL);
+    PRINTF(ticables_cable_set_post_send_hook, PTR, NULL, (void *)0x12345678);
+    PRINTF(ticables_cable_get_pre_recv_hook, PTR, NULL);
+
+    PRINTF(ticables_cable_set_pre_recv_hook, PTR, NULL, (void *)0x12345678);
+    PRINTF(ticables_cable_get_post_recv_hook, PTR, NULL);
+    PRINTF(ticables_cable_set_post_recv_hook, PTR, NULL, (void *)0x12345678);
 // type2str.c
     PRINTF(ticables_model_to_string, STR, -1);
     PRINTF(ticables_string_to_model, INT, NULL);
+// 41
     PRINTF(ticables_port_to_string, STR, -1);
     PRINTF(ticables_string_to_port, INT, NULL);
     PRINTF(ticables_usbpid_to_string, STR, -1);
-
     PRINTF(ticables_string_to_usbpid, INT, NULL);
 // probe.c
     PRINTF(ticables_probing_do, INT, NULL, -1, -1);
+
     PRINTF(ticables_probing_finish, INT, NULL);
     PRINTF(ticables_is_usb_enabled, INT);
     PRINTF(ticables_get_usb_devices, INT, NULL, NULL);
-// 41
     PRINTF(ticables_free_usb_devices, INT, NULL);
 
     ticables_library_exit();

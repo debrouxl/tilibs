@@ -45,6 +45,7 @@
 
 #include "gettext.h"
 #include "ticables.h"
+#include "internal.h"
 #include "logging.h"
 #include "error.h"
 #include "link_xxx.h"
@@ -239,6 +240,30 @@ TIEXPORT1 uint32_t TICALL ticables_supported_cables (void)
 	return supported_cables;
 }
 
+static int default_pre_send_hook(CableHandle * handle, uint8_t * data, uint32_t len)
+{
+	(void)handle, (void)data, (void)len;
+	return 0;
+}
+
+static int default_post_send_hook(CableHandle * handle, uint8_t * data, uint32_t len, int retval)
+{
+	LOG_N_DATA(handle, LOG_OUT, data, len);
+	return retval;
+}
+
+static int default_pre_recv_hook(CableHandle * handle, uint8_t * data, uint32_t len)
+{
+	(void)handle, (void)data, (void)len;
+	return 0;
+}
+
+static int default_post_recv_hook(CableHandle * handle, uint8_t * data, uint32_t len, int retval)
+{
+	LOG_N_DATA(handle, LOG_IN, data, len);
+	return retval;
+}
+
 /**
  * ticables_handle_new:
  * @model: a cable model
@@ -261,19 +286,27 @@ TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort po
 	handle->delay = DFLT_DELAY;
 	handle->timeout = DFLT_TIMEOUT;
 
-	for(i = 0; cables[i]; i++)
+	for (i = 0; cables[i] != NULL; i++)
 	{
-		if(cables[i]->model == (const int)model)
+		if (cables[i]->model == (const int)model)
 		{
 			handle->cable = (CableFncts *)cables[i];
 			break;
 		}
 	}
 
-	if(handle->cable == NULL)
+	if (handle->cable == NULL)
 	{
 		free(handle);
 		handle = NULL;
+	}
+
+	if (handle != NULL)
+	{
+		handle->pre_send_hook = default_pre_send_hook;
+		handle->post_send_hook = default_post_send_hook;
+		handle->pre_recv_hook = default_pre_recv_hook;
+		handle->post_recv_hook = default_post_recv_hook;
 	}
 
 	return handle;
@@ -289,21 +322,16 @@ TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort po
  **/
 TIEXPORT1 int TICALL ticables_handle_del(CableHandle* handle)
 {
-	if (handle != NULL)
-	{
-		free(handle->priv2);
-		handle->priv2 = NULL;
+	VALIDATE_HANDLE(handle);
 
-		free(handle->device);
-		handle->device = NULL;
+	free(handle->priv2);
+	handle->priv2 = NULL;
 
-		free(handle);
-		handle = NULL;
-	}
-	else
-	{
-		ticables_critical("%s(NULL)", __FUNCTION__);
-	}
+	free(handle->device);
+	handle->device = NULL;
+
+	memset((void *)handle, 0, sizeof(*handle));
+	free(handle);
 
 	return 0;
 }
