@@ -30,7 +30,7 @@
 #define DRV_FILENAME	"dhahelper.sys"
 #define DRV_VERSION		"1.0"
 
-static void print_last_error(char *s)
+static void print_last_error(const char *s)
 {
         LPTSTR lpMsgBuf;
 
@@ -43,10 +43,10 @@ static void print_last_error(char *s)
 
 		lpMsgBuf[strlen(lpMsgBuf)-2] = '\0';
 
-        printf("%s (%i -> %s)\n", s, GetLastError(), lpMsgBuf);
+        printf("%s (%lu -> %s)\n", s, (unsigned long)GetLastError(), lpMsgBuf);
 }
 
-int dha_start(void)
+static int dha_start(void)
 {
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
@@ -64,7 +64,7 @@ int dha_start(void)
 	return 0;
 }
 
-int dha_stop(void)
+static int dha_stop(void)
 {
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
@@ -83,7 +83,7 @@ int dha_stop(void)
 	return 0;
 }
 
-int dha_install(void)
+static int dha_install(void)
 {
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
@@ -131,7 +131,7 @@ int dha_install(void)
 	return result;
 }
 
-int dha_uninstall(void)
+static int dha_uninstall(void)
 {
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
@@ -156,7 +156,7 @@ int dha_uninstall(void)
 	return 0;
 }
 
-int dha_detect(int* result)
+static int dha_detect(int* result)
 {
 	HANDLE hDriver;
 	*result = 0;
@@ -183,7 +183,7 @@ int dha_detect(int* result)
 	return 0;
 }
 
-int dha_enable(void)
+static int dha_enable(void)
 {
 	HANDLE hDriver;
 	DWORD BytesReturned;
@@ -213,7 +213,7 @@ int dha_enable(void)
 	return result;
 }
 
-int dha_disable(void)
+static int dha_disable(void)
 {
 	HANDLE hDriver;
 	DWORD BytesReturned;

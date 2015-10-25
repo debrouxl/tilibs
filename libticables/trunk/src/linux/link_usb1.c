@@ -197,7 +197,7 @@ static void tigl_get_product(char * string, size_t maxlen, struct libusb_device 
 
 	if (r < 0)
 	{
-		ticables_error("failed to get device descriptor");
+		ticables_critical("failed to get device descriptor");
 	}
 
 	if (desc.iProduct)
@@ -376,33 +376,37 @@ static int tigl_reset(CableHandle *h)
 
 static int slv_prepare(CableHandle *h)
 {
+	int ret;
 	char str[64];
 
 #if defined(__WIN32__)
-	TRYC(win32_check_libusb());
+	ret = win32_check_libusb();
 #elif defined(__MACOSX__)
-	TRYC(macosx_check_libusb());
+	ret = macosx_check_libusb();
 #elif defined(__BSD__)
-	TRYC(bsd_check_libusb());
+	ret = bsd_check_libusb();
 #else
-	TRYC(linux_check_libusb());
+	ret = linux_check_libusb();
 #endif
-
-	if (h->port >= MAX_CABLES)
+	if (!ret)
 	{
-		return ERR_ILLEGAL_ARG;
+		if (h->port >= MAX_CABLES)
+		{
+			return ERR_ILLEGAL_ARG;
+		}
+
+		h->address = h->port-1;
+		sprintf(str, "TiglUsb #%i", h->port);
+		h->device = strdup(str);
+		h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
 	}
 
-	h->address = h->port-1;
-	sprintf(str, "TiglUsb #%i", h->port);
-	h->device = strdup(str);
-	h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
-
-	return 0;
+	return ret;
 }
 
 static int slv_open(CableHandle *h)
 {
+	int ret;
 	int i;
 	struct libusb_config_descriptor *config;
 	const struct libusb_interface *interface_;
@@ -410,7 +414,12 @@ static int slv_open(CableHandle *h)
 	const struct libusb_endpoint_descriptor *endpoint;
 
 	// open device
-	TRYC(tigl_open(h->address, &uHdl));
+	ret = tigl_open(h->address, &uHdl);
+	if (ret)
+	{
+		return ret;
+	}
+
 	uDev = tigl_devices[h->address].dev;
 	uInEnd  = 0x81;
 	uOutEnd = 0x02;
@@ -470,35 +479,39 @@ static int slv_close(CableHandle *h)
 
 static int slv_reset(CableHandle *h)
 {
-	int ret = 0;
+	int ret;
 
 	/* Reset both endpoints (send an URB_FUNCTION_RESET_PIPE) */
-	TRYC(tigl_reset(h));
-
-	/* Reset USB port (send an IOCTL_INTERNAL_USB_RESET_PORT) */
-	ret = libusb_reset_device(uHdl);
-	if (ret != 0)
+	ret = tigl_reset(h);
+	if (!ret)
 	{
-		ticables_warning("libusb_device_reset (%s).\n", tigl_strerror(ret));
-		return ERR_LIBUSB_RESET;
-	}
-	else
-	{
-		// lib-usb doc: after calling usb_reset, the device will need to re-enumerate
-		// and thusly, requires you to find the new device and open a new handle. The
-		// handle used to call usb_reset will no longer work.
+		/* Reset USB port (send an IOCTL_INTERNAL_USB_RESET_PORT) */
+		ret = libusb_reset_device(uHdl);
+		if (ret != 0)
+		{
+			ticables_warning("libusb_device_reset (%s).\n", tigl_strerror(ret));
+			return ERR_LIBUSB_RESET;
+		}
+		else
+		{
+			// lib-usb doc: after calling usb_reset, the device will need to re-enumerate
+			// and thusly, requires you to find the new device and open a new handle. The
+			// handle used to call usb_reset will no longer work.
 #ifdef __WIN32__
-		Sleep(500);
+			Sleep(500);
 #else
-		usleep(500000);
+			usleep(500000);
 #endif
-		TRYC(slv_close(h));
-
-		h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
-		TRYC(slv_open(h));
+			ret = slv_close(h);
+			if (!ret)
+			{
+				h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
+				ret = slv_open(h);
+			}
+		}
 	}
 
-	return 0;
+	return ret;
 }
 
 // convenient function which send one or more bytes
@@ -736,11 +749,16 @@ static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
 
 static int slv_probe(CableHandle *h)
 {
+	int ret;
 	int i;
 
-	TRYC(tigl_enum());
+	ret = tigl_enum();
+	if (ret)
+	{
+		return ret;
+	}
 
-	for(i = 0; i < MAX_CABLES; i++)
+	for (i = 0; i < MAX_CABLES; i++)
 	{
 		if (tigl_devices[h->address].pid == PID_TIGLUSB)
 		{
@@ -753,9 +771,14 @@ static int slv_probe(CableHandle *h)
 
 static int raw_probe(CableHandle *h)
 {
+	int ret;
 	int i;
 
-	TRYC(tigl_enum());
+	ret = tigl_enum();
+	if (ret)
+	{
+		return ret;
+	}
 
 	for(i = 0; i < MAX_CABLES; i++)
 	{

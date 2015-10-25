@@ -22,7 +22,6 @@ src/dusb_cmd.c
 src/dusb_rpkt.c
 src/dusb_vpkt.c
 src/error.c
-src/logging.c
 src/nsp_cmd.c
 src/probe.c
 src/romdump.c

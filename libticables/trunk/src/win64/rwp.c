@@ -40,7 +40,7 @@
 #if !defined(__MINGW32__) || defined(_WIN64)
 /* Under MinGW, both dha.c and rwp.c are included into detect.c, so avoid the
    duplicate definition. */
-static void print_last_error(char *s)
+static void print_last_error(const char *s)
 {
         LPTSTR lpMsgBuf;
 
@@ -53,7 +53,7 @@ static void print_last_error(char *s)
 
 		lpMsgBuf[strlen(lpMsgBuf)-2] = '\0';
 
-        printf("%s (%i -> %s)\n", s, (int)GetLastError(), lpMsgBuf);
+        printf("%s (%lu -> %s)\n", s, (unsigned long)GetLastError(), lpMsgBuf);
 }
 #endif
 

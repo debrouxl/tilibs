@@ -83,7 +83,7 @@ static int hexdump(uint8_t *data, uint32_t size)
 		             data[0], data[1], data[2], data[3], data[4],
 		             data[size-5], data[size-4], data[size-3], data[size-2], data[size-1]);
 	}
-	ticalcs_info(str);
+	ticalcs_info("%s", str);
 #endif
 #if (VPKT_DBG == 2)
 	char *str = (char *)g_malloc(3*size + 8 + 10);
@@ -105,7 +105,7 @@ static int hexdump(uint8_t *data, uint32_t size)
 
 		sprintf(&str[3*j+4], "%02X ", data[i]);
 	}
-	ticalcs_info(str);
+	ticalcs_info("%s", str);
 
 	g_free(str);
 #endif

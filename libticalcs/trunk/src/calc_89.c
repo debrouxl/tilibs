@@ -335,8 +335,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				}
 			}
 		}
-		
-		ticalcs_info("");
+
+		ticalcs_info(" ");
 	}
 
 	return 0;

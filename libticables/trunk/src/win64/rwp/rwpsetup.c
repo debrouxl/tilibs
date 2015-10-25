@@ -29,7 +29,7 @@
 #define DRV_FILENAME	"rwports.sys"
 #define DRV_VERSION		"1.0"
 
-static void print_last_error(char *s)
+static void print_last_error(const char *s)
 {
         LPTSTR lpMsgBuf;
 
@@ -42,10 +42,10 @@ static void print_last_error(char *s)
 
 		lpMsgBuf[strlen(lpMsgBuf)-2] = '\0';
 
-        printf("%s (%i -> %s)\n", s, GetLastError(), lpMsgBuf);
+        printf("%s (%lu -> %s)\n", s, (unsigned long)GetLastError(), lpMsgBuf);
 }
 
-int rwp_start(void)
+static int rwp_start(void)
 {
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
@@ -63,7 +63,7 @@ int rwp_start(void)
 	return 0;
 }
 
-int rwp_stop(void)
+static int rwp_stop(void)
 {
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
@@ -82,7 +82,7 @@ int rwp_stop(void)
 	return 0;
 }
 
-int rwp_install(void)
+static int rwp_install(void)
 {
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
@@ -130,7 +130,7 @@ int rwp_install(void)
 	return result;
 }
 
-int rwp_uninstall(void)
+static int rwp_uninstall(void)
 {
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
@@ -155,7 +155,7 @@ int rwp_uninstall(void)
 	return 0;
 }
 
-int rwp_detect(int* result)
+static int rwp_detect(int* result)
 {
 	HANDLE hDriver;
 	*result = 0;
@@ -182,7 +182,7 @@ int rwp_detect(int* result)
 	return 0;
 }
 
-int rwp_read_byte(unsigned long address, unsigned char *data)
+static int rwp_read_byte(unsigned long address, unsigned char *data)
 {
 	HANDLE hDriver;
 	DWORD BytesReturned;
@@ -209,7 +209,7 @@ int rwp_read_byte(unsigned long address, unsigned char *data)
 	else
 	{
 		*data = buf[0];
-		printf("I/O ports read at 0x%04x: %02x\n", address, *data);
+		printf("I/O ports read at 0x%04lX: %02x\n", address, *data);
 	}
 
 	CloseHandle(hDriver);
@@ -218,7 +218,7 @@ int rwp_read_byte(unsigned long address, unsigned char *data)
 	return result;
 }
 
-int rwp_write_byte(unsigned long address, unsigned char data)
+static int rwp_write_byte(unsigned long address, unsigned char data)
 {
 	HANDLE hDriver;
 	DWORD BytesReturned;
@@ -242,7 +242,7 @@ int rwp_write_byte(unsigned long address, unsigned char data)
 		result = -1;
 	}
 	else
-		printf("I/O ports write at 0x%04x.\n", address);
+		printf("I/O ports write at 0x%04lX.\n", address);
 
 	CloseHandle(hDriver);
 	hDriver = INVALID_HANDLE_VALUE;
@@ -312,7 +312,7 @@ int main(int argc,char* argv[])
   }
   else if(!strcmp(argv[1], "read"))
   {
-	  unsigned char v;
+	  unsigned char v = 0;
 
 	  rwp_read_byte(0x378, &v);
 	  printf("v = %02x\n", v);

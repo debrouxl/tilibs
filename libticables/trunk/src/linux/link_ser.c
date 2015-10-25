@@ -90,12 +90,16 @@ static int ser_prepare(CableHandle *h)
 
 static int ser_open(CableHandle *h)
 {
+	int ret;
 	int fd;
 
-	TRYC(ser_io_open(h->device, &fd));
-	h->priv = GINT_TO_POINTER(fd);
+	ret = ser_io_open(h->device, &fd);
+	if (!ret)
+	{
+		h->priv = GINT_TO_POINTER(fd);
+	}
 
-	return 0;
+	return ret;
 }
 
 static int ser_close(CableHandle *h)

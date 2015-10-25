@@ -24,15 +24,9 @@
 
 #include <glib.h>
 
-#define LOG_DOMAIN	"tifiles"
-
-void tifiles_debug(const gchar *format, ...);
-void tifiles_info(const gchar *format, ...);
-void tifiles_message(const gchar *format, ...);
-void tifiles_warning(const gchar *format, ...);
-void tifiles_critical(const gchar *format, ...);
-void tifiles_error(const gchar *format, ...);
-
-#define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
+#define tifiles_debug(format, ...) g_log("tifiles", G_LOG_LEVEL_DEBUG, format, ##__VA_ARGS__)
+#define tifiles_info(format, ...) g_log("tifiles", G_LOG_LEVEL_INFO, format, ##__VA_ARGS__)
+#define tifiles_warning(format, ...) g_log("tifiles", G_LOG_LEVEL_WARNING, format, ##__VA_ARGS__)
+#define tifiles_critical(format, ...) g_log("tifiles", G_LOG_LEVEL_CRITICAL, format, ##__VA_ARGS__)
 
 #endif

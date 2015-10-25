@@ -384,7 +384,11 @@ static int tigl_open(int id, usb_dev_handle **udh)
 {
 	int ret;
 
-	TRYC(tigl_enum());
+	ret = tigl_enum();
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (tigl_devices[id].dev == NULL)
 	{
@@ -413,7 +417,7 @@ static int tigl_open(int id, usb_dev_handle **udh)
 	}
 	else
 	{
-	return ERR_LIBUSB_OPEN;
+		return ERR_LIBUSB_OPEN;
 	}
 
 	return 0;
@@ -452,33 +456,37 @@ static int tigl_reset(CableHandle *h)
 /* API */
 static int slv_prepare(CableHandle *h)
 {
+	int ret;
 	char str[64];
 
 #if defined(__WIN32__)
-	TRYC(win32_check_libusb());
+	ret = win32_check_libusb();
 #elif defined(__MACOSX__)
-	TRYC(macosx_check_libusb());
+	ret = macosx_check_libusb();
 #elif defined(__BSD__)
-	TRYC(bsd_check_libusb());
+	ret = bsd_check_libusb();
 #else
-	TRYC(linux_check_libusb());
+	ret = linux_check_libusb();
 #endif
-
-	if (h->port >= MAX_CABLES)
+	if (!ret)
 	{
-		return ERR_ILLEGAL_ARG;
+		if (h->port >= MAX_CABLES)
+		{
+			return ERR_ILLEGAL_ARG;
+		}
+
+		h->address = h->port-1;
+		sprintf(str, "TiglUsb #%i", h->port);
+		h->device = strdup(str);
+		h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
 	}
 
-	h->address = h->port-1;
-	sprintf(str, "TiglUsb #%i", h->port);
-	h->device = strdup(str);
-	h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
-
-	return 0;
+	return ret;
 }
 
 static int slv_open(CableHandle *h)
 {
+	int ret;
 	int i;
 	struct usb_config_descriptor *config;
 	struct usb_interface *interface_;
@@ -486,7 +494,11 @@ static int slv_open(CableHandle *h)
 	struct usb_endpoint_descriptor *endpoint;    
 
 	// open device
-	TRYC(tigl_open(h->address, &uHdl));
+	ret = tigl_open(h->address, &uHdl);
+	if (ret)
+	{
+		return ret;
+	}
 	uDev = tigl_devices[h->address].dev;
 	uInEnd  = 0x81;
 	uOutEnd = 0x02;
@@ -548,7 +560,11 @@ static int slv_reset(CableHandle *h)
 
 #if !defined(__BSD__)
 	/* Reset both endpoints (send an URB_FUNCTION_RESET_PIPE) */
-	TRYC(tigl_reset(h));
+	ret = tigl_reset(h);
+	if (ret)
+	{
+		return ret;
+	}
 
 	/* Reset USB port (send an IOCTL_INTERNAL_USB_RESET_PORT) */
 #ifdef __WIN32__
@@ -573,10 +589,13 @@ static int slv_reset(CableHandle *h)
 #else
 		usleep(500000);
 #endif
-		TRYC(slv_close(h));
-
-		h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
-		return slv_open(h);
+		ret = slv_close(h);
+		if (!ret)
+		{
+			h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
+			ret = slv_open(h);
+		}
+		return ret;
 	}
 #endif
 }
@@ -754,7 +773,7 @@ static int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
 
 #ifdef _WIN32
 #define LIBUSB_MAX_READ_WRITE 0x10000
-int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
+static int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
                    int timeout)
 {
 	// This is a variant of usb_bulk_read in libusb-win32, edited to take the
@@ -888,17 +907,21 @@ static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
 
 	// we can't do that in any other way because slv_get_ can returns
 	// 1, 2, ..., len bytes.
-	for(i = 0; i < (int)len; i++)
+	for (i = 0; i < (int)len; i++)
 	{
-		TRYC(slv_get_(h, data+i));
+		ret = slv_get_(h, data+i);
+		if (ret)
+		{
+			break;
+		}
 	}
 
-	if (   (tigl_devices[h->address].pid == PID_NSPIRE   && was_max_size_packet != 0 && nBytesRead == 0)
-	    || (len == 0 && (   (tigl_devices[h->address].pid == PID_TI89TM   && was_max_size_packet != 0 && nBytesRead == 0)
-			     || (tigl_devices[h->address].pid == PID_TI84P    && was_max_size_packet != 0 && nBytesRead == 0)
-			     || (tigl_devices[h->address].pid == PID_TI84P_SE && was_max_size_packet != 0 && nBytesRead == 0)
-			    )
-	       )
+	if (!ret &&   (tigl_devices[h->address].pid == PID_NSPIRE   && was_max_size_packet != 0 && nBytesRead == 0)
+	           || (len == 0 && (   (tigl_devices[h->address].pid == PID_TI89TM   && was_max_size_packet != 0 && nBytesRead == 0)
+			            || (tigl_devices[h->address].pid == PID_TI84P    && was_max_size_packet != 0 && nBytesRead == 0)
+			            || (tigl_devices[h->address].pid == PID_TI84P_SE && was_max_size_packet != 0 && nBytesRead == 0)
+			           )
+	              )
 	   )
 	{
 		ticables_info("XXX triggering an extra bulk read");
@@ -913,14 +936,19 @@ static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
 		}
 	}
 
-	return 0;
+	return ret;
 }
 
 static int slv_probe(CableHandle *h)
 {
+	int ret;
 	int i;
 
-	TRYC(tigl_enum());
+	ret = tigl_enum();
+	if (ret)
+	{
+		return ret;
+	}
 
 	for(i = 0; i < MAX_CABLES; i++)
 	{
@@ -935,9 +963,14 @@ static int slv_probe(CableHandle *h)
 
 static int raw_probe(CableHandle *h)
 {
+	int ret;
 	int i;
 
-	TRYC(tigl_enum());
+	ret = tigl_enum();
+	if (ret)
+	{
+		return ret;
+	}
 
 	for(i = 0; i < MAX_CABLES; i++)
 	{

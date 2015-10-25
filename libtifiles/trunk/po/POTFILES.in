@@ -9,7 +9,6 @@ src/filesxx.c
 src/filetypes.c
 src/grouped.c
 src/intelhex.c
-src/logging.c
 src/misc.c
 src/rwfile.c
 src/tifiles.c

@@ -463,7 +463,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		TRYF(ti73_recv_ACK(handle, NULL));
 
 		TRYF(ti73_send_EOT(handle));
-		ticalcs_info("");
+		ticalcs_info("Sent variable #%u", i);
 
 		update_->cnt2 = i+1;
 		update_->max2 = content->num_entries;

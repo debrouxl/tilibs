@@ -207,7 +207,7 @@ TIEXPORT2 int TICALL tifiles_hexdump(const uint8_t * ptr, unsigned int len)
 			sprintf(&str[3 * alloc_len], "(%u)", len);
 		}
 
-		tifiles_info(str);
+		tifiles_info("%s", str);
 		g_free(str);
 	}
 

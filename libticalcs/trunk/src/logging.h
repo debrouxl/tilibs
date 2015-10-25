@@ -24,14 +24,10 @@
 
 #include <glib.h>
 
-#define LOG_DOMAIN	"ticalcs"
-
-void ticalcs_debug(const gchar *format, ...);
-void ticalcs_info(const gchar *format, ...);
-void ticalcs_message(const gchar *format, ...);
-void ticalcs_warning(const gchar *format, ...);
-void ticalcs_critical(const gchar *format, ...);
-void ticalcs_error(const gchar *format, ...);
+#define ticalcs_debug(format, ...) g_log("ticalcs", G_LOG_LEVEL_DEBUG, format, ##__VA_ARGS__)
+#define ticalcs_info(format, ...) g_log("ticalcs", G_LOG_LEVEL_INFO, format, ##__VA_ARGS__)
+#define ticalcs_warning(format, ...) g_log("ticalcs", G_LOG_LEVEL_WARNING, format, ##__VA_ARGS__)
+#define ticalcs_critical(format, ...) g_log("ticalcs", G_LOG_LEVEL_CRITICAL, format, ##__VA_ARGS__)
 
 #define TRYF(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 

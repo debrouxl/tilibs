@@ -75,12 +75,16 @@ static int par_prepare(CableHandle *h)
 
 static int par_open(CableHandle *h)
 {
+	int ret;
 	int fd;
 
-	TRYC(par_io_open(h->device, &fd));
-	h->priv = GINT_TO_POINTER(fd);
+	ret = par_io_open(h->device, &fd);
+	if (!ret)
+	{
+		h->priv = GINT_TO_POINTER(fd);
+	}
 
-	return 0;
+	return ret;
 }
 
 static int par_close(CableHandle *h)
