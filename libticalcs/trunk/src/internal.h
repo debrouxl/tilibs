@@ -187,6 +187,12 @@ int ti82_send_asm_exec(CalcHandle*, VarEntry * var);
 void dusb_vtl_pkt_purge(void);
 
 
+// dusb_cmd.c
+
+int dusb_check_cmd_data(CalcModel model, const uint8_t * data, uint32_t len, uint32_t vtl_size, uint16_t vtl_type);
+int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32_t len, uint32_t vtl_size, uint16_t vtl_type);
+
+
 // nsp_vpkt.c
 
 extern uint16_t nsp_src_port;

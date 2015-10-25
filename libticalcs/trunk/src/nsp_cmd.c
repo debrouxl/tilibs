@@ -23,6 +23,7 @@
 	This unit handles commands and session management thru DirectLink.
 */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 

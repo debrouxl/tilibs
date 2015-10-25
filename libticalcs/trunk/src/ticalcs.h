@@ -263,6 +263,7 @@ typedef enum
 	INFOS_BPP            = (1 << 20),
 	INFOS_CLOCK_SPEED    = (1 << 21),
 	INFOS_PRODUCT_ID     = (1 << 22),
+	INFOS_EXACT_MATH     = (1 << 23),
 
 	INFOS_CALC_MODEL     = (1 << 31),
 } InfosMask;
@@ -581,6 +582,7 @@ typedef struct
 	uint8_t		run_level;			// 1 = boot, 2 = OS
 	uint16_t	bits_per_pixel;		// 1 or 4
 	uint16_t	clock_speed;
+	uint8_t		exact_math;
 } CalcInfos;
 
 /**
@@ -726,7 +728,7 @@ struct _CalcHandle
  * @cable_model: model
  * @cable_port: port
  * @cable_timeout: timeout in tenth of seconds
- * @cable_delay: inter-bit delay in µs
+ * @cable_delay: inter-bit delay in Âµs
  * @calc_model: calculator model
  *
  * A convenient structure free of use by the user.

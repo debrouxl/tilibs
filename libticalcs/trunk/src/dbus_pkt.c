@@ -23,6 +23,7 @@
 	This unit manages packets from/to D-BUS.
 */
 
+#include <stdio.h>
 #include <string.h>
 
 #include "ticalcs.h"

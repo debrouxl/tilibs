@@ -26,6 +26,8 @@
 #include <config.h>
 #endif
 
+#include <stdio.h>
+
 #include "ticalcs.h"
 #include "gettext.h"
 #include "internal.h"

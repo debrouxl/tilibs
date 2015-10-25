@@ -2,7 +2,7 @@
 /* $Id: cmd84p.c 2077 2006-03-31 21:16:19Z roms $ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+ *  Copyright (C) 1999-2005  Romain LiÃ©vin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 
 // Some functions should be renamed or re-organized...
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -37,6 +38,65 @@
 
 #include "dusb_vpkt.h"
 #include "dusb_cmd.h"
+
+// Type to string
+
+typedef struct
+{
+	uint16_t   id;
+	const char *name;
+} DUSBCmdParamInfo;
+
+static const DUSBCmdParamInfo param_types[] =
+{
+	{ 0x0000, "" },
+	{ PID_PRODUCT_NUMBER, "Product number" },
+	{ PID_PRODUCT_NAME, "Product name" },
+	{ PID_MAIN_PART_ID, "Main part ID" },
+	{ PID_HW_VERSION, "Hardware version" },
+	{ PID_FULL_ID, "Full ID" },
+	{ PID_LANGUAGE_ID, "Language ID" },
+	{ PID_SUBLANG_ID, "Sub-language ID" },
+	{ PID_DEVICE_TYPE, "Device type" },
+	{ PID_BOOT_VERSION, "Boot version" },
+	{ PID_OS_MODE, "OS mode" },
+	{ PID_OS_VERSION, "OS version" },
+	{ PID_PHYS_RAM, "Physical RAM" },
+	{ PID_USER_RAM, "User RAM" },
+	{ PID_FREE_RAM, "Free RAM" },
+	{ PID_PHYS_FLASH, "Physical Flash" },
+	{ PID_USER_FLASH, "User Flash" },
+	{ PID_FREE_FLASH, "Free Flash" },
+	{ PID_USER_PAGES, "User pages" },
+	{ PID_FREE_PAGES, "Free pages" },
+	{ PID_LCD_WIDTH, "LCD width" },
+	{ PID_LCD_HEIGHT, "LCD height" },
+	{ PID_SCREENSHOT, "Screenshot" },
+	{ PID_CLK_ON, "Clock ON" },
+	{ PID_CLK_SEC, "Clock sec" },
+	{ PID_CLK_DATE_FMT, "Clock date format" },
+	{ PID_CLK_TIME_FMT, "Clock time format" },
+	{ PID_BATTERY, "Battery level" },
+	{ PID_HOMESCREEN, "Home screen" },
+	{ PID_SCREEN_SPLIT, "Screen split mode" },
+	{ PID_EXACT_MATH, "Exact math engine" },
+	{ -1, NULL}
+};
+
+TIEXPORT3 const char* TICALL dusb_cmd_param_type2name(uint16_t id)
+{
+	const DUSBCmdParamInfo *p;
+
+	for (p = param_types; p->name != NULL; p++)
+	{
+		if (p->id == id)
+		{
+			return p->name;
+		}
+	}
+
+	return "unknown: not listed";
+}
 
 // Helpers
 
@@ -160,7 +220,9 @@ void dusb_cpca_purge(void)
 /////////////----------------
 
 static void byteswap(uint8_t *data, uint32_t len)
-{/*
+{
+	(void)data, (void)len;
+	/*
 	if(len == 2)
 	{
 		uint8_t tmp;
@@ -189,18 +251,18 @@ static void byteswap(uint8_t *data, uint32_t len)
 static const uint16_t usb_errors[] = {
 	0x0004, 0x0006, 0x0008, 0x0009, 0x000c, 0x000d, 0x000e, 
 	0x0011, 0x0012, 0x001c, 0x001d, 0x0022, 0x0027, 0x0029, 
-	0x002b, 0x002e, 0x0034 };
+	0x002b, 0x002e, 0x0034
+};
 
-static int err_code(DUSBVirtualPacket *pkt)
+static int err_code(uint16_t code)
 {
-	int i;
-	int code = (((int)pkt->data[0]) << 8) | pkt->data[1];
+	unsigned int i;
 
-	for (i = 0; i < (int)(sizeof(usb_errors) / sizeof(usb_errors[0])); i++)
+	for (i = 0; i < sizeof(usb_errors) / sizeof(usb_errors[0]); i++)
 	{
 		if (usb_errors[i] == code)
 		{
-			return i+1;
+			return i + 1;
 		}
 	}
 
@@ -209,9 +271,384 @@ static int err_code(DUSBVirtualPacket *pkt)
 	return 0;
 }
 
+static int err_code_pkt(DUSBVirtualPacket *pkt)
+{
+	return err_code((((uint16_t)pkt->data[0]) << 8) | pkt->data[1]);
+}
+
 /////////////----------------
 
-extern const DUSBVtlPktName vpkt_types[];
+int dusb_check_cmd_data(CalcModel model, const uint8_t * data, uint32_t len, uint32_t vtl_size, uint16_t vtl_type)
+{
+	int ret = ERR_INVALID_PACKET;
+
+	(void)vtl_size;
+
+	switch (vtl_type)
+	{
+		case DUSB_VPKT_PING:
+		{
+			if (len == 10U)
+			{
+				ret = 0;
+			}
+		}
+		break;
+
+		case DUSB_VPKT_PARM_REQ:
+		{
+			if (len >= 2U)
+			{
+				uint16_t npids = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+				if (len == 2U + npids * 2)
+				{
+					ret = 0;
+				}
+				// else do nothing.
+			}
+			// else do nothing.
+		}
+		break;
+
+		case DUSB_VPKT_PARM_DATA:
+		{
+			if (len >= 2U)
+			{
+				uint16_t nparams = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+				data += 2;
+				if (len >= 2U + 3 * nparams)
+				{
+					uint16_t i;
+					uint32_t additional_size = 0;
+					int overrun = 0;
+
+					for (i = 0; i < nparams; i++)
+					{
+						uint8_t ok = !(data[2]);
+						data += 3;
+						if (ok)
+						{
+							uint16_t size = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+							data += size + 2;
+							additional_size += size + 2;
+						}
+						if (len < 2U + 3 * nparams + additional_size)
+						{
+							overrun = 1;
+							break;
+						}
+						// else do nothing.
+					}
+					if (!overrun && len == 2U + 3 * nparams + additional_size)
+					{
+						ret = 0;
+					}
+					// else do nothing.
+				}
+				// else do nothing.
+			}
+			// else do nothing.
+		}
+		break;
+
+		case DUSB_VPKT_PARM_SET:
+		{
+			if (len > 4U)
+			{
+				uint16_t size = (((uint16_t)(data[2])) << 8) | ((uint16_t)(data[3]));
+				if (len == 4U + size)
+				{
+					ret = 0;
+				}
+				// else do nothing.
+			}
+			// else do nothing.
+		}
+		break;
+
+		case DUSB_VPKT_OS_BEGIN:
+		{
+			if (len == 11U)
+			{
+				ret = 0;
+			}
+		}
+		break;
+
+		case DUSB_VPKT_OS_ACK:
+		{
+			if (len >= 4U)
+			{
+				ret = 0;
+			}
+		}
+		break;
+
+		case DUSB_VPKT_OS_HEADER:
+		case DUSB_VPKT_OS_DATA:
+		{
+			if (model == CALC_TI89T_USB)
+			{
+				if (len > 0U)
+				{
+					ret = 0;
+				}
+			}
+			else
+			{
+				if (len > 4U)
+				{
+					ret = 0;
+				}
+			}
+		}
+		break;
+
+		case DUSB_VPKT_DELAY_ACK:
+		{
+			if (len == 4U)
+			{
+				ret = 0;
+			}
+		}
+		break;
+
+		case DUSB_VPKT_ERROR:
+		{
+			if (len == 2U)
+			{
+				ret = 0;
+			}
+		}
+		break;
+
+		// Nothing to do.
+		case DUSB_VPKT_VAR_CNTS:
+		case DUSB_VPKT_MODE_SET:
+		case DUSB_VPKT_EOT_ACK:
+		case DUSB_VPKT_DATA_ACK:
+		case DUSB_VPKT_EOT:
+		{
+			ret = 0;
+		}
+		break;
+
+		// TODO
+		case DUSB_VPKT_DIR_REQ:
+		case DUSB_VPKT_VAR_HDR:
+		case DUSB_VPKT_RTS:
+		case DUSB_VPKT_VAR_REQ:
+		case DUSB_VPKT_MODIF_VAR:
+		case DUSB_VPKT_EXECUTE:
+		{
+			ret = 0;
+		}
+
+		// Fall through for unknown vpkts, they're already marked invalid anyway.
+		default:
+		break;
+	}
+
+	if (ret)
+	{
+		ticalcs_critical("Validation failed for DUSB packet data of len=%lu, type=%04X", (unsigned long)len, vtl_type);
+	}
+
+	return ret;
+}
+
+int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32_t len, uint32_t vtl_size, uint16_t vtl_type)
+{
+	int ret = dusb_check_cmd_data(model, data, len, vtl_size, vtl_type);
+	(void)vtl_size;
+
+	if (ret)
+	{
+		return ret;
+	}
+
+	switch (vtl_type)
+	{
+		case DUSB_VPKT_PING:
+		{
+			uint16_t arg1 = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+			uint16_t arg2 = (((uint16_t)(data[2])) << 8) | ((uint16_t)(data[3]));
+			uint16_t arg3 = (((uint16_t)(data[4])) << 8) | ((uint16_t)(data[5]));
+			uint16_t arg4 = (((uint16_t)(data[6])) << 8) | ((uint16_t)(data[7]));
+			uint16_t arg5 = (((uint16_t)(data[8])) << 8) | ((uint16_t)(data[9]));
+			fprintf(f, "Set mode: { %u, %u, %u, %u, 0x%04X }\n", arg1, arg2, arg3, arg4, arg5);
+		}
+		break;
+
+		case DUSB_VPKT_PARM_REQ:
+		{
+			uint16_t npids = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+			uint16_t i;
+
+			if (len == 2U + npids * 2)
+			{
+				data += 2;
+				fprintf(f, "Requested %u (%X) parameter IDs:\n", npids, npids);
+				for (i = 0; i < npids; i++)
+				{
+					uint16_t pid = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+					data += 2;
+					fprintf(f, "\t%04X (%s)\n", pid, dusb_cmd_param_type2name(pid));
+				}
+				fputc('\n', f);
+			}
+		}
+		break;
+
+		case DUSB_VPKT_PARM_DATA:
+		{
+			uint16_t nparams = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+			uint16_t i;
+			uint32_t additional_size = 0;
+
+			if (len >= 2U + 3 * nparams)
+			{
+				data += 2;
+				fprintf(f, "Received %u (%X) parameter values:\n", nparams, nparams);
+				for (i = 0; i < nparams; i++)
+				{
+					uint16_t pid = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+					uint8_t ok;
+					data += 2;
+					ok = !(*data++);
+					fprintf(f, "\t%04X (%s): ", pid, dusb_cmd_param_type2name(pid));
+					if (ok)
+					{
+						uint16_t j;
+						uint16_t size = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+
+						data += 2;
+						additional_size += size + 2;
+						if (len < 2U + 3 * nparams + additional_size)
+						{
+							break;
+						}
+						fprintf(f, "OK, size %04X\n\t\t", size);
+						for (j = 0; j < size;)
+						{
+							fprintf(f, "%02X ", *data++);
+							if (!(++j & 15))
+							{
+								fprintf(f, "\n\t\t");
+							}
+						}
+						fputc('\n', f);
+					}
+					else
+					{
+						fputs("NOK !\n", f);
+					}
+				}
+			}
+			// else do nothing.
+		}
+		break;
+
+		case DUSB_VPKT_PARM_SET:
+		{
+			uint16_t id = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+			uint16_t size = (((uint16_t)(data[2])) << 8) | ((uint16_t)(data[3]));
+			uint16_t i;
+
+			data += 4;
+			if (len == 4U + size)
+			{
+				fprintf(f, "Sending value of size %04X for parameter %04X\n\t", size, id);
+				for (i = 0; i < size; i++)
+				{
+					fprintf(f, "%02X ", *data++);
+					if (!(++i & 15))
+					{
+						fprintf(f, "\n\t");
+					}
+				}
+			}
+			// else do nothing.
+		}
+		break;
+
+		case DUSB_VPKT_OS_BEGIN:
+		{
+			uint32_t size = (((uint32_t)data[7]) << 24) | (((uint32_t)data[8]) << 16) | (((uint32_t)data[9]) << 8) | (((uint32_t)data[10]) << 0);
+			fprintf(f, "Size: %lu / %08lX\n", (unsigned long)size, (unsigned long)size);
+		}
+		break;
+
+		case DUSB_VPKT_OS_ACK:
+		{
+			uint32_t size = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (((uint32_t)data[3]) << 0);
+			fprintf(f, "Chunk size: %lu / %08lX\n", (unsigned long)size, (unsigned long)size);
+		}
+		break;
+
+		case DUSB_VPKT_OS_HEADER:
+		case DUSB_VPKT_OS_DATA:
+		{
+			if (model == CALC_TI83PCE_USB || model == CALC_TI84PCE_USB)
+			{
+				uint32_t addr = (((uint32_t)data[3]) << 24) | (((uint32_t)data[2]) << 16) | (((uint32_t)data[1]) << 8) | (((uint32_t)data[0]) << 0);
+				fprintf(f, "Address: %08lX\n", (unsigned long)addr);
+			}
+			else if (model != CALC_TI89T_USB)
+			{
+				uint16_t addr = (((uint16_t)data[0]) << 8) | (((uint32_t)data[1]) << 0);
+				fprintf(f, "Address: %04X\tPage: %02X\tFlag: %02X\n", addr, data[2], data[3]);
+			}
+			// else do nothing.
+		}
+		break;
+
+		case DUSB_VPKT_DELAY_ACK:
+		{
+			uint32_t delay = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (data[3] << 0);
+			fprintf(f, "Delay: %lu\n", (unsigned long)delay);
+		}
+		break;
+
+		case DUSB_VPKT_ERROR:
+		{
+			int err = err_code((((uint16_t)data[0]) << 8) | (((uint32_t)data[1]) << 0));
+			fprintf(f, "Error code: %u (%04X)\n", err, err);
+		}
+		break;
+
+		// Nothing to do.
+		case DUSB_VPKT_VAR_CNTS:
+		case DUSB_VPKT_MODE_SET:
+		case DUSB_VPKT_EOT_ACK:
+		case DUSB_VPKT_DATA_ACK:
+		case DUSB_VPKT_EOT:
+		break;
+
+		// TODO
+		case DUSB_VPKT_DIR_REQ:
+		case DUSB_VPKT_VAR_HDR:
+		case DUSB_VPKT_RTS:
+		case DUSB_VPKT_VAR_REQ:
+		case DUSB_VPKT_MODIF_VAR:
+		case DUSB_VPKT_EXECUTE:
+		{
+			fputs("(no extra dissection performed for now)\n", f);
+		}
+		break;
+
+		default:
+		{
+			fputs("(not performing extra dissection on unknown vpkt type)\n", f);
+		}
+		break;
+
+	}
+
+	return ret;
+}
+
+/////////////----------------
 
 #define CATCH_DELAY() CATCH_DELAY_VARSIZE(NULL, 0)
 
@@ -317,7 +754,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_os_ack(CalcHandle *handle, uint32_t *size)
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
 			goto end;
 		}
 		else if (pkt->type != DUSB_VPKT_OS_ACK)
@@ -329,7 +766,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_os_ack(CalcHandle *handle, uint32_t *size)
 		if (size != NULL)
 		{
 			*size = (((uint32_t)pkt->data[0]) << 24) | (((uint32_t)pkt->data[1]) << 16) | (((uint32_t)pkt->data[2]) << 8) | (((uint32_t)pkt->data[3]) << 0);
-			ticalcs_info("   size = %08x (%i)", *size, *size);
+			ticalcs_info("   chunk size = %08x (%i)", *size, *size);
 		}
 	}
 
@@ -456,7 +893,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_eot_ack(CalcHandle *handle)
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
 		}
 		else if (pkt->type != DUSB_VPKT_EOT_ACK)
 		{
@@ -519,7 +956,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_param_data(CalcHandle *handle, int nparams, DUSB
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
 			goto end;
 		}
 		else if (pkt->type != DUSB_VPKT_PARM_DATA)
@@ -578,7 +1015,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, u
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
 			goto end;
 		}
 		else if (pkt->type != DUSB_VPKT_PARM_DATA)
@@ -675,7 +1112,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_var_header(CalcHandle *handle, char *folder, cha
 		}
 		else if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
 			goto end;
 		}
 		else if (pkt->type != DUSB_VPKT_VAR_HDR)
@@ -888,7 +1325,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_var_content(CalcHandle *handle, uint32_t *size, 
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
 			goto end;
 		}
 		else if (pkt->type != DUSB_VPKT_VAR_CNTS)
@@ -1011,7 +1448,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 		pks += 4 + dst_attrs[i]->size;
 	}
 
-	pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_DEL_VAR);
+	pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_MODIF_VAR);
 
 	if (strlen(src_folder))
 	{
@@ -1189,7 +1626,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_mode_ack(CalcHandle *handle)
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
 		}
 		else if (pkt->type != DUSB_VPKT_MODE_SET)
 		{
@@ -1221,7 +1658,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_data_ack(CalcHandle *handle)
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
 		}
 		else if (pkt->type != DUSB_VPKT_DATA_ACK)
 		{
@@ -1252,7 +1689,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_delay_ack(CalcHandle *handle)
 	{
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
 		}
 		else if (pkt->type != DUSB_VPKT_DELAY_ACK)
 		{
@@ -1303,7 +1740,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_eot(CalcHandle *handle)
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
 			goto end;
 		}
 		else if (pkt->type != DUSB_VPKT_EOT)

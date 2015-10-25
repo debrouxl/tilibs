@@ -39,6 +39,7 @@
 #include "../src/ticalcs.h"
 #include "../src/nsp_cmd.h"
 #include "../src/cmdz80.h"
+#include "../src/dusb_rpkt.h"
 
 #undef VERSION
 #define VERSION "Test program"
@@ -706,6 +707,105 @@ static int ti83pfamily_sid(CalcHandle *h)
 	return 0;
 }
 
+static int build_raw_bytes_from_hex_string(char * buffer, uint32_t maxbuflen, unsigned char * data, uint32_t maxdatalen, uint32_t * length)
+{
+	uint32_t i;
+	uint8_t c = 0;
+	int odd = 0;
+	for (i = 0; i < maxbuflen; i++)
+	{
+		if (buffer[i] == 0)
+		{
+			if (odd)
+			{
+				printf("Odd number of nibbles in hex string, bailing out");
+			}
+			return odd;
+		}
+		else if (buffer[i] >= '0' && buffer[i] <= '9')
+		{
+			c |= buffer[i] - '0';
+		}
+		else if (buffer[i] >= 'a' && buffer[i] <= 'f')
+		{
+			c |= buffer[i] - 'a' + 10;
+		}
+		else if (buffer[i] >= 'A' && buffer[i] <= 'F')
+		{
+			c |= buffer[i] - 'A' + 10;
+		}
+		else
+		{
+			continue;
+		}
+		if (odd)
+		{
+			if (*length < maxdatalen)
+			{
+				*data++ = c;
+				odd = 0;
+				c = 0;
+			}
+			else
+			{
+				return 0;
+			}
+			(*length)++;
+		}
+		else
+		{
+			odd++;
+			c <<= 4;
+		}
+	}
+	return 1;
+}
+
+static int dissect_dusb(CalcHandle *h)
+{
+	int ret;
+	uint8_t ep = 2; // Assume PC -> TI.
+	uint8_t first = 1; // Assume all packets are first packets.
+	char buffer[4 * sizeof(((DUSBRawPacket *)0)->data) + 3];
+	uint8_t data[sizeof(((DUSBRawPacket *)0)->data)];
+	uint32_t length = 0;
+	int model;
+
+	printf("Enter calc model (usually 13, 14, 18-21): ");
+	ret = scanf("%d", &model);
+	if (ret < 1)
+	{
+		return 0;
+	}
+
+	buffer[0] = 0;
+	printf("Enter raw DUSB packet as hex string of up to 4 * max raw packet size (non-hex characters ignored; CTRL+D to end):\n");
+	ret = scanf("%4096[^\x04]", buffer);
+	if (ret < 1)
+	{
+		return 0;
+	}
+
+	fputc('\n', stdout);
+	if (!build_raw_bytes_from_hex_string(buffer, sizeof(buffer) / sizeof(buffer[0]), data, sizeof(data) / sizeof(data[0]), &length))
+	{
+		if (dusb_dissect((CalcModel)model, stderr, data, length, ep, &first) == 0)
+		{
+			printf("Dissection successful\n");
+		}
+		else
+		{
+			printf("Dissection failed\n");
+		}
+	}
+	else
+	{
+		printf("Failed to build raw data, not dissected\n");
+	}
+
+	return 0;
+}
+
 typedef int (*FNCT_MENU) (CalcHandle*);
 
 static struct
@@ -749,7 +849,8 @@ static struct
 	{ "83+-family-specific disable lockdown", ti83pfamily_dld },
 	{ "83+-family-specific get standard calculator ID", ti83pfamily_gid },
 	{ "83+-family-specific retrieve some 32-byte memory area", ti83pfamily_rid },
-	{ "83+-family-specific set some 32-byte memory area", ti83pfamily_sid }
+	{ "83+-family-specific set some 32-byte memory area", ti83pfamily_sid },
+	{ "Dissect DUSB packet", dissect_dusb }
 };
 
 int main(int argc, char **argv)

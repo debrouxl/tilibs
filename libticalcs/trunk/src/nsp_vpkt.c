@@ -33,6 +33,7 @@
 	machine and so more (complex) code. Maybe later...
 */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 

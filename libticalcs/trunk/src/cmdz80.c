@@ -26,6 +26,7 @@
   * TI-73 & TI-83+ & TI-84+ commands.
 */
 
+#include <stdio.h>
 #include <string.h>
 
 #include <ticonv.h>

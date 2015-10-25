@@ -1,5 +1,5 @@
 /*  hex2dusb - an D-USB packet decompiler
- *  Copyright (C) 2005-2007  Romain Lievin
+ *  Copyright (C) 2005-2007  Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,51 +40,52 @@
 
 typedef struct
 {
-	uint8_t		type;
-	const char*	name;
-	int			data_hdr;
-	int			data;
+	uint8_t     type;
+	uint8_t     data_hdr;
+	uint8_t     data;
+	const char* name;
 } Packet;
-
-typedef struct
-{
-	uint16_t		type;
-	const char*		name;
-} Opcode;
 
 static const Packet packets[] = 
 {
-	{ 0x01, "Buffer Size Request", 0, 4 }, 
-	{ 0x02, "Buffer Size Allocation", 0, 4 }, 
-	{ 0x03, "Virtual Packet Data with Continuation", 1, 6 }, 
-	{ 0x04, "Virtual Packet Data Final", 1, 6 }, 
-	{ 0x05, "Virtual Packet Data Acknowledgement", 0, 2 }, 
-	{ 0,    NULL, 0, 0 },
+	{ 0x01, 0, 4, "Buffer Size Request" },
+	{ 0x02, 0, 4, "Buffer Size Allocation" },
+	{ 0x03, 1, 6, "Virtual Packet Data with Continuation" },
+	{ 0x04, 1, 6, "Virtual Packet Data Final" },
+	{ 0x05, 0, 2, "Virtual Packet Data Acknowledgement" },
+	{ 0x00, 0, 0, NULL }
 };
+
+typedef struct
+{
+	uint16_t    type;
+	const char* name;
+} Opcode;
 
 static const Opcode opcodes[] = 
 {
-	{ 0x0001, "Ping / Set Mode" }, 
+	{ 0x0001, "Ping / Set Mode" },
 	{ 0x0002, "Begin OS Transfer" },
 	{ 0x0003, "Acknowledgement of OS Transfer" },
+	{ 0x0004, "OS Header" },
 	{ 0x0005, "OS Data" },
 	{ 0x0006, "Acknowledgement of EOT" },
-	{ 0x0007, "Parameter Request"}, 
-	{ 0x0008, "Parameter Data"}, 
+	{ 0x0007, "Parameter Request"},
+	{ 0x0008, "Parameter Data"},
 	{ 0x0009, "Request Directory Listing" },
-	{ 0x000a, "Variable Header" },
-	{ 0x000b, "Request to Send" },
-	{ 0x000c, "Request Variable" },
+	{ 0x000A, "Variable Header" },
+	{ 0x000B, "Request to Send" },
+	{ 0x000C, "Request Variable" },
 	{ 0x000D, "Variable Contents" },
-	{ 0x000e, "Parameter Set"},
-	{ 0x0010, "Delete Variable"}, 
-	{ 0x0011, "Remote Control"}, 
-	{ 0x0012, "Acknowledgement of Mode Setting"}, 
-	{ 0xaa00, "Acknowledgement of Data"}, 
-	{ 0xbb00, "Acknowledgement of Parameter Request"},
-	{ 0xdd00, "End of Transmission"}, 
-	{ 0xee00, "Error"},
-	{ 0,      NULL },
+	{ 0x000E, "Parameter Set"},
+	{ 0x0010, "Modify Variable"},
+	{ 0x0011, "Remote Control"},
+	{ 0x0012, "Acknowledgement of Mode Setting"},
+	{ 0xAA00, "Acknowledgement of Data"},
+	{ 0xBB00, "Acknowledgement of Parameter Request"},
+	{ 0xDD00, "End of Transmission"},
+	{ 0xEE00, "Error"},
+	{ 0,      NULL }
 };
 
 /* */

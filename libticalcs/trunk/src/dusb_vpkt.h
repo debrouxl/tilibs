@@ -2,7 +2,7 @@
 /* $Id: cmd84p.h 2074 2006-03-31 08:36:06Z roms $ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+ *  Copyright (C) 1999-2005  Romain LiÃ©vin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,12 +40,6 @@ typedef struct
 	uint8_t		*data;		// virtual packet data
 } DUSBVirtualPacket;
 
-typedef struct
-{
-	uint16_t	id;
-	const char *name;
-} DUSBVtlPktName;
-
 // Virtual packet types
 
 #define DUSB_VPKT_PING		0x0001
@@ -62,7 +56,7 @@ typedef struct
 #define DUSB_VPKT_VAR_REQ	0x000C
 #define DUSB_VPKT_VAR_CNTS	0x000D
 #define DUSB_VPKT_PARM_SET	0x000E
-#define DUSB_VPKT_DEL_VAR	0x0010
+#define DUSB_VPKT_MODIF_VAR	0x0010
 #define DUSB_VPKT_EXECUTE	0x0011
 #define DUSB_VPKT_MODE_SET	0x0012
 
@@ -71,8 +65,10 @@ typedef struct
 #define DUSB_VPKT_EOT		0xDD00
 #define DUSB_VPKT_ERROR		0xEE00
 
-// Functions
+// Type to string
+TIEXPORT3 const char* TICALL dusb_vpkt_type2name(uint16_t id);
 
+// Functions
 TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new(uint32_t size, uint16_t type);
 TIEXPORT3 void TICALL dusb_vtl_pkt_del(DUSBVirtualPacket* pkt);
 
@@ -88,8 +84,6 @@ TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle *handle, DUSBVirtualPacke
 
 TIEXPORT3 int TICALL dusb_send_acknowledge(CalcHandle *handle);
 TIEXPORT3 int TICALL dusb_recv_acknowledge(CalcHandle *handle);
-
-TIEXPORT3 const char* TICALL dusb_vpkt_type2name(uint16_t id);
 
 TIEXPORT3 int TICALL dusb_get_buf_size(CalcHandle *handle, uint32_t * size);
 TIEXPORT3 int TICALL dusb_set_buf_size(CalcHandle *handle, unsigned int size);

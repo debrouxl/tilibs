@@ -2,7 +2,7 @@
 /* $Id: cmd84p.h 2074 2006-03-31 08:36:06Z roms $ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+ *  Copyright (C) 1999-2005  Romain LiÃ©vin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -69,7 +69,8 @@ extern "C" {
 #define PID_UNKNOWN10		0x0031
 #define PID_UNKNOWN11		0x0032
 #define PID_HOMESCREEN		0x0037
-#define PID_SCREEN_SPLIT	0x0039 
+#define PID_SCREEN_SPLIT	0x0039
+#define PID_EXACT_MATH		0x004B
 
 // Attributes IDs
 #define AID_VAR_SIZE		0x01
@@ -120,6 +121,9 @@ typedef struct
 	uint16_t	size;
 	uint8_t*	data;
 } DUSBCalcAttr;
+
+// Type to string
+TIEXPORT3 const char* TICALL dusb_cmd_param_type2name(uint16_t id);
 
 // Helpers
 TIEXPORT3 DUSBCalcParam*  TICALL dusb_cp_new(uint16_t id, uint16_t size);

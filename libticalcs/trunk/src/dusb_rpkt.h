@@ -2,7 +2,7 @@
 /* $Id: packets.h 1179 2005-06-06 14:42:32Z roms $ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+ *  Copyright (C) 1999-2005  Romain LiÃ©vin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,12 @@
 #ifndef __DUSB_RPKT__
 #define __DUSB_RPKT__
 
+#include <stdio.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Raw packet types
 
 #define DUSB_RPKT_BUF_SIZE_REQ   1
@@ -32,5 +38,12 @@
 #define DUSB_RPKT_VIRT_DATA      3
 #define DUSB_RPKT_VIRT_DATA_LAST 4
 #define DUSB_RPKT_VIRT_DATA_ACK  5
+
+TIEXPORT3 const char* TICALL dusb_rpkt_type2name(uint8_t id);
+TIEXPORT3 int TICALL dusb_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len, uint8_t ep, uint8_t * first);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

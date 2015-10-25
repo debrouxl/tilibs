@@ -2,7 +2,7 @@
 /* $Id: cmd84p.c 2077 2006-03-31 21:16:19Z roms $ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+ *  Copyright (C) 1999-2005  Romain LiÃ©vin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 	The size of packet can be negotiated on both sides.
 */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -41,37 +42,43 @@
 
 // Type to string
 
-static const DUSBVtlPktName vpkt_types[] = 
+typedef struct
 {
-	{ 0x0000, ""},
-	{ 0x0001, "Ping / Set Mode"},
-	{ 0x0002, "Begin OS Transfer"},
-	{ 0x0003, "Acknowledgement of OS Transfer"},
-	{ 0x0004, "OS Header"},
-	{ 0x0005, "OS Data"},
-	{ 0x0006, "Acknowledgement of EOT"},
-	{ 0x0007, "Parameter Request"},
-	{ 0x0008, "Parameter Data"},
-	{ 0x0009, "Request Directory Listing"},
-	{ 0x000A, "Variable Header"},
-	{ 0x000B, "Request to Send"},
-	{ 0x000C, "Request Variable"},
-	{ 0x000D, "Variable Contents"},
-	{ 0x000E, "Parameter Set"},
-	{ 0x000F, ""},
-	{ 0x0010, "Modify Variable"},
-	{ 0x0011, "Remote Control"},
-	{ 0x0012, "Acknowledgement of Mode Setting"},
-	{ 0xAA00, "Acknowledgement of Data"},
-	{ 0xBB00, "Delay Acknowledgment"},
-	{ 0xDD00, "End of Transmission"},
-	{ 0xEE00, "Error"},
-	{ -1, NULL},
+	uint16_t   id;
+	const char *name;
+} DUSBVtlPktInfo;
+
+static const DUSBVtlPktInfo vpkt_types[] =
+{
+	{ 0x0000, "" },
+	{ DUSB_VPKT_PING, "Ping / Set Mode" },
+	{ DUSB_VPKT_OS_BEGIN, "Begin OS Transfer" },
+	{ DUSB_VPKT_OS_ACK, "Acknowledgement of OS Transfer" },
+	{ DUSB_VPKT_OS_HEADER, "OS Header" },
+	{ DUSB_VPKT_OS_DATA, "OS Data" },
+	{ DUSB_VPKT_EOT_ACK, "Acknowledgement of EOT" },
+	{ DUSB_VPKT_PARM_REQ, "Parameter Request" },
+	{ DUSB_VPKT_PARM_DATA, "Parameter Data" },
+	{ DUSB_VPKT_DIR_REQ, "Request Directory Listing" },
+	{ DUSB_VPKT_VAR_HDR, "Variable Header" },
+	{ DUSB_VPKT_RTS, "Request to Send" },
+	{ DUSB_VPKT_VAR_REQ, "Request Variable" },
+	{ DUSB_VPKT_VAR_CNTS, "Variable Contents" },
+	{ DUSB_VPKT_PARM_SET, "Parameter Set" },
+	{ 0x000F, "" },
+	{ DUSB_VPKT_MODIF_VAR, "Modify Variable" },
+	{ DUSB_VPKT_EXECUTE, "Remote Control" },
+	{ DUSB_VPKT_MODE_SET, "Acknowledgement of Mode Setting" },
+	{ DUSB_VPKT_DATA_ACK, "Acknowledgement of Data" },
+	{ DUSB_VPKT_DELAY_ACK, "Delay Acknowledgment" },
+	{ DUSB_VPKT_EOT, "End of Transmission" },
+	{ DUSB_VPKT_ERROR, "Error" },
+	{ -1, NULL}
 };
 
 TIEXPORT3 const char* TICALL dusb_vpkt_type2name(uint16_t id)
 {
-	const DUSBVtlPktName *p;
+	const DUSBVtlPktInfo *p;
 
 	for (p = vpkt_types; p->name != NULL; p++)
 	{
@@ -133,11 +140,19 @@ TIEXPORT3 int TICALL dusb_send_buf_size_request(CalcHandle* handle, uint32_t siz
 
 	VALIDATE_HANDLE(handle);
 
+	if (size > sizeof(raw.data) + 1)
+	{
+		ticalcs_warning("Clamping dubious large DUSB buffer size request");
+		size = sizeof(raw.data) + 1;
+	}
+
 	memset(&raw, 0, sizeof(raw));
 	raw.size = 4;
 	raw.type = DUSB_RPKT_BUF_SIZE_REQ;
-	raw.data[2] = MSB(size);
-	raw.data[3] = LSB(size);
+	raw.data[0] = (size >> 24) & 0xFF;
+	raw.data[1] = (size >> 16) & 0xFF;
+	raw.data[2] = (size >>  8) & 0xFF;
+	raw.data[3] = (size      ) & 0xFF;
 
 	ret = dusb_send(handle, &raw);
 	if (!ret)
@@ -157,6 +172,7 @@ TIEXPORT3 int TICALL dusb_recv_buf_size_alloc(CalcHandle* handle, uint32_t *size
 	VALIDATE_HANDLE(handle);
 
 	memset(&raw, 0, sizeof(raw));
+
 	do
 	{
 		ret = dusb_recv(handle, &raw);
@@ -205,6 +221,7 @@ TIEXPORT3 int TICALL dusb_recv_buf_size_request(CalcHandle* handle, uint32_t *si
 	VALIDATE_HANDLE(handle);
 
 	memset(&raw, 0, sizeof(raw));
+
 	do
 	{
 		ret = dusb_recv(handle, &raw);
@@ -236,11 +253,19 @@ TIEXPORT3 int TICALL dusb_send_buf_size_alloc(CalcHandle* handle, uint32_t size)
 
 	VALIDATE_HANDLE(handle);
 
+	if (size > sizeof(raw.data) + 1)
+	{
+		ticalcs_warning("Clamping dubious large DUSB buffer size request");
+		size = sizeof(raw.data) + 1;
+	}
+
 	memset(&raw, 0, sizeof(raw));
 	raw.size = 4;
 	raw.type = DUSB_RPKT_BUF_SIZE_ALLOC;
-	raw.data[2] = MSB(size);
-	raw.data[3] = LSB(size);
+	raw.data[0] = (size >> 24) & 0xFF;
+	raw.data[1] = (size >> 16) & 0xFF;
+	raw.data[2] = (size >>  8) & 0xFF;
+	raw.data[3] = (size      ) & 0xFF;
 
 	ret = dusb_send(handle, &raw);
 	if (!ret)
@@ -304,6 +329,7 @@ TIEXPORT3 int TICALL dusb_recv_acknowledge(CalcHandle *handle)
 	VALIDATE_HANDLE(handle);
 
 	memset(&raw, 0, sizeof(raw));
+
 	do
 	{
 		ret = dusb_recv(handle, &raw);

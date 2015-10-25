@@ -24,6 +24,7 @@
   * TI-89/92+/V200/89T commands.
 */
 
+#include <stdio.h>
 #include <string.h>
 
 #include <ticonv.h>
