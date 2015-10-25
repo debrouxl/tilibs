@@ -340,24 +340,20 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
  **/
 TIEXPORT3 int TICALL ticalcs_handle_del(CalcHandle* handle)
 {
-	if (handle != NULL)
-	{
-		if (handle->attached)
-		{
-			ticalcs_cable_detach(handle);
-		}
+	VALIDATE_HANDLE(handle);
 
-		if (handle->buffer)
-		{
-			g_free(handle->buffer);
-		}
-
-		g_free(handle);
-	}
-	else
+	if (handle->attached)
 	{
-		ticalcs_critical("ticalcs_handle_del(NULL)");
+		ticalcs_cable_detach(handle);
 	}
+
+	if (handle->buffer)
+	{
+		g_free(handle->buffer);
+	}
+
+	memset((void *)handle, 0, sizeof(*handle));
+	g_free(handle);
 
 	return 0;
 }
@@ -372,15 +368,10 @@ TIEXPORT3 int TICALL ticalcs_handle_del(CalcHandle* handle)
  **/
 TIEXPORT3 int TICALL ticalcs_handle_show(CalcHandle* handle)
 {
-	if (handle != NULL)
-	{
-		ticalcs_info(_("Link calc handle details:"));
-		ticalcs_info(_("  model   : %s"), ticalcs_model_to_string(handle->model));
-	}
-	else
-	{
-		ticalcs_critical("ticalcs_handle_show(NULL)");
-	}
+	VALIDATE_HANDLE(handle);
+
+	ticalcs_info(_("Link calc handle details:"));
+	ticalcs_info(_("  model   : %s"), ticalcs_model_to_string(handle->model));
 
 	return 0;
 }

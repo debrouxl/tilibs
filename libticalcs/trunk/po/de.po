@@ -1,21 +1,24 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# German translation of libticalcs2.
+# Copyright (C) 1999-2008 Romain LIEVIN, 1999-2005 Julien BLACHE, 2000-2001
+# Thomas Corvazier, 2002 Jesse Palmer, 2003-2007 Kevin Kofler, 2003-2006
+# Lauris Kaplinski, 2003 Sylvain Garsault,2006 Tyler Cassidy.
+# Chris Leick <c.leick@vollbio.de>, 2010.
+# Andreas B. Mundt <andi@debian.org>, 2013.
 # This file is distributed under the same license as the libticalcs2 package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: libticalcs2 1.1.9\n"
+"Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
 "POT-Creation-Date: 2015-10-06 20:26+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2011-12-13 19:16+0100\n"
+"Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: src/calc_00.c:213
 msgid "Dummy hand-held"
@@ -76,15 +79,15 @@ msgstr ""
 #: src/calc_73.c:1021 src/calc_89.c:964 src/calc_92.c:636
 #, c-format
 msgid "  Battery: %s"
-msgstr ""
+msgstr " Batterie: %s"
 
 #: src/calc_73.c:1021 src/type2str.c:329
 msgid "good"
-msgstr ""
+msgstr "gut"
 
 #: src/calc_73.c:1021 src/type2str.c:329
 msgid "low"
-msgstr ""
+msgstr "niedrig"
 
 #: src/calc_73.c:1068 src/calc_89.c:665
 msgid "Header sent completely."
@@ -778,15 +781,15 @@ msgstr ""
 
 #: src/type2str.c:284
 msgid "Product Name: "
-msgstr ""
+msgstr "Produktname: "
 
 #: src/type2str.c:286
 msgid "Product ID: "
-msgstr ""
+msgstr "Produkt-ID: "
 
 #: src/type2str.c:288
 msgid "Language ID: "
-msgstr ""
+msgstr "Sprach-ID: "
 
 #: src/type2str.c:291
 msgid "Device Type: "
@@ -794,19 +797,19 @@ msgstr ""
 
 #: src/type2str.c:293
 msgid "Hardware Version: "
-msgstr ""
+msgstr "Hardware-Version: "
 
 #: src/type2str.c:295
 msgid "Boot Version: "
-msgstr ""
+msgstr "Boot-Version: "
 
 #: src/type2str.c:297
 msgid "Boot2 Version: "
-msgstr ""
+msgstr "Boot2-Version: "
 
 #: src/type2str.c:299
 msgid "OS Version: "
-msgstr ""
+msgstr "BS-Version: "
 
 #: src/type2str.c:301
 msgid "Run level: "
@@ -842,28 +845,28 @@ msgstr ""
 
 #: src/type2str.c:315
 msgid "Physical RAM: "
-msgstr ""
+msgstr "Physikalischer RAM: "
 
 #: src/type2str.c:317
 msgid "User RAM: "
-msgstr ""
+msgstr "Benutzer-RAM: "
 
 #: src/type2str.c:319
 msgid "Free RAM: "
-msgstr ""
+msgstr "Freier RAM: "
 
 #: src/type2str.c:321
 msgid "Physical Flash: "
-msgstr ""
+msgstr "Physikalischer Flash: "
 
 #: src/type2str.c:323
 msgid "User Flash: "
-msgstr ""
+msgstr "Benutzer-Flash: "
 
 #: src/type2str.c:325
 msgid "Free Flash: "
-msgstr ""
+msgstr "Freier Flash: "
 
 #: src/type2str.c:328
 msgid "Battery: "
-msgstr ""
+msgstr " Batterie: "

@@ -19,11 +19,13 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <stdio.h>
 #include <string.h>
 #include "gettext.h"
 
 #include "ticalcs.h"
 #include "logging.h"
+#include "error.h"
 
 /**
  * ticalcs_model_to_string:
@@ -141,4 +143,195 @@ TIEXPORT3 CalcMemType TICALL ticalcs_string_to_memtype(const char *str)
 	}
 
 	return MEMORY_NONE;
+}
+
+TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen)
+{
+	if (infos != NULL)
+	{
+		char language_ids[25];
+		char device_type[3];
+		char hw_version[11];
+		char clock_speed[15];
+		char lcd_width[20];
+		char lcd_height[20];
+		char bpp[11];
+		char ram_phys[30];
+		char ram_user[30];
+		char ram_free[30];
+		char flash_phys[30];
+		char flash_user[30];
+		char flash_free[30];
+
+		language_ids[0] = 0;
+		if (infos->mask & INFOS_LANG_ID)
+		{
+			sprintf(language_ids, "%d %d", infos->language_id, infos->sub_lang_id);
+		}
+
+		device_type[0] = 0;
+		if (infos->mask & INFOS_DEVICE_TYPE)
+		{
+			sprintf(device_type, "%02X", infos->device_type);
+		}
+		hw_version[0] = 0;
+		if (infos->mask & INFOS_HW_VERSION)
+		{
+			sprintf(hw_version, "%d", infos->hw_version);
+		}
+
+		clock_speed[0] = 0;
+		if (infos->mask & INFOS_CLOCK_SPEED)
+		{
+			sprintf(clock_speed, "%d MHz", infos->clock_speed);
+		}
+
+		lcd_width[0] = 0;
+		if (infos->mask & INFOS_LCD_WIDTH)
+		{
+			sprintf(lcd_width, "%d pixels", infos->lcd_width);
+		}
+		lcd_height[0] = 0;
+		if (infos->mask & INFOS_LCD_HEIGHT)
+		{
+			sprintf(lcd_height, "%d pixels", infos->lcd_height);
+		}
+		bpp[0] = 0;
+		if (infos->mask & INFOS_BPP)
+		{
+			sprintf(bpp, "%d pixels", infos->bits_per_pixel);
+		}
+
+		ram_phys[0] = 0; // The casts below aren't truncating in practice until one of the models grows more than 4 GB of RAM or Flash.
+		if (infos->mask & INFOS_RAM_PHYS)
+		{
+			sprintf(ram_phys, "%lu B (%lu KB)", (unsigned long)infos->ram_phys, (unsigned long)((infos->ram_phys + 512) >> 10));
+		}
+		ram_user[0] = 0;
+		if (infos->mask & INFOS_RAM_USER)
+		{
+			sprintf(ram_user, "%lu B (%lu KB)", (unsigned long)infos->ram_user, (unsigned long)((infos->ram_user + 512) >> 10));
+		}
+		ram_free[0] = 0;
+		if (infos->mask & INFOS_RAM_FREE)
+		{
+			sprintf(ram_free, "%lu B (%lu KB)", (unsigned long)infos->ram_free, (unsigned long)((infos->ram_free + 512) >> 10));
+		}
+		flash_phys[0] = 0;
+		if (infos->mask & INFOS_FLASH_PHYS)
+		{
+			sprintf(flash_phys, "%lu B (%lu KB)", (unsigned long)infos->flash_phys, (unsigned long)((infos->flash_phys + 512) >> 10));
+		}
+		flash_user[0] = 0;
+		if (infos->mask & INFOS_FLASH_USER)
+		{
+			sprintf(flash_user, "%lu B (%lu KB)", (unsigned long)infos->flash_user, (unsigned long)((infos->flash_user + 512) >> 10));
+		}
+		flash_free[0] = 0;
+		if (infos->mask & INFOS_FLASH_FREE)
+		{
+			sprintf(flash_free, "%lu B (%lu KB)", (unsigned long)infos->flash_free, (unsigned long)((infos->flash_free + 512) >> 10));
+		}
+
+		snprintf(str, maxlen,
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"\n"
+			"%s"
+			"%s\n",
+
+			(infos->mask & INFOS_PRODUCT_NAME) ? _("Product Name: ") : "",
+			(infos->mask & INFOS_PRODUCT_NAME) ? infos->product_name : "",
+			(infos->mask & INFOS_PRODUCT_ID) ? _("Product ID: ") : "",
+			(infos->mask & INFOS_PRODUCT_ID) ? infos->product_id : "",
+			(infos->mask & INFOS_LANG_ID) ? _("Language ID: ") : "",
+			language_ids,
+
+			(infos->mask & INFOS_DEVICE_TYPE) ? _("Device Type: ") : "",
+			device_type,
+			(infos->mask & INFOS_HW_VERSION) ? _("Hardware Version: ") : "",
+			hw_version,
+			(infos->mask & INFOS_BOOT_VERSION) ? _("Boot Version: ") : "",
+			(infos->mask & INFOS_BOOT_VERSION) ? infos->boot_version : "",
+			(infos->mask & INFOS_BOOT2_VERSION) ? _("Boot2 Version: ") : "",
+			(infos->mask & INFOS_BOOT2_VERSION) ? infos->boot2_version : "",
+			(infos->mask & INFOS_OS_VERSION) ? _("OS Version: ") : "",
+			(infos->mask & INFOS_OS_VERSION) ? infos->os_version : "",
+			(infos->mask & INFOS_RUN_LEVEL) ? _("Run level: ") : "",
+			(infos->mask & INFOS_RUN_LEVEL) ? ((infos->run_level == 2) ? "OS" : "boot") : "",
+			(infos->mask & INFOS_CLOCK_SPEED) ? _("Clock speed: ") : "",
+			clock_speed,
+			(infos->mask & INFOS_EXACT_MATH) ? _("Exact math engine: ") : "",
+			(infos->mask & INFOS_EXACT_MATH) ? ((infos->exact_math) ? _("Yes") : _("No")) : "",
+
+			(infos->mask & INFOS_LCD_WIDTH) ? _("LCD width: ") : "",
+			lcd_width,
+			(infos->mask & INFOS_LCD_HEIGHT) ? _("LCD height: ") : "",
+			lcd_height,
+			(infos->mask & INFOS_BPP) ? _("Bits per pixel: ") : "",
+			bpp,
+
+			(infos->mask & INFOS_RAM_PHYS) ? _("Physical RAM: ") : "",
+			ram_phys,
+			(infos->mask & INFOS_RAM_USER) ? _("User RAM: ") : "",
+			ram_user,
+			(infos->mask & INFOS_RAM_FREE) ? _("Free RAM: ") : "",
+			ram_free,
+			(infos->mask & INFOS_FLASH_PHYS) ? _("Physical Flash: ") : "",
+			flash_phys,
+			(infos->mask & INFOS_FLASH_USER) ? _("User Flash: ") : "",
+			flash_user,
+			(infos->mask & INFOS_FLASH_FREE) ? _("Free Flash: ") : "",
+			flash_free,
+
+			(infos->mask & INFOS_BATTERY) ? _("Battery: ") : "",
+			(infos->mask & INFOS_BATTERY) ? (infos->battery ? _("good") : _("low")) : "");
+		return 0;
+	}
+	else
+	{
+		ticalcs_critical("%s: infos is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 }

@@ -521,9 +521,22 @@ static int new_folder(CalcHandle* h)
 
 static int get_version(CalcHandle *h)
 {
+	int ret;
 	CalcInfos infos;
+	char str[2048];
 
-	return ticalcs_calc_get_version(h, &infos);
+	ret = ticalcs_calc_get_version(h, &infos);
+	if (!ret)
+	{
+		str[0] = 0;
+		ret = ticalcs_infos_to_string(&infos, str, sizeof(str));
+		if (!ret)
+		{
+			printf("%s\n", str);
+		}
+	}
+
+	return ret;
 }
 
 static int probe_calc(CalcHandle *h)

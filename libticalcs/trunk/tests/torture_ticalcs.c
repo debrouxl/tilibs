@@ -175,46 +175,48 @@ static void torture_ticalcs(void)
     PRINTF(ticalcs_memtype_to_string, STR, -1);
     PRINTF(ticalcs_string_to_memtype, INT, NULL);
 // 121
+    PRINTF(ticalcs_infos_to_string, INT, NULL, (void *)0x12345678, 0x12345678);
 // clock.c
     PRINTF(ticalcs_clock_format2date, STR, -1, -1);
     PRINTF(ticalcs_clock_date2format, INT, -1, NULL);
     PRINTF(ticalcs_clock_show, INT, -1, NULL);
 // tikeys.c
     PRINTF(ticalcs_keys_73, PTR, 0);
-    PRINTF(ticalcs_keys_83, PTR, 0);
 
+    PRINTF(ticalcs_keys_83, PTR, 0);
     PRINTF(ticalcs_keys_83p, PTR, 0);
     PRINTF(ticalcs_keys_86, PTR, 0);
     PRINTF(ticalcs_keys_89, PTR, 0);
     PRINTF(ticalcs_keys_92p, PTR, 0);
+// 131
 // probe.c
     PRINTF(ticalcs_probe_calc, INT, NULL, (void *)0x12345678);
-// 131
     PRINTF(ticalcs_probe_calc, INT, (void *)0x12345678, NULL);
     PRINTF(ticalcs_probe_usb_calc, INT, NULL, (void *)0x12345678);
     PRINTF(ticalcs_probe_usb_calc, INT, (void *)0x12345678, NULL);
     PRINTF(ticalcs_probe, INT, -1, -1, NULL, -1);
-    PRINTF(ticalcs_device_info_to_model, INT, NULL);
 
+    PRINTF(ticalcs_device_info_to_model, INT, NULL);
     PRINTF(ticalcs_remap_model_from_usb, INT, 0, 0);
     PRINTF(ticalcs_remap_model_to_usb, INT, 0, 0);
 // dbus_pkt.c
     PRINTF(dbus_send, INT, NULL, 0, 0, 0, (void *)0x12345678);
     PRINTF(dbus_recv, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(dbus_recv, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
 // 141
+    PRINTF(dbus_recv, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
 // dusb_rpkt.c
     PRINTF(dusb_send, INT, NULL, (void *)0x12345678);
     PRINTF(dusb_send, INT, (void *)0x12345678, NULL);
-    PRINTF(dusb_recv, INT, NULL, (void *)0x12345678);
 
+    PRINTF(dusb_recv, INT, NULL, (void *)0x12345678);
     PRINTF(dusb_recv, INT, (void *)0x12345678, NULL);
 // nsp_rpkt.c
     PRINTF(nsp_send, INT, NULL, (void *)0x12345678);
     PRINTF(nsp_send, INT, (void *)0x12345678, NULL);
     PRINTF(nsp_recv, INT, NULL, (void *)0x12345678);
+// 151
     PRINTF(nsp_recv, INT, (void *)0x12345678, NULL);
 // nsp_vpkt.c
 }
@@ -686,8 +688,18 @@ static void torture_cmd68k(void)
 
 static const uint8_t dusb_bad_raw_type_1[] = { 0x00, 0x00, 0x00, 0x00, 0x00 };
 static const uint8_t dusb_bad_raw_type_2[] = { 0x00, 0x00, 0x00, 0x00, 0x06 };
+
 static const uint8_t dusb_good_buf_size_req[] = { 0x00, 0x00, 0x00, 0x04, 0x01, 0x00, 0x00, 0x04, 0x00 };
 static const uint8_t dusb_good_buf_size_alloc[] = { 0x00, 0x00, 0x00, 0x04, 0x02, 0x00, 0x00, 0x00, 0xFA };
+
+static const uint8_t dusb_bad_vpkt_data_final_0001[] = {
+0x00, 0x00, 0x00, 0x10,
+0x04,
+0x00, 0x00, 0x00, 0x09,
+0x00, 0x01,
+0x00, 0x02, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x0F
+};
+
 static const uint8_t dusb_good_vpkt_data_final_0001[] = {
 0x00, 0x00, 0x00, 0x10,
 0x04,
@@ -696,16 +708,24 @@ static const uint8_t dusb_good_vpkt_data_final_0001[] = {
 0x00, 0x02, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x0F, 0xA0
 };
 
+static const uint8_t dusb_bad_vpkt_data_final_0002[] = {
+0x00, 0x00, 0x00, 0x11,
+0x04,
+0x00, 0x00, 0x00, 0x0A,
+0x00, 0x02,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x92
+};
+
 static const uint8_t dusb_good_vpkt_data_final_0002[] = {
 0x00, 0x00, 0x00, 0x11,
 0x04,
-0x00, 0x00, 0x00, 0x0b,
+0x00, 0x00, 0x00, 0x0B,
 0x00, 0x02,
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x92, 0x3B
 };
 
 static const uint8_t dusb_good_vpkt_data_final_0003[] = {
-0x00, 0x00, 0x00, 0x0e,
+0x00, 0x00, 0x00, 0x0E,
 0x04,
 0x00, 0x00, 0x00, 0x08,
 0x00, 0x03,
@@ -713,7 +733,7 @@ static const uint8_t dusb_good_vpkt_data_final_0003[] = {
 };
 
 static const uint8_t dusb_good_vpkt_data_final_0007[] = {
-0x00, 0x00, 0x00, 0x0a,
+0x00, 0x00, 0x00, 0x0A,
 0x04,
 0x00, 0x00, 0x00, 0x04,
 0x00, 0x07,
@@ -721,7 +741,7 @@ static const uint8_t dusb_good_vpkt_data_final_0007[] = {
 };
 
 static const uint8_t dusb_good_vpkt_data_final_0008[] = {
-0x00, 0x00, 0x00, 0x0e,
+0x00, 0x00, 0x00, 0x0E,
 0x04,
 0x00, 0x00, 0x00, 0x08,
 0x00, 0x08,
@@ -729,7 +749,7 @@ static const uint8_t dusb_good_vpkt_data_final_0008[] = {
 };
 
 static const uint8_t dusb_good_vpkt_data_final_0012[] = {
-0x00, 0x00, 0x00, 0x0a,
+0x00, 0x00, 0x00, 0x0A,
 0x04,
 0x00, 0x00, 0x00, 0x04,
 0x00, 0x12,
@@ -764,7 +784,9 @@ static void dissect_functions_unit_test(void)
     assert(ERR_INVALID_PACKET == dusb_dissect(CALC_NONE, stderr, dusb_good_buf_size_req, 6, 0, (void *)0x12345678));
     assert(0 == dusb_dissect(CALC_TI84P_USB, stderr, dusb_good_buf_size_req, sizeof(dusb_good_buf_size_req), 2, &first));
     assert(0 == dusb_dissect(CALC_TI84P_USB, stderr, dusb_good_buf_size_alloc, sizeof(dusb_good_buf_size_alloc), 1, &first));
+    assert(ERR_INVALID_PACKET == dusb_dissect(CALC_TI84P_USB, stderr, dusb_bad_vpkt_data_final_0001, sizeof(dusb_bad_vpkt_data_final_0001), 2, &first));
     assert(0 == dusb_dissect(CALC_TI84P_USB, stderr, dusb_good_vpkt_data_final_0001, sizeof(dusb_good_vpkt_data_final_0001), 2, &first));
+    assert(ERR_INVALID_PACKET == dusb_dissect(CALC_TI84P_USB, stderr, dusb_bad_vpkt_data_final_0002, sizeof(dusb_bad_vpkt_data_final_0002), 2, &first));
     assert(0 == dusb_dissect(CALC_TI84P_USB, stderr, dusb_good_vpkt_data_final_0002, sizeof(dusb_good_vpkt_data_final_0002), 2, &first));
     assert(0 == dusb_dissect(CALC_TI84P_USB, stderr, dusb_good_vpkt_data_final_0003, sizeof(dusb_good_vpkt_data_final_0003), 1, &first));
     assert(0 == dusb_dissect(CALC_TI84P_USB, stderr, dusb_good_vpkt_data_final_0007, sizeof(dusb_good_vpkt_data_final_0007), 2, &first));

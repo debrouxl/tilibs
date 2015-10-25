@@ -2,7 +2,7 @@
 /* $Id: packets.c 1352 2005-07-12 07:24:18Z roms $ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+ *  Copyright (C) 1999-2005  Romain LiÃ©vin
  *  Copyright (C) 2006  Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -313,7 +313,8 @@ int rd_dump(CalcHandle* handle, const char *filename)
 		return ERR_OPEN_FILE;
 	}
 
-	sprintf(update_->text, "Receiving data...");
+	strncpy(update_->text, "Receiving data...", sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
 	// check if ready

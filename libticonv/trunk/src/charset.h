@@ -21,28 +21,56 @@
 
 #include "export4.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// TODO TIEXPORT4 unsigned short* TICALL ticonv_ti73_to_utf16_n(const char *ti, unsigned short *utf16, uint32_t maxlen);
 TIEXPORT4 unsigned short* TICALL ticonv_ti73_to_utf16(const char *ti, unsigned short *utf16);
+// TODO TIEXPORT4 unsigned short* TICALL ticonv_ti80_to_utf16_n(const char *ti, unsigned short *utf16, uint32_t maxlen);
 TIEXPORT4 unsigned short* TICALL ticonv_ti80_to_utf16(const char *ti, unsigned short *utf16);
+// TODO TIEXPORT4 unsigned short* TICALL ticonv_ti82_to_utf16_n(const char *ti, unsigned short *utf16, uint32_t maxlen);
 TIEXPORT4 unsigned short* TICALL ticonv_ti82_to_utf16(const char *ti, unsigned short *utf16);
+// TODO TIEXPORT4 unsigned short* TICALL ticonv_ti83_to_utf16_n(const char *ti, unsigned short *utf16, uint32_t maxlen);
 TIEXPORT4 unsigned short* TICALL ticonv_ti83_to_utf16(const char *ti, unsigned short *utf16);
+// TODO TIEXPORT4 unsigned short* TICALL ticonv_ti83p_to_utf16_n(const char *ti, unsigned short *utf16, uint32_t maxlen);
 TIEXPORT4 unsigned short* TICALL ticonv_ti83p_to_utf16(const char *ti, unsigned short *utf16);
+// TODO TIEXPORT4 unsigned short* TICALL ticonv_ti85_to_utf16_n(const char *ti, unsigned short *utf16, uint32_t maxlen);
 TIEXPORT4 unsigned short* TICALL ticonv_ti85_to_utf16(const char *ti, unsigned short *utf16);
+// TODO TIEXPORT4 unsigned short* TICALL ticonv_ti86_to_utf16_n(const char *ti, unsigned short *utf16, uint32_t maxlen);
 TIEXPORT4 unsigned short* TICALL ticonv_ti86_to_utf16(const char *ti, unsigned short *utf16);
+// TODO TIEXPORT4 unsigned short* TICALL ticonv_ti9x_to_utf16_n(const char *ti, unsigned short *utf16, uint32_t maxlen);
 TIEXPORT4 unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned short *utf16);
 
+// TODO TIEXPORT4 char* TICALL ticonv_utf16_to_ti73_n(const unsigned short *utf16, char *ti, uint32_t maxlen);
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti73(const unsigned short *utf16, char *ti);
+// TODO TIEXPORT4 char* TICALL ticonv_utf16_to_ti80_n(const unsigned short *utf16, char *ti, uint32_t maxlen);
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti80(const unsigned short *utf16, char *ti);
+// TODO TIEXPORT4 char* TICALL ticonv_utf16_to_ti82_n(const unsigned short *utf16, char *ti, uint32_t maxlen);
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti82(const unsigned short *utf16, char *ti);
+// TODO TIEXPORT4 char* TICALL ticonv_utf16_to_ti83_n(const unsigned short *utf16, char *ti, uint32_t maxlen);
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti83(const unsigned short *utf16, char *ti);
+// TODO TIEXPORT4 char* TICALL ticonv_utf16_to_ti83p_n(const unsigned short *utf16, char *ti, uint32_t maxlen);
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti83p(const unsigned short *utf16, char *ti);
+// TODO TIEXPORT4 char* TICALL ticonv_utf16_to_ti85_n(const unsigned short *utf16, char *ti, uint32_t maxlen);
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti85(const unsigned short *utf16, char *ti);
+// TODO TIEXPORT4 char* TICALL ticonv_utf16_to_ti86_n(const unsigned short *utf16, char *ti, uint32_t maxlen);
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti86(const unsigned short *utf16, char *ti);
+// TODO TIEXPORT4 char* TICALL ticonv_utf16_to_ti9x_n(const unsigned short *utf16, char *ti, uint32_t maxlen);
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *ti);
 
+// TODO TIEXPORT4 unsigned short* TICALL ticonv_ti84pusb_to_utf16_n(const char *ti, unsigned short *utf16, uint32_t maxlen);
 TIEXPORT4 unsigned short* TICALL ticonv_ti84pusb_to_utf16(const char *ti, unsigned short *utf16);
+// TODO TIEXPORT4 unsigned short* TICALL ticonv_ti89tusb_to_utf16_n(const char *ti, unsigned short *utf16, uint32_t maxlen);
 TIEXPORT4 unsigned short* TICALL ticonv_ti89tusb_to_utf16(const char *ti, unsigned short *utf16);
 
+// TODO TIEXPORT4 char* TICALL ticonv_utf16_to_ti84pusb_n(const unsigned short *utf16, char *ti, uint32_t maxlen);
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti84pusb(const unsigned short *utf16, char *ti);
+// TODO TIEXPORT4 char* TICALL ticonv_utf16_to_ti89tusb_n(const unsigned short *utf16, char *ti, uint32_t maxlen);
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti89tusb(const unsigned short *utf16, char *ti);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

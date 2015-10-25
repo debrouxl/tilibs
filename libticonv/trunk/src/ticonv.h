@@ -101,6 +101,7 @@ typedef struct
 
 // namespace scheme: library_class_function like ticonv_library_init
 // functions suffixed with _s means 'static', no memory allocation
+// TODO functions suffixed with _sn means 'static with length limit', no memory allocation
 
 #ifdef __cplusplus
 extern "C" {
@@ -127,32 +128,39 @@ extern "C" {
 	TIEXPORT4 char* TICALL ticonv_utf16_to_utf8(const unsigned short *str);
 	TIEXPORT4 void TICALL ticonv_utf8_free(char *str);
 
-	TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short *utf16, char *ti);
+	// TODO TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_sn(CalcModel model, const unsigned short *utf16, char *ti, uint32_t maxlen);
+	/* TODO TILIBS_DEPRECATED */ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short *utf16, char *ti);
 	TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned short *utf16);
 	TIEXPORT4 void  TICALL ticonv_ti_free(char * ti);
 
-	TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char *ti, unsigned short *utf16);
+	// TODO TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_sn(CalcModel model, const char *ti, unsigned short *utf16, uint32_t maxlen);
+	/* TODO TILIBS_DEPRECATED */ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char *ti, unsigned short *utf16);
 	TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti);
 	// The free function corresponding to ticonv_charset_ti_to_utf16() is ticonv_utf16_free().
 
 	TIEXPORT4 int TICALL ticonv_model_uses_utf8(CalcModel model);
 
-	TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned char type);
+	// TODO TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_sn(CalcModel model, const char *src, unsigned short *dst, uint32_t maxlen, unsigned char type);
+	/* TODO TILIBS_DEPRECATED */ TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned char type);
 	TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16  (CalcModel model, const char *src, unsigned char type);
 	// The free function corresponding to ticonv_varname_to_utf16() is ticonv_utf16_free().
 
-	TIEXPORT4 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst, unsigned char type);
+	// TODO TIEXPORT4 char* TICALL ticonv_varname_to_utf8_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type);
+	/* TODO TILIBS_DEPRECATED */ TIEXPORT4 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst, unsigned char type);
 	TIEXPORT4 char* TICALL ticonv_varname_to_utf8  (CalcModel model, const char *src, unsigned char type);
 	// The free function corresponding to ticonv_varname_to_utf8() is ticonv_utf8_free().
 
-	TIEXPORT4 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst, unsigned char type);
+	// TODO TIEXPORT4 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type);
+	/* TODO TILIBS_DEPRECATED */ TIEXPORT4 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst, unsigned char type);
 	TIEXPORT4 char* TICALL ticonv_varname_to_filename  (CalcModel model, const char *src, unsigned char type);
 	// The free function corresponding to ticonv_varname_to_filename() is ticonv_gfe_free().
 
-	TIEXPORT4 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type);
+	// TODO TIEXPORT4 char* TICALL ticonv_varname_to_tifile_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type);
+	/* TODO TILIBS_DEPRECATED */ TIEXPORT4 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type);
 	TIEXPORT4 char* TICALL ticonv_varname_to_tifile  (CalcModel model, const char *src, unsigned char type);
 	// The free function corresponding to ticonv_varname_to_tifile() is ticonv_varname_free().
-	TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type);
+	// TODO TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type);
+	/* TODO TILIBS_DEPRECATED */ TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type);
 	TIEXPORT4 char* TICALL ticonv_varname_from_tifile  (CalcModel model, const char *src, unsigned char type);
 	// The free function corresponding to ticonv_varname_to_tifile() is ticonv_ti_free().
 
@@ -167,7 +175,9 @@ extern "C" {
 	extern TIEXPORT4 const unsigned long TICALL ti9x_charset[256];
 
 	// tokens.c
+	// TODO TIEXPORT4 char* TICALL ticonv_varname_detokenize_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type);
 	TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigned char type);
+	// TODO TIEXPORT4 char* TICALL ticonv_varname_tokenize_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type);
 	TIEXPORT4 char* TICALL ticonv_varname_tokenize  (CalcModel model, const char *src, unsigned char type);
 	TIEXPORT4 void  TICALL ticonv_varname_free      (char *varname);
 

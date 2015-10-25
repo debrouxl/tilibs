@@ -617,7 +617,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	path = build_path(handle->model, ve);
 
 	utf8 = ticonv_varname_to_utf8(handle->model, path, ve->type);
-	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -655,7 +656,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	path = build_path(handle->model, vr);
 	utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
-	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -883,7 +885,8 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	path = build_path(handle->model, vr);
 	utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
-	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -913,7 +916,8 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 	path = g_strconcat("/", vr->folder, NULL);
 	utf8 = ticonv_varname_to_utf8(handle->model, path, -1);
-	g_snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
+	snprintf(update_->text, sizeof(update_->text) - 1, _("Creating %s..."), utf8);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -1020,13 +1024,16 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		infos->clock_speed = data[35];
 		infos->mask |= INFOS_CLOCK_SPEED;
 
-		g_snprintf(infos->os_version, sizeof(infos->os_version), "%1i.%1i.%04i", data[36], data[37], (((int)data[38]) << 8) | data[39]);
+		snprintf(infos->os_version, sizeof(infos->os_version) - 1, "%1i.%1i.%04i", data[36], data[37], (((int)data[38]) << 8) | data[39]);
+		infos->os_version[sizeof(infos->os_version) - 1] = 0;
 		infos->mask |= INFOS_OS_VERSION;
 
-		g_snprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%1i.%04i", data[40], data[41], (((int)data[42]) << 8) | data[43]);
+		snprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%1i.%04i", data[40], data[41], (((int)data[42]) << 8) | data[43]);
+		infos->boot_version[sizeof(infos->boot_version) - 1] = 0;
 		infos->mask |= INFOS_BOOT_VERSION;
 
-		g_snprintf(infos->boot2_version, sizeof(infos->boot2_version), "%1i.%1i.%04i", data[44], data[45], (((int)data[46]) << 8) | data[47]);
+		snprintf(infos->boot2_version, sizeof(infos->boot2_version), "%1i.%1i.%04i", data[44], data[45], (((int)data[46]) << 8) | data[47]);
+		infos->boot2_version[sizeof(infos->boot2_version) - 1] = 0;
 		infos->mask |= INFOS_BOOT2_VERSION;
 
 		infos->hw_version = (  (((uint32_t)data[48]) << 24)
@@ -1083,7 +1090,8 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	path2 = build_path(handle->model, newname);
 	utf81 = ticonv_varname_to_utf8(handle->model, path1, oldname->type);
 	utf82 = ticonv_varname_to_utf8(handle->model, path2, newname->type);
-	g_snprintf(update_->text, sizeof(update_->text), _("Renaming %s to %s..."), utf81, utf82);
+	snprintf(update_->text, sizeof(update_->text) - 1, _("Renaming %s to %s..."), utf81, utf82);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf82);
 	g_free(utf81);
 	update_label();

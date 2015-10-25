@@ -98,7 +98,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	uint8_t rej_code;
 	uint16_t status;
 
-	g_snprintf(update_->text, sizeof(update_->text), _("Waiting for user's action..."));
+	strncpy(update_->text, _("Waiting for user's action..."), sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
 	length = content->data_length1;
@@ -167,7 +168,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
 	char varname[9] = { 0 };
 
-	g_snprintf(update_->text, sizeof(update_->text), _("Waiting for backup..."));
+	strncpy(update_->text, _("Waiting for backup..."), sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
 	content->model = CALC_TI85;
@@ -243,7 +245,9 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		TRYF(ti85_send_VAR(handle, (uint16_t)entry->size, entry->type, entry->name));
 		TRYF(ti85_recv_ACK(handle, &status));
 
-		g_snprintf(update_->text, sizeof(update_->text), _("Waiting for user's action..."));
+		strncpy(update_->text, _("Waiting for user's action..."), sizeof(update_->text) - 1);
+		update_->text[sizeof(update_->text) - 1] = 0;
+
 		update_label();
 
 		do
@@ -277,7 +281,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
-		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+		update_->text[sizeof(update_->text) - 1] = 0;
 		g_free(utf8);
 		update_label();
 
@@ -311,7 +316,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	char *utf8;
 	uint16_t ve_size;
 
-	g_snprintf(update_->text, sizeof(update_->text), _("Waiting for var(s)..."));
+	strncpy(update_->text, _("Waiting for var(s)..."), sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
 	content->model = CALC_TI85;
@@ -347,7 +353,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		TRYF(ti85_recv_ACK(handle, NULL));
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+		update_->text[sizeof(update_->text) - 1] = 0;
 		g_free(utf8);
 		update_label();
 

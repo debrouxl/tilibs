@@ -258,7 +258,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	*/
 			u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name, -1);
 			u2 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-			g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"), u1, u2);
+			snprintf(update_->text, sizeof(update_->text) - 1, _("Parsing %s/%s"), u1, u2);
+			update_->text[sizeof(update_->text) - 1] = 0;
 			g_free(u1); g_free(u2);
 			update_label();
 		}
@@ -329,7 +330,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, varname, ve->type);
-		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+		update_->text[sizeof(update_->text) - 1] = 0;
 		g_free(utf8);
 		update_label();
 
@@ -433,7 +435,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	int ret;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -499,7 +502,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ptr->name, ptr->data_type);
-		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+		update_->text[sizeof(update_->text) - 1] = 0;
 		g_free(utf8);
 		update_label();
 
@@ -558,7 +562,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	int ret;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -729,7 +734,8 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	DUSBCalcParam **param;
 	int ret;
 
-	g_snprintf(update_->text, sizeof(update_->text), "ID-LIST");
+	strncpy(update_->text, "ID-LIST", sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
 	param = dusb_cp_new_array(size);
@@ -832,7 +838,8 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 
 	calc_time = (uint32_t)difftime(c, r);
 
-	g_snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
+	strncpy(update_->text, _("Setting clock..."), sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
 	do
@@ -911,7 +918,8 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	int ret;
 
 	// get raw clock
-	g_snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
+	strncpy(update_->text, _("Getting clock..."), sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
 	params = dusb_cp_new_array(size);
@@ -974,7 +982,8 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
-	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -1004,7 +1013,8 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	tifiles_build_fullname(handle->model, varname2, newname->folder, newname->name);
 	utf81 = ticonv_varname_to_utf8(handle->model, varname1, oldname->type);
 	utf82 = ticonv_varname_to_utf8(handle->model, varname2, newname->type);
-	g_snprintf(update_->text, sizeof(update_->text), _("Renaming %s to %s..."), utf81, utf82);
+	snprintf(update_->text, sizeof(update_->text) - 1, _("Renaming %s to %s..."), utf81, utf82);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf81);
 	g_free(utf82);
 	update_label();
@@ -1032,7 +1042,8 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 	char *utf8;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
-	g_snprintf(update_->text, sizeof(update_->text), _("Changing attributes of %s..."), utf8);
+	snprintf(update_->text, sizeof(update_->text) - 1, _("Changing attributes of %s..."), utf8);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -1069,7 +1080,8 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	int ret;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
-	g_snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
+	snprintf(update_->text, sizeof(update_->text) - 1, _("Creating %s..."), utf8);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -1163,7 +1175,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	int i = 0;
 	int ret = 0;
 
-	g_snprintf(update_->text, sizeof(update_->text), _("Getting version..."));
+	strncpy(update_->text, _("Getting version..."), sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
 	memset(infos, 0, sizeof(CalcInfos));
@@ -1226,11 +1239,11 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		infos->mask |= INFOS_DEVICE_TYPE;
 		i++;
 
-		g_snprintf(infos->boot_version, 5, "%1i.%02i", params1[i]->data[1], params1[i]->data[2]);
+		snprintf(infos->boot_version, 5, "%1i.%02i", params1[i]->data[1], params1[i]->data[2]);
 		infos->mask |= INFOS_BOOT_VERSION;
 		i++;
 
-		g_snprintf(infos->os_version, 5, "%1i.%02i", params1[i]->data[1], params1[i]->data[2]);
+		snprintf(infos->os_version, 5, "%1i.%02i", params1[i]->data[1], params1[i]->data[2]);
 		infos->mask |= INFOS_OS_VERSION;
 		i++;
 

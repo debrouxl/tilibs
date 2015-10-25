@@ -870,6 +870,8 @@ typedef struct
 	TIEXPORT3 const char*  TICALL ticalcs_memtype_to_string(CalcMemType type);
 	TIEXPORT3 CalcMemType  TICALL ticalcs_string_to_memtype(const char *str);
 
+	TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen);
+
 	// clock.c
 	TIEXPORT3 const char*  TICALL ticalcs_clock_format2date(CalcModel model, int value);
 	TIEXPORT3 int          TICALL ticalcs_clock_date2format(CalcModel model, const char *format);

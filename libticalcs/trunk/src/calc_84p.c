@@ -517,7 +517,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			}
 
 			utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-			g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
+			snprintf(update_->text, sizeof(update_->text) - 1, _("Parsing %s"), utf8);
+			update_->text[sizeof(update_->text) - 1] = 0;
 			g_free(utf8);
 			update_label();
 		}
@@ -573,7 +574,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+		update_->text[sizeof(update_->text) - 1] = 0;
 		g_free(utf8);
 		update_label();
 
@@ -637,7 +639,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	int ret;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -755,7 +758,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 	// send
 	utf8 = ticonv_varname_to_utf8(handle->model, ptr->name, ptr->data_type);
-	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -824,7 +828,8 @@ static int		send_flash_834pce	(CalcHandle* handle, FlashContent* content)
 
 	// send
 	utf8 = ticonv_varname_to_utf8(handle->model, ptr->name, ptr->data_type);
-	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -873,7 +878,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	int ret;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -959,7 +965,8 @@ static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarReq
 	int ret;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -1341,7 +1348,8 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	uint32_t i, varsize;
 	int ret;
 
-	g_snprintf(update_->text, sizeof(update_->text), "ID-LIST");
+	strncpy(update_->text, "ID-LIST", sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
 	attrs = dusb_ca_new_array(nattrs);
@@ -1495,7 +1503,8 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 
 	calc_time = (uint32_t)difftime(c, r);
 
-	g_snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
+	strncpy(update_->text, _("Setting clock..."), sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
 	do {
@@ -1572,7 +1581,8 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	int ret;
 
 	// get raw clock
-	g_snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
+	strncpy(update_->text, _("Getting clock..."), sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
 	params = dusb_cp_new_array(size);
@@ -1633,7 +1643,8 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	int ret;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	g_free(utf8);
 	update_label();
 
@@ -1703,25 +1714,26 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
 	static const uint16_t pids[] = { 
-		PID_PRODUCT_NAME, PID_MAIN_PART_ID,
-		PID_HW_VERSION, PID_LANGUAGE_ID, PID_SUBLANG_ID, PID_DEVICE_TYPE,
+		PID_OS_MODE, PID_DEVICE_TYPE, PID_PRODUCT_NAME, PID_MAIN_PART_ID,
+		PID_HW_VERSION, PID_LANGUAGE_ID, PID_SUBLANG_ID,
 		PID_BOOT_VERSION, PID_OS_VERSION, 
 		PID_PHYS_RAM, PID_USER_RAM, PID_FREE_RAM,
 		PID_PHYS_FLASH, PID_USER_FLASH, PID_FREE_FLASH,
-		PID_LCD_WIDTH, PID_LCD_HEIGHT, PID_BATTERY, PID_OS_MODE
+		PID_LCD_WIDTH, PID_LCD_HEIGHT, PID_BATTERY, PID_EXACT_MATH
 	};
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	DUSBCalcParam **params;
 	int i = 0;
 	int ret;
 
-	g_snprintf(update_->text, sizeof(update_->text), _("Getting version..."));
+	strncpy(update_->text, _("Getting version..."), sizeof(update_->text) - 1);
+	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
 	memset(infos, 0, sizeof(CalcInfos));
 	params = dusb_cp_new_array(size);
 
-	// TODO rewrite this function to ask for parameters in multiple phases, starting with 0x0001 and 0x000A, then
+	// TODO rewrite this function to ask for parameters in multiple phases, starting with 0x000A, then
 	// model-dependent sets of parameters. That's how TI-Connect CE 5.x does.
 	ret = dusb_cmd_s_param_request(handle, size, pids);
 	if (!ret)
@@ -1731,12 +1743,21 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		{
 			uint8_t product_id;
 
-			strncpy(infos->product_name, (char*)params[i]->data, params[i]->size);
+			infos->run_level = params[i]->data[0];
+			infos->mask |= INFOS_RUN_LEVEL;
+			i++;
+
+			infos->device_type = params[i]->data[1];
+			infos->mask |= INFOS_DEVICE_TYPE;
+			i++;
+
+			strncpy(infos->product_name, (char*)params[i]->data, sizeof(infos->product_name) - 1);
+			infos->product_name[sizeof(infos->product_name) - 1] = 0;
 			infos->mask |= INFOS_PRODUCT_NAME;
 			i++;
 
 			product_id = params[i]->data[0];
-			g_snprintf(infos->main_calc_id, 11, "%02X%02X%02X%02X%02X",
+			snprintf(infos->main_calc_id, 11, "%02X%02X%02X%02X%02X",
 				product_id, params[i]->data[1], params[i]->data[2], params[i]->data[3], params[i]->data[4]);
 			infos->mask |= INFOS_MAIN_CALC_ID;
 			strncpy(infos->product_id, infos->main_calc_id, sizeof(infos->product_id) - 1);
@@ -1756,15 +1777,11 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->mask |= INFOS_SUB_LANG_ID;
 			i++;
 
-			infos->device_type = params[i]->data[1];
-			infos->mask |= INFOS_DEVICE_TYPE;
-			i++;
-
-			g_snprintf(infos->boot_version, 5, "%1i.%02i", params[i]->data[1], params[i]->data[2]);
+			snprintf(infos->boot_version, 5, "%1d.%02d", params[i]->data[1], params[i]->data[2]);
 			infos->mask |= INFOS_BOOT_VERSION;
 			i++;
 
-			g_snprintf(infos->os_version, 5, "%1i.%02i", params[i]->data[1], params[i]->data[2]);
+			snprintf(infos->os_version, 5, "%1d.%02d", params[i]->data[1], params[i]->data[2]);
 			infos->mask |= INFOS_OS_VERSION;
 			i++;
 
@@ -1839,15 +1856,15 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->mask |= INFOS_LCD_HEIGHT;
 			i++;
 
-			infos->bits_per_pixel = 1;
-			infos->mask |= INFOS_BPP;
-
 			infos->battery = params[i]->data[0];
 			infos->mask |= INFOS_BATTERY;
 			i++;
 
-			infos->run_level = params[i]->data[0];
-			infos->mask |= INFOS_RUN_LEVEL;
+			if (params[i]->ok)
+			{
+				infos->exact_math = params[i]->data[0];
+				infos->mask |= INFOS_EXACT_MATH;
+			}
 			i++;
 
 			switch (product_id)
@@ -1855,6 +1872,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				case PRODUCT_ID_TI84P:
 				{
 					infos->model = CALC_TI84P_USB;
+					infos->bits_per_pixel = 1;
 					if (infos->hw_version >= 4)
 					{
 						ticalcs_warning(_("Unhandled 84+ family member with product_id=%d hw_version=%d"), product_id, infos->hw_version);
@@ -1864,6 +1882,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				case PRODUCT_ID_TI82A:
 				{
 					infos->model = CALC_TI82A_USB;
+					infos->bits_per_pixel = 1;
 					if (infos->hw_version >= 4)
 					{
 						ticalcs_warning(_("Unhandled 84+ family member with product_id=%d hw_version=%d"), product_id, infos->hw_version);
@@ -1873,6 +1892,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				case PRODUCT_ID_TI84PCSE:
 				{
 					infos->model = CALC_TI84PC_USB;
+					infos->bits_per_pixel = 16;
 					if (infos->hw_version < 4)
 					{
 						ticalcs_warning(_("Unhandled 84+ family member with product_id=%d hw_version=%d"), product_id, infos->hw_version);
@@ -1881,8 +1901,15 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				}
 				case PRODUCT_ID_TI83PCE: // and case PRODUCT_ID_TI84PCE:
 				{
-					// TODO handle the field which indicates 83PCE / 84+CE.
-					infos->model = CALC_TI83PCE_USB;
+					if (infos->exact_math)
+					{
+						infos->model = CALC_TI83PCE_USB;
+					}
+					else
+					{
+						infos->model = CALC_TI84PCE_USB;
+					}
+					infos->bits_per_pixel = 16;
 					if (infos->hw_version < 6)
 					{
 						ticalcs_warning(_("Unhandled 84+ family member with product_id=%d hw_version=%d"), product_id, infos->hw_version);
@@ -1893,10 +1920,12 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				{
 					// Default to generic 84+(SE).
 					infos->model = CALC_TI84P_USB;
+					infos->bits_per_pixel = 1;
 					ticalcs_warning(_("Unhandled 84+ family member with product_id=%d hw_version=%d"), product_id, infos->hw_version);
 					break;
 				}
 			}
+			infos->mask |= INFOS_BPP;
 			infos->mask |= INFOS_CALC_MODEL;
 		}
 	}
