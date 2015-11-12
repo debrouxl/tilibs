@@ -389,6 +389,14 @@ static void workaround_send(CalcHandle *handle, DUSBRawPacket *raw, DUSBVirtualP
 			ticables_cable_send(handle->cable, buf, 0);
 		}
 	}
+	else if (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
+	{
+		if (raw->type == DUSB_RPKT_VIRT_DATA_LAST && ((raw->size + 5) % 64) == 0)
+		{
+			ticalcs_info("XXX triggering an extra bulk write\n\tvtl->size=%d\traw->size=%d", vtl->size, raw->size);
+			ticables_cable_send(handle->cable, buf, 0);
+		}
+	}
 	else
 	{
 		ticalcs_warning("XXX unhandled model in workaround_send");
@@ -559,6 +567,10 @@ static void workaround_recv(CalcHandle *handle, DUSBRawPacket * raw, DUSBVirtual
 			ticalcs_info("XXX triggering an extra bulk read\n\tvtl->size=%d\traw->size=%d", vtl->size, raw->size);
 			ticables_cable_recv(handle->cable, buf, 0);
 		}
+	}
+	else if (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
+	{
+		// These models don't seem to need receive workarounds.
 	}
 	else
 	{
