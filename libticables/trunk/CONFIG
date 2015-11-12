@@ -2,19 +2,19 @@
                 Quick-Start Guide for libticables2 set-up
 --------------------------------------------------------------------------------
 
+An issue with this library, on GNU/Linux, is properly setting up access to
+devices. The *nix family, to which GNU/Linux belongs, is less insecure than old
+Windows versions because it heavily relies on separation and permissions... but
+as a consequence, it becomes harder to use in some situations.
 
-A burning issue with this library, and GNU/Linux, is good set-up of device
-access. GNU/Linux is secure because it heavily relies on permissions... but it
-becomes harder to use in some situations.
+This document describes methods for manual setup of access to cables and
+calculators on the parallel, serial and USB cables.
 
-This document describes methods for manual setup using standard *nix groups and
-a recent method for automatically giving access to locally logged on users.
-
-On the first run, you should always run your program as root. By this way,
-you will be almost sure to run it successfully.
-
-If you want to run your program as a regular (non-privileged) user, you need to
-take care of permissions. This is explained below.
+On the first run, you may want to run your program as root. This way, you will
+be almost sure to run it successfully.
+On the long run, you should of course run your program as a regular
+(non-privileged) user, and for this, you need to take care of permissions, as
+explained by this document.
 
 
 --------------------------------------------------------------------------------
@@ -34,12 +34,13 @@ This can be done by:
    Example 2:
      lp:x:7:romain
 - On some distributions (e.g. Fedora 12), an alternative, groupless setup
-  detailed in the last section can also be used.
+  detailed below can also be used.
 
 If you have a parallel port printer, for libticables2 to work, you may need to
 stop the CUPS printing service (the way to do this depends on your distribution)
 and unload the 'lp' kernel module (`rmmod lp` as root), so as to liberate the
 exclusive lock on the parallel port held by CUPS / the printer driver.
+
 
 --------------------------------------------------------------------------------
 BlackLink & GrayLink cables
@@ -55,20 +56,61 @@ This can be done by:
    Example 2:
      dialout:x:20:romain
 - On some distributions (e.g. Fedora 12), an alternative, groupless setup
-  detailed in the last section can also be used.
+  detailed below can also be used.
+
 
 --------------------------------------------------------------------------------
-SilverLink cable
+Groupless setup for udev >= 143 with udev-acl and ConsoleKit / systemd
 --------------------------------------------------------------------------------
 
-For SilverLink cable, things are more complicated...
+On most modern distributions, it is possible to set up the system so that the
+user physically in front of the computer, if any, gets access to what's assumed
+to be his/her calculator automatically. The exact procedure used to vary
+depending on the individual distribution and its age, but seems to have become
+stable for years. The following procedure works for systems using udev 143 or
+newer with udev-acl enabled, such as Fedora 12.
 
-- The following technique can be used for manual setup (using POSIX groups,
-as used e.g. on Debian) on udev-using systems:
+How udev-acl works is that a nice system service called ConsoleKit keeps track
+of what user(s) is/are currently logged in locally. The udev-acl tool uses this
+information to hand out ACLs for these devices to those users.
 
-It may depend on your distribution, but you will have to add a rule to
-/etc/udev. As a template, you can create an
-/etc/udev/rules.d/20-ticables.rules file with the following rules:
+To use this setup, create a /etc/udev/rules.d/69-libticables.rules file with
+the contents listed below.
+ACTION!="add", GOTO="libticables_end"
+
+# serial device (assume TI calculator)
+KERNEL=="ttyS[0-3]", ENV{ID_PDA}="1"
+# parallel device (assume TI calculator)
+SUBSYSTEM=="ppdev", ENV{ID_PDA}="1"
+# SilverLink
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e001", ENV{ID_PDA}="1"
+# TI-84+ DirectLink
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e003", ENV{ID_PDA}="1"
+# TI-89 Titanium DirectLink
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e004", ENV{ID_PDA}="1"
+# TI-84+ SE DirectLink
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", ENV{ID_PDA}="1"
+# TI-Nspire DirectLink
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e012", ENV{ID_PDA}="1"
+
+LABEL="libticables_end"
+
+IMPORTANT NOTE:
+    * on 143 <= udev <= 165, replace ENV{ID_PDA}="1" by ENV{ACL_MANAGE}="1".
+
+
+--------------------------------------------------------------------------------
+Old group-based setup for the SilverLink and DirectLink cables
+--------------------------------------------------------------------------------
+
+This is mentioned for historical purposes, as it worked for years on Debian and
+derivative distros using udev. It uses a POSIX group. You should use the
+group-less setup described above instead.
+
+Like the group-less setup, it requires adding a set of udev rules.
+
+To use this setup, create a /etc/udev/rules.d/20-ticables.rules file with
+the contents listed below.
 # SilverLink
 ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
 ATTR{idProduct}=="e001", MODE="0660", GROUP="plugdev"
@@ -85,8 +127,6 @@ ATTR{idProduct}=="e008", MODE="0660", GROUP="plugdev"
 ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
 ATTR{idProduct}=="e012", MODE="0660", GROUP="plugdev"
 
-(Replace ATTR by SYSFS if your very old version of udev doesn't support ATTR).
-
 The template relies on a group called 'plugdev'. If it doesn't exist, you will
 have to create it or choose another group which matches better your system.
 
@@ -95,48 +135,3 @@ user/group management tools, or editing /etc/group to add your username after
 the ':'). For example, the line will become:
 
         plugdev:x:46:romain
-
-- On some distributions (e.g. Fedora 12), an alternative, groupless setup
-  detailed in the last section can also be used.
-
---------------------------------------------------------------------------------
-Groupless setup for udev >= 143 with udev-acl and ConsoleKit
---------------------------------------------------------------------------------
-
-The above manual setup methods require users to be manually added to groups to
-hand out device access. If this is not desired, on some distributions, it is
-also possible to set up the system so the user physically in front of the
-computer, if any, gets access to what's assumed to be his/her calculator
-automatically. The exact procedure varies depending on the individual
-distribution and its age. The following procedure works for systems using udev
-143 or newer with udev-acl enabled, such as Fedora 12.
-
-How udev-acl works is that a nice system service called ConsoleKit keeps track
-of what user(s) is/are currently logged in locally. The udev-acl tool uses this
-information to hand out ACLs for these devices to those users.
-
-To use this setup, create a /lib/udev/rules.d/69-libticables.rules file with
-the contents listed below.
-IMPORTANT NOTE:
-    * on udev >= 154, replace ENV{ACL_MANAGE}="1" by TAG+="udev-acl".
-    * on udev >= 165, you can alternatively replace ENV{ACL_MANAGE}="1" by ENV{ID_PDA}="1".
-
-/lib/udev/rules.d/69-libticables.rules:
-ACTION!="add", GOTO="libticables_end"
-
-# serial device (assume TI calculator)
-KERNEL=="ttyS[0-3]", ENV{ACL_MANAGE}="1"
-# parallel device (assume TI calculator)
-SUBSYSTEM=="ppdev", ENV{ACL_MANAGE}="1"
-# SilverLink
-SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e001", ENV{ACL_MANAGE}="1"
-# TI-84+ DirectLink
-SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e003", ENV{ACL_MANAGE}="1"
-# TI-89 Titanium DirectLink
-SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e004", ENV{ACL_MANAGE}="1"
-# TI-84+ SE DirectLink
-SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", ENV{ACL_MANAGE}="1"
-# TI-Nspire DirectLink
-SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e012", ENV{ACL_MANAGE}="1"
-
-LABEL="libticables_end"
