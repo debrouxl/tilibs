@@ -82,7 +82,7 @@ TIEXPORT3 void TICALL dusb_cp_del_array(int size, DUSBCalcParam **params)
 
 	if (params != NULL)
 	{
-		for(i = 0; i < size && params[i]; i++)
+		for (i = 0; i < size && params[i]; i++)
 		{
 			dusb_cp_del(params[i]);
 		}
@@ -137,7 +137,7 @@ TIEXPORT3 void TICALL dusb_ca_del_array(int size, DUSBCalcAttr **attrs)
 
 	if (attrs != NULL)
 	{
-		for(i = 0; i < size && attrs[i]; i++)
+		for (i = 0; i < size && attrs[i]; i++)
 		{
 			dusb_ca_del(attrs[i]);
 		}
@@ -315,12 +315,12 @@ TIEXPORT3 int TICALL dusb_cmd_r_os_ack(CalcHandle *handle, uint32_t *size)
 	{
 		CATCH_DELAY();
 
-		if(pkt->type == DUSB_VPKT_ERROR)
+		if (pkt->type == DUSB_VPKT_ERROR)
 		{
 			retval = ERR_CALC_ERROR2 + err_code(pkt);
 			goto end;
 		}
-		else if(pkt->type != DUSB_VPKT_OS_ACK)
+		else if (pkt->type != DUSB_VPKT_OS_ACK)
 		{
 			retval = ERR_INVALID_PACKET;
 			goto end;
@@ -454,11 +454,11 @@ TIEXPORT3 int TICALL dusb_cmd_r_eot_ack(CalcHandle *handle)
 	{
 		CATCH_DELAY();
 
-		if(pkt->type == DUSB_VPKT_ERROR)
+		if (pkt->type == DUSB_VPKT_ERROR)
 		{
 			retval = ERR_CALC_ERROR2 + err_code(pkt);
 		}
-		else if(pkt->type != DUSB_VPKT_EOT_ACK)
+		else if (pkt->type != DUSB_VPKT_EOT_ACK)
 		{
 			retval = ERR_INVALID_PACKET;
 		}
@@ -485,7 +485,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_param_request(CalcHandle *handle, int npids, con
 	pkt->data[0] = MSB(npids);
 	pkt->data[1] = LSB(npids);
 
-	for(i = 0; i < npids; i++)
+	for (i = 0; i < npids; i++)
 	{
 		pkt->data[2*(i+1) + 0] = MSB(pids[i]);
 		pkt->data[2*(i+1) + 1] = LSB(pids[i]);
@@ -517,12 +517,12 @@ TIEXPORT3 int TICALL dusb_cmd_r_param_data(CalcHandle *handle, int nparams, DUSB
 	{
 		CATCH_DELAY();
 
-		if(pkt->type == DUSB_VPKT_ERROR)
+		if (pkt->type == DUSB_VPKT_ERROR)
 		{
 			retval = ERR_CALC_ERROR2 + err_code(pkt);
 			goto end;
 		}
-		else if(pkt->type != DUSB_VPKT_PARM_DATA)
+		else if (pkt->type != DUSB_VPKT_PARM_DATA)
 		{
 			retval = ERR_INVALID_PACKET;
 			goto end;
@@ -534,7 +534,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_param_data(CalcHandle *handle, int nparams, DUSB
 			goto end;
 		}
 
-		for(i = 0, j = 2; i < nparams; i++)
+		for (i = 0, j = 2; i < nparams; i++)
 		{
 			DUSBCalcParam *s = params[i] = dusb_cp_new(0, 0);
 
@@ -576,12 +576,12 @@ TIEXPORT3 int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, u
 	{
 		CATCH_DELAY_VARSIZE(&declared_size, 153600);
 
-		if(pkt->type == DUSB_VPKT_ERROR)
+		if (pkt->type == DUSB_VPKT_ERROR)
 		{
 			retval = ERR_CALC_ERROR2 + err_code(pkt);
 			goto end;
 		}
-		else if(pkt->type != DUSB_VPKT_PARM_DATA)
+		else if (pkt->type != DUSB_VPKT_PARM_DATA)
 		{
 			retval = ERR_INVALID_PACKET;
 			goto end;
@@ -623,7 +623,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, int naids, c
 	pkt->data[j++] = MSB(LSW(naids));
 	pkt->data[j++] = LSB(LSW(naids));
 
-	for(i = 0; i < naids; i++)
+	for (i = 0; i < naids; i++)
 	{
 		pkt->data[j++] = MSB(aids[i]);
 		pkt->data[j++] = LSB(aids[i]);
@@ -658,6 +658,8 @@ TIEXPORT3 int TICALL dusb_cmd_r_var_header(CalcHandle *handle, char *folder, cha
 	VALIDATE_NONNULL(name);
 	VALIDATE_NONNULL(attr);
 
+	folder[0] = 0;
+	name[0] = 0;
 	pkt = dusb_vtl_pkt_new(0, 0);
 
 	retval = dusb_recv_data(handle, pkt);
@@ -666,17 +668,17 @@ TIEXPORT3 int TICALL dusb_cmd_r_var_header(CalcHandle *handle, char *folder, cha
 	{
 		CATCH_DELAY();
 
-		if(pkt->type == DUSB_VPKT_EOT)
+		if (pkt->type == DUSB_VPKT_EOT)
 		{
 			retval = ERR_EOT;
 			goto end;
 		}
-		else if(pkt->type == DUSB_VPKT_ERROR)
+		else if (pkt->type == DUSB_VPKT_ERROR)
 		{
 			retval = ERR_CALC_ERROR2 + err_code(pkt);
 			goto end;
 		}
-		else if(pkt->type != DUSB_VPKT_VAR_HDR)
+		else if (pkt->type != DUSB_VPKT_VAR_HDR)
 		{
 			retval = ERR_INVALID_PACKET;
 			goto end;
@@ -684,30 +686,28 @@ TIEXPORT3 int TICALL dusb_cmd_r_var_header(CalcHandle *handle, char *folder, cha
 
 		j = 0;
 		fld_len = pkt->data[j++];
-		folder[0] = 0;
-		if(fld_len)
+		if (fld_len)
 		{
-			memcpy(folder, &pkt->data[j], fld_len+1);
+			memcpy(folder, &pkt->data[j], fld_len + 1);
 			j += fld_len+1;
 		}
 		var_len = pkt->data[j++];
-		name[0] = 0;
-		if(var_len)
+		if (var_len)
 		{
-			memcpy(name, &pkt->data[j], var_len+1);
+			memcpy(name, &pkt->data[j], var_len + 1);
 			j += var_len+1;
 		}
 
-		nattr = (((int)pkt->data[j+0]) << 8) | pkt->data[j+1];
+		nattr = (((int)pkt->data[j + 0]) << 8) | pkt->data[j + 1];
 		j += 2;
-		
-		for(i = 0; i < nattr; i++)
+
+		for (i = 0; i < nattr; i++)
 		{
 			DUSBCalcAttr *s = attr[i] = dusb_ca_new(0, 0);
 
 			s->id = ((uint16_t)pkt->data[j++]) << 8; s->id |= pkt->data[j++];
 			s->ok = !pkt->data[j++];
-			if(s->ok)
+			if (s->ok)
 			{
 				s->size = ((uint16_t)pkt->data[j++]) << 8; s->size |= pkt->data[j++];
 				s->data = (uint8_t *)g_malloc0(s->size);
@@ -738,14 +738,19 @@ TIEXPORT3 int TICALL dusb_cmd_s_rts(CalcHandle *handle, const char *folder, cons
 	VALIDATE_NONNULL(name);
 	VALIDATE_ATTRS(nattrs, attrs);
 
-	pks = 2 + strlen(name)+1 + 5 + 2;
-	if(strlen(folder))
+	pks = 2 + strlen(name) + 1 + 5 + 2;
+	if (strlen(folder))
+	{
 		pks += strlen(folder)+1;
-	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
+	}
+	for (i = 0; i < nattrs; i++)
+	{
+		pks += 4 + attrs[i]->size;
+	}
 
 	pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_RTS);
 
-	if(strlen(folder))
+	if (strlen(folder))
 	{
 		pkt->data[j++] = strlen(folder);
 		memcpy(pkt->data + j, folder, strlen(folder)+1);
@@ -768,7 +773,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_rts(CalcHandle *handle, const char *folder, cons
 
 	pkt->data[j++] = MSB(nattrs);
 	pkt->data[j++] = LSB(nattrs);
-	for(i = 0; i < nattrs; i++)
+	for (i = 0; i < nattrs; i++)
 	{
 		pkt->data[j++] = MSB(attrs[i]->id);
 		pkt->data[j++] = LSB(attrs[i]->id);
@@ -803,20 +808,28 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *fold
 	VALIDATE_ATTRS(nattrs, attrs);
 
 	pks = 2 + strlen(name)+1 + 5 + 2 + 2*naids + 2;
-	if(strlen(folder)) pks += strlen(folder)+1;
-	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
+	if (strlen(folder))
+	{
+		pks += strlen(folder)+1;
+	}
+	for (i = 0; i < nattrs; i++)
+	{
+		pks += 4 + attrs[i]->size;
+	}
 	pks += 2;
 
 	pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_VAR_REQ);
 
-	if(strlen(folder))
+	if (strlen(folder))
 	{
 		pkt->data[j++] = strlen(folder);
 		memcpy(pkt->data + j, folder, strlen(folder)+1);
 		j += strlen(folder)+1;
 	}
 	else
+	{
 		pkt->data[j++] = 0;
+	}
 
 	pkt->data[j++] = strlen(name);
 	memcpy(pkt->data + j, name, strlen(name)+1);
@@ -828,7 +841,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *fold
 
 	pkt->data[j++] = MSB(naids);
 	pkt->data[j++] = LSB(naids);
-	for(i = 0; i < naids; i++)
+	for (i = 0; i < naids; i++)
 	{
 		pkt->data[j++] = MSB(aids[i]);
 		pkt->data[j++] = LSB(aids[i]);
@@ -836,7 +849,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *fold
 
 	pkt->data[j++] = MSB(nattrs);
 	pkt->data[j++] = LSB(nattrs);
-	for(i = 0; i < nattrs; i++)
+	for (i = 0; i < nattrs; i++)
 	{
 		pkt->data[j++] = MSB(attrs[i]->id);
 		pkt->data[j++] = LSB(attrs[i]->id);
@@ -873,18 +886,18 @@ TIEXPORT3 int TICALL dusb_cmd_r_var_content(CalcHandle *handle, uint32_t *size, 
 	{
 		CATCH_DELAY();
 
-		if(pkt->type == DUSB_VPKT_ERROR)
+		if (pkt->type == DUSB_VPKT_ERROR)
 		{
 			retval = ERR_CALC_ERROR2 + err_code(pkt);
 			goto end;
 		}
-		else if(pkt->type != DUSB_VPKT_VAR_CNTS)
+		else if (pkt->type != DUSB_VPKT_VAR_CNTS)
 		{
 			retval = ERR_INVALID_PACKET;
 			goto end;
 		}
 
-		if(size != NULL)
+		if (size != NULL)
 		{
 			*size = pkt->size;
 		}
@@ -1174,11 +1187,11 @@ TIEXPORT3 int TICALL dusb_cmd_r_mode_ack(CalcHandle *handle)
 	{
 		CATCH_DELAY();
 
-		if(pkt->type == DUSB_VPKT_ERROR)
+		if (pkt->type == DUSB_VPKT_ERROR)
 		{
 			retval = ERR_CALC_ERROR2 + err_code(pkt);
 		}
-		else if(pkt->type != DUSB_VPKT_MODE_SET)
+		else if (pkt->type != DUSB_VPKT_MODE_SET)
 		{
 			retval = ERR_INVALID_PACKET;
 		}
@@ -1206,11 +1219,11 @@ TIEXPORT3 int TICALL dusb_cmd_r_data_ack(CalcHandle *handle)
 	{
 		CATCH_DELAY();
 
-		if(pkt->type == DUSB_VPKT_ERROR)
+		if (pkt->type == DUSB_VPKT_ERROR)
 		{
 			retval = ERR_CALC_ERROR2 + err_code(pkt);
 		}
-		else if(pkt->type != DUSB_VPKT_DATA_ACK)
+		else if (pkt->type != DUSB_VPKT_DATA_ACK)
 		{
 			ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", DUSB_VPKT_DATA_ACK, pkt->type);
 			retval = ERR_INVALID_PACKET;
@@ -1237,11 +1250,11 @@ TIEXPORT3 int TICALL dusb_cmd_r_delay_ack(CalcHandle *handle)
 
 	if (!retval)
 	{
-		if(pkt->type == DUSB_VPKT_ERROR)
+		if (pkt->type == DUSB_VPKT_ERROR)
 		{
 			retval = ERR_CALC_ERROR2 + err_code(pkt);
 		}
-		else if(pkt->type != DUSB_VPKT_DELAY_ACK)
+		else if (pkt->type != DUSB_VPKT_DELAY_ACK)
 		{
 			ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", DUSB_VPKT_DELAY_ACK, pkt->type);
 			retval = ERR_INVALID_PACKET;
@@ -1288,12 +1301,12 @@ TIEXPORT3 int TICALL dusb_cmd_r_eot(CalcHandle *handle)
 	{
 		CATCH_DELAY();
 
-		if(pkt->type == DUSB_VPKT_ERROR)
+		if (pkt->type == DUSB_VPKT_ERROR)
 		{
 			retval = ERR_CALC_ERROR2 + err_code(pkt);
 			goto end;
 		}
-		else if(pkt->type != DUSB_VPKT_EOT)
+		else if (pkt->type != DUSB_VPKT_EOT)
 		{
 			retval = ERR_INVALID_PACKET;
 			goto end;

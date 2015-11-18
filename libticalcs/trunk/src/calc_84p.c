@@ -439,7 +439,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	root = g_node_new(NULL);
 	g_node_append(*apps, root);
 
-	// Add permanent variables (Window, RclWindow, TblSet aka WINDW, ZSTO, TABLE)
+	// Add permanent variables (Window, RclWin / RclWindw, TblSet aka WINDW, ZSTO, TABLE)
 	{
 		GNode *node;
 		VarEntry *ve;
@@ -452,7 +452,16 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		g_node_append(folder, node);
 
 		ve = tifiles_ve_create();
-		strncpy(ve->name, "RclWin", sizeof(ve->name) - 1);
+		// Actually, "RclWindw" works even on an old 84+ running OS 2.43, but libticalcs
+		// has been using "RclWin" successfully on TI-Z80 DUSB models since the beginning...
+		if (handle->model == CALC_TI84PC_USB || handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
+		{
+			strncpy(ve->name, "RclWindw", sizeof(ve->name) - 1);
+		}
+		else
+		{
+			strncpy(ve->name, "RclWin", sizeof(ve->name) - 1);
+		}
 		ve->name[sizeof(ve->name) - 1] = 0;
 		ve->type = TI84p_ZSTO;
 		node = g_node_new(ve);
@@ -899,7 +908,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 				update_->cnt2 = 0;
 				update_->max2 = q;
 
-				for(page = 0; page < q; page++)
+				for (page = 0; page < q; page++)
 				{
 					FlashPage *fp = content->pages[page] = tifiles_fp_create();
 
@@ -1229,7 +1238,7 @@ static int		send_os_834pce    (CalcHandle* handle, FlashContent* content)
 
 	// search for OS header (offset & size)
 	hdr_offset = 0;
-	for(i = 0, d = ptr->data_part; (d[i] != 0xFF) || (d[i+1] != 0xFF) || (d[i+2] != 0xFF) || (d[i+3] != 0xFF); i++);
+	for (i = 0, d = ptr->data_part; (d[i] != 0xFF) || (d[i+1] != 0xFF) || (d[i+2] != 0xFF) || (d[i+3] != 0xFF); i++);
 	hdr_size = i - hdr_offset;
 
 	do
@@ -1411,7 +1420,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 
 	// Launch program by remote control
 	PAUSE(200);
-	for(i = 0; i < sizeof(keys) / sizeof(uint16_t); i++)
+	for (i = 0; i < sizeof(keys) / sizeof(uint16_t); i++)
 	{
 		ret = send_key(handle, keys[i]);
 		if (ret)

@@ -634,7 +634,10 @@ TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacke
 
 			vtl->type = (((uint16_t)raw.data[4]) << 8) | (raw.data[5] << 0);
 			vtl->data = g_realloc(vtl->data, alloc_size);
-			memcpy(vtl->data, &raw.data[DUSB_DH_SIZE], raw.size - DUSB_DH_SIZE);
+			if (vtl->data != NULL)
+			{
+				memcpy(vtl->data, &raw.data[DUSB_DH_SIZE], raw.size - DUSB_DH_SIZE);
+			}
 			vtl->size = raw.size - DUSB_DH_SIZE;
 #if (VPKT_DBG == 2)
 			ticalcs_info("  TI->PC: %s\n\t\t(size = %08x, type = %s)", 
@@ -643,7 +646,7 @@ TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacke
 #elif (VPKT_DBG == 1)
 			ticalcs_info("  TI->PC: %s", dusb_vpkt_type2name(vtl->type));
 #endif
-			if(vtl->type == 0xEE00)
+			if (vtl->data != NULL && vtl->type == 0xEE00)
 			{
 				ticalcs_info("    Error Code : %04x\n", (((int)vtl->data[0]) << 8) | vtl->data[1]);
 			}

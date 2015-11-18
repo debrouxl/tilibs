@@ -402,8 +402,16 @@ static int dump_rom(CalcHandle *h)
 
 static int set_clock(CalcHandle *h)
 {
-	printf("Entering clock parameters not implemented yet !\n");
-	return 0;
+	CalcClock clk;
+	int ret;
+
+	ret = ticalcs_calc_get_clock(h, &clk);
+	if (!ret)
+	{
+		ret = ticalcs_calc_set_clock(h, &clk);
+	}
+
+	return ret;
 }
 
 static int get_clock(CalcHandle *h)
