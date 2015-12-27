@@ -1,0 +1,59 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; TI-84+CE / TI-83PCE USB ROM Dumper
+;;;
+;;; Copyright (c) 2015 Jacob Young
+;;;
+;;; This program is free software; you can redistribute it and/or modify
+;;; it under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 2 of the License, or
+;;; (at your option) any later version.
+;;; 
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;; 
+;;; You should have received a copy of the GNU General Public License
+;;; along with this program; if not, write to the Free Software Foundation,
+;;; Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+userMem         = 0D1A881h
+ProtProgObj     = 6
+_Mov9ToOP1      = 0020320h
+_ChkFindSym     = 002050Ch
+_DelVarArc      = 0021434h
+_CreateProtProg = 0021334h
+_GetKey         = 0020D8Ch
+kEnter          = 005h
+
+        .db     0EFh, 07Bh
+        .org    userMem
+
+        ld      hl, data
+        call    _Mov9ToOP1
+        call    _ChkFindSym
+        call    nc, _DelVarArc
+        ld      hl, $4000
+        push    hl
+        call    _CreateProtProg
+        pop     bc
+        inc     de
+        inc     de
+        ld      hl, 0
+start = $ - 3
+        ldir
+        push    hl
+        ld      hl, prog
+        call    _Mov9ToOP1
+        call    _ChkFindSym
+        pop     bc
+        ret     c
+        ld      hl, 2 + start - (userMem - 2)
+        add     hl, de
+        ld      (hl), bc
+        ret
+prog:   .db     ProtProgObj, "ROMDUMP", 0
+data:   .db     ProtProgObj, "ROMDATA", 0

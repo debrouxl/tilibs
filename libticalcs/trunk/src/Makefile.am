@@ -2,7 +2,7 @@
 
 AM_CFLAGS = -Wall -W
 
-SUBDIRS = tf2hex romdump_8x romdump_84p_usb romdump_9x romdump_89t_usb
+SUBDIRS = tf2hex romdump_8x romdump_84p_usb romdump_834pce_usb romdump_9x romdump_89t_usb
 
 # libraries and files to compile and install
 lib_LTLIBRARIES = libticalcs2.la
@@ -56,7 +56,7 @@ BUILT_SOURCES =
 
 if BUILD_Z80_ROM_DUMPERS
 
-BUILT_SOURCES += rom73.h rom82.h rom83.h rom83p.h rom84p.h rom84pc.h rom84pcu.h rom85.h rom86.h
+BUILT_SOURCES += rom73.h rom82.h rom83.h rom83p.h rom84p.h rom84pc.h rom84pcu.h rom834pceu.h rom85.h rom86.h
 
 rom73.h: romdump_8x/dump73.73p $(tf2hex)
 	$(tf2hex) romdump_8x/dump73.73p $(srcdir)/rom73.h 73
@@ -90,6 +90,12 @@ rom84pcu.h: romdump_84p_usb/dump84pcu.8xp $(tf2hex)
 
 romdump_84p_usb/dump84p.8xp romdump_84p_usb/dump84pcu.8xp:
 	cd romdump_84p_usb && $(MAKE)
+
+rom834pceu.h: romdump_834pce_usb/dump834pceu.8xp $(tf2hex)
+	$(tf2hex) romdump_834pce_usb/dump834pceu.8xp $(srcdir)/rom834pceu.h 834pceu
+
+romdump_834pce_usb/dump834pceu.8xp:
+	cd romdump_834pce_usb && $(MAKE)
 
 endif
 
