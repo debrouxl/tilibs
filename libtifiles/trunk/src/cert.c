@@ -214,15 +214,18 @@ TIEXPORT2 int TICALL tifiles_cert_field_find_path(const uint8_t *data, uint32_t 
 		return ERR_INVALID_PARAM;
 	}
 
-	while (field_path_len != 0 && !ret) {
+	while (field_path_len != 0 && !ret)
+	{
 		ret = tifiles_cert_field_find(data, length, *field_path, &data, &length);
-		tifiles_warning("%p\t%u", data, length);
+		//tifiles_warning("%p\t%u", data, length);
 		field_path++;
 		field_path_len--;
-		if (contents != NULL) {
+		if (contents != NULL)
+		{
 			*contents = data;
 		}
-		if (field_size != NULL) {
+		if (field_size != NULL)
+		{
 			*field_size = length;
 		}
 	}
