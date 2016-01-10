@@ -202,7 +202,7 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_flash_app (CalcModel model)
 		case CALC_TI84PC_USB:
 			return "8Ck";
 		case CALC_TI83PCE_USB:
-			return "8Pk";
+			return "8Ek";
 		case CALC_TI84PCE_USB:
 			return "8Ek";
 		case CALC_TI82A_USB:
@@ -265,7 +265,7 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_flash_os(CalcModel model)
 		case CALC_TI84PCE_USB:
 			return "8Eu";
 		case CALC_TI82A_USB:
-			return "8Xu";
+			return "82u";
 		case CALC_TI85:
 			return NULL;
 		case CALC_TI86:
@@ -1246,10 +1246,11 @@ TIEXPORT2 CalcModel TICALL tifiles_fext_to_model(const char *ext)
 		return CALC_NONE;
 	}
 
-	if (ext[0] != 0 && ext[1] != 0)
+	if (ext[0] != 0 && ext[1] != 0 && ext[2] != 0)
 	{
 		char c1 = g_ascii_tolower(ext[0]);
 		char c2 = g_ascii_tolower(ext[1]);
+		char c3 = g_ascii_tolower(ext[2]);
 
 		if (c1 == '7' && c2 == '3')
 		{
@@ -1259,7 +1260,14 @@ TIEXPORT2 CalcModel TICALL tifiles_fext_to_model(const char *ext)
 		{
 			if (c2 == '2')
 			{
-				type = CALC_TI82;
+				if (c3 == 'u')
+				{
+					type = CALC_TI82A_USB;
+				}
+				else
+				{
+					type = CALC_TI82;
+				}
 			}
 			else if (c2 == '3')
 			{
@@ -1317,7 +1325,11 @@ TIEXPORT2 CalcModel TICALL tifiles_fext_to_model(const char *ext)
 		{
 			if (c2 == 'n' || c2 == 'c' || c2 == 'm')
 			{
-				type = CALC_NSPIRE;
+				if (c3 == 's' || c3 == 'c' || c3 == 'o')
+				{
+					type = CALC_NSPIRE;
+				}
+				// else fall through.
 			}
 			// else fall through.
 		}
