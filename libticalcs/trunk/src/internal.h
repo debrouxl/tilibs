@@ -97,6 +97,24 @@
 			return ERR_INVALID_PARAMETER; \
 		} \
 	} while(0);
+#define VALIDATE_SCREENWIDTH(width) \
+	do \
+	{ \
+		if (width > 320) \
+		{ \
+			ticalcs_critical("%s: no calculator model known to this library has screens of width > 320 pixels", __FUNCTION__); \
+			return ERR_INVALID_PARAMETER; \
+		} \
+	} while(0);
+#define VALIDATE_SCREENHEIGHT(height) \
+	do \
+	{ \
+		if (height > 240) \
+		{ \
+			ticalcs_critical("%s: no calculator model known to this library has screens of height > 240 pixels", __FUNCTION__); \
+			return ERR_INVALID_PARAMETER; \
+		} \
+	} while(0);
 
 #define RETURN_IF_HANDLE_NOT_ATTACHED(handle) \
 	do \
@@ -122,6 +140,12 @@
 			return ERR_BUSY; \
 		} \
 	} while(0);
+
+
+static inline void * ticalcs_alloc_screen(size_t len)
+{
+	return g_malloc(len);
+}
 
 
 // backup.c

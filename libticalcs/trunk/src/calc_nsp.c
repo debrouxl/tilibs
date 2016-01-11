@@ -204,7 +204,7 @@ static uint8_t* rle_uncompress(CalcScreenCoord* sc, const uint8_t *src, uint32_t
 	if (type == 0)
 	{
 		// Nspire (CAS) Clickpad & Touchpad, 4 bpp
-		uint8_t *dst = g_malloc(sc->width * sc->height / 2);
+		uint8_t *dst = ticalcs_alloc_screen(sc->width * sc->height / 2);
 		uint8_t *q;
 		uint32_t i;
 
@@ -237,7 +237,7 @@ static uint8_t* rle_uncompress(CalcScreenCoord* sc, const uint8_t *src, uint32_t
 	else if (type == 1)
 	{
 		// Nspire (CAS) CX & CM, 16 bpp
-		uint8_t *dst = g_malloc(sc->width * sc->height * 2);
+		uint8_t *dst = ticalcs_alloc_screen(sc->width * sc->height * 2);
 		uint8_t *q;
 		uint32_t i;
 
@@ -305,7 +305,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		{
 			// Nspire (CAS) CX.
 			type = 1;
-			sc->pixel_format = CALC_PIXFMT_RGB_5_6_5;
+			sc->pixel_format = CALC_PIXFMT_RGB_565_LE;
 		}
 		else
 		{
@@ -333,15 +333,34 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 					        | (((uint32_t)data[2]) <<  8)
 					        | (((uint32_t)data[3])      ));
 					g_free(data);
-					ret = nsp_cmd_r_screen_rle(handle, &cmd, &size, &data);
-					if (!ret)
-					{
-						*bitmap = rle_uncompress(sc, data, size, type);
-						g_free(data);
 
-						if (*bitmap == NULL)
+					if (sc->width > 320)
+					{
+						ticalcs_critical("%s: no calculator model known to this library has screens of width > 320 pixels", __FUNCTION__);
+						ret = ERR_INVALID_PACKET;
+					}
+					else if (sc->height > 240)
+					{
+						ticalcs_critical("%s: no calculator model known to this library has screens of height > 240 pixels", __FUNCTION__);
+						ret = ERR_INVALID_PACKET;
+					}
+					else if (size > 2 * sc->width * sc->height)
+					{
+						ticalcs_critical("%s: no calculator model known to this library uses more than 16 bpp", __FUNCTION__);
+						ret = ERR_INVALID_PACKET;
+					}
+					else
+					{
+						ret = nsp_cmd_r_screen_rle(handle, &cmd, &size, &data);
+						if (!ret)
 						{
-							ret = ERR_MALLOC;
+							*bitmap = rle_uncompress(sc, data, size, type);
+							g_free(data);
+
+							if (*bitmap == NULL)
+							{
+								ret = ERR_MALLOC;
+							}
 						}
 					}
 				}
@@ -619,7 +638,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	utf8 = ticonv_varname_to_utf8(handle->model, path, ve->type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	ret = nsp_cmd_s_put_file(handle, path, ve->size);
@@ -658,7 +677,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	ret = nsp_cmd_s_get_file(handle, path);
@@ -887,7 +906,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
 	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	ret = nsp_cmd_s_del_file(handle, path);
@@ -918,7 +937,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	utf8 = ticonv_varname_to_utf8(handle->model, path, -1);
 	snprintf(update_->text, sizeof(update_->text) - 1, _("Creating %s..."), utf8);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	ret = nsp_cmd_s_new_folder(handle, path);
@@ -1092,8 +1111,8 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	utf82 = ticonv_varname_to_utf8(handle->model, path2, newname->type);
 	snprintf(update_->text, sizeof(update_->text) - 1, _("Renaming %s to %s..."), utf81, utf82);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf82);
-	g_free(utf81);
+	ticonv_utf8_free(utf82);
+	ticonv_utf8_free(utf81);
 	update_label();
 
 	ret = nsp_cmd_s_rename_file(handle, path1, path2);

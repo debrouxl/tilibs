@@ -134,7 +134,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	}
 	TRYF(ti92_send_ACK(handle));
 
-	*bitmap = (uint8_t *)g_malloc(TI92_COLS * TI92_ROWS / 8);
+	*bitmap = (uint8_t *)ticalcs_alloc_screen(TI92_COLS * TI92_ROWS / 8);
 	if (*bitmap == NULL)
 	{
 		return ERR_MALLOC;
@@ -230,7 +230,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		snprintf(update_->text, sizeof(update_->text) - 1, _("Parsing %s/%s"), ((VarEntry *) (folder->data))->name, utf8);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_->label();
 	}
 
@@ -353,7 +353,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		utf8 = ticonv_varname_to_utf8(handle->model, varname, entry->type);
 		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 
 		TRYF(ti92_send_VAR(handle, entry->size, entry->type, varname));
@@ -400,7 +400,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	TRYF(ti92_send_REQ(handle, 0, vr->type, varname));
@@ -482,7 +482,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 
 		TRYF(ti92_send_CTS(handle));
@@ -560,7 +560,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
 	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	send_key(handle, KEY92P_ON);
@@ -600,7 +600,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
 	snprintf(update_->text, sizeof(update_->text) - 1, _("Creating %s..."), utf8);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	// send empty expression

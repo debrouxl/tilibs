@@ -78,11 +78,14 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	err = ti85_recv_XDP(handle, &max_cnt, buf);	// pb with checksum
 	if (err != ERR_CHECKSUM)
 	{
-		TRYF(err)
+		if (err)
+		{
+			return err;
+		}
 	}
 	TRYF(ti85_send_ACK(handle));
 
-	*bitmap = (uint8_t *)g_malloc(TI86_COLS * TI86_ROWS / 8);
+	*bitmap = (uint8_t *)ticalcs_alloc_screen(TI86_COLS * TI86_ROWS / 8);
 	if (*bitmap == NULL)
 	{
 		return ERR_MALLOC;
@@ -184,7 +187,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		snprintf(update_->text, sizeof(update_->text) - 1, _("Parsing %s"), utf8);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 	}
 
@@ -389,7 +392,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
 		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 
 		TRYF(ti85_send_XDP(handle, entry->size, entry->data));
@@ -424,7 +427,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	// silent request
@@ -459,10 +462,10 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 		0x56, 0x4E, 0x51, 0x12, /* u, m, p, )	*/
 		0x06 };                 /* Enter		*/
 	uint16_t dummy;
-	int i;
+	unsigned int i;
 
 	// Launch program by remote control
-	for(i = 0; i < (int) G_N_ELEMENTS(keys) - 1; i++)
+	for (i = 0; i < (sizeof(keys) / sizeof(keys[0])) - 1; i++)
 	{
 		TRYF(send_key(handle, keys[i]));
 	}

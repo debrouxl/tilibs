@@ -361,12 +361,12 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 			case CALC_TI84PC_USB:
 			{
 				size -= 4;
-				*bitmap = g_malloc(TI84PC_ROWS * TI84PC_COLS * 2);
+				*bitmap = ticalcs_alloc_screen(TI84PC_ROWS * TI84PC_COLS * 2);
 				ret = ti84pcse_decompress_screen(*bitmap, TI84PC_ROWS * TI84PC_COLS * 2, data, size);
 				g_free(data);
 				if (ret)
 				{
-					g_free(*bitmap);
+					ticalcs_free_screen(*bitmap);
 					*bitmap = NULL;
 					ret = ERR_INVALID_SCREENSHOT;
 				}
@@ -376,7 +376,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 					sc->height = TI84PC_ROWS;
 					sc->clipped_width = TI84PC_COLS;
 					sc->clipped_height = TI84PC_ROWS;
-					sc->pixel_format = CALC_PIXFMT_RGB_5_6_5;
+					sc->pixel_format = CALC_PIXFMT_RGB_565_LE;
 				}
 				break;
 			}
@@ -391,7 +391,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 					sc->height = TI84PC_ROWS;
 					sc->clipped_width = TI84PC_COLS;
 					sc->clipped_height = TI84PC_ROWS;
-					sc->pixel_format = CALC_PIXFMT_RGB_5_6_5;
+					sc->pixel_format = CALC_PIXFMT_RGB_565_LE;
 					break;
 				}
 				// else fall through.
@@ -519,7 +519,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 			snprintf(update_->text, sizeof(update_->text) - 1, _("Parsing %s"), utf8);
 			update_->text[sizeof(update_->text) - 1] = 0;
-			g_free(utf8);
+			ticonv_utf8_free(utf8);
 			update_label();
 		}
 	}
@@ -576,7 +576,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 
 		attrs = dusb_ca_new_array(nattrs);
@@ -641,7 +641,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	attrs = dusb_ca_new_array(nattrs);
@@ -760,7 +760,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	utf8 = ticonv_varname_to_utf8(handle->model, ptr->name, ptr->data_type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	attrs = dusb_ca_new_array(nattrs);
@@ -830,7 +830,7 @@ static int		send_flash_834pce	(CalcHandle* handle, FlashContent* content)
 	utf8 = ticonv_varname_to_utf8(handle->model, ptr->name, ptr->data_type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	attrs = dusb_ca_new_array(nattrs);
@@ -880,7 +880,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	attrs = dusb_ca_new_array(nattrs);
@@ -967,7 +967,7 @@ static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarReq
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	attrs = dusb_ca_new_array(nattrs);
@@ -1645,7 +1645,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	attr = dusb_ca_new_array(size);

@@ -73,7 +73,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	}
 	TRYF(ti85_send_ACK(handle));
 
-	*bitmap = (uint8_t *)g_malloc(TI85_COLS * TI85_ROWS / 8);
+	*bitmap = (uint8_t *)ticalcs_alloc_screen(TI85_COLS * TI85_ROWS / 8);
 	if (*bitmap == NULL)
 	{
 		return ERR_MALLOC;
@@ -283,7 +283,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
 		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 
 		TRYF(ti85_send_XDP(handle, entry->size, entry->data));
@@ -355,7 +355,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 
 		ve->data = tifiles_ve_alloc_data(ve->size);

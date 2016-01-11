@@ -151,12 +151,20 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	TRYF(ti89_recv_ACK(handle, NULL));
 
 	err = ti89_recv_XDP(handle, &max_cnt, buf);	// pb with checksum
-	if(err != ERR_CHECKSUM) { TRYF(err) };
+	if (err != ERR_CHECKSUM)
+	{
+		if (err)
+		{
+			return err;
+		}
+	}
 	TRYF(ti89_send_ACK(handle));
 
-	*bitmap = (uint8_t *)g_malloc(TI89_COLS * TI89_ROWS / 8);
-	if(*bitmap == NULL) 
+	*bitmap = (uint8_t *)ticalcs_alloc_screen(TI89_COLS * TI89_ROWS / 8);
+	if (*bitmap == NULL)
+	{
 		return ERR_MALLOC;
+	}
 	memcpy(*bitmap, buf, TI89_COLS * TI89_ROWS / 8);
 
 	// Clip the unused part of the screen (nethertheless useable witha asm prog)
@@ -296,7 +304,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			u2 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 			snprintf(update_->text, sizeof(update_->text) - 1, _("Parsing %s/%s"), u1, u2);
 			update_->text[sizeof(update_->text) - 1] = 0;
-			g_free(u1); g_free(u2);
+			ticonv_utf8_free(u2);
+			ticonv_utf8_free(u1);
 			update_label();
 
 			if(ve->type == TI89_APPL) 
@@ -315,8 +324,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			} 
 			else
 			{
-				if(!strcmp(ve->folder, "main") && 
-					(!strcmp(ve->name, "regcoef") || !strcmp(ve->name, "regeq")))
+				if(!strcmp(ve->folder, "main") && (!strcmp(ve->name, "regcoef") || !strcmp(ve->name, "regeq")))
 				{
 					tifiles_ve_delete(ve);
 				}
@@ -375,7 +383,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		utf8 = ticonv_varname_to_utf8(handle->model, varname, vartype);
 		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 
 		switch (entry->attr) 
@@ -422,7 +430,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	TRYF(ti89_send_REQ(handle, 0, vr->type, varname));
@@ -503,7 +511,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		utf8 = ticonv_varname_to_utf8(handle->model, varname, vartype);
 		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 
 		TRYF(ti89_send_VAR(handle, entry->size, vartype, varname));
@@ -582,7 +590,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 
 		TRYF(ti89_send_CTS(handle));
@@ -622,7 +630,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		utf8 = ticonv_varname_to_utf8(handle->model, ptr->name, ptr->data_type);
 		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 
 		if(ptr->data_type == TI89_AMS) 
@@ -684,7 +692,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	content->model = handle->model;
@@ -894,7 +902,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
 	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	TRYF(ti89_send_DEL(handle, vr->size, vr->type, varname));
@@ -912,7 +920,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
 	snprintf(update_->text, sizeof(update_->text) - 1, _("Creating %s..."), utf8);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	// send empty expression

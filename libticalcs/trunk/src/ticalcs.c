@@ -225,7 +225,9 @@ TIEXPORT3 int TICALL ticalcs_library_init(void)
 #endif
 
 	if (ticalcs_instance)
+	{
 		return (++ticalcs_instance);
+	}
 	ticalcs_info(_("ticalcs library version %s"), LIBCALCS_VERSION);
 	errno = 0;
 
@@ -293,35 +295,33 @@ TIEXPORT3 uint32_t TICALL ticalcs_supported_calcs (void)
  **/
 TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 {
-	CalcHandle *handle = (CalcHandle *)g_malloc0(sizeof(CalcHandle));
-	if (handle != NULL)
+	CalcHandle *handle = NULL;
+	CalcFncts * calc = NULL;
+	unsigned int i;
+
+	for (i = 0; i < sizeof(calcs) / sizeof(calcs[0]) - 1; i++) // - 1 for the terminating NULL.
 	{
-		int i;
-
-		handle->model = model;
-
-		for (i = 0; calcs[i]; i++)
+		if (calcs[i]->model == (int const)model)
 		{
-			if (calcs[i]->model == (int const)model)
+			calc = (CalcFncts *)calcs[i];
+			break;
+		}
+	}
+
+	if (calc != NULL)
+	{
+		handle = (CalcHandle *)g_malloc0(sizeof(CalcHandle));
+		if (handle != NULL)
+		{
+			handle->model = model;
+			handle->calc = calc;
+			handle->updat = (CalcUpdate *)&default_update;
+			handle->buffer = (uint8_t *)g_malloc(65536 + 6);
+			if (handle->buffer == NULL)
 			{
-				handle->calc = (CalcFncts *)calcs[i];
-				break;
+				g_free(handle);
+				handle = NULL;
 			}
-		}
-
-		if (handle->calc == NULL)
-		{
-			g_free(handle);
-			return NULL;
-		}
-
-		handle->updat = (CalcUpdate *)&default_update;
-
-		handle->buffer = (uint8_t *)g_malloc(65536 + 6);
-		if (handle->buffer == NULL)
-		{
-			g_free(handle);
-			return NULL;
 		}
 	}
 
@@ -441,15 +441,9 @@ TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle* handle)
  **/
 TIEXPORT3 int TICALL ticalcs_update_set(CalcHandle* handle, CalcUpdate* upd)
 {
-	if (handle != NULL)
-	{
-		handle->updat = upd;
-		return 0;
-	}
-	else
-	{
-		ticalcs_critical("ticalcs_update_set: handle is NULL");
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle);
+
+	handle->updat = upd;
+	return 0;
 
 }

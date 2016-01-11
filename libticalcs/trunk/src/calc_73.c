@@ -186,11 +186,11 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 			update_->pbar();
 		}
 
-		*bitmap = g_malloc(TI84PC_ROWS * TI84PC_COLS * 2);
+		*bitmap = ticalcs_alloc_screen(TI84PC_ROWS * TI84PC_COLS * 2);
 		err = ti84pcse_decompress_screen(*bitmap, TI84PC_ROWS * TI84PC_COLS * 2, data, size);
 		if (err)
 		{
-			g_free(*bitmap);
+			ticalcs_free_screen(*bitmap);
 			*bitmap = NULL;
 		}
 
@@ -244,7 +244,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		node = g_node_new(ve);
 		g_node_append(folder, node);
 
-		if(handle->model != CALC_TI73)
+		if (handle->model != CALC_TI73)
 		{
 			ve = tifiles_ve_create();
 			ve->type = TI84p_ZSTO;
@@ -284,14 +284,18 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 		node = g_node_new(ve);
 		if (ve->type != TI73_APPL)
+		{
 			g_node_append(folder, node);
+		}
 		else
+		{
 			g_node_append(root, node);
+		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		snprintf(update_->text, sizeof(update_->text) - 1, _("Parsing %s"), utf8);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 	}
 
@@ -452,7 +456,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
 		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 
 		TRYF(ti73_send_XDP(handle, (uint16_t)entry->size, entry->data));
@@ -486,7 +490,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	// silent request
@@ -563,7 +567,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	utf8 = ticonv_varname_to_utf8(handle->model, ptr->name, ptr->data_type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	update_->cnt2 = 0;
@@ -641,7 +645,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	content->model = handle->model;
@@ -815,12 +819,12 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	if (handle->model == CALC_TI73)
 	{
 		keys = keys_73;
-		nkeys = G_N_ELEMENTS(keys_73);
+		nkeys = sizeof(keys_73) / sizeof(keys_73[0]);
 	}
 	else
 	{
 		keys = keys_83p;
-		nkeys = G_N_ELEMENTS(keys_83p);
+		nkeys = sizeof(keys_83p) / sizeof(keys_83p[0]);
 	}
 
 	// Launch program by remote control
@@ -974,7 +978,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	TRYF(ti73_send_DEL(handle, (uint16_t)vr->size, vr->type, vr->name, vr->attr));

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.9\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-10-06 20:26+0200\n"
+"POT-Creation-Date: 2015-10-08 22:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,157 +25,157 @@ msgstr ""
 msgid "Dummy hand-held used when no calc is set"
 msgstr ""
 
-#: src/calc_73.c:292 src/calc_83.c:190 src/calc_84p.c:520 src/calc_86.c:185
+#: src/calc_73.c:296 src/calc_83.c:190 src/calc_84p.c:520 src/calc_86.c:188
 #, c-format
 msgid "Parsing %s"
 msgstr ""
 
-#: src/calc_73.c:553
+#: src/calc_73.c:559
 msgid "Battery low, stopping flash app transfer"
 msgstr ""
 
-#: src/calc_73.c:558 src/calc_73.c:1040 src/calc_89.c:612 src/calc_89t.c:498
+#: src/calc_73.c:564 src/calc_73.c:1052 src/calc_89.c:627 src/calc_89t.c:502
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr ""
 
-#: src/calc_73.c:559 src/calc_73.c:1041 src/calc_89.c:613 src/calc_89t.c:499
+#: src/calc_73.c:565 src/calc_73.c:1053 src/calc_89.c:628 src/calc_89t.c:503
 #, c-format
 msgid "FLASH size: %i bytes."
 msgstr ""
 
-#: src/calc_73.c:887 src/calc_84p.c:1505 src/calc_89.c:823 src/calc_89t.c:835
+#: src/calc_73.c:896 src/calc_84p.c:1506 src/calc_89.c:841 src/calc_89t.c:842
 msgid "Setting clock..."
 msgstr ""
 
-#: src/calc_73.c:914 src/calc_84p.c:1583 src/calc_89.c:846 src/calc_89t.c:914
+#: src/calc_73.c:924 src/calc_84p.c:1584 src/calc_89.c:865 src/calc_89t.c:922
 msgid "Getting clock..."
 msgstr ""
 
-#: src/calc_73.c:968 src/calc_83.c:440 src/calc_84p.c:1645 src/calc_89.c:883
-#: src/calc_89t.c:977 src/calc_92.c:556 src/calc_nsp.c:886
+#: src/calc_73.c:979 src/calc_83.c:443 src/calc_84p.c:1646 src/calc_89.c:903
+#: src/calc_89t.c:986 src/calc_92.c:561 src/calc_nsp.c:907
 #, c-format
 msgid "Deleting %s..."
 msgstr ""
 
-#: src/calc_73.c:1018 src/calc_89.c:962 src/calc_92.c:635
+#: src/calc_73.c:1030 src/calc_89.c:984 src/calc_92.c:642
 #, c-format
 msgid "  OS: %s"
 msgstr ""
 
-#: src/calc_73.c:1019 src/calc_89.c:963
+#: src/calc_73.c:1031 src/calc_89.c:985
 #, c-format
 msgid "  BIOS: %s"
 msgstr ""
 
-#: src/calc_73.c:1020
+#: src/calc_73.c:1032
 #, c-format
 msgid "  HW: %i"
 msgstr ""
 
-#: src/calc_73.c:1021 src/calc_89.c:964 src/calc_92.c:636
+#: src/calc_73.c:1033 src/calc_89.c:986 src/calc_92.c:643
 #, c-format
 msgid "  Battery: %s"
 msgstr ""
 
-#: src/calc_73.c:1021 src/type2str.c:329
+#: src/calc_73.c:1033 src/type2str.c:329
 msgid "good"
 msgstr ""
 
-#: src/calc_73.c:1021 src/type2str.c:329
+#: src/calc_73.c:1033 src/type2str.c:329
 msgid "low"
 msgstr ""
 
-#: src/calc_73.c:1068 src/calc_89.c:665
+#: src/calc_73.c:1080 src/calc_89.c:681
 msgid "Header sent completely."
 msgstr ""
 
-#: src/calc_73.c:1079
+#: src/calc_73.c:1091
 msgid "Receiving certificate"
 msgstr ""
 
-#: src/calc_82.c:101 src/calc_82.c:248 src/calc_85.c:101 src/calc_85.c:246
-#: src/calc_86.c:233
+#: src/calc_82.c:104 src/calc_82.c:253 src/calc_85.c:101 src/calc_85.c:248
+#: src/calc_86.c:237
 msgid "Waiting for user's action..."
 msgstr ""
 
-#: src/calc_82.c:172 src/calc_85.c:170 src/calc_86.c:294
+#: src/calc_82.c:176 src/calc_85.c:171 src/calc_86.c:299
 msgid "Waiting for backup..."
 msgstr ""
 
-#: src/calc_82.c:316 src/calc_85.c:314
+#: src/calc_82.c:323 src/calc_85.c:319
 msgid "Waiting for var(s)..."
 msgstr ""
 
-#: src/calc_84p.c:1727 src/calc_89t.c:1166
+#: src/calc_84p.c:1729 src/calc_89t.c:1179
 msgid "Getting version..."
 msgstr ""
 
-#: src/calc_84p.c:1876 src/calc_84p.c:1886 src/calc_84p.c:1896
-#: src/calc_84p.c:1913 src/calc_84p.c:1922
+#: src/calc_84p.c:1878 src/calc_84p.c:1888 src/calc_84p.c:1898
+#: src/calc_84p.c:1915 src/calc_84p.c:1924
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr ""
 
-#: src/calc_84p.c:1940
+#: src/calc_84p.c:1942
 msgid "TI-84 Plus thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:2011
+#: src/calc_84p.c:2013
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:2082
+#: src/calc_84p.c:2084
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:2153
+#: src/calc_84p.c:2155
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:2224
+#: src/calc_84p.c:2226
 msgid "TI-82 Advanced thru DirectLink"
 msgstr ""
 
-#: src/calc_89.c:231 src/calc_89.c:289 src/calc_92.c:216
+#: src/calc_89.c:239 src/calc_89.c:297 src/calc_92.c:216
 #, c-format
 msgid "Name: %8s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr ""
 
-#: src/calc_89.c:256
+#: src/calc_89.c:264
 #, c-format
 msgid "Directory listing in %8s..."
 msgstr ""
 
-#: src/calc_89.c:297 src/calc_89t.c:261 src/calc_92.c:231
+#: src/calc_89.c:305 src/calc_89t.c:261 src/calc_92.c:231
 #, c-format
 msgid "Parsing %s/%s"
 msgstr ""
 
-#: src/calc_89.c:900 src/calc_89t.c:1072 src/calc_92.c:595 src/calc_nsp.c:916
+#: src/calc_89.c:921 src/calc_89t.c:1084 src/calc_92.c:601 src/calc_nsp.c:938
 #, c-format
 msgid "Creating %s..."
 msgstr ""
 
-#: src/calc_89.c:1219
+#: src/calc_89.c:1241
 msgid "V200 Personal Learning Tool"
 msgstr ""
 
-#: src/calc_89t.c:1007 src/calc_nsp.c:1086
+#: src/calc_89t.c:1017 src/calc_nsp.c:1112
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr ""
 
-#: src/calc_89t.c:1035
+#: src/calc_89t.c:1046
 #, c-format
 msgid "Changing attributes of %s..."
 msgstr ""
 
-#: src/calc_89t.c:1335
+#: src/calc_89t.c:1349
 msgid "TI-89 Titanium thru DirectLink"
 msgstr ""
 
-#: src/calc_92.c:298
+#: src/calc_92.c:299
 #, c-format
 msgid "Block #%2i"
 msgstr ""
@@ -185,22 +185,22 @@ msgstr ""
 msgid "Unknown calculator model with %d bpp\n"
 msgstr ""
 
-#: src/calc_nsp.c:435
+#: src/calc_nsp.c:454
 #, c-format
 msgid "Name: %s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr ""
 
-#: src/calc_nsp.c:468
+#: src/calc_nsp.c:487
 #, c-format
 msgid "Not enumerating documents in %s because it's not a folder\n"
 msgstr ""
 
-#: src/calc_nsp.c:485
+#: src/calc_nsp.c:504
 #, c-format
 msgid "Directory listing in <%s>...\n"
 msgstr ""
 
-#: src/calc_nsp.c:1109
+#: src/calc_nsp.c:1136
 msgid "Nspire thru DirectLink"
 msgstr ""
 
@@ -222,113 +222,113 @@ msgstr ""
 msgid "Requesting screenshot:"
 msgstr ""
 
-#: src/calc_xx.c:235
+#: src/calc_xx.c:292
 msgid "Requesting folder & vars & apps listing:"
 msgstr ""
 
-#: src/calc_xx.c:289
+#: src/calc_xx.c:346
 msgid "Requesting RAM & FLASH free"
 msgstr ""
 
-#: src/calc_xx.c:324
+#: src/calc_xx.c:381
 msgid "Sending backup:"
 msgstr ""
 
-#: src/calc_xx.c:359
+#: src/calc_xx.c:416
 msgid "Requesting backup:"
 msgstr ""
 
-#: src/calc_xx.c:395
+#: src/calc_xx.c:452
 msgid "Sending one or more variables:"
 msgstr ""
 
-#: src/calc_xx.c:433
+#: src/calc_xx.c:490
 #, c-format
 msgid "Requesting variable '%s':"
 msgstr ""
 
-#: src/calc_xx.c:469
+#: src/calc_xx.c:526
 msgid "Sending variable (non-silent mode):"
 msgstr ""
 
-#: src/calc_xx.c:507
+#: src/calc_xx.c:564
 msgid "Receiving variable (non-silent mode):"
 msgstr ""
 
-#: src/calc_xx.c:542
+#: src/calc_xx.c:599
 msgid "Sending FLASH application:"
 msgstr ""
 
-#: src/calc_xx.c:579
+#: src/calc_xx.c:636
 msgid "Requesting receiving of FLASH application:"
 msgstr ""
 
-#: src/calc_xx.c:614
+#: src/calc_xx.c:671
 msgid "Sending FLASH os:"
 msgstr ""
 
-#: src/calc_xx.c:649
+#: src/calc_xx.c:706
 msgid "Requesting ID-LIST:"
 msgstr ""
 
-#: src/calc_xx.c:682
+#: src/calc_xx.c:739
 msgid "Sending ROM dumper:"
 msgstr ""
 
-#: src/calc_xx.c:718
+#: src/calc_xx.c:775
 msgid "Dumping ROM:"
 msgstr ""
 
-#: src/calc_xx.c:753
+#: src/calc_xx.c:810
 msgid "Setting clock:"
 msgstr ""
 
-#: src/calc_xx.c:788
+#: src/calc_xx.c:845
 msgid "Getting clock:"
 msgstr ""
 
-#: src/calc_xx.c:823
+#: src/calc_xx.c:880
 #, c-format
 msgid "Deleting variable '%s':"
 msgstr ""
 
-#: src/calc_xx.c:858
+#: src/calc_xx.c:915
 #, c-format
 msgid "Creating folder '%s':"
 msgstr ""
 
-#: src/calc_xx.c:893
+#: src/calc_xx.c:950
 msgid "Requesting version info:"
 msgstr ""
 
-#: src/calc_xx.c:928
+#: src/calc_xx.c:985
 msgid "Sending certificate:"
 msgstr ""
 
-#: src/calc_xx.c:963
+#: src/calc_xx.c:1020
 msgid "Requesting receiving of certificate:"
 msgstr ""
 
-#: src/calc_xx.c:1002
+#: src/calc_xx.c:1059
 #, c-format
 msgid "Renaming variable '%s/%s' to '%s/%s':"
 msgstr ""
 
-#: src/calc_xx.c:1006
+#: src/calc_xx.c:1063
 #, c-format
 msgid "Renaming variable '%s' to '%s':"
 msgstr ""
 
-#: src/calc_xx.c:1044
+#: src/calc_xx.c:1101
 #, c-format
 msgid "Setting variable '%s' to %s:"
 msgstr ""
 
-#: src/calc_xx.c:1080
+#: src/calc_xx.c:1137
 msgid "Sending fake (all vars) backup:"
 msgstr ""
 
-#: src/calc_xx.c:1115
+#: src/calc_xx.c:1172
 msgid "Requesting fake (all vars) backup:"
 msgstr ""
 
@@ -738,7 +738,7 @@ msgstr ""
 msgid "Calculator type: %s"
 msgstr ""
 
-#: src/ticalcs.c:229
+#: src/ticalcs.c:231
 #, c-format
 msgid "ticalcs library version %s"
 msgstr ""

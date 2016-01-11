@@ -74,7 +74,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 			retval = ti80_recv_XDP(handle, &max_cnt, buf);
 			if (!retval)
 			{
-				*bitmap = (uint8_t *)g_malloc(TI80_COLS * TI80_ROWS / 8);
+				*bitmap = (uint8_t *)ticalcs_alloc_screen(TI80_COLS * TI80_ROWS / 8);
 				if (*bitmap == NULL)
 				{
 					return ERR_MALLOC;

@@ -130,7 +130,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 				break;
 			}
 			
-			*bitmap = (uint8_t *)g_malloc(TI89T_COLS * TI89T_ROWS / 8);
+			*bitmap = (uint8_t *)ticalcs_alloc_screen(TI89T_COLS * TI89T_ROWS / 8);
 			if (*bitmap == NULL)
 			{
 				ret = ERR_MALLOC;
@@ -260,7 +260,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			u2 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 			snprintf(update_->text, sizeof(update_->text) - 1, _("Parsing %s/%s"), u1, u2);
 			update_->text[sizeof(update_->text) - 1] = 0;
-			g_free(u1); g_free(u2);
+			ticonv_utf8_free(u2);
+			ticonv_utf8_free(u1);
 			update_label();
 		}
 	}
@@ -332,7 +333,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		utf8 = ticonv_varname_to_utf8(handle->model, varname, ve->type);
 		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 
 		attrs = dusb_ca_new_array(nattrs);
@@ -437,7 +438,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	attrs = dusb_ca_new_array(nattrs);
@@ -504,7 +505,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		utf8 = ticonv_varname_to_utf8(handle->model, ptr->name, ptr->data_type);
 		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
-		g_free(utf8);
+		ticonv_utf8_free(utf8);
 		update_label();
 
 		attrs = dusb_ca_new_array(nattrs);
@@ -564,7 +565,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	attrs = dusb_ca_new_array(nattrs);
@@ -984,7 +985,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
 	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	attr = dusb_ca_new_array(size);
@@ -1015,8 +1016,8 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	utf82 = ticonv_varname_to_utf8(handle->model, varname2, newname->type);
 	snprintf(update_->text, sizeof(update_->text) - 1, _("Renaming %s to %s..."), utf81, utf82);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf81);
-	g_free(utf82);
+	ticonv_utf8_free(utf82);
+	ticonv_utf8_free(utf81);
 	update_label();
 
 	attrs = dusb_ca_new_array(1);
@@ -1044,7 +1045,7 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
 	snprintf(update_->text, sizeof(update_->text) - 1, _("Changing attributes of %s..."), utf8);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	srcattrs = dusb_ca_new_array(1);
@@ -1082,7 +1083,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
 	snprintf(update_->text, sizeof(update_->text) - 1, _("Creating %s..."), utf8);
 	update_->text[sizeof(update_->text) - 1] = 0;
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 	update_label();
 
 	// send empty expression in specified folder

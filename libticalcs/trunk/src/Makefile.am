@@ -39,6 +39,7 @@ libticalcs2_la_SOURCES = *.h \
 	nsp_rpkt.c nsp_vpkt.c \
 	probe.c \
 	romdump.c \
+	screen.c \
 	ticalcs.c \
 	tikeys.c \
 	type2str.c \

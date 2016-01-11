@@ -78,9 +78,10 @@ typedef enum
  */
 typedef enum
 {
-	CALC_PIXFMT_MONO,           // Monochrome (1 bpp)
-	CALC_PIXFMT_GRAY_4,         // Grayscale (4 bpp - Nspire)
-	CALC_PIXFMT_RGB_5_6_5       // RGB (16 bpp - Nspire CX / 84+CSE)
+	CALC_PIXFMT_MONO = 1,         // Monochrome (1 bpp)
+	CALC_PIXFMT_GRAY_4 = 2,       // Grayscale (4 bpp - Nspire)
+	CALC_PIXFMT_RGB_565_LE = 3,   // RGB (16 bpp little-endian - Nspire CX / 84+CSE / 83PCE / 84+CE)
+	CALC_PIXFMT_RGB_5_6_5 = 3     // Ditto
 } CalcPixelFormat;
 
 /**
@@ -782,6 +783,8 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_calc_execute(CalcHandle *handle, VarEntry*, const char*);
 
 	TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle *handle, CalcScreenCoord* sc, uint8_t** bitmap);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_screen_rgb888(CalcHandle *handle, CalcScreenCoord* sc, uint8_t** bitmap);
+	TIEXPORT3 void TICALL ticalcs_free_screen(uint8_t * bitmap);
 
 	TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle *handle, GNode** vars, GNode **apps);
 	TIEXPORT3 int TICALL ticalcs_calc_get_memfree(CalcHandle *handle, uint32_t* ram, uint32_t *flash);
@@ -876,6 +879,13 @@ typedef struct
 	TIEXPORT3 const char*  TICALL ticalcs_clock_format2date(CalcModel model, int value);
 	TIEXPORT3 int          TICALL ticalcs_clock_date2format(CalcModel model, const char *format);
 	TIEXPORT3 int          TICALL ticalcs_clock_show(CalcModel model, CalcClock* s);
+
+	// screen.c
+	TIEXPORT3 int TICALL ticalcs_screen_convert_bw_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst);
+	TIEXPORT3 int TICALL ticalcs_screen_convert_bw_to_blurry_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst);
+	TIEXPORT3 int TICALL ticalcs_screen_convert_gs4_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst);
+	TIEXPORT3 int TICALL ticalcs_screen_convert_rgb565le_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst);
+	TIEXPORT3 int TICALL ticalcs_screen_convert_native_to_rgb888(CalcPixelFormat format, const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst);
 
 	// tikeys.c
 	TIEXPORT3 const CalcKey* TICALL ticalcs_keys_73 (uint8_t ascii_code);
