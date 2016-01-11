@@ -56,75 +56,135 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
+	int ret;
 	uint16_t status;
 
-	TRYF(ti89_send_RDY(handle));
-	TRYF(ti89_recv_ACK(handle, &status));
+	ret = ti89_send_RDY(handle);
+	if (!ret)
+	{
+		ret = ti89_recv_ACK(handle, &status);
+		if (!ret)
+		{
+			ret = (MSB(status) & 0x01) ? ERR_NOT_READY : 0;
+		}
+	}
 
-	return (MSB(status) & 0x01) ? ERR_NOT_READY : 0;
+	return ret;
 }
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
-	TRYF(ti89_send_KEY(handle, key));
-	TRYF(ti89_recv_ACK(handle, &key));
-	PAUSE(50);
+	int ret;
 
-	return 0;
+	ret = ti89_send_KEY(handle, key);
+	if (!ret)
+	{
+		ret = ti89_recv_ACK(handle, &key);
+
+		PAUSE(50);
+	}
+
+	return ret;
 }
 
 static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 {
-	unsigned int i;
+	int ret = 0;
 
-	if(ve->type == TI89_APPL)
+	if (ve->type == TI89_APPL)
+	{
 		return ERR_VOID_FUNCTION;
+	}
 
 	// Go back to homescreen
 	PAUSE(200);
-	if(handle->model == CALC_TI89 || handle->model == CALC_TI89T)
+	if (handle->model == CALC_TI89 || handle->model == CALC_TI89T)
 	{
-		TRYF(send_key(handle, KEY89_HOME));
-		TRYF(send_key(handle, KEY89_CLEAR));
-		TRYF(send_key(handle, KEY89_CLEAR));
+		ret = send_key(handle, KEY89_HOME);
+		if (!ret)
+		{
+			ret = send_key(handle, KEY89_CLEAR);
+			if (!ret)
+			{
+				ret = send_key(handle, KEY89_CLEAR);
+			}
+		}
 	}
-	else if(handle->model == CALC_TI92P || handle->model == CALC_V200)
+	else if (handle->model == CALC_TI92P || handle->model == CALC_V200)
 	{
 		// TI92+ or V200
-		TRYF(send_key(handle, KEY92P_CTRL + KEY92P_Q));
-		TRYF(send_key(handle, KEY92P_CLEAR));
-		TRYF(send_key(handle, KEY92P_CLEAR));
+		ret = send_key(handle, KEY92P_CTRL + KEY92P_Q);
+		if (!ret)
+		{
+			ret = send_key(handle, KEY92P_CLEAR);
+			if (!ret)
+			{
+				ret = send_key(handle, KEY92P_CLEAR);
+			}
+		}
 	}
-
-	// Launch program by remote control
-	for(i = 0; i < strlen(ve->folder); i++)
-		TRYF(send_key(handle, (ve->folder)[i]));
-
-	if(strcmp(ve->folder, ""))
-		TRYF(send_key(handle, '\\'));
-
-	for(i = 0; i < strlen(ve->name); i++)
-		TRYF(send_key(handle, (ve->name)[i]));
-
-	TRYF(send_key(handle, KEY89_LP));
-	if(args)
+	else
 	{
-		for(i = 0; i < strlen(args); i++)
-			TRYF(send_key(handle, args[i]));
+		ret = ERR_VOID_FUNCTION;
 	}
-	TRYF(send_key(handle, KEY89_RP));
 
-	TRYF(send_key(handle, KEY89_ENTER));
-	PAUSE(200);
+	if (!ret)
+	{
+		unsigned int i;
+		// Launch program by remote control
+		for (i = 0; !ret && i < strlen(ve->folder); i++)
+		{
+			ret = send_key(handle, (ve->folder)[i]);
+		}
 
-	return 0;
+		if (!ret && strcmp(ve->folder, ""))
+		{
+			ret = send_key(handle, '\\');
+		}
+
+		for (i = 0; !ret && i < strlen(ve->name); i++)
+		{
+			ret = send_key(handle, (ve->name)[i]);
+		}
+
+		if (!ret)
+		{
+			ret = send_key(handle, KEY89_LP);
+			if (!ret)
+			{
+				if (args)
+				{
+					for (i = 0; !ret && i < strlen(args); i++)
+					{
+						ret = send_key(handle, args[i]);
+					}
+				}
+				if (!ret)
+				{
+					ret = send_key(handle, KEY89_RP);
+					if (!ret)
+					{
+						ret = send_key(handle, KEY89_ENTER);
+
+						PAUSE(200);
+					}
+				}
+			}
+		}
+	}
+
+	return ret;
 }
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint32_t max_cnt;
-	int err;
-	uint8_t buf[TI89_COLS * TI89_ROWS / 8];
+	int ret;
+
+	*bitmap = (uint8_t *)ticalcs_alloc_screen(65537U);
+	if (*bitmap == NULL)
+	{
+		return ERR_MALLOC;
+	}
 
 	sc->width = TI89_COLS;
 	sc->height = TI89_ROWS;
@@ -147,64 +207,63 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	}
 	sc->pixel_format = CALC_PIXFMT_MONO;
 
-	TRYF(ti89_send_SCR(handle));
-	TRYF(ti89_recv_ACK(handle, NULL));
-
-	err = ti89_recv_XDP(handle, &max_cnt, buf);	// pb with checksum
-	if (err != ERR_CHECKSUM)
+	ret = ti89_send_SCR(handle);
+	if (!ret)
 	{
-		if (err)
+		ret = ti89_recv_ACK(handle, NULL);
+		if (!ret)
 		{
-			return err;
+			uint16_t max_cnt;
+			ret = ti89_recv_XDP(handle, &max_cnt, *bitmap);
+			if (!ret || ret == ERR_CHECKSUM) // problem with checksum
+			{
+				// Clip the unused part of the screen (nevertheless usable with asm programs)
+				if (   ((handle->model == CALC_TI89) || (handle->model == CALC_TI89T))
+				    && (sc->format == SCREEN_CLIPPED))
+				{
+					int i, j, k;
+
+					for (i = 0, j = 0; j < TI89_ROWS_VISIBLE; j++)
+					{
+						for (k = 0; k < (TI89_COLS_VISIBLE >> 3); k++)
+						{
+							(*bitmap)[i++] = (*bitmap)[j * (TI89_COLS >> 3) + k];
+						}
+					}
+				}
+
+				*bitmap = ticalcs_realloc_screen(*bitmap, TI89_COLS * TI89_ROWS / 8);
+				ret = ti89_send_ACK(handle);
+			}
 		}
 	}
-	TRYF(ti89_send_ACK(handle));
 
-	*bitmap = (uint8_t *)ticalcs_alloc_screen(TI89_COLS * TI89_ROWS / 8);
-	if (*bitmap == NULL)
+	if (ret)
 	{
-		return ERR_MALLOC;
-	}
-	memcpy(*bitmap, buf, TI89_COLS * TI89_ROWS / 8);
-
-	// Clip the unused part of the screen (nethertheless useable witha asm prog)
-	if (   ((handle->model == CALC_TI89) || (handle->model == CALC_TI89T))
-	    && (sc->format == SCREEN_CLIPPED)) 
-	{
-		int i, j, k;
-
-		for(i = 0, j = 0; j < TI89_ROWS_VISIBLE; j++)
-			for(k = 0; k < (TI89_COLS_VISIBLE >> 3); k++)
-				(*bitmap)[i++] = (*bitmap)[j * (TI89_COLS >> 3) + k];
+		ticalcs_free_screen(*bitmap);
+		*bitmap = NULL;
 	}
 
-	return 0;
+	return ret;
 }
 
 static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
-	TreeInfo *ti;
 	VarEntry info;
-	uint32_t block_size;
-	uint8_t buffer[65536];
+	uint16_t block_size;
+	uint8_t * buffer = handle->buffer;
+	int ret;
 	int i, j;
 	uint8_t extra = (handle->model == CALC_V200) ? 8 : 0;
-	GNode *root;
+	GNode *root, *node = NULL;
 
-	(*apps) = g_node_new(NULL);
-	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = APP_NODE_NAME;
-	(*apps)->data = ti;
+	ret = dirlist_init_trees(handle, vars, apps, VAR_NODE_NAME);
+	if (ret)
+	{
+		return ret;
+	}
 
-	(*vars) = g_node_new(NULL);
-	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = VAR_NODE_NAME;
-	(*vars)->data = ti;
-
-	root = g_node_new(NULL);
-	g_node_append(*apps, root);
+	root = dirlist_create_append_node(NULL, apps);
 
 	TRYF(ti89_send_REQ(handle, ((uint32_t)TI89_FDIR) << 24, TI89_RDIR, "\0\0\0\0\0\0\0"));
 	TRYF(ti89_recv_ACK(handle, NULL));
@@ -221,10 +280,9 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	TRYF(ti89_recv_EOT(handle));
 	TRYF(ti89_send_ACK(handle));
 
-	for(j = 4; j < (int)block_size;) 
+	for (j = 4; j < (int)block_size;)
 	{
 		VarEntry *fe = tifiles_ve_create();
-		GNode *node;
 
 		memcpy(fe->name, buffer + j, 8);
 		fe->name[8] = '\0';
@@ -242,20 +300,28 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			fe->attr,
 			fe->size);
 
-		if(fe->type == TI89_DIR)
+		if (fe->type == TI89_DIR)
 		{
-			node = g_node_new(fe);
-			g_node_append(*vars, node);
+			node = dirlist_create_append_node(fe, vars);
+			if (!node)
+			{
+				break;
+			}
 		}
-		else if(fe->type == TI89_APPL)
+		else if (fe->type == TI89_APPL)
 		{
 			// AMS<2.08 returns FLASH apps
 			continue;
 		}
 	}
 
+	if (!node)
+	{
+		return ERR_MALLOC;
+	}
+
 	// get list of variables into each folder
-	for(i = 0; i < (int)g_node_n_children(*vars); i++) 
+	for (i = 0; i < (int)g_node_n_children(*vars); i++)
 	{
 		GNode *folder = g_node_nth_child(*vars, i);
 		char *folder_name = ((VarEntry *) (folder->data))->name;
@@ -278,10 +344,9 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		TRYF(ti89_recv_EOT(handle));
 		TRYF(ti89_send_ACK(handle));
 
-		for(j = 4 + 14 + extra; j < (int)block_size;) 
+		for (j = 4 + 14 + extra; j < (int)block_size;)
 		{
 			VarEntry *ve = tifiles_ve_create();
-			GNode *node;
 
 			memcpy(ve->name, buffer + j, 8);
 			ve->name[8] = '\0';
@@ -308,30 +373,36 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			ticonv_utf8_free(u1);
 			update_label();
 
-			if(ve->type == TI89_APPL) 
+			if (ve->type == TI89_APPL)
 			{
 				VarEntry arg;
 
 				memset(&arg, 0, sizeof(arg));
 				strncpy(arg.name, ve->name, sizeof(arg.name) - 1);
 				arg.name[sizeof(arg.name) - 1] = 0;
-				if(!ticalcs_dirlist_ve_exist(*apps, &arg))
+				if (!ticalcs_dirlist_ve_exist(*apps, &arg))
 				{
 					ve->folder[0] = 0;
-					node = g_node_new(ve);
-					g_node_append(root, node);
+					node = dirlist_create_append_node(ve, &root);
+					if (!node)
+					{
+						return ERR_MALLOC;
+					}
 				}
 			} 
 			else
 			{
-				if(!strcmp(ve->folder, "main") && (!strcmp(ve->name, "regcoef") || !strcmp(ve->name, "regeq")))
+				if (!strcmp(ve->folder, "main") && (!strcmp(ve->name, "regcoef") || !strcmp(ve->name, "regeq")))
 				{
 					tifiles_ve_delete(ve);
 				}
 				else
 				{
-					node = g_node_new(ve);
-					g_node_append(folder, node);
+					node = dirlist_create_append_node(ve, &folder);
+					if (!node)
+					{
+						return ERR_MALLOC;
+					}
 				}
 			}
 		}
@@ -358,17 +429,19 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	update_->cnt2 = 0;
 	update_->max2 = content->num_entries;
 
-	for(i = 0; i < content->num_entries; i++) 
+	for (i = 0; i < content->num_entries; i++)
 	{
 		VarEntry *entry = content->entries[i];
-		uint8_t buffer[65536 + 4] = { 0 };
+		uint8_t * buffer = handle->buffer;
 		uint8_t vartype = entry->type;
 		char varname[18];
 
-		if(entry->action == ACT_SKIP)
+		if (entry->action == ACT_SKIP)
+		{
 			continue;
+		}
 
-		if((mode & MODE_LOCAL_PATH) && !(mode & MODE_BACKUP)) 
+		if ((mode & MODE_LOCAL_PATH) && !(mode & MODE_BACKUP))
 		{
 			// local & not backup
 			strncpy(varname, entry->name, sizeof(varname) - 1);
@@ -419,7 +492,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 {
 	uint16_t status;
 	VarEntry *ve;
-	uint32_t unused;
+	uint16_t unused;
 	char  varname[20];
 	char *utf8;
 
@@ -486,17 +559,19 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	update_->cnt2 = 0;
 	update_->max2 = content->num_entries;
 
-	for(i = 0; i < content->num_entries; i++) 
+	for (i = 0; i < content->num_entries; i++)
 	{
 		VarEntry *entry = content->entries[i];
-		uint8_t buffer[65536 + 4] = { 0 };
+		uint8_t * buffer = handle->buffer;
 		uint8_t vartype = entry->type;
 		char varname[18];
 
-		if(entry->action == ACT_SKIP)
+		if (entry->action == ACT_SKIP)
+		{
 			continue;
+		}
 
-		if((mode & MODE_LOCAL_PATH) && !(mode & MODE_BACKUP)) 
+		if ((mode & MODE_LOCAL_PATH) && !(mode & MODE_BACKUP))
 		{
 			// local & not backup
 			strncpy(varname, entry->name, sizeof(varname) - 1);
@@ -527,7 +602,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		TRYF(ti89_send_EOT(handle));
 		TRYF(ti89_recv_ACK(handle, NULL));
 
-		if(mode & MODE_BACKUP) 
+		if (mode & MODE_BACKUP)
 		{
 			update_->cnt2 = i+1;
 			update_->max2 = content->num_entries;
@@ -540,7 +615,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** vr)
 {
-	uint32_t unused;
+	uint16_t unused;
 	int nvar, err;
 	char tipath[18];
 	char *tiname;
@@ -549,7 +624,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	content->model = handle->model;
 
 	// receive packets
-	for(nvar = 1;; nvar++)
+	for (nvar = 1;; nvar++)
 	{
 		VarEntry *ve;
 
@@ -561,9 +636,9 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		err = ti89_recv_VAR(handle, &ve->size, &ve->type, tipath);
 		TRYF(ti89_send_ACK(handle));
 
-		if(err == ERR_EOT)	// end of transmission
+		if (err == ERR_EOT)	// end of transmission
 		{
-			goto exit;
+			break;
 		}
 		else
 		{
@@ -571,7 +646,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		}
 
 		// from Christian (calculator can send varname or fldname/varname)
-		if((tiname = strchr(tipath, '\\')) != NULL) 
+		if ((tiname = strchr(tipath, '\\')) != NULL)
 		{
 			*tiname = '\0';
 			strncpy(ve->folder, tipath, sizeof(ve->folder) - 1);
@@ -602,12 +677,15 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		TRYF(ti89_send_ACK(handle));
 	}
 
-exit:
 	nvar--;
-	if(nvar > 1) 
+	if (nvar > 1)
+	{
 		*vr = NULL;
+	}
 	else
+	{
 		*vr = tifiles_ve_dup(content->entries[0]);
+	}
 
 	return 0;
 }
@@ -619,10 +697,12 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	char *utf8;
 
 	// send all headers except license
-	for(ptr = content; ptr != NULL; ptr = ptr->next)
+	for (ptr = content; ptr != NULL; ptr = ptr->next)
 	{
-		if(ptr->data_type == TI89_LICENSE)
+		if (ptr->data_type == TI89_LICENSE)
+		{
 			continue;
+		}
 
 		ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
 		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
@@ -633,9 +713,9 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		ticonv_utf8_free(utf8);
 		update_label();
 
-		if(ptr->data_type == TI89_AMS) 
+		if (ptr->data_type == TI89_AMS)
 		{
-			if(handle->model == CALC_TI89T || handle->model == CALC_V200)
+			if (handle->model == CALC_TI89T || handle->model == CALC_V200)
 			{
 				TRYF(ti89_send_RTS2(handle, ptr->data_length, ptr->data_type, ptr->hw_id));
 			}
@@ -652,7 +732,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		nblocks = ptr->data_length / 65536;
 		update_->max2 = nblocks+1;
 
-		for(i = 0; i <= nblocks; i++) 
+		for (i = 0; i <= nblocks; i++)
 		{
 			uint32_t length = (i != nblocks) ? 65536 : ptr->data_length % 65536;
 
@@ -664,7 +744,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			TRYF(ti89_send_XDP(handle, length, (ptr->data_part) + 65536 * i));
 			TRYF(ti89_recv_ACK(handle, NULL));
 
-			if(i != nblocks) 
+			if (i != nblocks)
 			{
 				TRYF(ti89_send_CNT(handle));
 			} 
@@ -715,10 +795,10 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	update_->cnt2 = 0;
 	update_->max2 = vr->size;
 
-	for(i = 0, content->data_length = 0;; i++) 
+	for (i = 0, content->data_length = 0;; i++) 
 	{
 		int err;
-		uint32_t block_size;
+		uint16_t block_size;
 
 		TRYF(ti89_send_ACK(handle));
 
@@ -731,9 +811,14 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		content->data_length += block_size;
 
 		err = ti89_recv_CNT(handle);
-		if(err == ERR_EOT)
+		if (err == ERR_EOT)
+		{
 			break;
-		TRYF(err);
+		}
+		if (err)
+		{
+			return err;
+		}
 
 		update_->cnt2 += block_size;
 		update_->pbar();
@@ -745,6 +830,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 {
 	uint32_t varsize;
+	uint16_t pktsize;
 	uint8_t vartype;
 	char varname[9];
 
@@ -761,9 +847,9 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 	TRYF(ti89_send_CTS(handle));
 	TRYF(ti89_recv_ACK(handle, NULL));
 
-	TRYF(ti89_recv_XDP(handle, &varsize, idlist));
-	memmove(idlist, idlist + 8, varsize - 8);
-	idlist[varsize - 8] = '\0';
+	TRYF(ti89_recv_XDP(handle, &pktsize, idlist));
+	memmove(idlist, idlist + 8, pktsize - 8);
+	idlist[pktsize - 8] = '\0';
 	TRYF(ti89_send_ACK(handle));
 
 	TRYF(ti89_recv_EOT(handle));
@@ -775,13 +861,13 @@ static int		dump_rom_1	(CalcHandle* handle)
 	int err;
 	// Go back to homescreen
 	PAUSE(200);
-	if(handle->model == CALC_TI89 || handle->model == CALC_TI89T)
+	if (handle->model == CALC_TI89 || handle->model == CALC_TI89T)
 	{
 		TRYF(send_key(handle, KEY89_HOME));
 		TRYF(send_key(handle, KEY89_CLEAR));
 		TRYF(send_key(handle, KEY89_CLEAR));
 	}
-	else if(handle->model == CALC_TI92P || handle->model == CALC_V200)
+	else if (handle->model == CALC_TI92P || handle->model == CALC_V200)
 	{
 		// TI92+ or V200
 		TRYF(send_key(handle, KEY92P_CTRL + KEY92P_Q));
@@ -858,9 +944,10 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 {
 	uint32_t varsize;
+	uint16_t pktsize;
 	uint8_t vartype;
 	char varname[9];
-	uint8_t buffer[32];
+	uint8_t * buffer;
 
 	strncpy(update_->text, _("Getting clock..."), sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
@@ -875,12 +962,13 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	TRYF(ti89_send_CTS(handle));
 	TRYF(ti89_recv_ACK(handle, NULL));
 
-	TRYF(ti89_recv_XDP(handle, &varsize, buffer));
+	TRYF(ti89_recv_XDP(handle, &pktsize, handle->buffer));
 	TRYF(ti89_send_ACK(handle));
 
 	TRYF(ti89_recv_EOT(handle));
 	TRYF(ti89_send_ACK(handle));
 
+	buffer = (uint8_t *)(handle->buffer);
 	_clock->year = (((uint16_t)buffer[6]) << 8) | buffer[7];
 	_clock->month = buffer[8];
 	_clock->day = buffer[9];
@@ -946,7 +1034,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
-	uint32_t length;
+	uint16_t length;
 	uint8_t buf[32];
 
 	TRYF(ti89_send_VER(handle));

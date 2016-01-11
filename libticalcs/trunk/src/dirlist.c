@@ -2,7 +2,7 @@
 /* $Id$ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+ *  Copyright (C) 1999-2005  Romain LiÃ©vin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -61,7 +61,8 @@
 
 static gboolean free_varentry(GNode* node, gpointer data)
 {
-	if(node && node->data)
+	(void)data;
+	if (node && node->data)
 	{
 		VarEntry* ve = node->data;
 		tifiles_ve_delete(ve);
@@ -84,7 +85,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_destroy(GNode** tree)
 	{
 		TreeInfo *ti;
 
-		if((*tree)->children != NULL)
+		if ((*tree)->children != NULL)
 		{
 			g_node_traverse(*tree, G_IN_ORDER, G_TRAVERSE_LEAVES, -1, free_varentry, NULL);
 		}
@@ -199,11 +200,11 @@ TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode* tree)
 	display_tree(info, vars);
 	if (!i)
 	{
-		if(!strcmp(info->type, VAR_NODE_NAME))
+		if (!strcmp(info->type, VAR_NODE_NAME))
 		{
 			printf(_("| No variables     |\n"));
 		}
-		else if(!strcmp(info->type, APP_NODE_NAME))
+		else if (!strcmp(info->type, APP_NODE_NAME))
 		{
 			printf(_("| No applications  |\n"));
 		}
@@ -506,7 +507,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 				break;
 			}
 
-			if(!strcmp(fe->name, folder))
+			if (!strcmp(fe->name, folder))
 			{
 				found = !0;
 				break;
@@ -541,7 +542,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 		child = g_node_nth_child(parent, j);
 		ve = (VarEntry *) (child->data);
 
-		if(!strcmp(ve->name, entry->name))
+		if (!strcmp(ve->name, entry->name))
 		{
 			found = !0;
 			break;

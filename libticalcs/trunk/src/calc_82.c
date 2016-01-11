@@ -53,9 +53,13 @@
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint16_t max_cnt;
-	int err;
-	uint8_t buf[TI82_COLS * TI82_ROWS / 8];
+	int ret;
+
+	*bitmap = (uint8_t *)ticalcs_alloc_screen(65537U);
+	if (*bitmap == NULL)
+	{
+		return ERR_MALLOC;
+	}
 
 	sc->width = TI82_COLS;
 	sc->height = TI82_ROWS;
@@ -63,27 +67,29 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_height = TI82_ROWS;
 	sc->pixel_format = CALC_PIXFMT_MONO;
 
-	TRYF(ti82_send_SCR(handle));
-	TRYF(ti82_recv_ACK(handle, NULL));
-
-	err = ti82_recv_XDP(handle, &max_cnt, buf);	// pb with checksum
-	if (err != ERR_CHECKSUM)
+	ret = ti82_send_SCR(handle);
+	if (!ret)
 	{
-		if (err)
+		ret = ti82_recv_ACK(handle, NULL);
+		if (!ret)
 		{
-			return err;
+			uint16_t max_cnt;
+			ret = ti82_recv_XDP(handle, &max_cnt, *bitmap);
+			if (!ret || ret == ERR_CHECKSUM) // problem with checksum
+			{
+				*bitmap = ticalcs_realloc_screen(*bitmap, TI82_COLS * TI82_ROWS / 8);
+				ret = ti82_send_ACK(handle);
+			}
 		}
 	}
-	TRYF(ti82_send_ACK(handle));
 
-	*bitmap = (uint8_t *)ticalcs_alloc_screen(TI82_COLS * TI82_ROWS / 8);
-	if(*bitmap == NULL)
+	if (ret)
 	{
-		return ERR_MALLOC;
+		ticalcs_free_screen(*bitmap);
+		*bitmap = NULL;
 	}
-	memcpy(*bitmap, buf, TI82_COLS * TI82_ROWS / 8);
 
-	return 0;
+	return ret;
 }
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
@@ -351,7 +357,10 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		{
 			goto exit;
 		}
-		TRYF(err);
+		if (err)
+		{
+			return err;
+		}
 
 		TRYF(ti82_send_CTS(handle));
 		TRYF(ti82_recv_ACK(handle, NULL));
@@ -370,7 +379,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 exit:
 	content->num_entries = nvar;
-	if(nvar == 1)
+	if (nvar == 1)
 	{
 		strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
 		content->comment[sizeof(content->comment) - 1] = 0;

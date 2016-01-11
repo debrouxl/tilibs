@@ -85,7 +85,7 @@ static gchar * build_path(CalcModel model, VarRequest * vr)
 		{ \
 			nsp_session_close(handle); \
 		} \
-	} while(0);
+	} while (0);
 
 
 //int nsp_reset = 0;
@@ -113,7 +113,7 @@ static int		is_ready	(CalcHandle* handle)
 	// A better fix is needed in the mid- and long-term.
 
 	// checking for OS version and LOGIN packet
-	//if(!nsp_reset)
+	//if (!nsp_reset)
 	do
 	{
 		static const char echostr[] = "ready";
@@ -121,7 +121,7 @@ static int		is_ready	(CalcHandle* handle)
 		uint32_t size;
 		uint8_t *data;
 
-		// XXX debrouxl moving those two calls above the 'if(!nsp_reset)' test fixes connection
+		// XXX debrouxl moving those two calls above the 'if (!nsp_reset)' test fixes connection
 		// loss, but linking with at least 1.7.1.50 does not work properly after that: at least
 		// directory listing and screenshot don't do anything beyond the "Status" probe.
 		ret = nsp_addr_request(handle);
@@ -194,91 +194,93 @@ static int		is_ready	(CalcHandle* handle)
 			}
 
 		}
-	} while(0);
+	} while (0);
 
 	return ret;
 }
 
 static uint8_t* rle_uncompress(CalcScreenCoord* sc, const uint8_t *src, uint32_t size, int type)
 {
+	uint8_t * dst = NULL;
+
 	if (type == 0)
 	{
 		// Nspire (CAS) Clickpad & Touchpad, 4 bpp
-		uint8_t *dst = ticalcs_alloc_screen(sc->width * sc->height / 2);
 		uint8_t *q;
 		uint32_t i;
+		dst = ticalcs_alloc_screen(sc->width * sc->height / 2);
 
-		for (i = 0, q = dst; i < size;)
+		if (dst != NULL)
 		{
-			int8_t rec = src[i++];
-
-			if (rec >= 0)
+			for (i = 0, q = dst; i < size;)
 			{
-				// Positive count: "repeat 8-bit value" block.
-				uint8_t cnt = ((uint8_t)rec) + 1;
-				uint8_t val = src[i++];
+				int8_t rec = src[i++];
 
-				memset(q, val, cnt);
-				q += cnt;
-			}
-			else
-			{
-				// Negative count: "verbatim" block of 8-bit values.
-				uint8_t cnt = ((uint8_t)-rec) + 1;
+				if (rec >= 0)
+				{
+					// Positive count: "repeat 8-bit value" block.
+					uint8_t cnt = ((uint8_t)rec) + 1;
+					uint8_t val = src[i++];
 
-				memcpy(q, src+i, cnt);
-				q += cnt;
-				i += cnt;
+					memset(q, val, cnt);
+					q += cnt;
+				}
+				else
+				{
+					// Negative count: "verbatim" block of 8-bit values.
+					uint8_t cnt = ((uint8_t)-rec) + 1;
+
+					memcpy(q, src+i, cnt);
+					q += cnt;
+					i += cnt;
+				}
 			}
 		}
-
-		return dst;
 	}
 	else if (type == 1)
 	{
 		// Nspire (CAS) CX & CM, 16 bpp
-		uint8_t *dst = ticalcs_alloc_screen(sc->width * sc->height * 2);
 		uint8_t *q;
 		uint32_t i;
+		dst = ticalcs_alloc_screen(sc->width * sc->height * 2);
 
-		for (i = 0, q = dst; i < size;)
+		if (dst != NULL)
 		{
-			int8_t rec = src[i++];
-
-			if (rec >= 0)
+			for (i = 0, q = dst; i < size;)
 			{
-				// Positive count: "repeat 32-bit value" block.
-				uint8_t cnt = ((uint8_t)rec) + 1;
-				uint32_t val;
-				uint8_t j;
+				int8_t rec = src[i++];
 
-				memcpy(&val, src + i, sizeof(uint32_t));
-				for (j = 0; j < cnt; j++)
+				if (rec >= 0)
 				{
-					//*((uint32_t *)q) = val;
-					memcpy(q, &val, 4);
-					q += 4;
-				}
-				i += 4;
-			}
-			else
-			{
-				// Negative count: "verbatim" block of 32-bit values.
-				uint8_t cnt = ((uint8_t)-rec) + 1;
+					// Positive count: "repeat 32-bit value" block.
+					uint8_t cnt = ((uint8_t)rec) + 1;
+					uint32_t val;
+					uint8_t j;
 
-				memcpy(q, src + i, cnt * 4);
-				q += cnt * 4;
-				i += cnt * 4;
+					memcpy(&val, src + i, sizeof(uint32_t));
+					for (j = 0; j < cnt; j++)
+					{
+						//*((uint32_t *)q) = val;
+						memcpy(q, &val, 4);
+						q += 4;
+					}
+					i += 4;
+				}
+				else
+				{
+					// Negative count: "verbatim" block of 32-bit values.
+					uint8_t cnt = ((uint8_t)-rec) + 1;
+
+					memcpy(q, src + i, cnt * 4);
+					q += cnt * 4;
+					i += cnt * 4;
+				}
 			}
 		}
+	}
+	// else do nothing, shouldn't happen anyway.
 
-		return dst;
-	}
-	else
-	{
-		// Shouldn't happen anyway.
-		return NULL;
-	}
+	return dst;
 }
 
 // Forward declaration
@@ -395,7 +397,7 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 			break;
 		}
 
-		for(;;)
+		for (;;)
 		{
 			VarEntry *fe;
 			GNode *node;
@@ -448,8 +450,12 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 			strncpy(fe->name, varname, sizeof(fe->name) - 1);
 			fe->name[sizeof(fe->name) - 1] = 0;
 
-			node = g_node_new(fe);
-			g_node_append(*vars, node);
+			node = dirlist_create_append_node(fe, vars);
+			if (!node)
+			{
+				ret = ERR_MALLOC;
+				break;
+			}
 
 			ticalcs_info(_("Name: %s | Type: %8s | Attr: %i  | Size: %08X"),
 				fe->name,
@@ -511,28 +517,21 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 			}
 			break;
 		}
-	} while(0);
+	} while (0);
 
 	return ret;
 }
 
 static int get_dirlist (CalcHandle* handle, GNode** vars, GNode** apps)
 {
-	TreeInfo *ti;
 	GNode *root;
 	int ret;
 
-	(*apps) = g_node_new(NULL);
-	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = APP_NODE_NAME;
-	(*apps)->data = ti;
-
-	(*vars) = g_node_new(NULL);
-	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = VAR_NODE_NAME;
-	(*vars)->data = ti;
+	ret = dirlist_init_trees(handle, vars, apps, VAR_NODE_NAME);
+	if (ret)
+	{
+		return ret;
+	}
 
 	root = g_node_new(NULL);
 	g_node_append(*apps, root);
@@ -622,7 +621,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		return 0;
 	}
 
-	//if(!strlen(ve->folder))
+	//if (!strlen(ve->folder))
 	//{
 	//	return ERR_ABORT;
 	//}
@@ -798,7 +797,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 			DO_CLOSE_SESSION(handle);
 		}
-	} while(0);
+	} while (0);
 
 	return ret;
 }
@@ -1086,7 +1085,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		infos->mask |= INFOS_PRODUCT_ID;
 
 		g_free(data);
-	} while(0);
+	} while (0);
 
 	DO_CLOSE_SESSION(handle);
 

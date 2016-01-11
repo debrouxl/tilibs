@@ -60,165 +60,207 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
+	int ret;
 	uint16_t status;
 
-	TRYF(ti73_send_RDY(handle));
-	TRYF(ti73_recv_ACK(handle, &status));
+	ret = ti73_send_RDY(handle);
+	if (!ret)
+	{
+		ret = ti73_recv_ACK(handle, &status);
+		if (!ret)
+		{
+			ret = (MSB(status) & 0x01) ? ERR_NOT_READY : 0;
+		}
+	}
 
-	return (MSB(status) & 0x01) ? ERR_NOT_READY : 0;
+	return ret;
 }
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
-	TRYF(ti73_send_KEY(handle, key));
-	TRYF(ti73_recv_ACK(handle, &key));	// when the key is received
-	return ti73_recv_ACK(handle, NULL);	// after it completes the resulting action
+	int ret;
+
+	ret = ti73_send_KEY(handle, key);
+	if (!ret)
+	{
+		ret = ti73_recv_ACK(handle, &key);	// when the key is received
+		if (!ret)
+		{
+			ret = ti73_recv_ACK(handle, NULL);	// after it completes the resulting action
+		}
+	}
+
+	return ret;
 }
 
 static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 {
-	unsigned int i;
+	int ret;
 
 	if (handle->model == CALC_TI73 && ve->type == TI73_ASM)
+	{
 		return ERR_VOID_FUNCTION;
+	}
 
 	// Go back to homescreen
 	PAUSE(200);
-	TRYF(send_key(handle, KEY83P_Quit));
-	TRYF(send_key(handle, KEY83P_Clear));
-	TRYF(send_key(handle, KEY83P_Clear));
-
-	// Launch program by remote control
-	if(ve->type == TI83p_ASM)
+	ret = send_key(handle, KEY83P_Quit);
+	if (!ret)
 	{
-		TRYF(send_key(handle, KEY83P_Asm));
-	}
-	TRYF(send_key(handle, KEY83P_Exec));
-
-	for(i = 0; i < strlen(ve->name); i++)
-	{
-		const CalcKey *ck = ticalcs_keys_83p((ve->name)[i]);
-		TRYF(send_key(handle, ck->normal.value));
+		ret = send_key(handle, KEY83P_Clear);
+		if (!ret)
+		{
+			ret = send_key(handle, KEY83P_Clear);
+		}
 	}
 
-	TRYF(send_key(handle, KEY83P_Enter));
-	PAUSE(200);
+	if (!ret)
+	{
+		// Launch program by remote control
+		if (ve->type == TI83p_ASM)
+		{
+			ret = send_key(handle, KEY83P_Asm);
+		}
+		if (!ret)
+		{
+			ret = send_key(handle, KEY83P_Exec);
+			if (!ret)
+			{
+				unsigned int i;
+				for (i = 0; !ret && i < strlen(ve->name); i++)
+				{
+					const CalcKey *ck = ticalcs_keys_83p((ve->name)[i]);
+					ret = send_key(handle, ck->normal.value);
+				}
 
-	return 0;
+				if (!ret)
+				{
+					ret = send_key(handle, KEY83P_Enter);
+
+					PAUSE(200);
+				}
+			}
+		}
+	}
+
+	return ret;
 }
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint16_t pktsize;
-	int err;
+	int ret;
 	uint8_t *buf = handle->buffer;
 	uint8_t *data = NULL;
-	uint32_t size;
 
-	TRYF(ti73_send_SCR(handle));
-	TRYF(ti73_recv_ACK(handle, NULL));
-
-	err = ti73_recv_XDP(handle, &pktsize, buf);	// pb with checksum
-	if (err && err != ERR_CHECKSUM)
+	data = (uint8_t *)ticalcs_alloc_screen(65537U);
+	if (data == NULL)
 	{
-		return err;
-	};
-	data = g_memdup(buf, pktsize);
-
-	err = ti73_send_ACK(handle);
-	if (err)
-	{
-		g_free(data);
-		return err;
+		return ERR_MALLOC;
 	}
 
-	if (pktsize == TI73_COLS * TI73_ROWS / 8)
+	ret = ti73_send_SCR(handle);
+	if (!ret)
 	{
-		/* TI-73 / 83+ / 84+ */
-		sc->width = TI73_COLS;
-		sc->height = TI73_ROWS;
-		sc->clipped_width = TI73_COLS;
-		sc->clipped_height = TI73_ROWS;
-		sc->pixel_format = CALC_PIXFMT_MONO;
-		*bitmap = data;
-		return 0;
-	}
-	else
-	{
-		/* TI-84+CSE */
-		sc->width = TI84PC_COLS;
-		sc->height = TI84PC_ROWS;
-		sc->clipped_width = TI84PC_COLS;
-		sc->clipped_height = TI84PC_ROWS;
-		sc->pixel_format = CALC_PIXFMT_RGB_5_6_5;
-
-		size = pktsize;
-
-		while (1)
+		ret = ti73_recv_ACK(handle, NULL);
+		if (!ret)
 		{
-			err = ti73_recv_XDP(handle, &pktsize, buf);
-			if (err == ERR_EOT)
+			uint16_t pktsize;
+			ret = ti73_recv_XDP(handle, &pktsize, data);
+			if (!ret || ret == ERR_CHECKSUM) // problem with checksum
 			{
-				err = ti73_send_ACK(handle);
-				if (err)
+				ret = ti73_send_ACK(handle);
+				if (!ret)
 				{
-					goto done;
+					if (pktsize == TI73_COLS * TI73_ROWS / 8)
+					{
+						/* TI-73 / 83+ / 84+ */
+						sc->width = TI73_COLS;
+						sc->height = TI73_ROWS;
+						sc->clipped_width = TI73_COLS;
+						sc->clipped_height = TI73_ROWS;
+						sc->pixel_format = CALC_PIXFMT_MONO;
+						*bitmap = ticalcs_realloc_screen(data, TI73_COLS * TI73_ROWS / 8);
+					}
+					else
+					{
+						/* TI-84+CSE */
+						uint32_t size = pktsize;
+
+						sc->width = TI84PC_COLS;
+						sc->height = TI84PC_ROWS;
+						sc->clipped_width = TI84PC_COLS;
+						sc->clipped_height = TI84PC_ROWS;
+						sc->pixel_format = CALC_PIXFMT_RGB_565_LE;
+
+						while (1)
+						{
+							ret = ti73_recv_XDP(handle, &pktsize, buf);
+							if (ret == ERR_EOT)
+							{
+								ret = ti73_send_ACK(handle);
+								break;
+							}
+
+							*bitmap = ticalcs_realloc_screen(data, size + pktsize);
+							if (*bitmap != NULL)
+							{
+								data = *bitmap;
+								memcpy(data + size, buf, pktsize);
+								size += pktsize;
+
+								ret = ti73_send_ACK(handle);
+								if (ret)
+								{
+									break;
+								}
+
+								update_->max1 = TI84PC_COLS * TI84PC_ROWS * 2;
+								update_->cnt1 = size;
+								update_->pbar();
+							}
+							else
+							{
+								ticalcs_free_screen(data);
+								ret = ERR_MALLOC;
+								break;
+							}
+						}
+
+						if (!ret)
+						{
+							*bitmap = ticalcs_alloc_screen(TI84PC_ROWS * TI84PC_COLS * 2);
+							ret = ti84pcse_decompress_screen(*bitmap, TI84PC_ROWS * TI84PC_COLS * 2, data, size);
+						}
+					}
 				}
-				break;
 			}
-			else if (err)
-			{
-				goto done;
-			}
-
-			data = g_realloc(data, size + pktsize);
-			memcpy(data + size, buf, pktsize);
-			size += pktsize;
-
-			err = ti73_send_ACK(handle);
-			if (err)
-			{
-				goto done;
-			}
-
-			update_->max1 = TI84PC_COLS * TI84PC_ROWS * 2;
-			update_->cnt1 = size;
-			update_->pbar();
 		}
-
-		*bitmap = ticalcs_alloc_screen(TI84PC_ROWS * TI84PC_COLS * 2);
-		err = ti84pcse_decompress_screen(*bitmap, TI84PC_ROWS * TI84PC_COLS * 2, data, size);
-		if (err)
-		{
-			ticalcs_free_screen(*bitmap);
-			*bitmap = NULL;
-		}
-
-	done:
-		g_free(data);
-		return err;
 	}
+
+	if (ret)
+	{
+		ticalcs_free_screen(*bitmap);
+		*bitmap = NULL;
+	}
+
+	return ret;
 }
 
 static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
+	int ret;
 	TreeInfo *ti;
 	uint16_t unused;
 	uint32_t memory;
-	GNode *folder, *root;
+	GNode *folder, *root, *node;
 	char *utf8;
 
-	(*apps) = g_node_new(NULL);
-	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = APP_NODE_NAME;
-	(*apps)->data = ti;
-
-	(*vars) = g_node_new(NULL);
-	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = VAR_NODE_NAME;
-	(*vars)->data = ti;
+	ret = dirlist_init_trees(handle, vars, apps, VAR_NODE_NAME);
+	if (ret)
+	{
+		return ret;
+	}
+	ti = (*vars)->data;
 
 	TRYF(ti73_send_REQ(handle, 0x0000, TI73_DIR, "\0\0\0\0\0\0\0", 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
@@ -228,40 +270,43 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	TRYF(ti73_send_ACK(handle));
 	ti->mem_free = memory;
 
-	folder = g_node_new(NULL);
-	g_node_append(*vars, folder);
-
-	root = g_node_new(NULL);
-	g_node_append(*apps, root);
+	folder = dirlist_create_append_node(NULL, vars);
+	root = dirlist_create_append_node(NULL, apps);
 
 	// Add permanent variables (Window, RclWindow, TblSet aka WINDW, ZSTO, TABLE)
 	{
-		GNode *node;
 		VarEntry *ve;
 
 		ve = tifiles_ve_create();
 		ve->type = TI84p_WINDW;
-		node = g_node_new(ve);
-		g_node_append(folder, node);
+		node = dirlist_create_append_node(ve, &folder);
 
-		if (handle->model != CALC_TI73)
+		if (node != NULL)
 		{
-			ve = tifiles_ve_create();
-			ve->type = TI84p_ZSTO;
-			node = g_node_new(ve);
-			g_node_append(folder, node);
-		}
+			if (handle->model != CALC_TI73)
+			{
+				ve = tifiles_ve_create();
+				ve->type = TI84p_ZSTO;
+				node = dirlist_create_append_node(ve, &folder);
+			}
 
-		ve = tifiles_ve_create();
-		ve->type = TI84p_TABLE;
-		node = g_node_new(ve);
-		g_node_append(folder, node);
+			if (node != NULL)
+			{
+				ve = tifiles_ve_create();
+				ve->type = TI84p_TABLE;
+				node = dirlist_create_append_node(ve, &folder);
+			}
+		}
+	}
+
+	if (!node)
+	{
+		return ERR_MALLOC;
 	}
 
 	for (;;) 
 	{
 		VarEntry *ve = tifiles_ve_create();
-		GNode *node;
 		int err;
 		uint16_t ve_size;
 
@@ -269,9 +314,13 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		ve->size = ve_size;
 		TRYF(ti73_send_ACK(handle));
 		if (err == ERR_EOT)
+		{
 			break;
+		}
 		else if (err != 0)
+		{
 			return err;
+		}
 
 		if (ve->type == TI73_APPL)
 		{
@@ -282,14 +331,10 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			ve->size = (ve->size & 0xff) * 0x4000;
 		}
 
-		node = g_node_new(ve);
-		if (ve->type != TI73_APPL)
+		node = dirlist_create_append_node(ve, (ve->type != TI73_APPL) ? &folder : &root);
+		if (!node)
 		{
-			g_node_append(folder, node);
-		}
-		else
-		{
-			g_node_append(root, node);
+			return ERR_MALLOC;
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
@@ -432,8 +477,10 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	{
 		VarEntry *entry = content->entries[i];
 
-		if(entry->action == ACT_SKIP)
+		if (entry->action == ACT_SKIP)
+		{
 			continue;
+		}
 
 		TRYF(ti73_send_RTS(handle, (uint16_t)entry->size, entry->type, entry->name, entry->attr));
 		TRYF(ti73_recv_ACK(handle, NULL));
@@ -523,21 +570,21 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	// search for data header
 	for (ptr = content; ptr != NULL; ptr = ptr->next)
 	{
-		if(ptr->data_type == TI83p_AMS || ptr->data_type == TI83p_APPL)
+		if (ptr->data_type == TI83p_AMS || ptr->data_type == TI83p_APPL)
 		{
 			break;
 		}
 	}
-	if(ptr == NULL)
+	if (ptr == NULL)
 	{
 		return -1;
 	}
 
-	if(ptr->data_type == TI83p_AMS)
+	if (ptr->data_type == TI83p_AMS)
 	{
 		size = 0x100;
 	}
-	else if(ptr->data_type == TI83p_APPL)
+	else if (ptr->data_type == TI83p_APPL)
 	{
 		size = 0x80;
 	}
@@ -547,7 +594,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	}
 
 	// check for 83+ Silver Edition (not usable in boot mode, sic!)
-	if(handle->model != CALC_TI73 && ptr->data_type == TI83p_APPL)
+	if (handle->model != CALC_TI73 && ptr->data_type == TI83p_APPL)
 	{
 		CalcInfos infos;
 
@@ -577,10 +624,12 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	{
 		FlashPage *fp = ptr->pages[i];
 
-		if((ptr->data_type == TI83p_AMS) && (i == 1))	// need relocation ?
+		if ((ptr->data_type == TI83p_AMS) && (i == 1))	// need relocation ?
+		{
 			fp->addr = 0x4000;
+		}
 
-		for(j = 0; j < fp->size; j += size)
+		for (j = 0; j < fp->size; j += size)
 		{
 			uint16_t addr = fp->addr + j;
 			uint8_t* data = fp->data + j;
@@ -588,7 +637,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			TRYF(ti73_send_VAR2(handle, size, ptr->data_type, fp->flag, addr, fp->page));
 			TRYF(ti73_recv_ACK(handle, NULL));
 
-			if(handle->model == CALC_TI73 && ptr->data_type == TI83p_APPL)
+			if (handle->model == CALC_TI73 && ptr->data_type == TI83p_APPL)
 			{
 				TRYF(ti73_recv_CTS(handle, 0));
 			}	// is depending of OS version?
@@ -610,7 +659,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			TI73 and TI83+ need a pause (otherwise transfer fails).
 			Delay also causes OS transfers to fail on the 15Mhz calcs and unneeded for OS's
 		*/
-		if(!cpu15mhz && ptr->data_type == TI83p_APPL)
+		if (!cpu15mhz && ptr->data_type == TI83p_APPL)
 		{
 			if (i == 1)
 			{
@@ -665,7 +714,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	update_->cnt2 = 0;
 	update_->max2 = vr->size;
 
-	for(size = 0, first_block = 1, offset = 0;;)
+	for (size = 0, first_block = 1, offset = 0;;)
 	{
 		int err;
 		char name[9];
@@ -673,17 +722,22 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		err = ti73_recv_VAR2(handle, &data_length, &data_type, name, &data_addr, &data_page);
 		TRYF(ti73_send_ACK(handle));
 		if (err == ERR_EOT)
+		{
 			goto exit;
-		TRYF(err);
+		}
+		if (err)
+		{
+			return err;
+		}
 
-		if(first_block)
+		if (first_block)
 		{
 			old_page = data_page;
 
 			fp->addr = data_addr & 0x4000;
 			fp->page = data_page;
 		}
-		if(old_page != data_page)
+		if (old_page != data_page)
 		{
 			fp->addr = data_addr & 0x4000;
 			fp->page = old_page;
@@ -770,8 +824,10 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	data[9] = data[10];
 	data[10] = i;
 
-	for(i = 4; i < varsize; i++)
+	for (i = 4; i < varsize; i++)
+	{
 		sprintf((char *)&id[2 * (i-4)], "%02x", data[i]);
+	}
 	id[7*2] = '\0';
 
 	return 0;
@@ -780,7 +836,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Send dumping program
-	if(handle->model == CALC_TI73)
+	if (handle->model == CALC_TI73)
 	{
 		return rd_send(handle, "romdump.73p", romDumpSize73, romDump73);
 	}
@@ -829,7 +885,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 
 	// Launch program by remote control
 	PAUSE(200);
-	for(i = 0; i < nkeys - 1; i++)
+	for (i = 0; i < nkeys - 1; i++)
 	{
 		TRYF(send_key(handle, keys[i]));
 		PAUSE(100);
@@ -1001,7 +1057,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	TRYF(ti73_send_ACK(handle));
 
 	memset(infos, 0, sizeof(CalcInfos));
-	if(handle->model == CALC_TI73)
+	if (handle->model == CALC_TI73)
 	{
 		snprintf(infos->os_version, 5, "%1x.%02x", buf[0], buf[1]);
 		snprintf(infos->boot_version, 5, "%1x.%02x", buf[2], buf[3]);
@@ -1043,8 +1099,12 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 
 	// search for cert header
 	for (ptr = content; ptr != NULL; ptr = ptr->next)
-		if(ptr->data_type == TI83p_CERT)
+	{
+		if (ptr->data_type == TI83p_CERT)
+		{
 			break;
+		}
+	}
 
 	if (ptr != NULL)
 	{
@@ -1061,7 +1121,7 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 		TRYF(ti73_recv_CTS(handle, 10));
 		TRYF(ti73_send_ACK(handle));
 
-		for(i = 0; i <= nblocks; i++) 
+		for (i = 0; i <= nblocks; i++)
 		{
 			uint16_t length = size;
 

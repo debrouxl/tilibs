@@ -52,10 +52,10 @@ static void print_lc_error(int errnum)
 
 #if defined(__LINUX__) || defined(__MACOSX__) || defined(__BSD__)
 # include <unistd.h>
-# define PAUSE(x)  usleep(1000*(x));
+# define PAUSE(x)  usleep(1000*(x))
 #elif defined(__WIN32__)
 # include <windows.h>
-# define PAUSE(x)  Sleep((x));
+# define PAUSE(x)  Sleep((x))
 #endif
 
 int main(int argc, char **argv)

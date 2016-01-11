@@ -725,7 +725,7 @@ TIEXPORT3 int TICALL ti92_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 }
 
 /* XDP */
-static int ti68k_recv_XDP(CalcHandle* handle, uint32_t * length, uint8_t * data)
+static int ti68k_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data)
 {
 	uint8_t host, cmd;
 	int err;
@@ -750,12 +750,12 @@ static int ti68k_recv_XDP(CalcHandle* handle, uint32_t * length, uint8_t * data)
 	return err;
 }
 
-TIEXPORT3 int TICALL ti89_recv_XDP(CalcHandle* handle, uint32_t * length, uint8_t * data)
+TIEXPORT3 int TICALL ti89_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data)
 {
 	return ti68k_recv_XDP(handle, length, data);
 }
 
-TIEXPORT3 int TICALL ti92_recv_XDP(CalcHandle* handle, uint32_t * length, uint8_t * data)
+TIEXPORT3 int TICALL ti92_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data)
 {
 	return ti68k_recv_XDP(handle, length, data);
 }

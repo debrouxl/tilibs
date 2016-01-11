@@ -25,6 +25,8 @@
 #ifndef __TICALCS_INTERNAL__
 #define __TICALCS_INTERNAL__
 
+#include "error.h"
+
 #define VALIDATE_NONNULL(ptr) \
 	do \
 	{ \
@@ -147,6 +149,52 @@ static inline void * ticalcs_alloc_screen(size_t len)
 	return g_malloc(len);
 }
 
+static inline void * ticalcs_realloc_screen(void * mem, size_t len)
+{
+	return g_realloc(mem, len);
+}
+
+static inline int dirlist_init_tree(CalcHandle * handle, GNode ** tree, const char * type)
+{
+	int ret = ERR_MALLOC;
+
+	(*tree) = g_node_new(NULL);
+	if (*tree != NULL)
+	{
+		TreeInfo *ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
+		if (ti != NULL)
+		{
+			ti->model = handle->model;
+			ti->type = type;
+			(*tree)->data = ti;
+			ret = 0;
+		}
+	}
+
+	return ret;
+}
+
+static inline int dirlist_init_trees(CalcHandle * handle, GNode ** vars, GNode ** apps, const char * type)
+{
+	int ret = dirlist_init_tree(handle, vars, VAR_NODE_NAME);
+
+	if (!ret)
+	{
+		ret = dirlist_init_tree(handle, apps, APP_NODE_NAME);
+	}
+
+	return ret;
+}
+
+static inline GNode * dirlist_create_append_node(void * data, GNode ** tree)
+{
+	GNode * node = g_node_new(data);
+	if (node != NULL)
+	{
+		g_node_append(*tree, node);
+	}
+	return node;
+}
 
 // backup.c
 int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content);

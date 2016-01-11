@@ -53,10 +53,14 @@
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint16_t max_cnt;
-	uint8_t buf[TI80_COLS * TI80_ROWS / 8];
-	int stripe, row, i = 0;
-	int retval = 0;
+	int ret;
+	uint8_t * buffer;
+
+	*bitmap = (uint8_t *)ticalcs_alloc_screen(TI80_COLS * TI80_ROWS / 8);
+	if (*bitmap == NULL)
+	{
+		return ERR_MALLOC;
+	}
 
 	sc->width = TI80_COLS;
 	sc->height = TI80_ROWS;
@@ -64,34 +68,36 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_height = TI80_ROWS;
 	sc->pixel_format = CALC_PIXFMT_MONO;
 
-	retval = ti80_send_SCR(handle);
-	if (!retval)
+	ret = ti80_send_SCR(handle);
+	if (!ret)
 	{
-		retval = ti80_recv_ACK(handle, NULL);
-
-		if (!retval)
+		ret = ti80_recv_ACK(handle, NULL);
+		if (!ret)
 		{
-			retval = ti80_recv_XDP(handle, &max_cnt, buf);
-			if (!retval)
+			uint16_t max_cnt;
+			ret = ti80_recv_XDP(handle, &max_cnt, handle->buffer);
+			if (!ret)
 			{
-				*bitmap = (uint8_t *)ticalcs_alloc_screen(TI80_COLS * TI80_ROWS / 8);
-				if (*bitmap == NULL)
+				int stripe, row, i = 0;
+				buffer = (uint8_t *)(handle->buffer);
+				for (stripe = 7; stripe >= 0; stripe--)
 				{
-					return ERR_MALLOC;
-				}
-
-				for(stripe = 7; stripe >= 0; stripe--)
-				{
-					for(row = 0; row < TI80_ROWS; row++)
+					for (row = 0; row < TI80_ROWS; row++)
 					{
-						(*bitmap)[row * TI80_COLS / 8 + stripe] = buf[i++];
+						(*bitmap)[row * TI80_COLS / 8 + stripe] = buffer[i++];
 					}
 				}
 			}
 		}
 	}
 
-	return retval;
+	if (ret)
+	{
+		ticalcs_free_screen(*bitmap);
+		*bitmap = NULL;
+	}
+
+	return ret;
 }
 
 const CalcFncts calc_80 = 

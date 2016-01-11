@@ -303,9 +303,11 @@ int rd_dump(CalcHandle* handle, const char *filename)
 	uint32_t addr;
 	uint16_t length;
 	uint32_t i;
-	uint8_t data[65536];
+	uint8_t * data;
 
 	VALIDATE_HANDLE(handle);
+
+	data = handle->buffer;
 
 	f = fopen(filename, "wb");
 	if (f == NULL)
