@@ -946,10 +946,6 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 		sum += MSB(entry->size);
 		sum += LSB(entry->size);
 		sum += tifiles_checksum(entry->data, entry->size);
-		if (is_ti83p(content->model))
-		{
-			sum += tifiles_checksum((uint8_t *)&attr, sizeof(attr));
-		}
 	}
 
 	//checksum is the sum of all bytes in the data section
