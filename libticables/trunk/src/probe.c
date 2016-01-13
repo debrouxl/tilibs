@@ -194,7 +194,7 @@ TIEXPORT1 int TICALL ticables_probing_finish(int ***result)
 
 	if (result != NULL && *result != NULL)
 	{
-		for (i = CABLE_GRY; i <= CABLE_TIE; i++)
+		for (i = CABLE_NUL; i <= CABLE_MAX; i++)
 		{
 			free((*result)[i]);
 			(*result)[i] = NULL;

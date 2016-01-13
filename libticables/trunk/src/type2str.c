@@ -47,7 +47,9 @@ TIEXPORT1 const char *TICALL ticables_model_to_string(CableModel model)
 	case CABLE_VTI: return "VTi";
 	case CABLE_TIE: return "TiEmu";
 	case CABLE_ILP: return "linkport";
-	case CABLE_DEV: return "UsbKernel";
+	//case CABLE_DEV: return "UsbKernel";
+	case CABLE_RTCPC: return "RTCPC";
+	case CABLE_RTCPS: return "RTCPS";
 	default: return "unknown";
 	}
 }
@@ -87,6 +89,10 @@ TIEXPORT1 CableModel TICALL ticables_string_to_model(const char *str)
 		return CABLE_TIE;
 	else if (!g_ascii_strcasecmp(str, "linkport"))
 		return CABLE_ILP;
+	else if (!g_ascii_strcasecmp(str, "rtcpc") || !g_ascii_strcasecmp(str, "rawtcpclient"))
+		return CABLE_RTCPC;
+	else if (!g_ascii_strcasecmp(str, "rtcps") || !g_ascii_strcasecmp(str, "rawtcpserver"))
+		return CABLE_RTCPS;
 	// else fall through.
 
 	return CABLE_NUL;

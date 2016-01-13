@@ -7,6 +7,8 @@ src/linux/detect.c
 src/linux/ioports.c
 src/linux/link_gry.c
 src/linux/link_par.c
+src/linux/link_rtcpc.c
+src/linux/link_rtcps.c
 src/linux/link_ser.c
 src/linux/link_tie.c
 src/linux/link_usb1.c
@@ -15,6 +17,7 @@ src/linux/link_vti.c
 src/macos/detect.c
 src/probe.c
 src/ticables.c
+src/win32/detect.c
 src/win32/link_gry2.c
 src/win32/link_gry.c
 src/win32/link_par.c

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.3.5\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-10-24 18:24+0200\n"
+"POT-Creation-Date: 2015-12-14 08:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -349,7 +349,15 @@ msgid "Msg: this cable does not support raw I/O."
 msgstr ""
 
 #: src/error.c:318
-msgid "Cause: unsupported operation type on cable"
+msgid "Cause: unsupported operation type on cable."
+msgstr ""
+
+#: src/error.c:327
+msgid "Msg: unable to open/close sockets for virtual linking."
+msgstr ""
+
+#: src/error.c:329
+msgid "Cause: check that you have permissions to open sockets."
 msgstr ""
 
 #: src/link_nul.c:119
@@ -467,7 +475,8 @@ msgstr ""
 msgid "unable to open this serial port: %s\n"
 msgstr ""
 
-#: src/linux/link_gry.c:318 src/linux/link_par.c:379 src/linux/link_ser.c:395
+#: src/linux/link_gry.c:318 src/linux/link_par.c:379 src/linux/link_rtcpc.c:102
+#: src/linux/link_rtcps.c:102 src/linux/link_ser.c:395
 #: src/win32/link_gry2.c:368 src/win32/link_gry.c:374 src/win32/link_par.c:374
 #: src/win32/link_ser.c:403
 #, c-format
@@ -488,6 +497,22 @@ msgstr ""
 
 #: src/linux/link_par.c:391 src/win32/link_par.c:386
 msgid "Home-made parallel cable"
+msgstr ""
+
+#: src/linux/link_rtcpc.c:113
+msgid "RTCPC"
+msgstr ""
+
+#: src/linux/link_rtcpc.c:114
+msgid "Virtual raw TCP client link"
+msgstr ""
+
+#: src/linux/link_rtcps.c:113
+msgid "RTCPS"
+msgstr ""
+
+#: src/linux/link_rtcps.c:114
+msgid "Virtual raw TCP server link"
 msgstr ""
 
 #: src/linux/link_ser.c:406 src/win32/link_ser.c:414
@@ -567,41 +592,41 @@ msgstr ""
 msgid "Link cable probing:"
 msgstr ""
 
-#: src/ticables.c:162
+#: src/ticables.c:176
 #, c-format
 msgid "ticables library version %s"
 msgstr ""
 
-#: src/ticables.c:524
+#: src/ticables.c:538
 msgid "Link cable handle details:"
 msgstr ""
 
-#: src/ticables.c:525
+#: src/ticables.c:539
 #, c-format
 msgid "  model   : %s"
 msgstr ""
 
-#: src/ticables.c:526
+#: src/ticables.c:540
 #, c-format
 msgid "  port    : %s"
 msgstr ""
 
-#: src/ticables.c:527
+#: src/ticables.c:541
 #, c-format
 msgid "  timeout : %2.1fs"
 msgstr ""
 
-#: src/ticables.c:528
+#: src/ticables.c:542
 #, c-format
 msgid "  delay   : %i us"
 msgstr ""
 
-#: src/ticables.c:531
+#: src/ticables.c:545
 #, c-format
 msgid "  device  : %s"
 msgstr ""
 
-#: src/ticables.c:532
+#: src/ticables.c:546
 #, c-format
 msgid "  address : 0x%03x"
 msgstr ""

@@ -315,7 +315,18 @@ TIEXPORT1 int TICALL ticables_error_get(int number, char **message)
 			*message = g_strconcat(
 			_("Msg: this cable does not support raw I/O."),
 			"\n",
-			_("Cause: unsupported operation type on cable"), 
+			_("Cause: unsupported operation type on cable."),
+			NULL);
+		break;
+
+		case ERR_RTCPC_OPEN:
+		case ERR_RTCPC_CLOSE:
+		case ERR_RTCPS_OPEN:
+		case ERR_RTCPS_CLOSE:
+		*message = g_strconcat(
+			_("Msg: unable to open/close sockets for virtual linking."),
+			"\n",
+			_("Cause: check that you have permissions to open sockets."),
 			NULL);
 		break;
 

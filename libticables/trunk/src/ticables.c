@@ -80,6 +80,13 @@ static CableFncts const *const cables[] =
 	&cable_tie,
 #endif
 	&cable_ilp,
+	&cable_nul, // Dead cable
+#if !defined(NO_CABLE_RTCPC) && !defined(__WIN32__)
+	&cable_rtcpc,
+#endif
+#if !defined(NO_CABLE_RTCPS) && !defined(__WIN32__)
+	&cable_rtcps,
+#endif
 	NULL
 };
 
@@ -107,6 +114,13 @@ static const uint32_t supported_cables =
 	| (1U << CABLE_TIE)
 #endif
 	| (1U << CABLE_ILP)
+	// | (1U << CABLE_DEV) Dead cable
+#if !defined(NO_CABLE_RTCPC) && !defined(__WIN32__)
+	| (1U << CABLE_RTCPC)
+#endif
+#if !defined(NO_CABLE_RTCPS) && !defined(__WIN32__)
+	| (1U << CABLE_RTCPS)
+#endif
 ;
 
 /****************/
@@ -135,7 +149,7 @@ TIEXPORT1 int TICALL ticables_library_init(void)
 	int i;
 
 	hDll = GetModuleHandle("libticables2-7.dll");
-	GetModuleFileName(hDll, locale_dir, 65535);
+	GetModuleFileName(hDll, locale_dir, 65515);
 
 	for (i = strlen(locale_dir); i >= 0; i--)
 	{

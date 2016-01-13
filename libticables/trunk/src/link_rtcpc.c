@@ -1,8 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
 
 /*  libticables2 - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2015  Lionel Debroux
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,23 +18,27 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef __TICABLES_LINKS__
-#define __TICABLES_LINKS__
+/* Raw TCP client virtual link */
 
-#include "ticables.h"
-
-extern const CableFncts cable_nul;
-extern const CableFncts cable_gry;
-extern const CableFncts cable_ser;
-extern const CableFncts cable_slv;
-extern const CableFncts cable_par;
-extern const CableFncts cable_vti;
-extern const CableFncts cable_tie;
-extern const CableFncts cable_raw;
-extern const CableFncts cable_ilp;
-extern const CableFncts cable_rtcpc;
-extern const CableFncts cable_rtcps;
-
+#ifdef HAVE_CONFIG_H
+#include <config.h>
 #endif
 
+#ifndef NO_CABLE_RTCPC
 
+#if defined(__LINUX__)
+#include "linux/link_rtcpc.c"
+
+#elif defined(__BSD__)
+#include "linux/link_rtcpc.c"
+
+#elif defined(__WIN32__)
+/* Not ported yet */
+
+#elif defined(__MACOSX__)
+#include "linux/link_rtcpc.c"
+
+#else
+#endif
+
+#endif
