@@ -1,5 +1,5 @@
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2012  Romain Liévin
+ *  Copyright (C) 1999-2012  Romain LiÃ©vin
  *  Copyright (C) 2012       Lionel Debroux
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -199,10 +199,6 @@ static inline GNode * dirlist_create_append_node(void * data, GNode ** tree)
 // backup.c
 int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content);
 
-
-// dbus_pkt.c
-
-int dbus_recv_2(CalcHandle* cable, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data);
 
 #ifndef WORDS_BIGENDIAN
 # define fixup(x) (x &= 0x0000ffff)
