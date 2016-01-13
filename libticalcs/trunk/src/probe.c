@@ -2,7 +2,7 @@
 /* $Id$ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+ *  Copyright (C) 1999-2005  Romain LiÃ©vin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ static int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
 	uint8_t buffer[5];
 	int ret;
 
-	ret = dbus_recv_2(handle, &host, &cmd, &length, buffer);
+	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
 	if (!ret)
 	{
 		ticalcs_info(" TI->PC: ACK");
@@ -281,7 +281,7 @@ static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 				continue;
 			}
 
-			ret = dbus_recv_2(handle, &host, &cmd, &status, buffer);
+			ret = dbus_recv(handle, &host, &cmd, &status, buffer);
 			ticalcs_info(" TI->PC: ACK");
 			if (ret)
 			{
@@ -322,7 +322,7 @@ static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 					continue;
 				}
 
-				ret = dbus_recv_2(handle, &host, &cmd, &status, buffer);
+				ret = dbus_recv(handle, &host, &cmd, &status, buffer);
 				ticalcs_info(" TI->PC: ACK");
 				if (ret)
 				{

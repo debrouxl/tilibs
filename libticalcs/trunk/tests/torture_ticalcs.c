@@ -226,15 +226,24 @@ static void torture_ticalcs(void)
 
     PRINTF(dbus_recv, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(dbus_recv_header, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(dbus_recv_header, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(dbus_recv_header, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
+// 161
+    PRINTF(dbus_recv_header, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
+    PRINTF(dbus_recv_data, INT, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(dbus_recv_data, INT, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(dbus_recv_data, INT, (void *)0x12345678, (void *)0x12345678, NULL);
 // dusb_rpkt.c
     PRINTF(dusb_send, INT, NULL, (void *)0x12345678);
+
     PRINTF(dusb_send, INT, (void *)0x12345678, NULL);
     PRINTF(dusb_recv, INT, NULL, (void *)0x12345678);
-// 161
     PRINTF(dusb_recv, INT, (void *)0x12345678, NULL);
 // nsp_rpkt.c
     PRINTF(nsp_send, INT, NULL, (void *)0x12345678);
     PRINTF(nsp_send, INT, (void *)0x12345678, NULL);
+// 171
     PRINTF(nsp_recv, INT, NULL, (void *)0x12345678);
     PRINTF(nsp_recv, INT, (void *)0x12345678, NULL);
 }

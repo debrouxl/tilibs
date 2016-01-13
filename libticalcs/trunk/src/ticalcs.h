@@ -2,7 +2,7 @@
 /* $Id$ */
 
 /*  libticalcs2 - hand-helds support library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 1999-2005  Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -268,7 +268,7 @@ typedef enum
 	INFOS_PRODUCT_ID     = (1 << 22),
 	INFOS_EXACT_MATH     = (1 << 23),
 
-	INFOS_CALC_MODEL     = (1 << 31),
+	INFOS_CALC_MODEL     = 0x80000000
 } InfosMask;
 
 /**
@@ -910,6 +910,8 @@ typedef struct
 	// dbus_pkt.c
 	TIEXPORT3 int TICALL dbus_send(CalcHandle *handle, uint8_t target, uint8_t cmd, uint16_t length, const uint8_t* data);
 	TIEXPORT3 int TICALL dbus_recv(CalcHandle *handle, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data);
+	TIEXPORT3 int TICALL dbus_recv_header(CalcHandle *handle, uint8_t* host, uint8_t* cmd, uint16_t* length);
+	TIEXPORT3 int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_t* data);
 
 	// dusb_rpkt.c
 	TIEXPORT3 int TICALL dusb_send(CalcHandle *handle, DUSBRawPacket* pkt);
