@@ -39,24 +39,6 @@
 
 #include "ticonv.h"
 
-static int tifiles_calc_is_ti9x(CalcModel model)
-{
-  return ((model == CALC_TI89) || (model == CALC_TI89T) ||
-	  (model == CALC_TI92) || (model == CALC_TI92P) || (model == CALC_V200) ||
-	  (model == CALC_TI89T_USB));
-}
-
-static int tifiles_calc_is_ti8x(CalcModel model)
-{
-  return ((model == CALC_TI73) || (model == CALC_TI82) ||
-	  (model == CALC_TI82) || (model == CALC_TI83) ||
-	  (model == CALC_TI83P) || (model == CALC_TI84P) ||
-	  (model == CALC_TI85) || (model == CALC_TI86) ||
-	  (model == CALC_TI84P_USB) || (model == CALC_TI84PC) ||
-	  (model == CALC_TI84PC_USB) || (model == CALC_TI83PCE_USB) ||
-	  (model == CALC_TI84PCE_USB) || (model == CALC_TI82A_USB));
-}
-
 /**
  * ticonv_utf16_to_gfe:
  * @model: a calculator model taken in #CalcModel.
@@ -93,7 +75,7 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
 	q = utf16_dst = g_malloc0(18*ticonv_utf16_strlen(utf16_src)+2);
 
 	// conversion from UTF-16 to UTF-16
-	if(tifiles_calc_is_ti9x(model) && !is_utf8)
+	if (ticonv_model_is_ti68k(model) && !is_utf8)
 	{
 		while (*p)
 		{
@@ -145,7 +127,7 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
 		}
 		*q = '\0';
 	}
-	else if (tifiles_calc_is_ti8x(model) && !is_utf8)
+	else if ((ticonv_model_is_tiz80(model) || ticonv_model_is_tiez80(model)) && !is_utf8)
 	{
 		while (*p)
 		{
@@ -320,12 +302,14 @@ TIEXPORT4 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 			}
 
 			memcpy(q, str, strlen(str) + 1);
-			
+
 			q += strlen(str);
 			p++;
 		}
 		else
+		{
 			*q++ = *p++;
+		}
 	}
 	*q = '\0';
 
