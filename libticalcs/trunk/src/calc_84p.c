@@ -46,6 +46,7 @@
 #include "dusb_cmd.h"
 #include "rom84p.h"
 #include "rom84pcu.h"
+#include "rom834pceu.h"
 #include "romdump.h"
 #include "keys83p.h"
 
@@ -1404,65 +1405,127 @@ static int		dump_rom_1	(CalcHandle* handle)
 		{
 			ret = rd_send(handle, "romdump.8Xp", romDumpSize84pcu, romDump84pcu);
 		}
+		else if (infos.model == CALC_TI84PCE_USB || infos.model == CALC_TI83PCE_USB)
+		{
+			ret = rd_send(handle, "romdump.8Xp", romDumpSize834pceu, romDump834pceu);
+		}
 		else
 		{
-			// TODO 83+CE/84+CE/84+CE-T ROM dumping support.
 			ret = 0;
 		}
 	}
 
 	return ret;
 }
+
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
+	CalcInfos infos;
 	int ret;
-#if 0
-	// Old, less sophisticated and more complicated version.
-	int i;
-	static const uint16_t keys[] = { 
-		0x40, 0x09, 0x09, 0xFC9C, /* Quit, Clear, Clear, Asm( */
-		0xDA, 0xAB, 0xA8, 0xA6,   /* prgm, R, O, M */
-		0x9D, 0xAE, 0xA6, 0xA9,   /* D, U, M, P */
-		0x86 };                   /* ) */
 
-	// Launch program by remote control
-	PAUSE(200);
-	for (i = 0; i < sizeof(keys) / sizeof(uint16_t); i++)
-	{
-		ret = send_key(handle, keys[i]);
-		if (ret)
-		{
-			goto end;
-		}
-		PAUSE(100);
-	}
-
-	// This fixes a 100% reproducible timeout: send_key normally requests a data ACK,
-	// but when the program is running, no data ACK is sent. Therefore, hit the Enter
-	// key without requesting a data ACK, only the initial delay ACK.
-	ret = dusb_cmd_s_execute(handle, "", "", EID_KEY, "", 0x05);
+	ret = get_version(handle, &infos);
 	if (!ret)
 	{
-		ret = dusb_cmd_r_delay_ack(handle);
-		PAUSE(400);
-		if (!ret)
+		if (infos.model == CALC_TI84PCE_USB || infos.model == CALC_TI83PCE_USB)
 		{
-			// Get dump
-			ret = rd_dump(handle, filename);
-		}
-	}
+			// The TI-eZ80 series does no longer provide direct remote program launch...
+			// Therefore, use a less sophisticated and more complicated way to queue keypresses, which works
+			// on the 84+ provided reverse endianness of key codes > 256 is used (FC9C).
+			unsigned int i;
+			unsigned int iterations;
+			static const uint16_t keys[] = {
+				0x40, 0x09, 0x09, 0x9CFC, /* Quit, Clear, Clear, Asm( */
+				0xDA, 0xAB, 0xA8, 0xA6,   /* prgm, R, O, M */
+				0x9D, 0xAE, 0xA6, 0xA9,   /* D, U, M, P */
+				0x86                      /* ) */
+			};
+			FILE *f;
+
+			f = fopen(filename, "wb");
+			if (f == NULL)
+			{
+				return ERR_OPEN_FILE;
+			}
+
+			// Launch program by remote control
+			PAUSE(200);
+			for (i = 0; i < sizeof(keys) / sizeof(keys[0]); i++)
+			{
+				ret = send_key(handle, keys[i]);
+				if (ret)
+				{
+					goto end;
+				}
+				PAUSE(100);
+			}
+
+			// Keep synchronized with the ROM dumper's source code, here and below. For now, it dumps 16 KB at a time.
+			iterations = (uint32_t)(infos.flash_phys / 0x4000);
+
+			for (i = 0; !ret && i < iterations; i++)
+			{
+				ret = dusb_cmd_s_execute(handle, "", "", EID_KEY, "", 0x05);
+				if (!ret)
+				{
+					FileContent *content;
+					VarEntry ve;
+
+					ret = dusb_cmd_r_delay_ack(handle);
+					PAUSE(400);
+					ticables_cable_reset(handle->cable);
+
+					memset(&ve, 0, sizeof(VarEntry));
+					strncpy(ve.name, "ROMDATA", sizeof(ve.name));
+					ve.type = 0x06; // PPRGM / ASM.
+
+					content = tifiles_content_create_regular(handle->model);
+					if (content == NULL)
+					{
+						ret = ERR_MALLOC;
+						break;
+					}
+
+					ret = is_ready(handle);
+					if (!ret)
+					{
+						ret = recv_var(handle, 0 /* MODE_NORMAL */, content, &ve);
+						PAUSE(200);
+						if (!ret)
+						{
+							if (content->num_entries == 1 && content->entries && content->entries[0] && content->entries[0]->size == 16386)
+							{
+								// Skip the two leading bytes.
+								if (fwrite(content->entries[0]->data + 2, content->entries[0]->size - 2, 1, f) < 1)
+								{
+									ret = ERR_SAVE_FILE;
+								}
+							}
+							else
+							{
+								ret = ERR_INVALID_PACKET;
+							}
+						}
+					}
+				}
+			}
 end:
-#endif
-	ret = dusb_cmd_s_execute(handle, "", "ROMDUMP", EID_PRGM, "", 0);
-	if (!ret)
-	{
-		ret = dusb_cmd_r_data_ack(handle);
-		if (!ret)
-		{
-			PAUSE(3000);
+			fclose(f);
 
-			// Get dump
-			ret = rd_dump(handle, filename);
+		}
+		else
+		{
+			ret = dusb_cmd_s_execute(handle, "", "ROMDUMP", EID_PRGM, "", 0);
+			if (!ret)
+			{
+				ret = dusb_cmd_r_data_ack(handle);
+				if (!ret)
+				{
+					PAUSE(3000);
+
+					// Get dump
+					ret = rd_dump(handle, filename);
+				}
+			}
 		}
 	}
 
@@ -2085,7 +2148,7 @@ const CalcFncts calc_83pce_usb =
 	"TI-83 Premium CE",
 	N_("TI-83 Premium CE thru DirectLink"),
 	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
-	OPS_IDLIST | /*OPS_ROMDUMP |*/ OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | /*OPS_KEYS |*/
+	OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
 	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	PRODUCT_ID_TI83PCE,
@@ -2156,7 +2219,7 @@ const CalcFncts calc_84pce_usb =
 	"TI-84 Plus CE",
 	N_("TI-84 Plus CE thru DirectLink"),
 	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
-	OPS_IDLIST | /*OPS_ROMDUMP |*/ OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | /*OPS_KEYS |*/
+	OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
 	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	PRODUCT_ID_TI84PCE,

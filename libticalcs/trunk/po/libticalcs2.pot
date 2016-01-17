@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.9\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-11-12 14:08+0100\n"
+"POT-Creation-Date: 2016-01-17 10:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,72 +25,72 @@ msgstr ""
 msgid "Dummy hand-held used when no calc is set"
 msgstr ""
 
-#: src/calc_73.c:341 src/calc_83.c:239 src/calc_84p.c:511 src/calc_86.c:207
+#: src/calc_73.c:341 src/calc_83.c:239 src/calc_84p.c:512 src/calc_86.c:207
 #, c-format
 msgid "Parsing %s"
 msgstr ""
 
-#: src/calc_73.c:606
+#: src/calc_73.c:607
 msgid "Battery low, stopping flash app transfer"
 msgstr ""
 
-#: src/calc_73.c:611 src/calc_73.c:1112 src/calc_89.c:707 src/calc_89t.c:487
+#: src/calc_73.c:612 src/calc_73.c:1117 src/calc_89.c:707 src/calc_89t.c:487
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr ""
 
-#: src/calc_73.c:612 src/calc_73.c:1113 src/calc_89.c:708 src/calc_89t.c:488
+#: src/calc_73.c:613 src/calc_73.c:1118 src/calc_89.c:708 src/calc_89t.c:488
 #, c-format
 msgid "FLASH size: %i bytes."
 msgstr ""
 
-#: src/calc_73.c:952 src/calc_84p.c:1497 src/calc_89.c:927 src/calc_89t.c:827
+#: src/calc_73.c:953 src/calc_84p.c:1560 src/calc_89.c:927 src/calc_89t.c:827
 msgid "Setting clock..."
 msgstr ""
 
-#: src/calc_73.c:980 src/calc_84p.c:1575 src/calc_89.c:952 src/calc_89t.c:907
+#: src/calc_73.c:981 src/calc_84p.c:1638 src/calc_89.c:952 src/calc_89t.c:907
 msgid "Getting clock..."
 msgstr ""
 
-#: src/calc_73.c:1035 src/calc_83.c:494 src/calc_84p.c:1637 src/calc_89.c:991
+#: src/calc_73.c:1036 src/calc_83.c:494 src/calc_84p.c:1700 src/calc_89.c:991
 #: src/calc_89t.c:971 src/calc_92.c:605 src/calc_nsp.c:906
 #, c-format
 msgid "Deleting %s..."
 msgstr ""
 
-#: src/calc_73.c:1086 src/calc_89.c:1072 src/calc_92.c:686
+#: src/calc_73.c:1091 src/calc_89.c:1074 src/calc_92.c:686
 #, c-format
 msgid "  OS: %s"
 msgstr ""
 
-#: src/calc_73.c:1087 src/calc_89.c:1073
+#: src/calc_73.c:1092 src/calc_89.c:1075
 #, c-format
 msgid "  BIOS: %s"
 msgstr ""
 
-#: src/calc_73.c:1088
+#: src/calc_73.c:1093
 #, c-format
 msgid "  HW: %i"
 msgstr ""
 
-#: src/calc_73.c:1089 src/calc_89.c:1074 src/calc_92.c:687
+#: src/calc_73.c:1094 src/calc_89.c:1076 src/calc_92.c:687
 #, c-format
 msgid "  Battery: %s"
 msgstr ""
 
-#: src/calc_73.c:1089 src/type2str.c:329
+#: src/calc_73.c:1094 src/type2str.c:329
 msgid "good"
 msgstr ""
 
-#: src/calc_73.c:1089 src/type2str.c:329
+#: src/calc_73.c:1094 src/type2str.c:329
 msgid "low"
 msgstr ""
 
-#: src/calc_73.c:1140 src/calc_89.c:761
+#: src/calc_73.c:1145 src/calc_89.c:761
 msgid "Header sent completely."
 msgstr ""
 
-#: src/calc_73.c:1151
+#: src/calc_73.c:1157
 msgid "Receiving certificate"
 msgstr ""
 
@@ -107,33 +107,33 @@ msgstr ""
 msgid "Waiting for var(s)..."
 msgstr ""
 
-#: src/calc_84p.c:1720 src/calc_89t.c:1164
+#: src/calc_84p.c:1783 src/calc_89t.c:1164
 msgid "Getting version..."
 msgstr ""
 
-#: src/calc_84p.c:1869 src/calc_84p.c:1879 src/calc_84p.c:1889
-#: src/calc_84p.c:1906 src/calc_84p.c:1915
+#: src/calc_84p.c:1935 src/calc_84p.c:1945 src/calc_84p.c:1955
+#: src/calc_84p.c:1972 src/calc_84p.c:1981
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr ""
 
-#: src/calc_84p.c:1933
+#: src/calc_84p.c:1999
 msgid "TI-84 Plus thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:2004
+#: src/calc_84p.c:2070
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:2075
+#: src/calc_84p.c:2141
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:2146
+#: src/calc_84p.c:2212
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:2217
+#: src/calc_84p.c:2283
 msgid "TI-82 Advanced thru DirectLink"
 msgstr ""
 
@@ -157,7 +157,7 @@ msgstr ""
 msgid "Creating %s..."
 msgstr ""
 
-#: src/calc_89.c:1329
+#: src/calc_89.c:1331
 msgid "V200 Personal Learning Tool"
 msgstr ""
 
@@ -171,7 +171,7 @@ msgstr ""
 msgid "Changing attributes of %s..."
 msgstr ""
 
-#: src/calc_89t.c:1334
+#: src/calc_89t.c:1336
 msgid "TI-89 Titanium thru DirectLink"
 msgstr ""
 
