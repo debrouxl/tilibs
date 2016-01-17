@@ -48,8 +48,9 @@ extern "C" {
 # define LIBCALCS_VERSION VERSION
 #endif
 
+#define LIBCALCS_REQUIRES_LIBTICONV_VERSION	"1.1.5"	// useless with pkg-config
 #define LIBCALCS_REQUIRES_LIBTIFILES_VERSION	"1.1.0"	// useless with pkg-config
-#define LIBCALCS_REQUIRES_LIBTICABLES_VERSION	"1.2.0"	// useless with pkg-config
+#define LIBCALCS_REQUIRES_LIBTICABLES_VERSION	"1.3.5"	// useless with pkg-config
 
 /* Types */
 
@@ -103,7 +104,7 @@ typedef enum
 typedef enum 
 {
 	MEMORY_NONE = 0, 
-	MEMORY_FREE = (1<<0), 
+	MEMORY_FREE = (1<<0),
 	MEMORY_USED = (1<<1),
 } CalcMemType;
 
@@ -118,14 +119,14 @@ typedef enum
 	MODE_NORMAL = 0,
 
 	// For sending vars
-	MODE_SEND_ONE_VAR  = (1 << 1),	// Send single var or first var of group (TI82/85 only)
-	MODE_SEND_LAST_VAR = (1 << 2),	// Send last var of group file (TI82/85 only)
+	MODE_SEND_ONE_VAR  = (1 << 1),   // Send single var or first var of group (TI82/85 only)
+	MODE_SEND_LAST_VAR = (1 << 2),   // Send last var of group file (TI82/85 only)
 
-	MODE_SEND_EXEC_ASM = (1 << 3),    // Send and execute assembly (TI82/85 only; dangerous!)
+	MODE_SEND_EXEC_ASM = (1 << 3),   // Send and execute assembly (TI82/85 only; dangerous!)
 
 	// Miscellaneous
-	MODE_LOCAL_PATH	= (1 << 4),		// Local path (full by default)
-	MODE_BACKUP		= (1 << 5),		// Keep archive attribute
+	MODE_LOCAL_PATH    = (1 << 4),   // Local path (full by default)
+	MODE_BACKUP        = (1 << 5),   // Keep archive attribute
 } CalcMode;
 
 /**
@@ -136,13 +137,13 @@ typedef enum
 typedef enum 
 {
 	ROMSIZE_AUTO  = 0,
-	ROMSIZE_48KB = 48, /* TI80 */
-	ROMSIZE_128KB = 128, /* TI82, 85 */
-	ROMSIZE_256KB = 256, /* TI83, 86 */
-	ROMSIZE_512KB = 512, /* TI83+ */
-	ROMSIZE_1MB	= 1024,  /* TI84+, TI92 */
-	ROMSIZE_2MB	= 2048,  /* TI83+SE, TI-84+SE, TI89, 92-II, 92+ */
-	ROMSIZE_4MB	= 4096,  /* TI-84+CSE, TI89t, V200 */
+	ROMSIZE_48KB  = 48,     /* TI80 */
+	ROMSIZE_128KB = 128,    /* TI82, 85 */
+	ROMSIZE_256KB = 256,    /* TI83, 86 */
+	ROMSIZE_512KB = 512,    /* TI83+ */
+	ROMSIZE_1MB   = 1024,   /* TI84+, TI92 */
+	ROMSIZE_2MB   = 2048,   /* TI83+SE, TI-84+SE, TI89, 92-II, 92+ */
+	ROMSIZE_4MB   = 4096,   /* TI-84+CSE, TI89t, V200 */
 } CalcDumpSize;
 
 /**
@@ -197,29 +198,30 @@ typedef enum
 {
 	FTS_NONE = 0,
 
-	OPS_ISREADY	= (1 << 0),
-	OPS_KEYS		= (1 << 1),
-	OPS_SCREEN	= (1 << 2),
-	OPS_DIRLIST	= (1 << 3),
-	OPS_BACKUP	= (1 << 4),
-	OPS_VARS		= (1 << 5),
-	OPS_FLASH		= (1 << 6),
-	OPS_IDLIST	= (1 << 7),
-	OPS_CLOCK		= (1 << 8),
-	OPS_ROMDUMP	= (1 << 9),
-	OPS_VERSION	= (1 << 10),
-	OPS_NEWFLD	= (1 << 11),
-	OPS_DELVAR	= (1 << 12),
-	OPS_OS		= (1 << 13),
-	OPS_RENAME    = (1 << 14),
-	OPS_CHATTR    = (1 << 21),
+	OPS_ISREADY     = (1 << 0),
+	OPS_KEYS        = (1 << 1),
+	OPS_SCREEN      = (1 << 2),
+	OPS_DIRLIST     = (1 << 3),
+	OPS_BACKUP      = (1 << 4),
+	OPS_VARS        = (1 << 5),
+	OPS_FLASH       = (1 << 6),
+	OPS_IDLIST      = (1 << 7),
+	OPS_CLOCK       = (1 << 8),
+	OPS_ROMDUMP     = (1 << 9),
+	OPS_VERSION     = (1 << 10),
+	OPS_NEWFLD      = (1 << 11),
+	OPS_DELVAR      = (1 << 12),
+	OPS_OS          = (1 << 13),
+	OPS_RENAME      = (1 << 14),
+	OPS_CHATTR      = (1 << 21),
 
-	FTS_SILENT	= (1 << 15),
-	FTS_FOLDER	= (1 << 16),
-	FTS_MEMFREE	= (1 << 17),
-	FTS_FLASH		= (1 << 18),
-	FTS_CERT		= (1 << 19),
-	FTS_BACKUP	= (1 << 20),
+	FTS_SILENT      = (1 << 15),
+	FTS_FOLDER      = (1 << 16),
+	FTS_MEMFREE     = (1 << 17),
+	FTS_FLASH       = (1 << 18),
+	FTS_CERT        = (1 << 19),
+	FTS_BACKUP      = (1 << 20),
+	FTS_NONSILENT   = (1 << 22)
 
 } CalcFeatures;
 

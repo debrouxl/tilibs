@@ -401,7 +401,7 @@ const CalcFncts calc_85 =
 	"TI-85",
 	"TI-85",
 	OPS_SCREEN | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP | 
-	FTS_BACKUP,
+	FTS_BACKUP | FTS_NONSILENT,
 	PRODUCT_ID_NONE,
 	{"",     /* is_ready */
 	 "",     /* send_key */
