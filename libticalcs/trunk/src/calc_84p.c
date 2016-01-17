@@ -586,13 +586,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		attrs[1] = dusb_ca_new(AID_ARCHIVED, 1);
 		attrs[1]->data[0] = ve->attr == ATTRB_ARCHIVED ? 1 : 0;
 		attrs[2] = dusb_ca_new(AID_VAR_VERSION, 4);
-
-		/* Kludge to support 84+CSE Pic files.  Please do not rely on
-		   this behavior; it will go away in the future. */
-		if (ve->type == 0x07 && ve->size == 0x55bb)
-		{
-			attrs[2]->data[3] = 0x0a;
-		}
+		attrs[2]->data[3] = ve->version;
 
 		ret = dusb_cmd_s_rts(handle, "", ve->name, ve->size, nattrs, CA(attrs));
 		dusb_ca_del_array(nattrs, attrs);
@@ -673,6 +667,27 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 					    | (((uint32_t)(attrs[2]->data[1])) << 16)
 					    | (((uint32_t)(attrs[2]->data[2])) <<  8)
 					    | (((uint32_t)(attrs[2]->data[3]))      ));
+
+				if (attrs[0]->size == 1)
+				{
+					ve->attr = (attrs[0]->data[0] ? ATTRB_ARCHIVED : 0);
+				}
+				if (attrs[1]->size == 4)
+				{
+					ve->version = attrs[1]->data[3];
+				}
+
+				if (ve->type == TI83p_PIC)
+				{
+					if (ve->version >= 0xa)
+					{
+						content->model = CALC_TI84PC_USB;
+					}
+					else
+					{
+						content->model = CALC_TI84P_USB;
+					}
+				}
 
 				ve->data = tifiles_ve_alloc_data(ve->size);
 				memcpy(ve->data, data, ve->size);
