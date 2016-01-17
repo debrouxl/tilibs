@@ -121,6 +121,14 @@ TIEXPORT3 int TICALL ticalcs_error_get(int number, char **message)
 		NULL);
 		break;
 
+	case ERR_VAR_VERSION:
+		*message = g_strconcat(
+		_("Msg: program or variable is incompatible with this OS version."),
+		"\n",
+		_("Cause: this variable type may not be supported by the target calculator, or you may need to upgrade your calculator OS."),
+		NULL);
+		break;
+
 	case ERR_VAR_REJECTED:
 		*message = g_strconcat(
 		_("Msg: contents has been refused."),

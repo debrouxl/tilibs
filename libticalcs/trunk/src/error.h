@@ -65,6 +65,7 @@ typedef enum
 	ERR_INVALID_HANDLE,		// Invalid handle
 	ERR_INVALID_PARAMETER,
 	ERR_INVALID_SCREENSHOT,
+	ERR_VAR_VERSION,		// Variable rejected due to version code
 
 // --- 300 to 349 are reserved for hand-held status (DUSB)
 

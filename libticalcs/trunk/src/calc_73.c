@@ -399,8 +399,12 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 		return ERR_ABORT;
 	case REJ_MEMORY:
 		return ERR_OUT_OF_MEMORY;
-	default:			// RTS
+	case REJ_VERSION:
+		return ERR_VAR_VERSION;
+	case 0:						// CTS
 		break;
+	default:
+		return ERR_VAR_REJECTED;
 	}
 
 	update_->cnt2 = 0;
@@ -505,8 +509,12 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			continue;
 		case REJ_MEMORY:
 			return ERR_OUT_OF_MEMORY;
-		default:			// RTS
+		case REJ_VERSION:
+			return ERR_VAR_VERSION;
+		case 0:					// CTS
 			break;
+		default:
+			return ERR_VAR_REJECTED;
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
