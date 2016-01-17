@@ -37,7 +37,7 @@ TIEXPORT3 int TICALL ti80_recv_ACK(CalcHandle *handle, uint16_t * status);
 
 
 /* TI-73 family, send functions */
-TIEXPORT3 int TICALL ti73_send_VAR(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr);
+TIEXPORT3 int TICALL ti73_send_VAR(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr, uint8_t version);
 TIEXPORT3 int TICALL ti73_send_VAR2(CalcHandle *handle, uint32_t length, uint8_t type, uint8_t flag, uint16_t offset, uint16_t page);
 TIEXPORT3 int TICALL ti73_send_CTS(CalcHandle *handle);
 TIEXPORT3 int TICALL ti73_send_XDP(CalcHandle *handle, uint16_t length, const uint8_t * data);
@@ -48,9 +48,9 @@ TIEXPORT3 int TICALL ti73_send_RDY(CalcHandle *handle);
 TIEXPORT3 int TICALL ti73_send_SCR(CalcHandle *handle);
 TIEXPORT3 int TICALL ti73_send_KEY(CalcHandle *handle, uint16_t scancode);
 TIEXPORT3 int TICALL ti73_send_EOT(CalcHandle *handle);
-TIEXPORT3 int TICALL ti73_send_REQ(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr);
+TIEXPORT3 int TICALL ti73_send_REQ(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr, uint8_t version);
 TIEXPORT3 int TICALL ti73_send_REQ2(CalcHandle *handle, uint16_t appsize, uint8_t apptype, const char *appname, uint8_t appattr);
-TIEXPORT3 int TICALL ti73_send_RTS(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr);
+TIEXPORT3 int TICALL ti73_send_RTS(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr, uint8_t version);
 TIEXPORT3 int TICALL ti73_send_VER(CalcHandle *handle);
 TIEXPORT3 int TICALL ti73_send_DEL(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr);
 TIEXPORT3 int TICALL ti73_send_DUMP(CalcHandle *handle, uint16_t page);
@@ -63,14 +63,14 @@ TIEXPORT3 int TICALL ti73_send_RID(CalcHandle *handle);
 TIEXPORT3 int TICALL ti73_send_SID(CalcHandle *handle, uint8_t * data);
 
 /* TI-73 family, receive functions */
-TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle *handle, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr);
+TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle *handle, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr, uint8_t * version);
 TIEXPORT3 int TICALL ti73_recv_VAR2(CalcHandle *handle, uint16_t * length, uint8_t * type, char *name, uint16_t * offset, uint16_t * page);
 TIEXPORT3 int TICALL ti73_recv_CTS(CalcHandle *handle, uint16_t length);
 TIEXPORT3 int TICALL ti73_recv_SKP(CalcHandle *handle, uint8_t * rej_code);
 TIEXPORT3 int TICALL ti73_recv_XDP(CalcHandle *handle, uint16_t * length, uint8_t * data);
 TIEXPORT3 int TICALL ti73_recv_SID(CalcHandle *handle, uint16_t * length, uint8_t * data);
 TIEXPORT3 int TICALL ti73_recv_ACK(CalcHandle *handle, uint16_t * status);
-TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle *handle, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr);
+TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle *handle, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr, uint8_t * version);
 
 
 /* TI-82, send functions */

@@ -57,7 +57,7 @@
 #define TI8586_BKUP ((handle->model == CALC_TI85) ? TI85_BKUP : TI86_BKUP)
 
 /* VAR: Variable (std var header: NUL padded, fixed length) */
-TIEXPORT3 int TICALL ti73_send_VAR(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr)
+TIEXPORT3 int TICALL ti73_send_VAR(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr, uint8_t version)
 {
 	uint8_t buffer[16];
 
@@ -68,7 +68,7 @@ TIEXPORT3 int TICALL ti73_send_VAR(CalcHandle* handle, uint16_t varsize, uint8_t
 	buffer[1] = MSB(varsize);
 	buffer[2] = vartype;
 	strncpy((char *)buffer + 3, varname, 8);
-	buffer[11] = 0x00;
+	buffer[11] = version;
 	buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
 	ticalcs_info(" PC->TI: VAR (size=0x%04X, id=%02X, name=%s, attr=%i)", varsize, vartype, varname, varattr);
@@ -421,7 +421,7 @@ TIEXPORT3 int TICALL ti85_send_EOT(CalcHandle* handle)
 }
 
 /* REQ: request variable (std var header: NUL padded, fixed length) */
-TIEXPORT3 int TICALL ti73_send_REQ(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr)
+TIEXPORT3 int TICALL ti73_send_REQ(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr, uint8_t version)
 {
 	uint8_t buffer[16] = { 0 };
 	char trans[127];
@@ -433,7 +433,7 @@ TIEXPORT3 int TICALL ti73_send_REQ(CalcHandle* handle, uint16_t varsize, uint8_t
 	buffer[1] = MSB(varsize);
 	buffer[2] = vartype;
 	strncpy((char *)buffer + 3, varname, 8);
-	buffer[11] = 0x00;
+	buffer[11] = version;
 	buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
 	ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
@@ -518,6 +518,10 @@ TIEXPORT3 int TICALL ti73_send_REQ2(CalcHandle* handle, uint16_t appsize, uint8_
 {
 	uint8_t buffer[16] = { 0 };
 
+	/* Note: attribute/version bytes are not used (and will be ignored
+	   by the calculator if included in the packet.)  The 'appattr'
+	   parameter has no effect. */
+
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(appname);
 
@@ -532,7 +536,7 @@ TIEXPORT3 int TICALL ti73_send_REQ2(CalcHandle* handle, uint16_t appsize, uint8_
 
 /* RTS */
 /* Request to send (std var header: NUL padded, fixed length) */
-TIEXPORT3 int TICALL ti73_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr)
+TIEXPORT3 int TICALL ti73_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr, uint8_t version)
 {
 	uint8_t buffer[16];
 	char trans[127];
@@ -544,13 +548,8 @@ TIEXPORT3 int TICALL ti73_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t
 	buffer[1] = MSB(varsize);
 	buffer[2] = vartype;
 	strncpy((char *)buffer + 3, varname, 8);
-	buffer[11] = 0x00;
+	buffer[11] = version;
 	buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
-
-	/* Kludge to support 84+CSE Pic files.  Please do not rely on this
-	   behavior; it will go away in the future. */
-	if (vartype == 0x07 && varsize == 0x55bb)
-		buffer[11] = 0x0a;
 
 	ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
 	ticalcs_info(" PC->TI: RTS (size=0x%04X, id=%02X, name=%s, attr=%i)", varsize, vartype, trans, varattr);
@@ -710,6 +709,10 @@ TIEXPORT3 int TICALL ti73_send_DEL(CalcHandle* handle, uint16_t varsize, uint8_t
 	uint8_t buffer[16] = { 0 };
 	char trans[127];
 
+	/* Note: attribute/version bytes are not used (and will be ignored
+	   by the calculator if included in the packet.)  The 'varattr'
+	   parameter has no effect. */
+
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varname);
 
@@ -717,7 +720,6 @@ TIEXPORT3 int TICALL ti73_send_DEL(CalcHandle* handle, uint16_t varsize, uint8_t
 	buffer[1] = MSB(varsize);
 	buffer[2] = vartype == TI83p_APPL ? 0x14 : vartype;
 	strncpy((char *)buffer + 3, varname, 8);
-	buffer[11] = 0x00;
 
 	ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
 	ticalcs_info(" PC->TI: DEL (name=%s)", trans);
@@ -791,7 +793,7 @@ TIEXPORT3 int TICALL ti73_send_SID(CalcHandle* handle, uint8_t * data)
 	return dbus_send(handle, PC_TI7383, CMD_SID, 32, data);
 }
 
-TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr)
+TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr, uint8_t * version)
 {
 	uint8_t host, cmd;
 	uint8_t *buffer;
@@ -804,8 +806,10 @@ TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8
 	VALIDATE_NONNULL(vartype);
 	VALIDATE_NONNULL(varname);
 	VALIDATE_NONNULL(varattr);
+	VALIDATE_NONNULL(version);
 
 	buffer = (uint8_t *)handle->buffer;
+	memset(buffer, 0, 13);
 	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
 	if (ret)
 	{
@@ -836,6 +840,7 @@ TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8
 	*vartype = buffer[2];
 	strncpy(varname, (char *)buffer + 3, 8);
 	varname[8] = '\0';
+	*version = buffer[11];
 	*varattr = (buffer[12] & 0x80) ? ATTRB_ARCHIVED : ATTRB_NONE;
 
 	ticonv_varname_to_utf8_s(handle->model, varname, trans, *vartype);
@@ -1279,7 +1284,7 @@ TIEXPORT3 int TICALL ti82_recv_ERR(CalcHandle* handle, uint16_t * status)
 }
 
 /* RTS */
-TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr)
+TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr, uint8_t * version)
 {
 	uint8_t host, cmd;
 	uint8_t *buffer;
@@ -1291,8 +1296,10 @@ TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8
 	VALIDATE_NONNULL(vartype);
 	VALIDATE_NONNULL(varname);
 	VALIDATE_NONNULL(varattr);
+	VALIDATE_NONNULL(version);
 
 	buffer = (uint8_t *)handle->buffer;
+	memset(buffer, 0, 13);
 	ret = dbus_recv(handle, &host, &cmd, varsize, buffer);
 	if (ret)
 	{
@@ -1313,6 +1320,7 @@ TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8
 	*vartype = buffer[2];
 	strncpy(varname, (char *)buffer + 3, 8);
 	varname[8] = '\0';
+	*version = buffer[11];
 	*varattr = (buffer[12] & 0x80) ? ATTRB_ARCHIVED : ATTRB_NONE;
 
 	ticonv_varname_to_utf8_s(handle->model, varname, trans, *vartype);

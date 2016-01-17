@@ -262,7 +262,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	}
 	ti = (*vars)->data;
 
-	TRYF(ti73_send_REQ(handle, 0x0000, TI73_DIR, "\0\0\0\0\0\0\0", 0x00));
+	TRYF(ti73_send_REQ(handle, 0x0000, TI73_DIR, "\0\0\0\0\0\0\0", 0x00, 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_recv_XDP(handle, &unused, (uint8_t *)&memory));
@@ -318,7 +318,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		int err;
 		uint16_t ve_size;
 
-		err = ti73_recv_VAR(handle, &ve_size, &ve->type, ve->name, &ve->attr);
+		err = ti73_recv_VAR(handle, &ve_size, &ve->type, ve->name, &ve->attr, &ve->version);
 		ve->size = ve_size;
 		TRYF(ti73_send_ACK(handle));
 		if (err == ERR_EOT)
@@ -360,7 +360,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	uint16_t unused;
 	uint32_t memory;
 
-	TRYF(ti73_send_REQ(handle, 0x0000, TI73_DIR, "\0\0\0\0\0\0\0", 0x00));
+	TRYF(ti73_send_REQ(handle, 0x0000, TI73_DIR, "\0\0\0\0\0\0\0", 0x00, 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_recv_XDP(handle, &unused, (uint8_t *)&memory));
@@ -386,7 +386,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	varname[4] = LSB(content->mem_address);
 	varname[5] = MSB(content->mem_address);
 
-	TRYF(ti73_send_RTS(handle, content->data_length1, TI73_BKUP, varname, 0x00));
+	// FIXME: handle version (required for 84+CSE)
+	TRYF(ti73_send_RTS(handle, content->data_length1, TI73_BKUP, varname, 0x00, 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_recv_SKP(handle, &rej_code))
@@ -427,16 +428,16 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
 	char varname[9] = { 0 };
-	uint8_t attr;
+	uint8_t attr, ver;
 
 	content->model = handle->model;
 	strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
 	content->comment[sizeof(content->comment) - 1] = 0;
 
-	TRYF(ti73_send_REQ(handle, 0x0000, TI73_BKUP, "\0\0\0\0\0\0\0", 0x00));
+	TRYF(ti73_send_REQ(handle, 0x0000, TI73_BKUP, "\0\0\0\0\0\0\0", 0x00, 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
-	TRYF(ti73_recv_VAR(handle, &content->data_length1, &content->type, varname, &attr));
+	TRYF(ti73_recv_VAR(handle, &content->data_length1, &content->type, varname, &attr, &ver));
 	content->data_length2 = (uint16_t)varname[0] | (((uint16_t)(varname[1])) << 8);
 	content->data_length3 = (uint16_t)varname[2] | (((uint16_t)(varname[3])) << 8);
 	content->mem_address  = (uint16_t)varname[4] | (((uint16_t)(varname[5])) << 8);
@@ -490,7 +491,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			continue;
 		}
 
-		TRYF(ti73_send_RTS(handle, (uint16_t)entry->size, entry->type, entry->name, entry->attr));
+		TRYF(ti73_send_RTS(handle, (uint16_t)entry->size, entry->type, entry->name, entry->attr, entry->version));
 		TRYF(ti73_recv_ACK(handle, NULL));
 
 		TRYF(ti73_recv_SKP(handle, &rej_code));
@@ -550,10 +551,10 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	update_label();
 
 	// silent request
-	TRYF(ti73_send_REQ(handle, (uint16_t)vr->size, vr->type, vr->name, vr->attr));
+	TRYF(ti73_send_REQ(handle, (uint16_t)vr->size, vr->type, vr->name, vr->attr, vr->version));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
-	TRYF(ti73_recv_VAR(handle, &ve_size, &ve->type, ve->name, &vr->attr));
+	TRYF(ti73_recv_VAR(handle, &ve_size, &ve->type, ve->name, &ve->attr, &ve->version));
 	ve->size = ve_size;
 	TRYF(ti73_send_ACK(handle));
 
@@ -563,6 +564,19 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve->data = tifiles_ve_alloc_data(ve->size);
 	TRYF(ti73_recv_XDP(handle, &ve_size, ve->data));
 	ve->size = ve_size;
+
+	if (handle->model != CALC_TI73 && ve->type == TI83p_PIC)
+	{
+		if (ve->version >= 0xa)
+		{
+			content->model = CALC_TI84PC;
+		}
+		else
+		{
+			content->model = CALC_TI83P;
+		}
+	}
+
 	return ti73_send_ACK(handle);
 }
 
@@ -810,6 +824,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	uint8_t vartype;
 	char varname[9];
 	uint8_t varattr;
+	uint8_t version;
 	uint8_t data[16];
 	int i;
 
@@ -817,10 +832,10 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
-	TRYF(ti73_send_REQ(handle, 0x0000, TI73_IDLIST, "\0\0\0\0\0\0\0", 0x00));
+	TRYF(ti73_send_REQ(handle, 0x0000, TI73_IDLIST, "\0\0\0\0\0\0\0", 0x00, 0x00));
 	TRYF(ti73_recv_ACK(handle, &unused));
 
-	TRYF(ti73_recv_VAR(handle, &varsize, &vartype, varname, &varattr));
+	TRYF(ti73_recv_VAR(handle, &varsize, &vartype, varname, &varattr, &version));
 	TRYF(ti73_send_ACK(handle));
 
 	TRYF(ti73_send_CTS(handle));
@@ -962,7 +977,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
-	TRYF(ti73_send_RTS(handle, 13, TI73_CLK, "\0x08", 0x00));
+	TRYF(ti73_send_RTS(handle, 13, TI73_CLK, "\0x08", 0x00, 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_recv_CTS(handle, 13));
@@ -979,6 +994,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	uint16_t varsize;
 	uint8_t vartype;
 	uint8_t varattr;
+	uint8_t version;
 	char varname[9];
 	uint8_t buffer[32];
 	uint32_t calc_time;
@@ -990,10 +1006,10 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
-	TRYF(ti73_send_REQ(handle, 0x0000, TI73_CLK, "\0x08", 0x00));
+	TRYF(ti73_send_REQ(handle, 0x0000, TI73_CLK, "\0x08", 0x00, 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
-	TRYF(ti73_recv_VAR(handle, &varsize, &vartype, varname, &varattr));
+	TRYF(ti73_recv_VAR(handle, &varsize, &vartype, varname, &varattr, &version));
 	TRYF(ti73_send_ACK(handle));
 
 	TRYF(ti73_send_CTS(handle));

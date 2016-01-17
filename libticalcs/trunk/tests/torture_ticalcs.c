@@ -492,8 +492,8 @@ static void torture_cmdz80(void)
 
 // 1
 // cmdz80.c
-    PRINTF(ti73_send_VAR, INT, NULL, 0, 0, (void *)0x12345678, 0);
-    PRINTF(ti73_send_VAR, INT, (void *)0x12345678, 0, 0, NULL, 0);
+    PRINTF(ti73_send_VAR, INT, NULL, 0, 0, (void *)0x12345678, 0, 0);
+    PRINTF(ti73_send_VAR, INT, (void *)0x12345678, 0, 0, NULL, 0, 0);
     PRINTF(ti73_send_VAR2, INT, NULL, 0, 0, 0, 0, 0);
     PRINTF(ti73_send_CTS, INT, NULL);
     PRINTF(ti73_send_XDP, INT, NULL, 0, (void *)0x12345678);
@@ -506,13 +506,13 @@ static void torture_cmdz80(void)
 // 11
     PRINTF(ti73_send_KEY, INT, NULL, 0);
     PRINTF(ti73_send_EOT, INT, NULL);
-    PRINTF(ti73_send_REQ, INT, NULL, 0, 0, (void *)0x12345678, 0);
-    PRINTF(ti73_send_REQ, INT, (void *)0x12345678, 0, 0, NULL, 0);
+    PRINTF(ti73_send_REQ, INT, NULL, 0, 0, (void *)0x12345678, 0, 0);
+    PRINTF(ti73_send_REQ, INT, (void *)0x12345678, 0, 0, NULL, 0, 0);
     PRINTF(ti73_send_REQ2, INT, NULL, 0, 0, (void *)0x12345678, 0);
 
     PRINTF(ti73_send_REQ2, INT, (void *)0x12345678, 0, 0, NULL, 0);
-    PRINTF(ti73_send_RTS, INT, NULL, 0, 0, (void *)0x12345678, 0);
-    PRINTF(ti73_send_RTS, INT, (void *)0x12345678, 0, 0, NULL, 0);
+    PRINTF(ti73_send_RTS, INT, NULL, 0, 0, (void *)0x12345678, 0, 0);
+    PRINTF(ti73_send_RTS, INT, (void *)0x12345678, 0, 0, NULL, 0, 0);
     PRINTF(ti73_send_VER, INT, NULL);
     PRINTF(ti73_send_DEL, INT, NULL, 0, 0, (void *)0x12345678, 0);
 // 21
@@ -526,104 +526,106 @@ static void torture_cmdz80(void)
     PRINTF(ti73_send_GID, INT, NULL);
     PRINTF(ti73_send_RID, INT, NULL);
     PRINTF(ti73_send_SID, INT, NULL, (void *)0x12345678);
-    PRINTF(ti73_recv_VAR, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(ti73_recv_VAR, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
 // 31
-    PRINTF(ti73_recv_VAR, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(ti73_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(ti73_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
-    PRINTF(ti73_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
-    PRINTF(ti73_recv_VAR2, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(ti73_recv_VAR, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(ti73_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(ti73_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(ti73_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(ti73_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
 
+    PRINTF(ti73_recv_VAR2, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti73_recv_VAR2, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti73_recv_VAR2, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti73_recv_VAR2, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti73_recv_VAR2, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
-    PRINTF(ti73_recv_VAR2, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
 // 41
+    PRINTF(ti73_recv_VAR2, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
     PRINTF(ti73_recv_CTS, INT, NULL, 0);
     PRINTF(ti73_recv_SKP, INT, NULL, (void *)0x12345678);
     PRINTF(ti73_recv_SKP, INT, (void *)0x12345678, NULL);
     PRINTF(ti73_recv_XDP, INT, NULL, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(ti73_recv_XDP, INT, (void *)0x12345678, NULL, (void *)0x12345678);
 
+    PRINTF(ti73_recv_XDP, INT, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(ti73_recv_ACK, INT, NULL, (void *)0x12345678);
-    PRINTF(ti73_recv_RTS, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(ti73_recv_RTS, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
 // 51
-    PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
+    PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
     PRINTF(ti80_send_SCR, INT, NULL);
     PRINTF(ti80_recv_XDP, INT, NULL, (void *)0x12345678, (void *)0x12345678);
+
     PRINTF(ti80_recv_XDP, INT, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(ti80_recv_ACK, INT, NULL, (void *)0x12345678);
-
     PRINTF(ti82_send_VAR, INT, NULL, 0, 0, (void *)0x12345678);
     PRINTF(ti82_send_VAR, INT, (void *)0x12345678, 0, 0, NULL);
     PRINTF(ti82_send_CTS, INT, NULL);
+// 61
     PRINTF(ti82_send_XDP, INT, NULL, 0, (void *)0x12345678);
     PRINTF(ti82_send_SKP, INT, NULL, 0);
-// 61
     PRINTF(ti82_send_ACK, INT, NULL);
     PRINTF(ti82_send_ERR, INT, NULL);
     PRINTF(ti82_send_SCR, INT, NULL);
+
     PRINTF(ti82_send_KEY, INT, NULL, 0);
     PRINTF(ti82_send_EOT, INT, NULL);
-
     PRINTF(ti82_send_REQ, INT, NULL, 0, 0, (void *)0x12345678);
     PRINTF(ti82_send_REQ, INT, (void *)0x12345678, 0, 0, NULL);
     PRINTF(ti82_send_RTS, INT, NULL, 0, 0, (void *)0x12345678);
+// 71
     PRINTF(ti82_send_RTS, INT, (void *)0x12345678, 0, 0, NULL);
     PRINTF(ti82_recv_VAR, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
-// 71
     PRINTF(ti82_recv_VAR, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti82_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(ti82_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
+
     PRINTF(ti82_recv_CTS, INT, NULL);
     PRINTF(ti82_recv_SKP, INT, NULL, (void *)0x12345678);
-
     PRINTF(ti82_recv_SKP, INT, (void *)0x12345678, NULL);
     PRINTF(ti82_recv_XDP, INT, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti82_recv_XDP, INT, (void *)0x12345678, NULL, (void *)0x12345678);
+// 81
     PRINTF(ti82_recv_ACK, INT, NULL, (void *)0x12345678);
     PRINTF(ti82_recv_RTS, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
-// 81
     PRINTF(ti82_recv_RTS, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti82_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(ti82_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
+
     PRINTF(ti85_send_VAR, INT, NULL, 0, 0, (void *)0x12345678);
     PRINTF(ti85_send_VAR, INT, (void *)0x12345678, 0, 0, NULL);
-
     PRINTF(ti85_send_CTS, INT, NULL);
     PRINTF(ti85_send_XDP, INT, NULL, 0, (void *)0x12345678);
     PRINTF(ti85_send_SKP, INT, NULL, 0);
+// 91
     PRINTF(ti85_send_ACK, INT, NULL);
     PRINTF(ti85_send_ERR, INT, NULL);
-// 91
     PRINTF(ti85_send_SCR, INT, NULL);
     PRINTF(ti85_send_KEY, INT, NULL, 0);
     PRINTF(ti85_send_EOT, INT, NULL);
+
     PRINTF(ti85_send_REQ, INT, NULL, 0, 0, (void *)0x12345678);
     PRINTF(ti85_send_REQ, INT, (void *)0x12345678, 0, 0, NULL);
-
     PRINTF(ti85_send_RTS, INT, NULL, 0, 0, (void *)0x12345678);
     PRINTF(ti85_send_RTS, INT, (void *)0x12345678, 0, 0, NULL);
     PRINTF(ti85_recv_VAR, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+// 101
     PRINTF(ti85_recv_VAR, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti85_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
-// 101
     PRINTF(ti85_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
     PRINTF(ti85_recv_CTS, INT, NULL);
     PRINTF(ti85_recv_SKP, INT, NULL, (void *)0x12345678);
+
     PRINTF(ti85_recv_SKP, INT, (void *)0x12345678, NULL);
     PRINTF(ti85_recv_XDP, INT, NULL, (void *)0x12345678, (void *)0x12345678);
-
     PRINTF(ti85_recv_XDP, INT, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(ti85_recv_ACK, INT, NULL, (void *)0x12345678);
     PRINTF(ti85_recv_RTS, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+// 111
     PRINTF(ti85_recv_RTS, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti85_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
-// 111
     PRINTF(ti85_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
 }
 
