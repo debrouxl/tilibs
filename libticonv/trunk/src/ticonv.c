@@ -399,31 +399,41 @@ TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const 
 }
 
 /**
- * ticonv_varname_to_utf8:
+ * ticonv_varname_to_utf8_sn:
  * @model: a calculator model.
- * @src: a name of variable to detokenize and translate.
+ * @src: a name of variable to detokenize and translate (17 chars max).
+ * @dst: a buffer where to placed the result (big enough).
+ * @maxlen: maximum length, minimum 1.
  * @vartype: the type of variable.
  *
  * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
  * variable (like L1) but uses a special encoded way. This functions expands the name 
- * and converts it to UTF-16.
+ * and converts it to UTF-8.
  *
- * Dynamic version.
+ * Static, length-limiting version.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: the %dst string or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, unsigned char type)
+TIEXPORT4 char* TICALL ticonv_varname_to_utf8_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type)
 {
-	if (src != NULL)
+	if (src != NULL && dst != NULL && maxlen >= 1)
 	{
-		unsigned short * utf16 = ticonv_varname_to_utf16(model, src, type);
-		gchar * utf8 = ticonv_utf16_to_utf8(utf16);
-		ticonv_utf16_free(utf16);
-		return utf8;
+		char * tmp = ticonv_varname_to_utf8(model, src, type);
+		if (tmp != NULL)
+		{
+			strncpy(dst, tmp, maxlen - 1);
+			dst[maxlen - 1] = 0;
+			ticonv_utf8_free(tmp);
+			return dst;
+		}
+		else
+		{
+			return NULL;
+		}
 	}
 	else
 	{
-		g_critical("%s: src is NULL", __FUNCTION__);
+		g_critical("%s: an argument is invalid", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -437,7 +447,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, 
  *
  * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
  * variable (like L1) but uses a special encoded way. This functions expands the name 
- * and converts it to UTF-16.
+ * and converts it to UTF-8.
  *
  * Static version.
  *
@@ -462,6 +472,36 @@ TIEXPORT4 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src
 	else
 	{
 		g_critical("%s: an argument is NULL", __FUNCTION__);
+		return NULL;
+	}
+}
+
+/**
+ * ticonv_varname_to_utf8:
+ * @model: a calculator model.
+ * @src: a name of variable to detokenize and translate.
+ * @vartype: the type of variable.
+ *
+ * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
+ * variable (like L1) but uses a special encoded way. This functions expands the name 
+ * and converts it to UTF-8.
+ *
+ * Dynamic version.
+ *
+ * Return value: a newly allocated string or NULL if error.
+ **/
+TIEXPORT4 char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, unsigned char type)
+{
+	if (src != NULL)
+	{
+		unsigned short * utf16 = ticonv_varname_to_utf16(model, src, type);
+		gchar * utf8 = ticonv_utf16_to_utf8(utf16);
+		ticonv_utf16_free(utf16);
+		return utf8;
+	}
+	else
+	{
+		g_critical("%s: src is NULL", __FUNCTION__);
 		return NULL;
 	}
 }

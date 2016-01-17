@@ -93,6 +93,8 @@ int main(int argc, char **argv)
     PRINTF(ticonv_varname_to_utf16_s, PTR, -1, NULL, (void *)0x12345678, 0);
     PRINTF(ticonv_varname_to_utf16_s, PTR, -1, (void *)0x12345678, NULL, 0);
     PRINTF(ticonv_varname_to_utf16, PTR, -1, NULL, 0);
+    PRINTF(ticonv_varname_to_utf8_sn, STR, -1, NULL, (void *)0x12345678, 0x12345678, 0);
+    PRINTF(ticonv_varname_to_utf8_sn, STR, -1, (void *)0x12345678, NULL, 0x12345678, 0);
     PRINTF(ticonv_varname_to_utf8_s, STR, -1, NULL, (void *)0x12345678, 0);
 
     PRINTF(ticonv_varname_to_utf8_s, STR, -1, (void *)0x12345678, NULL, 0);
