@@ -1,0 +1,35 @@
+language: c
+dist: trusty
+
+before_install:
+- sudo apt-get update -qq
+
+install:
+- sudo apt-get install -qq git autoconf automake autopoint libtool libglib2.0-dev zlib1g-dev libusb-1.0-0-dev gettext bison flex groff texinfo libarchive-dev
+
+script:
+  - mkdir prefix
+  - cd libticonv/trunk
+  - mkdir m4; autoreconf -ivf
+  - ./configure --prefix=`pwd`/../../prefix
+  - make -j4 check
+  - make -j4 install
+  - cd ../../libtifiles/trunk
+  - mkdir m4; autoreconf -ivf
+  - cd po; make libtifiles2.pot-update; make update-po; cd ..
+  - ./configure --prefix=`pwd`/../../prefix PKG_CONFIG_PATH=`pwd`/../../prefix/lib/pkgconfig
+  - make -j4 check
+  - make -j4 install
+  - cd ../../libticables/trunk
+  - mkdir m4; autoreconf -ivf
+  - cd po; make libticables2.pot-update; make update-po; cd ..
+  - ./configure --prefix=`pwd`/../../prefix --enable-logging --enable-libusb10 PKG_CONFIG_PATH=`pwd`/../../prefix/lib/pkgconfig
+  - make -j4 check
+  - make -j4 install
+  - cd ../../libticalcs/trunk
+  - mkdir m4; autoreconf -ivf
+  - cd po; make libticalcs2.pot-update; make update-po; cd ..
+  - ./configure --prefix=`pwd`/../../prefix PKG_CONFIG_PATH=`pwd`/../../prefix/lib/pkgconfig
+  - make -j4 check
+  - make -j4 install
+
