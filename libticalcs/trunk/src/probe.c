@@ -480,59 +480,13 @@ TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model
 		}
 		else if (cable->model == CABLE_USB)
 		{
-			int n, *list = NULL;
-			int i;
+			CableDeviceInfo info;
 
-			ret = ticables_get_usb_devices(&list, &n);
+			ret = ticables_cable_get_device_info(cable, &info);
 			if (!ret)
 			{
-				i = (int)cable->port-1 > n ? n-1 : (int)cable->port-1;
-				switch(list[i])
-				{
-				case PID_TI89TM:   *model = CALC_TI89T_USB; ret = 0; break;
-				case PID_TI84P:
-				case PID_TI84P_SE:
-				{
-					// TI had the great idea of using the same PID for:
-					// * 84+, 82A;
-					// * 84+SE, 84+CSE, 83PCE/84+CE/84+CE-T.
-					// Fortunately, these models have different hardware revisions, so just ask
-					CalcInfos infos;
-					memset(&infos, 0, sizeof(CalcInfos));
-
-					// Manual cable attachment, the hard way.
-					// We can't call ticalcs_cable_attach() because the cable is already open.
-					calc.model = CALC_TI84P_USB;
-					calc.calc = (CalcFncts *)&calc_84p_usb;
-					calc.cable = cable;
-					calc.attached = !0;
-					calc.open = !0;
-
-					ret = ticalcs_calc_isready(&calc);
-					if (!ret)
-					{
-						ret = ticalcs_calc_get_version(&calc, &infos);
-						if (!ret)
-						{
-							ticalcs_info("probing found model %d (%s)", infos.model, ticalcs_model_to_string(infos.model));
-							*model = infos.model;
-						}
-						else
-						{
-							ticalcs_warning("Error %d determining the device's model", ret);
-						}
-					}
-					else
-					{
-						ticalcs_warning("Error %d determining whether the device was ready", ret);
-					}
-					break;
-				}
-				case PID_NSPIRE:   *model = CALC_NSPIRE; ret = 0; break;
-				default: break;
-				}
+				*model = ticalcs_device_info_to_model(&info);
 			}
-			ticables_free_usb_devices(list);
 		}
 
 		g_free(calc.buffer);
