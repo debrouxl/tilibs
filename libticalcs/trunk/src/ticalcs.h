@@ -907,7 +907,7 @@ typedef struct
 
 	TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model, int all);
 
-	TIEXPORT3 CalcModel TICALL ticalcs_device_info_to_model(CableDeviceInfo *info);
+	TIEXPORT3 CalcModel TICALL ticalcs_device_info_to_model(const CableDeviceInfo *info);
 	TIEXPORT3 CalcModel TICALL ticalcs_remap_model_from_usb(CableModel cable, CalcModel calc);
 	TIEXPORT3 CalcModel TICALL ticalcs_remap_model_to_usb(CableModel cable, CalcModel calc);
 

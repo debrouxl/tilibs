@@ -573,7 +573,7 @@ TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcMod
  *
  * Return value: != CALC_NONE if a precise calculator model can be determined through the cable+device info, CALC_NONE if invalid argument or SilverLink cable.
  */
-TIEXPORT3 CalcModel TICALL ticalcs_device_info_to_model(CableDeviceInfo *info)
+TIEXPORT3 CalcModel TICALL ticalcs_device_info_to_model(const CableDeviceInfo *info)
 {
 	CalcModel model = CALC_NONE;
 
@@ -608,8 +608,8 @@ TIEXPORT3 CalcModel TICALL ticalcs_device_info_to_model(CableDeviceInfo *info)
 			}
 			else
 			{
-				ticalcs_warning("Unexpected variant for TI-(e)Z80 USB cable");
-				// Fall through.
+				ticalcs_warning("Unexpected variant for TI-(e)Z80 USB cable, assuming 84+CE");
+				model = CALC_TI84PCE_USB;
 			}
 		}
 		else if (info->family == CABLE_FAMILY_USB_TI9X)
