@@ -1634,7 +1634,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* fil
 				ret = tifiles_file_write_flash(filename, content);
 			}
 		}
-	} while(0);
+	} while (0);
 
 	tifiles_content_delete_flash(content);
 

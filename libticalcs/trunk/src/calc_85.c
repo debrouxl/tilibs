@@ -53,9 +53,13 @@
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint16_t max_cnt;
-	int err;
-	uint8_t buf[TI85_COLS * TI85_ROWS / 8];
+	int ret;
+
+	*bitmap = (uint8_t *)ticalcs_alloc_screen(65537U);
+	if (*bitmap == NULL)
+	{
+		return ERR_MALLOC;
+	}
 
 	sc->width = TI85_COLS;
 	sc->height = TI85_ROWS;
@@ -63,24 +67,29 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_height = TI85_ROWS;
 	sc->pixel_format = CALC_PIXFMT_MONO;
 
-	TRYF(ti85_send_SCR(handle));
-	TRYF(ti85_recv_ACK(handle, NULL));
-
-	err = ti85_recv_XDP(handle, &max_cnt, buf);	// pb with checksum
-	if (err != ERR_CHECKSUM)
+	ret = ti85_send_SCR(handle);
+	if (!ret)
 	{
-		TRYF(err);
+		ret = ti85_recv_ACK(handle, NULL);
+		if (!ret)
+		{
+			uint16_t max_cnt;
+			ret = ti85_recv_XDP(handle, &max_cnt, *bitmap);
+			if (!ret || ret == ERR_CHECKSUM) // problem with checksum
+			{
+				*bitmap = ticalcs_realloc_screen(*bitmap, TI85_COLS * TI85_ROWS / 8);
+				ret = ti85_send_ACK(handle);
+			}
+		}
 	}
-	TRYF(ti85_send_ACK(handle));
 
-	*bitmap = (uint8_t *)ticalcs_alloc_screen(TI85_COLS * TI85_ROWS / 8);
-	if (*bitmap == NULL)
+	if (ret)
 	{
-		return ERR_MALLOC;
+		ticalcs_free_screen(*bitmap);
+		*bitmap = NULL;
 	}
-	memcpy(*bitmap, buf, TI85_COLS * TI85_ROWS / 8);
 
-	return 0;
+	return ret;
 }
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
@@ -92,7 +101,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
-	int err = 0;
+	int ret = 0;
 	uint16_t length;
 	char varname[9];
 	uint8_t rej_code;
@@ -123,9 +132,9 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 			return ERR_ABORT;
 		}
 
-		err = ti85_recv_SKP(handle, &rej_code);
+		ret = ti85_recv_SKP(handle, &rej_code);
 	}
-	while (err == ERROR_READ_TIMEOUT);
+	while (ret == ERROR_READ_TIMEOUT);
 
 	TRYF(ti85_send_ACK(handle));
 	switch (rej_code)
@@ -224,7 +233,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	unsigned int i;
-	int err;
+	int ret;
 	uint8_t rej_code;
 	uint16_t status;
 	char *utf8;
@@ -259,9 +268,9 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 				return ERR_ABORT;
 			}
 
-			err = ti85_recv_SKP(handle, &rej_code);
+			ret = ti85_recv_SKP(handle, &rej_code);
 		}
-		while (err == ERROR_READ_TIMEOUT);
+		while (ret == ERROR_READ_TIMEOUT);
 
 		TRYF(ti85_send_ACK(handle));
 		switch (rej_code)
@@ -312,7 +321,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** vr)
 {
 	int nvar = 0;
-	int err = 0;
+	int ret = 0;
 	char *utf8;
 	uint16_t ve_size;
 
@@ -337,17 +346,20 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 				return ERR_ABORT;
 			}
 
-			err = ti85_recv_VAR(handle, &ve_size, &(ve->type), ve->name);
+			ret = ti85_recv_VAR(handle, &ve_size, &(ve->type), ve->name);
 			ve->size = ve_size;
 		}
-		while (err == ERROR_READ_TIMEOUT);
+		while (ret == ERROR_READ_TIMEOUT);
 
 		TRYF(ti85_send_ACK(handle));
-		if (err == ERR_EOT)
+		if (ret == ERR_EOT)
 		{
 			goto exit;
 		}
-		TRYF(err);
+		if (ret)
+		{
+			return ret;
+		}
 
 		TRYF(ti85_send_CTS(handle));
 		TRYF(ti85_recv_ACK(handle, NULL));

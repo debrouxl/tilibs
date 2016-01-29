@@ -57,8 +57,8 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	DUSBModeSet mode = MODE_NORMAL;
 	int ret;
+	static const DUSBModeSet mode = MODE_NORMAL;
 
 	ret = dusb_cmd_s_mode_set(handle, mode);
 	if (!ret)
@@ -111,12 +111,18 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	DUSBCalcParam **param;
 	int ret;
 
+	*bitmap = (uint8_t *)ticalcs_alloc_screen(TI89T_COLS * TI89T_ROWS / 8);
+	if (*bitmap == NULL)
+	{
+		return ERR_MALLOC;
+	}
+
 	sc->width = TI89T_COLS;
 	sc->height = TI89T_ROWS;
 	sc->clipped_width = TI89T_COLS_VISIBLE;
 	sc->clipped_height = TI89T_ROWS_VISIBLE;
 	sc->pixel_format = CALC_PIXFMT_MONO;
-    
+
 	param = dusb_cp_new_array(size);
 	ret = dusb_cmd_s_param_request(handle, size, pid);
 	while (!ret)
@@ -126,18 +132,14 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		{
 			if (!param[0]->ok || param[0]->size != TI89T_COLS * TI89T_ROWS / 8)
 			{
+				ticalcs_free_screen(*bitmap);
 				ret = ERR_INVALID_PACKET;
 				break;
 			}
-			
-			*bitmap = (uint8_t *)ticalcs_alloc_screen(TI89T_COLS * TI89T_ROWS / 8);
-			if (*bitmap == NULL)
-			{
-				ret = ERR_MALLOC;
-				break;
-			}
+
 			memcpy(*bitmap, param[0]->data, TI89T_COLS * TI89T_ROWS / 8);
 
+			// Clip the unused part of the screen (nevertheless usable with asm programs)
 			if (sc->format == SCREEN_CLIPPED)
 			{
 				int i, j, k;
@@ -162,7 +164,6 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
 	static const uint16_t aids[] = { AID_VAR_TYPE, AID_ARCHIVED, AID_4APPVAR, AID_VAR_SIZE, AID_LOCKED, AID_UNKNOWN_42 };
 	const int size = sizeof(aids) / sizeof(uint16_t);
-	TreeInfo *ti;
 	int ret;
 	DUSBCalcAttr **attr;
 	GNode *root, *folder = NULL;
@@ -171,25 +172,22 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	char folder_name[40] = "";
 	char *u1, *u2;
 
-	(*apps) = g_node_new(NULL);
-	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = APP_NODE_NAME;
-	(*apps)->data = ti;
+	ret = dirlist_init_trees(handle, vars, apps);
+	if (ret)
+	{
+		return ret;
+	}
 
-	(*vars) = g_node_new(NULL);
-	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = VAR_NODE_NAME;
-	(*vars)->data = ti;
-
-	root = g_node_new(NULL);
-	g_node_append(*apps, root);
+	root = dirlist_create_append_node(NULL, apps);
+	if (!root)
+	{
+		return ERR_MALLOC;
+	}
 
 	ret = dusb_cmd_s_dirlist_request(handle, size, aids);
 	if (!ret)
 	{
-		for(;;)
+		for (;;)
 		{
 			VarEntry *ve = tifiles_ve_create();
 			GNode *node;
@@ -227,25 +225,21 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				ve->name[sizeof(ve->name) - 1] = 0;
 				ve->folder[0] = 0;
 
-				node = g_node_new(ve);
-				folder = g_node_append(*vars, node);
+				folder = dirlist_create_append_node(ve, vars);
 			}
 			else
 			{
-				if(!strcmp(ve->folder, "main") && (!strcmp(ve->name, "regcoef") || !strcmp(ve->name, "regeq")))
+				if (!strcmp(ve->folder, "main") && (!strcmp(ve->name, "regcoef") || !strcmp(ve->name, "regeq")))
 				{
 					tifiles_ve_delete(ve);
 				}
 				else
 				{
-					node = g_node_new(ve);
-					if (ve->type != TI73_APPL)
+					node = dirlist_create_append_node(ve, (ve->type != TI89_APPL) ? &folder : &root);
+					if (!node)
 					{
-						g_node_append(folder, node);
-					}
-					else
-					{
-						g_node_append(root, node);
+						ret = ERR_MALLOC;
+						break;
 					}
 				}
 			}
@@ -347,7 +341,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		attrs[3] = dusb_ca_new(AID_LOCKED, 1);
 		attrs[3]->data[0] = ve->attr == ATTRB_LOCKED ? 1 : 0;
 
-		if(!(ve->size & 1))
+		if (!(ve->size & 1))
 		{
 			ret = is_ready(handle);
 		}
@@ -636,7 +630,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 	// search for OS header (offset & size)
 	hdr_offset = 2+4;
-	for(i = hdr_offset, d = ptr->data_part; (d[i] != 0xCC) || (d[i+1] != 0xCC) || (d[i+2] != 0xCC) || (d[i+3] != 0xCC); i++);
+	for (i = hdr_offset, d = ptr->data_part; (d[i] != 0xCC) || (d[i+1] != 0xCC) || (d[i+2] != 0xCC) || (d[i+3] != 0xCC); i++);
 	hdr_size = i - hdr_offset - 6;
 
 	do
@@ -722,7 +716,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		}
 		PAUSE(500);
 		ret = dusb_cmd_r_eot_ack(handle);
-	} while(0);
+	} while (0);
 end:
 
 	return ret;
@@ -903,7 +897,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 		}
 
 		ret = dusb_cmd_r_data_ack(handle);
-	} while(0);
+	} while (0);
 
 	return ret;
 }
@@ -1027,7 +1021,7 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 
 	ret = dusb_cmd_s_var_modify(handle, oldname->folder, oldname->name, 1, CA(attrs), newname->folder, newname->name, 0, NULL);
 	dusb_ca_del_array(1, attrs);
-	if(!ret)
+	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);
 	}
@@ -1151,7 +1145,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 		strncpy(vr->name, "a1234567", sizeof(vr->name) - 1);
 		vr->name[sizeof(vr->name) - 1] = 0;
 		ret = del_var(handle, vr);
-	} while(0);
+	} while (0);
 
 	return ret;
 }
@@ -1240,11 +1234,13 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		infos->mask |= INFOS_DEVICE_TYPE;
 		i++;
 
-		snprintf(infos->boot_version, 5, "%1i.%02i", params1[i]->data[1], params1[i]->data[2]);
+		snprintf(infos->boot_version, sizeof(infos->boot_version) - 1, "%1d.%02d", params1[i]->data[1], params1[i]->data[2]);
+		infos->boot_version[sizeof(infos->boot_version) - 1] = 0;
 		infos->mask |= INFOS_BOOT_VERSION;
 		i++;
 
-		snprintf(infos->os_version, 5, "%1i.%02i", params1[i]->data[1], params1[i]->data[2]);
+		snprintf(infos->os_version, sizeof(infos->os_version) - 1, "%1d.%02d", params1[i]->data[1], params1[i]->data[2]);
+		infos->os_version[sizeof(infos->os_version) - 1] = 0;
 		infos->mask |= INFOS_OS_VERSION;
 		i++;
 
@@ -1333,7 +1329,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 		infos->model = CALC_TI89T;
 		infos->mask |= INFOS_CALC_MODEL;
-	} while(0);
+	} while (0);
 
 	dusb_cp_del_array(size2, params2);
 	dusb_cp_del_array(size1, params1);

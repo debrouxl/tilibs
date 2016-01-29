@@ -50,7 +50,7 @@ TIEXPORT3 int TICALL ti89_send_DEL(CalcHandle *handle, uint32_t varsize, uint8_t
 TIEXPORT3 int TICALL ti89_recv_VAR(CalcHandle *handle, uint32_t * varsize, uint8_t * vartype, char *varname);
 TIEXPORT3 int TICALL ti89_recv_CTS(CalcHandle *handle);
 TIEXPORT3 int TICALL ti89_recv_SKP(CalcHandle *handle, uint8_t * rej_code);
-TIEXPORT3 int TICALL ti89_recv_XDP(CalcHandle *handle, uint32_t * length, uint8_t * data);
+TIEXPORT3 int TICALL ti89_recv_XDP(CalcHandle *handle, uint16_t * length, uint8_t * data);
 TIEXPORT3 int TICALL ti89_recv_ACK(CalcHandle *handle, uint16_t * status);
 TIEXPORT3 int TICALL ti89_recv_CNT(CalcHandle *handle);
 TIEXPORT3 int TICALL ti89_recv_EOT(CalcHandle *handle);
@@ -76,7 +76,7 @@ TIEXPORT3 int TICALL ti92_send_RTS(CalcHandle *handle, uint32_t varsize, uint8_t
 TIEXPORT3 int TICALL ti92_recv_VAR(CalcHandle *handle, uint32_t * varsize, uint8_t * vartype, char *varname);
 TIEXPORT3 int TICALL ti92_recv_CTS(CalcHandle *handle);
 TIEXPORT3 int TICALL ti92_recv_SKP(CalcHandle *handle, uint8_t * rej_code);
-TIEXPORT3 int TICALL ti92_recv_XDP(CalcHandle *handle, uint32_t * length, uint8_t * data);
+TIEXPORT3 int TICALL ti92_recv_XDP(CalcHandle *handle, uint16_t * length, uint8_t * data);
 TIEXPORT3 int TICALL ti92_recv_ACK(CalcHandle *handle, uint16_t * status);
 TIEXPORT3 int TICALL ti92_recv_CNT(CalcHandle *handle);
 TIEXPORT3 int TICALL ti92_recv_EOT(CalcHandle *handle);

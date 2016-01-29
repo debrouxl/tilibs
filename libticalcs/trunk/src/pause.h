@@ -2,7 +2,7 @@
 /* $Id$ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+ *  Copyright (C) 1999-2005  Romain LiÃ©vin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,10 +28,11 @@
 
 #if defined(__LINUX__) || defined(__MACOSX__) || defined(__BSD__) || defined(__ANDROID__)
 # include <unistd.h>
-# define PAUSE(x)  usleep(1000*(x));
+# define PAUSE(x)  usleep(1000*(x))
 #elif defined(__WIN32__)
+# define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-# define PAUSE(x)  Sleep((x));
+# define PAUSE(x)  Sleep((x))
 #endif
 
 #endif

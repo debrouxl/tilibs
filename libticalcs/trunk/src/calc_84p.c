@@ -57,8 +57,8 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	DUSBModeSet mode = MODE_NORMAL;
 	int ret;
+	static const DUSBModeSet mode = MODE_NORMAL;
 
 	ret = dusb_cmd_s_mode_set(handle, mode);
 	if (!ret)
@@ -414,65 +414,68 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
 	static const uint16_t aids[] = { AID_VAR_SIZE, AID_VAR_TYPE, AID_ARCHIVED };
 	const int size = sizeof(aids) / sizeof(uint16_t);
-	TreeInfo *ti;
 	int ret;
 	DUSBCalcAttr **attr;
-	GNode *folder, *root;
+	GNode *folder, *root, *node;
 	char fldname[40], varname[40];
 	char *utf8;
 
-	(*apps) = g_node_new(NULL);
-	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = APP_NODE_NAME;
-	(*apps)->data = ti;
+	ret = dirlist_init_trees(handle, vars, apps);
+	if (ret)
+	{
+		return ret;
+	}
 
-	(*vars) = g_node_new(NULL);
-	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = VAR_NODE_NAME;
-	(*vars)->data = ti;
-
-	folder = g_node_new(NULL);
-	g_node_append(*vars, folder);
-
-	root = g_node_new(NULL);
-	g_node_append(*apps, root);
+	folder = dirlist_create_append_node(NULL, vars);
+	if (!folder)
+	{
+		return ERR_MALLOC;
+	}
+	root = dirlist_create_append_node(NULL, apps);
+	if (!root)
+	{
+		return ERR_MALLOC;
+	}
 
 	// Add permanent variables (Window, RclWin / RclWindw, TblSet aka WINDW, ZSTO, TABLE)
 	{
-		GNode *node;
 		VarEntry *ve;
 
 		ve = tifiles_ve_create();
 		strncpy(ve->name, "Window", sizeof(ve->name) - 1);
 		ve->name[sizeof(ve->name) - 1] = 0;
 		ve->type = TI84p_WINDW;
-		node = g_node_new(ve);
-		g_node_append(folder, node);
-
-		ve = tifiles_ve_create();
-		// Actually, "RclWindw" works even on an old 84+ running OS 2.43, but libticalcs
-		// has been using "RclWin" successfully on TI-Z80 DUSB models since the beginning...
-		if (handle->model == CALC_TI84PC_USB || handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
+		node = dirlist_create_append_node(ve, &folder);
+		if (node != NULL)
 		{
-			strncpy(ve->name, "RclWindw", sizeof(ve->name) - 1);
+			ve = tifiles_ve_create();
+			// Actually, "RclWindw" works even on an old 84+ running OS 2.43, but libticalcs
+			// has been using "RclWin" successfully on TI-Z80 DUSB models since the beginning...
+			if (handle->model == CALC_TI84PC_USB || handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
+			{
+				strncpy(ve->name, "RclWindw", sizeof(ve->name) - 1);
+			}
+			else
+			{
+				strncpy(ve->name, "RclWin", sizeof(ve->name) - 1);
+			}
+			ve->name[sizeof(ve->name) - 1] = 0;
+			ve->type = TI84p_ZSTO;
+			node = dirlist_create_append_node(ve, &folder);
+			if (node != NULL)
+			{
+				ve = tifiles_ve_create();
+				strncpy(ve->name, "TblSet", sizeof(ve->name) - 1);
+				ve->name[sizeof(ve->name) - 1] = 0;
+				ve->type = TI84p_TABLE;
+				node = dirlist_create_append_node(ve, &folder);
+			}
 		}
-		else
-		{
-			strncpy(ve->name, "RclWin", sizeof(ve->name) - 1);
-		}
-		ve->name[sizeof(ve->name) - 1] = 0;
-		ve->type = TI84p_ZSTO;
-		node = g_node_new(ve);
-		g_node_append(folder, node);
+	}
 
-		ve = tifiles_ve_create();
-		strncpy(ve->name, "TblSet", sizeof(ve->name) - 1);
-		ve->name[sizeof(ve->name) - 1] = 0;
-		ve->type = TI84p_TABLE;
-		node = g_node_new(ve);
-		g_node_append(folder, node);
+	if (!node)
+	{
+		return ERR_MALLOC;
 	}
 
 	ret = dusb_cmd_s_dirlist_request(handle, size, aids);
@@ -481,7 +484,6 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		for (;;)
 		{
 			VarEntry *ve = tifiles_ve_create();
-			GNode *node;
 
 			attr = dusb_ca_new_array(size);
 			ret = dusb_cmd_r_var_header(handle, fldname, varname, attr);
@@ -506,14 +508,11 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			ve->attr = attr[2]->data[0] ? ATTRB_ARCHIVED : ATTRB_NONE;
 			dusb_ca_del_array(size, attr);
 
-			node = g_node_new(ve);
-			if (ve->type != TI73_APPL)
+			node = dirlist_create_append_node(ve, (ve->type != TI73_APPL) ? &folder : &root);
+			if (!node)
 			{
-				g_node_append(folder, node);
-			}
-			else
-			{
-				g_node_append(root, node);
+				ret = ERR_MALLOC;
+				break;
 			}
 
 			utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
@@ -1204,7 +1203,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		}
 		PAUSE(500);
 		ret = dusb_cmd_r_eot_ack(handle);
-	} while(0);
+	} while (0);
 end:
 
 	return ret;
@@ -1331,7 +1330,7 @@ static int		send_os_834pce    (CalcHandle* handle, FlashContent* content)
 		}
 		PAUSE(500);
 		ret = dusb_cmd_r_eot_ack(handle);
-	} while(0);
+	} while (0);
 end:
 
 	return ret;
@@ -1565,7 +1564,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 		}
 
 		ret = dusb_cmd_r_data_ack(handle);
-	} while(0);
+	} while (0);
 
 	return ret;
 }
@@ -1759,6 +1758,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			product_id = params[i]->data[0];
 			snprintf(infos->main_calc_id, 11, "%02X%02X%02X%02X%02X",
 				product_id, params[i]->data[1], params[i]->data[2], params[i]->data[3], params[i]->data[4]);
+			infos->main_calc_id[sizeof(infos->main_calc_id) - 1] = 0;
 			infos->mask |= INFOS_MAIN_CALC_ID;
 			strncpy(infos->product_id, infos->main_calc_id, sizeof(infos->product_id) - 1);
 			infos->product_id[sizeof(infos->product_id) - 1] = 0;
@@ -1777,11 +1777,13 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->mask |= INFOS_SUB_LANG_ID;
 			i++;
 
-			snprintf(infos->boot_version, 5, "%1d.%02d", params[i]->data[1], params[i]->data[2]);
+			snprintf(infos->boot_version, sizeof(infos->boot_version) - 1, "%1d.%02d", params[i]->data[1], params[i]->data[2]);
+			infos->boot_version[sizeof(infos->boot_version) - 1] = 0;
 			infos->mask |= INFOS_BOOT_VERSION;
 			i++;
 
-			snprintf(infos->os_version, 5, "%1d.%02d", params[i]->data[1], params[i]->data[2]);
+			snprintf(infos->os_version, sizeof(infos->os_version) - 1, "%1d.%02d", params[i]->data[1], params[i]->data[2]);
+			infos->os_version[sizeof(infos->os_version) - 1] = 0;
 			infos->mask |= INFOS_OS_VERSION;
 			i++;
 

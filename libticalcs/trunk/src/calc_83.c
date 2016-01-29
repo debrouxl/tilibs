@@ -55,45 +55,78 @@
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
-	TRYF(ti82_send_KEY(handle, key));
-	return ti82_recv_ACK(handle, &key);
+	int ret;
+
+	ret = ti82_send_KEY(handle, key);
+	if (!ret)
+	{
+		ret = ti82_recv_ACK(handle, &key);
+	}
+
+	return ret;
 }
 
 static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 {
-	unsigned int i;
+	int ret;
 
 	// Go back to homescreen
 	PAUSE(200);
-	TRYF(send_key(handle, KEY83_Quit));
-	TRYF(send_key(handle, KEY83_Clear));
-	TRYF(send_key(handle, KEY83_Clear));
-
-	// Launch program by remote control
-	if(ve->type == TI83_ASM)
+	ret = send_key(handle, KEY83_Quit);
+	if (!ret)
 	{
-		TRYF(send_key(handle, KEY83_SendMBL));
-		TRYF(send_key(handle, KEY83_9));
-	}
-	TRYF(send_key(handle, KEY83_Exec));
-
-	for(i = 0; i < strlen(ve->name); i++)
-	{
-		const CalcKey *ck = ticalcs_keys_83((ve->name)[i]);
-		TRYF(send_key(handle, ck->normal.value));
+		ret = send_key(handle, KEY83_Clear);
+		if (!ret)
+		{
+			ret = send_key(handle, KEY83_Clear);
+		}
 	}
 
-	TRYF(send_key(handle, KEY83_Enter));
-	PAUSE(200);
+	if (!ret)
+	{
+		// Launch program by remote control
+		if (ve->type == TI83_ASM)
+		{
+			ret = send_key(handle, KEY83_SendMBL);
+			if (!ret)
+			{
+				ret = send_key(handle, KEY83_9);
+			}
+		}
+		if (!ret)
+		{
+			ret = send_key(handle, KEY83_Exec);
+			if (!ret)
+			{
+				unsigned int i;
+				for (i = 0; !ret && i < strlen(ve->name); i++)
+				{
+					const CalcKey *ck = ticalcs_keys_83((ve->name)[i]);
+					ret = send_key(handle, ck->normal.value);
+				}
 
-	return 0;
+				if (!ret)
+				{
+					ret = send_key(handle, KEY83_Enter);
+
+					PAUSE(200);
+				}
+			}
+		}
+	}
+
+	return ret;
 }
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint16_t max_cnt;
-	int err;
-	uint8_t buf[TI83_COLS * TI83_ROWS / 8];
+	int ret;
+
+	*bitmap = (uint8_t *)ticalcs_alloc_screen(65537U);
+	if (*bitmap == NULL)
+	{
+		return ERR_MALLOC;
+	}
 
 	sc->width = TI83_COLS;
 	sc->height = TI83_ROWS;
@@ -101,40 +134,46 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_height = TI83_ROWS;
 	sc->pixel_format = CALC_PIXFMT_MONO;
 
-	TRYF(ti82_send_SCR(handle));
-	TRYF(ti82_recv_ACK(handle, NULL));
+	ret = ti82_send_SCR(handle);
+	if (!ret)
+	{
+		ret = ti82_recv_ACK(handle, NULL);
+		if (!ret)
+		{
+			uint16_t max_cnt;
+			ret = ti82_recv_XDP(handle, &max_cnt, *bitmap);
+			if (!ret || ret == ERR_CHECKSUM) // problem with checksum
+			{
+				*bitmap = ticalcs_realloc_screen(*bitmap, TI83_COLS * TI83_ROWS / 8);
+				ret = ti82_send_ACK(handle);
+			}
+		}
+	}
 
-	err = ti82_recv_XDP(handle, &max_cnt, buf);	// pb with checksum
-	if (err != ERR_CHECKSUM) { TRYF(err) };
-	TRYF(ti82_send_ACK(handle));
+	if (ret)
+	{
+		ticalcs_free_screen(*bitmap);
+		*bitmap = NULL;
+	}
 
-	*bitmap = (uint8_t *)ticalcs_alloc_screen(TI83_COLS * TI83_ROWS / 8);
-	if(*bitmap == NULL) return ERR_MALLOC;
-	memcpy(*bitmap, buf, TI83_COLS * TI83_ROWS / 8);
-
-	return 0;
+	return ret;
 }
 
 static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
+	int ret;
 	TreeInfo *ti;
-	GNode *folder;
+	GNode *folder, *node;
 	uint16_t unused;
 	uint32_t memory;
 	char *utf8;
 
-	// get list of folders & FLASH apps
-	(*apps) = g_node_new(NULL);
-	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = APP_NODE_NAME;
-	(*apps)->data = ti;
-
-	(*vars) = g_node_new(NULL);
-	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = VAR_NODE_NAME;
-	(*vars)->data = ti;
+	ret = dirlist_init_trees(handle, vars, apps);
+	if (ret)
+	{
+		return ret;
+	}
+	ti = (*vars)->data;
 
 	TRYF(ti82_send_REQ(handle, 0x0000, TI83_DIR, "\0\0\0\0\0\0\0"));
 	TRYF(ti82_recv_ACK(handle, &unused));
@@ -143,35 +182,38 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	fixup(memory);
 	TRYF(ti82_send_ACK(handle));
 	ti->mem_free = memory;
-	
-	folder = g_node_new(NULL);
-	g_node_append(*vars, folder);
+
+	folder = dirlist_create_append_node(NULL, vars);
 
 	// Add permanent variables (Window, RclWindow, TblSet aka WINDW, ZSTO, TABLE)
 	{
-		GNode *node;
 		VarEntry *ve;
 
 		ve = tifiles_ve_create();
 		ve->type = TI83_WINDW;
-		node = g_node_new(ve);
-		g_node_append(folder, node);
+		node = dirlist_create_append_node(ve, &folder);
+		if (node != NULL)
+		{
+			ve = tifiles_ve_create();
+			ve->type = TI83_ZSTO;
+			node = dirlist_create_append_node(ve, &folder);
+			if (node != NULL)
+			{
+				ve = tifiles_ve_create();
+				ve->type = TI83_TABLE;
+				node = dirlist_create_append_node(ve, &folder);
+			}
+		}
+	}
 
-		ve = tifiles_ve_create();
-		ve->type = TI83_ZSTO;
-		node = g_node_new(ve);
-		g_node_append(folder, node);
-
-		ve = tifiles_ve_create();
-		ve->type = TI83_TABLE;
-		node = g_node_new(ve);
-		g_node_append(folder, node);
+	if (!node)
+	{
+		return ERR_MALLOC;
 	}
 
 	for (;;) 
 	{
 		VarEntry *ve = tifiles_ve_create();
-		GNode *node;
 		int err;
 		uint16_t ve_size;
 
@@ -179,12 +221,19 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		ve->size = ve_size;
 		TRYF(ti82_send_ACK(handle));
 		if (err == ERR_EOT)
+		{
 			break;
+		}
 		else if (err != 0)
+		{
 			return err;
+		}
 
-		node = g_node_new(ve);
-		g_node_append(folder, node);
+		node = dirlist_create_append_node(ve, &folder);
+		if (!node)
+		{
+			return ERR_MALLOC;
+		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		snprintf(update_->text, sizeof(update_->text) - 1, _("Parsing %s"), utf8);
@@ -328,8 +377,10 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	{
 		VarEntry *entry = content->entries[i];
 
-		if(entry->action == ACT_SKIP)
+		if (entry->action == ACT_SKIP)
+		{
 			continue;
+		}
 
 		TRYF(ti82_send_RTS(handle, (uint16_t)entry->size, entry->type, entry->name));
 		TRYF(ti82_recv_ACK(handle, &status));

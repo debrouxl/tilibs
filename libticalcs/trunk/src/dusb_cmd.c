@@ -676,7 +676,7 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 	}
 
 // 0x0001: set mode or ping
-TIEXPORT3 int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, DUSBModeSet mode)
+TIEXPORT3 int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, const DUSBModeSet mode)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
