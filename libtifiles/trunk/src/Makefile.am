@@ -28,7 +28,6 @@ libtifiles2_la_SOURCES = *.h \
 	filetypes.c \
 	grouped.c \
 	intelhex.c \
-	logging.c \
 	misc.c \
 	rwfile.c \
 	tifiles.c \

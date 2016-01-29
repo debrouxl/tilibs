@@ -191,7 +191,7 @@ TIEXPORT3 int TICALL dusb_recv_buf_size_alloc(CalcHandle* handle, uint32_t *size
 		tmp = (((uint32_t)raw.data[0]) << 24) | (((uint32_t)raw.data[1]) << 16) | (((uint32_t)raw.data[2]) << 8) | (((uint32_t)raw.data[3]) << 0);
 		if (tmp > sizeof(raw.data))
 		{
-			ticalcs_critical("Clamping overly large buffer size allocation to %d bytes", sizeof(raw.data));
+			ticalcs_critical("Clamping overly large buffer size allocation to %u bytes", (unsigned int)sizeof(raw.data));
 			tmp = sizeof(raw.data);
 		}
 		if (   (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)

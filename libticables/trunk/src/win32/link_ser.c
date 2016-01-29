@@ -81,27 +81,42 @@ static int ser_open(CableHandle *h)
 	// port, it may be impossible to transfer data.
 	// This problem exists with Win2k and some UARTs.
 	// It seems I got the same problem as FlashZ when I changed my 
-	// motherboard. Are some port broken ?
+	// motherboard. Are some ports broken ?
+	int ret;
 	HANDLE hcom;
-	TRYC(win32_comport_open(h->device, &hcom));
-	h->priv = (void *)hcom;
-	TRYC(io_open(com_out));
-	TRYC(io_open(com_in));
+	ret = win32_comport_open(h->device, &hcom);
+	if (!ret)
+	{
+		h->priv = (void *)hcom;
+		ret = io_open(com_out);
+		if (!ret)
+		{
+			ret = io_open(com_in);
+		}
+	}
 
-	return 0;
+	return ret;
 }
 
 static int ser_close(CableHandle *h)
 {
-	TRYC(io_close(com_out));
-	TRYC(io_close(com_in));
+	int ret;
+	ret = io_close(com_out);
+	if (!ret)
 	{
-		HANDLE hcom = hCom;
-		TRYC(win32_comport_close(&hcom));
-		h->priv = (void *)hcom;
+		ret = io_close(com_in);
+		if (!ret)
+		{
+			HANDLE hcom = hCom;
+			ret = win32_comport_close(&hcom);
+			if (!ret)
+			{
+				h->priv = (void *)hcom;
+			}
+		}
 	}
 
-	return 0;
+	return ret;
 }
 
 static int ser_reset(CableHandle *h)
@@ -128,37 +143,45 @@ static int ser_probe(CableHandle *h)
 
 	// 1
 	io_wr(com_out, 2);
-    TO_START(clk);
-    do 
+	TO_START(clk);
+	do
 	{
 		if (TO_ELAPSED(clk, timeout))
-	  		return ERR_WRITE_TIMEOUT;
-    } while ((io_rd(com_in) & 0x10));
-    
-    io_wr(com_out, 3);
-    TO_START(clk);
-    do 
-	{
-		if (TO_ELAPSED(clk, timeout))
-	  		return ERR_WRITE_TIMEOUT;
-    } while ((io_rd(com_in) & 0x10) == 0x00);
+		{
+			return ERR_WRITE_TIMEOUT;
+		}
+	} while ((io_rd(com_in) & 0x10));
 
-	// 0
-	io_wr(com_out, 1);
-    TO_START(clk);
-    do 
-	{
-		if (TO_ELAPSED(clk, timeout))
-	  		return ERR_WRITE_TIMEOUT;
-    } while (io_rd(com_in) & 0x20);
-
-    io_wr(com_out, 3);
-    TO_START(clk);
+	io_wr(com_out, 3);
+	TO_START(clk);
 	do 
 	{
 		if (TO_ELAPSED(clk, timeout))
-	  		return ERR_WRITE_TIMEOUT;
-    } while ((io_rd(com_in) & 0x20) == 0x00);
+		{
+			return ERR_WRITE_TIMEOUT;
+		}
+	} while ((io_rd(com_in) & 0x10) == 0x00);
+
+	// 0
+	io_wr(com_out, 1);
+	TO_START(clk);
+	do 
+	{
+		if (TO_ELAPSED(clk, timeout))
+		{
+			return ERR_WRITE_TIMEOUT;
+		}
+	} while (io_rd(com_in) & 0x20);
+
+	io_wr(com_out, 3);
+	TO_START(clk);
+	do 
+	{
+		if (TO_ELAPSED(clk, timeout))
+		{
+			return ERR_WRITE_TIMEOUT;
+		}
+	} while ((io_rd(com_in) & 0x20) == 0x00);
 
 	return 0;
 }
@@ -166,61 +189,67 @@ static int ser_probe(CableHandle *h)
 static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int bit;
-  	unsigned int i;
+	unsigned int i;
 	unsigned int j;
-  	tiTIME clk;
+	tiTIME clk;
 
-	for(j = 0; j < len; j++)
+	for (j = 0; j < len; j++)
 	{
 		uint8_t byte = data[j];
 
-  		for (bit = 0; bit < 8; bit++) 
+		for (bit = 0; bit < 8; bit++)
 		{
-    		if (byte & 1) 
+			if (byte & 1)
 			{
-      			io_wr(com_out, 2);
-      			TO_START(clk);
-      			do 
+				io_wr(com_out, 2);
+				TO_START(clk);
+				do
 				{
 					if (TO_ELAPSED(clk, h->timeout))
-	  					return ERR_WRITE_TIMEOUT;
-      			} 
-				while ((io_rd(com_in) & 0x10));
-      			
-      			io_wr(com_out, 3);
-      			TO_START(clk);
-      			do 
+					{
+						return ERR_WRITE_TIMEOUT;
+					}
+				} while ((io_rd(com_in) & 0x10));
+
+				io_wr(com_out, 3);
+				TO_START(clk);
+				do
 				{
 					if (TO_ELAPSED(clk, h->timeout))
-	  					return ERR_WRITE_TIMEOUT;
-      			} 
-				while ((io_rd(com_in) & 0x10) == 0x00);
-    		} 
-			else 
+					{
+						return ERR_WRITE_TIMEOUT;
+					}
+				} while ((io_rd(com_in) & 0x10) == 0x00);
+			}
+			else
 			{
-      			io_wr(com_out, 1);
-      			TO_START(clk);
-      			do 
+				io_wr(com_out, 1);
+				TO_START(clk);
+				do
 				{
 					if (TO_ELAPSED(clk, h->timeout))
-	  					return ERR_WRITE_TIMEOUT;
-      			} 
-				while (io_rd(com_in) & 0x20);
-      		
-      			io_wr(com_out, 3);
-      			TO_START(clk);
+					{
+						return ERR_WRITE_TIMEOUT;
+					}
+				} while (io_rd(com_in) & 0x20);
+
+				io_wr(com_out, 3);
+				TO_START(clk);
 				do 
 				{
 					if (TO_ELAPSED(clk, h->timeout))
-	  					return ERR_WRITE_TIMEOUT;
-      			} 
-				while ((io_rd(com_in) & 0x20) == 0x00);
-    		}
+					{
+						return ERR_WRITE_TIMEOUT;
+					}
+				} while ((io_rd(com_in) & 0x20) == 0x00);
+			}
 
-    		byte >>= 1;
-    		for (i = 0; i < h->delay; i++)
-      			io_rd(com_in);
-  		}
+			byte >>= 1;
+			for (i = 0; i < h->delay; i++)
+			{
+				io_rd(com_in);
+			}
+		}
 	}
 
 	return 0;
@@ -229,55 +258,63 @@ static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 static int ser_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int bit;
-  	unsigned int i;
+	unsigned int i;
 	unsigned int j;
-  	tiTIME clk;
+	tiTIME clk;
 
 	for(j = 0; j < len; j++)
 	{
 		uint8_t v, byte = 0;
-  	
+
 		for (bit = 0; bit < 8; bit++) 
 		{
-    			TO_START(clk);
-    			while ((v = io_rd(com_in) & 0x30) == 0x30) 
+			TO_START(clk);
+			while ((v = io_rd(com_in) & 0x30) == 0x30)
+			{
+				if (TO_ELAPSED(clk, h->timeout))
 				{
-      				if (TO_ELAPSED(clk, h->timeout))
+					return ERR_READ_TIMEOUT;
+				}
+			}
+
+			if (v == 0x10) 
+			{
+				byte = (byte >> 1) | 0x80;
+				io_wr(com_out, 1);
+
+				TO_START(clk);
+				while ((io_rd(com_in) & 0x20) == 0x00)
+				{
+					if (TO_ELAPSED(clk, h->timeout))
+					{
 						return ERR_READ_TIMEOUT;
-    			}
-    			
-    			if (v == 0x10) 
-				{
-	      			byte = (byte >> 1) | 0x80;
-	      			io_wr(com_out, 1);
+					}
+				}
+				io_wr(com_out, 3);
+			} 
+			else 
+			{
+				byte = (byte >> 1) & 0x7F;
+				io_wr(com_out, 2);
 
-	      			TO_START(clk);
-	      			while ((io_rd(com_in) & 0x20) == 0x00) 
-					{
-		      			if (TO_ELAPSED(clk, h->timeout))
-			      			return ERR_READ_TIMEOUT;
-	      			}
-	      			io_wr(com_out, 3);
-    			} 
-				else 
+				TO_START(clk);
+				while ((io_rd(com_in) & 0x10) == 0x00)
 				{
-	      			byte = (byte >> 1) & 0x7F;
-	      			io_wr(com_out, 2);
-
-	      			TO_START(clk);
-	      			while ((io_rd(com_in) & 0x10) == 0x00) 
+					if (TO_ELAPSED(clk, h->timeout))
 					{
-		      			if (TO_ELAPSED(clk, h->timeout))
-	                      		return ERR_READ_TIMEOUT;
-	      			}
-	      			io_wr(com_out, 3);
-    			}
-    		
+						return ERR_READ_TIMEOUT;
+					}
+				}
+				io_wr(com_out, 3);
+			}
+
 			for (i = 0; i < h->delay; i++)
-      				io_rd(com_in);
-  		}
+			{
+				io_rd(com_in);
+			}
+		}
 
-  		data[j] = byte;
+		data[j] = byte;
 	}
 
 	return 0;
@@ -287,8 +324,10 @@ static int ser_check(CableHandle *h, int *status)
 {
 	*status = STATUS_NONE;
 
-  	if (!((io_rd(com_in) & 0x30) == 0x30)) 
-    		*status = STATUS_RX;
+	if (!((io_rd(com_in) & 0x30) == 0x30))
+	{
+		*status = STATUS_RX;
+	}
 
 	return 0;
 }
@@ -299,10 +338,14 @@ static int ser_set_red_wire(CableHandle *h, int b)
 {
 	int v = swap_bits(io_rd(com_in) >> 4);
 
-  	if (b)
-    		io_wr(com_out, v | 0x02);
-  	else
-    		io_wr(com_out, v & ~0x02);
+	if (b)
+	{
+		io_wr(com_out, v | 0x02);
+	}
+	else
+	{
+		io_wr(com_out, v & ~0x02);
+	}
 
 	return 0;
 }
@@ -311,10 +354,14 @@ static int ser_set_white_wire(CableHandle *h, int b)
 {
 	int v = swap_bits(io_rd(com_in) >> 4);
 
-  	if (b)
-    		io_wr(com_out, v | 0x01);
-  	else
-    		io_wr(com_out, v & ~0x01);
+	if (b)
+	{
+		io_wr(com_out, v | 0x01);
+	}
+	else
+	{
+		io_wr(com_out, v & ~0x01);
+	}
 
 	return 0;
 }

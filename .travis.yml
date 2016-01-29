@@ -5,7 +5,7 @@ before_install:
 - sudo apt-get update -qq
 
 install:
-- sudo apt-get install -qq git autoconf automake autopoint libtool libglib2.0-dev zlib1g-dev libusb-1.0-0-dev gettext bison flex groff texinfo libarchive-dev
+- sudo apt-get install -qq build-essential git autoconf automake autopoint libtool libglib2.0-dev zlib1g-dev libusb-1.0-0-dev gettext bison flex groff texinfo libarchive-dev
 
 script:
   - mkdir prefix

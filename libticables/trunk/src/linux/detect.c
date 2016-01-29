@@ -330,7 +330,7 @@ int linux_check_tty(const char *devname)
     serinfo.reserved_char[0] = 0;
     if (ioctl(fd, TIOCGSERIAL, &serinfo) < 0)
     {
-        ticables_warning(_("Error running TIOCGSERIAL ioctl - %s"), devname, strerror(errno));
+        ticables_warning(_("Error running TIOCGSERIAL ioctl on device %s - %s"), devname, strerror(errno));
         close(fd);
         return ERR_TTDEV;
     }

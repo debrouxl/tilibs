@@ -1,7 +1,7 @@
 /******************************************************************************
  * rwports.c: ioports hardware access under Windows NT/2000/XP and 64-bits
  * Developped from MPlayer's DhaHelper driver and modified by:
- * Copyright (c) 2007 Romain Liévin <roms@tilp.info>.
+ * Copyright (c) 2007 Romain Lievin <roms@tilp.info>.
  * Patched to compile with MinGW by Kevin Kofler:
  * Copyright (c) 2007 Kevin Kofler
  *

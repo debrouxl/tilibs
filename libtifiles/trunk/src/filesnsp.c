@@ -418,8 +418,7 @@ int tnsp_content_display_flash(FlashContent *content)
 	tifiles_info("Name:           %s", ptr->name);
 	tifiles_info("Device type:    %s", ptr->device_type == DEVICE_TYPE_89 ? "ti89" : "ti92+");
 	tifiles_info("Data type:      OS data");
-	tifiles_info("Length:         %08X (%i)", ptr->data_length, ptr->data_length);
-	tifiles_info("");
+	tifiles_info("Length:         %08X (%i)\n", ptr->data_length, ptr->data_length);
 
 	return 0;
 }

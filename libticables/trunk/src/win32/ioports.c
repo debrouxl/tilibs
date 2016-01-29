@@ -55,7 +55,7 @@ void (*io_wr) (unsigned int addr, int data);
 /* Error helper */
 
 #ifdef __WIN32__
-static void print_last_error(char *s)
+static void print_last_error(const char *s)
 {
 	LPTSTR lpMsgBuf;
 
@@ -68,7 +68,7 @@ static void print_last_error(char *s)
 
 	lpMsgBuf[strlen(lpMsgBuf)-2] = '\0';
 
-	ticables_info("%s (%i -> %s)", s, GetLastError(), lpMsgBuf);
+	ticables_info("%s (%lu -> %s)", s, (unsigned long)GetLastError(), lpMsgBuf);
 }
 #endif				//__WIN32__
 

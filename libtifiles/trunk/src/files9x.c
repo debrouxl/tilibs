@@ -975,8 +975,7 @@ int ti9x_content_display_flash(Ti9xFlash *content)
 				tifiles_info("Unknown (send mail to tilp-users@lists.sf.net)");
 				break;
 		}
-		tifiles_info("Length:         %08X (%i)", ptr->data_length, ptr->data_length);
-		tifiles_info("");
+		tifiles_info("Length:         %08X (%i)\n", ptr->data_length, ptr->data_length);
 	}
 
 	return 0;

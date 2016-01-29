@@ -13,7 +13,11 @@ fprintf(stderr, "%d\t" TYPE "\n", i, FUNCTION(args)); i++;
 #define PRINTFVOID(FUNCTION, args...) \
 fprintf(stderr, "%d\n", i); FUNCTION(args); i++;
 
+#ifndef __WIN32__
 #define SIZE "%zd"
+#else
+#define SIZE "%ld"
+#endif
 #define PTR "%p"
 #define STR "\"%s\""
 #define VOID ""
@@ -52,7 +56,11 @@ int main(int argc, char **argv)
     char * retval;
 // 1
     // ticonv.h
-    PRINTF(ticonv_utf16_strlen, SIZE, NULL);
+    PRINTF(
+#ifdef __WIN32__
+    (unsigned long)
+#endif
+    ticonv_utf16_strlen, SIZE, NULL);
     PRINTF(ticonv_utf8_to_utf16, PTR, NULL);
     PRINTFVOID(ticonv_utf16_free, NULL);
     PRINTF(ticonv_utf16_to_utf8, PTR, NULL);

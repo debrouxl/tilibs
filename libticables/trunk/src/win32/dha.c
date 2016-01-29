@@ -37,7 +37,7 @@
 
 #if defined(__WIN32__) && !defined(_WIN64)
 
-static void print_last_error(char *s)
+static void print_last_error(const char *s)
 {
         LPTSTR lpMsgBuf;
 
@@ -50,7 +50,7 @@ static void print_last_error(char *s)
 
 		lpMsgBuf[strlen(lpMsgBuf)-2] = '\0';
 
-        printf("%s (%i -> %s)\n", s, (int)GetLastError(), lpMsgBuf);
+        printf("%s (%lu -> %s)\n", s, (unsigned long)GetLastError(), lpMsgBuf);
 }
 
 int dha_detect(int* result)
