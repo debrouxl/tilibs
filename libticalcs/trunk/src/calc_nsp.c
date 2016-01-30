@@ -608,7 +608,6 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	char *utf8;
 	uint8_t status;
 	gchar *path;
 	int ret;
@@ -638,10 +637,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 	path = build_path(handle->model, ve);
 
-	utf8 = ticonv_varname_to_utf8(handle->model, path, ve->type);
-	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
-	ticonv_utf8_free(utf8);
+	ticonv_varname_to_utf8_sn(handle->model, path, update_->text, sizeof(update_->text), ve->type);
 	update_label();
 
 	ret = nsp_cmd_s_put_file(handle, path, ve->size);
@@ -667,7 +663,6 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
 	char *path;
-	char *utf8;
 	int ret;
 
 	ret = nsp_session_open(handle, SID_FILE_MGMT);
@@ -677,10 +672,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	}
 
 	path = build_path(handle->model, vr);
-	utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
-	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
-	ticonv_utf8_free(utf8);
+	ticonv_varname_to_utf8_sn(handle->model, path, update_->text, sizeof(update_->text), vr->type);
 	update_label();
 
 	ret = nsp_cmd_s_get_file(handle, path);

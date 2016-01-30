@@ -121,7 +121,7 @@ static void display_node(TreeInfo * info, VarEntry * ve, unsigned char type)
 	printf(" |");
 	printf("\n");
 
-	g_free(utf8);
+	ticonv_utf8_free(utf8);
 }
 
 static void display_tree(TreeInfo * info, GNode * vars)

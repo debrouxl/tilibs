@@ -295,7 +295,6 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	unsigned int i;
-	char *utf8;
 	DUSBCalcAttr **attrs;
 	const int nattrs = 4;
 	uint32_t pkt_size;
@@ -324,10 +323,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			varname[sizeof(varname) - 1] = 0;
 		}
 
-		utf8 = ticonv_varname_to_utf8(handle->model, varname, ve->type);
-		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-		update_->text[sizeof(update_->text) - 1] = 0;
-		ticonv_utf8_free(utf8);
+		ticonv_varname_to_utf8_sn(handle->model, varname, update_->text, sizeof(update_->text), ve->type);
 		update_label();
 
 		attrs = dusb_ca_new_array(nattrs);
@@ -426,13 +422,9 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	char fldname[40], varname[40];
 	uint8_t *data;
 	VarEntry *ve;
-	char *utf8;
 	int ret;
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
-	ticonv_utf8_free(utf8);
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
 	update_label();
 
 	attrs = dusb_ca_new_array(nattrs);
@@ -480,7 +472,6 @@ static int		send_all_vars_backup	(CalcHandle* handle, FileContent* content)
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
 	FlashContent *ptr;
-	char *utf8;
 	DUSBCalcAttr **attrs;
 	const int nattrs = 4;
 	int ret = 0;
@@ -496,10 +487,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
 		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
 
-		utf8 = ticonv_varname_to_utf8(handle->model, ptr->name, ptr->data_type);
-		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-		update_->text[sizeof(update_->text) - 1] = 0;
-		ticonv_utf8_free(utf8);
+		ticonv_varname_to_utf8_sn(handle->model, ptr->name, update_->text, sizeof(update_->text), ptr->data_type);
 		update_label();
 
 		attrs = dusb_ca_new_array(nattrs);
@@ -553,13 +541,9 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	char fldname[40], varname[40];
 	uint8_t *data;
 	uint32_t data_length;
-	char *utf8;
 	int ret;
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
-	ticonv_utf8_free(utf8);
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
 	update_label();
 
 	attrs = dusb_ca_new_array(nattrs);

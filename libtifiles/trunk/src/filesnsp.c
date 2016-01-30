@@ -357,7 +357,7 @@ tfwr:  // release on exit
 int tnsp_content_display_regular(FileContent *content)
 {
 	unsigned int i;
-	char trans[17];
+	char trans[257];
 
 	if (content == NULL)
 	{
@@ -368,18 +368,18 @@ int tnsp_content_display_regular(FileContent *content)
 	tifiles_info("Signature:         %s", tifiles_calctype2signature(content->model));
 	tifiles_info("Comment:           %s", content->comment);
 	tifiles_info("Default folder:    %s", content->default_folder);
-	tifiles_info("Number of entries: %i", content->num_entries);
+	tifiles_info("Number of entries: %u", content->num_entries);
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		if (content->entries[i] != NULL)
 		{
-			tifiles_info("Entry #%i", i);
+			tifiles_info("Entry #%u", i);
 			tifiles_info("  folder:    %s", content->entries[i]->folder);
-			tifiles_info("  name:      %s", ticonv_varname_to_utf8_s(content->model, content->entries[i]->name, trans, content->entries[i]->type));
+			tifiles_info("  name:      %s", ticonv_varname_to_utf8_sn(content->model, content->entries[i]->name, trans, sizeof(trans), content->entries[i]->type));
 			tifiles_info("  type:      %02X (%s)", content->entries[i]->type, tifiles_vartype2string(content->model, content->entries[i]->type));
 			tifiles_info("  attr:      %s", tifiles_attribute_to_string(content->entries[i]->attr));
-			tifiles_info("  length:    %04X (%i)", content->entries[i]->size, content->entries[i]->size);
+			tifiles_info("  length:    %04X (%u)", content->entries[i]->size, content->entries[i]->size);
 		}
 		else
 		{
@@ -387,7 +387,7 @@ int tnsp_content_display_regular(FileContent *content)
 		}
 	}
 
-	tifiles_info("Checksum:    %04X (%i) ", content->checksum, content->checksum);
+	tifiles_info("Checksum:    %04X (%u) ", content->checksum, content->checksum);
 
 	return 0;
 }

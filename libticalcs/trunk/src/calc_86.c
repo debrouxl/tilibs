@@ -380,7 +380,6 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	unsigned int i;
 	uint8_t rej_code;
 	uint16_t status;
-	char *utf8;
 
 	update_->cnt2 = 0;
 	update_->max2 = content->num_entries;
@@ -414,10 +413,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 				return ERR_VAR_REJECTED;
 		}
 
-		utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
-		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-		update_->text[sizeof(update_->text) - 1] = 0;
-		ticonv_utf8_free(utf8);
+		ticonv_varname_to_utf8_sn(handle->model, entry->name, update_->text, sizeof(update_->text), entry->type);
 		update_label();
 
 		TRYF(ti85_send_XDP(handle, entry->size, entry->data));
@@ -438,7 +434,6 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 {
 	uint16_t unused;
 	VarEntry *ve;
-	char *utf8;
 	uint16_t ve_size;
 
 	content->model = CALC_TI86;
@@ -449,10 +444,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
-	ticonv_utf8_free(utf8);
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
 	update_label();
 
 	// silent request

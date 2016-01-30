@@ -369,7 +369,6 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	unsigned int i;
 	uint16_t status;
-	char *utf8;
 
 	update_->cnt2 = 0;
 	update_->max2 = content->num_entries;
@@ -395,10 +394,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 		}
 
-		utf8 = ticonv_varname_to_utf8(handle->model, varname, entry->type);
-		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-		update_->text[sizeof(update_->text) - 1] = 0;
-		ticonv_utf8_free(utf8);
+		ticonv_varname_to_utf8_sn(handle->model, varname, update_->text, sizeof(update_->text), entry->type);
 		update_label();
 
 		TRYF(ti92_send_VAR(handle, entry->size, entry->type, varname));
@@ -430,7 +426,6 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	VarEntry *ve;
 	uint16_t unused;
 	char varname[18];
-	char *utf8;
 
 	content->model = CALC_TI92;
 	strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
@@ -442,10 +437,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 
-	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
-	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
-	ticonv_utf8_free(utf8);
+	ticonv_varname_to_utf8_sn(handle->model, varname, update_->text, sizeof(update_->text), vr->type);
 	update_label();
 
 	TRYF(ti92_send_REQ(handle, 0, vr->type, varname));
@@ -481,7 +473,6 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	int nvar, err;
 	char tipath[18];
 	char *tiname;
-	char *utf8;
 
 	content->model = handle->model;
 
@@ -524,10 +515,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			ve->name[sizeof(ve->name) - 1] = 0;
 		}
 
-		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-		update_->text[sizeof(update_->text) - 1] = 0;
-		ticonv_utf8_free(utf8);
+		ticonv_varname_to_utf8_sn(handle->model, ve->name, update_->text, sizeof(update_->text), ve->type);
 		update_label();
 
 		TRYF(ti92_send_CTS(handle));

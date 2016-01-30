@@ -1248,7 +1248,7 @@ tfwf:	// release on exit
 int ti8x_content_display_regular(Ti8xRegular *content)
 {
 	unsigned int i;
-	char trans[17];
+	char trans[18];
 
 	if (content == NULL)
 	{
@@ -1264,15 +1264,19 @@ int ti8x_content_display_regular(Ti8xRegular *content)
 	{
 		if (content->entries[i] != NULL)
 		{
-			tifiles_info("Entry #%i", i);
-			tifiles_info("  name:        %s", ticonv_varname_to_utf8_s(content->model, content->entries[i]->name, trans, content->entries[i]->type));
+			tifiles_info("Entry #%u", i);
+			tifiles_info("  name:        %s", ticonv_varname_to_utf8_sn(content->model, content->entries[i]->name, trans, sizeof(trans), content->entries[i]->type));
 			tifiles_info("  type:        %02X (%s)", content->entries[i]->type, tifiles_vartype2string(content->model, content->entries[i]->type));
 			tifiles_info("  attr:        %s", tifiles_attribute_to_string(content->entries[i]->attr));
-			tifiles_info("  length:      %04X (%i)", content->entries[i]->size, content->entries[i]->size);
+			tifiles_info("  length:      %04X (%u)", content->entries[i]->size, content->entries[i]->size);
+		}
+		else
+		{
+			tifiles_critical("%s: an entry in content is NULL", __FUNCTION__);
 		}
 	}
 
-	tifiles_info("Checksum:      %04X (%i) ", content->checksum, content->checksum);
+	tifiles_info("Checksum:      %04X (%u) ", content->checksum, content->checksum);
 
 	return 0;
 }

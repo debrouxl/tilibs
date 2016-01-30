@@ -481,7 +481,6 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	unsigned int i;
 	uint8_t rej_code;
-	char *utf8;
 
 	update_->cnt2 = 0;
 	update_->max2 = content->num_entries;
@@ -517,10 +516,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			return ERR_VAR_REJECTED;
 		}
 
-		utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
-		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-		update_->text[sizeof(update_->text) - 1] = 0;
-		ticonv_utf8_free(utf8);
+		ticonv_varname_to_utf8_sn(handle->model, entry->name, update_->text, sizeof(update_->text), entry->type);
 		update_label();
 
 		TRYF(ti73_send_XDP(handle, (uint16_t)entry->size, entry->data));
@@ -540,7 +536,6 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
 	VarEntry *ve;
-	char *utf8;
 	uint16_t ve_size;
 
 	content->model = handle->model;
@@ -552,10 +547,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
-	ticonv_utf8_free(utf8);
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
 	update_label();
 
 	// silent request
@@ -595,7 +587,6 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	FlashContent *ptr;
 	unsigned int i, j;
 	uint16_t size;
-	char *utf8;
 	int cpu15mhz = 0;
 
 	// search for data header
@@ -642,10 +633,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
 	ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
 
-	utf8 = ticonv_varname_to_utf8(handle->model, ptr->name, ptr->data_type);
-	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
-	ticonv_utf8_free(utf8);
+	ticonv_varname_to_utf8_sn(handle->model, ptr->name, update_->text, sizeof(update_->text), ptr->data_type);
 	update_label();
 
 	update_->cnt2 = 0;
@@ -720,12 +708,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	int page;
 	int offset;
 	uint8_t buf[FLASH_PAGE_SIZE + 4];
-	char *utf8;
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
-	ticonv_utf8_free(utf8);
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
 	update_label();
 
 	content->model = handle->model;

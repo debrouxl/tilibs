@@ -240,7 +240,6 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	int err;
 	uint8_t rej_code;
 	uint16_t status;
-	char *utf8;
 
 	if ((mode & MODE_SEND_EXEC_ASM) && content->num_entries != 1)
 	{
@@ -294,10 +293,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			return ERR_VAR_REJECTED;
 		}
 
-		utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
-		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-		update_->text[sizeof(update_->text) - 1] = 0;
-		ticonv_utf8_free(utf8);
+		ticonv_varname_to_utf8_sn(handle->model, entry->name, update_->text, sizeof(update_->text), entry->type);
 		update_label();
 
 		TRYF(ti82_send_XDP(handle, (uint16_t)entry->size, entry->data));
@@ -327,7 +323,6 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 {
 	int nvar = 0;
 	int err = 0;
-	char *utf8;
 	uint16_t ve_size;
 
 	strncpy(update_->text, _("Waiting for var(s)..."), sizeof(update_->text) - 1);
@@ -369,10 +364,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		TRYF(ti82_send_CTS(handle));
 		TRYF(ti82_recv_ACK(handle, NULL));
 
-		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-		strncpy(update_->text, utf8, sizeof(update_->text) - 1);
-		update_->text[sizeof(update_->text) - 1] = 0;
-		ticonv_utf8_free(utf8);
+		ticonv_varname_to_utf8_sn(handle->model, ve->name, update_->text, sizeof(update_->text), ve->type);
 		update_label();
 
 		ve->data = tifiles_ve_alloc_data(ve->size);
