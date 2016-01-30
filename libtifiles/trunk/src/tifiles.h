@@ -226,7 +226,7 @@ typedef struct
 	uint8_t		revision_day;
 	uint8_t		revision_month;
 	uint16_t		revision_year;
-	char			name[9];
+	char			name[VARNAME_MAX];
 	uint8_t		device_type;
 	uint8_t		data_type;
 	uint32_t		data_length;
@@ -277,6 +277,7 @@ typedef struct _FlashContent FlashContent;
 struct _FlashContent
 {
 	CalcModel		model;
+	CalcModel		model_dst;
 
 	//FlashHeader	header;
 	uint8_t		revision_major;
@@ -286,7 +287,7 @@ struct _FlashContent
 	uint8_t		revision_day;
 	uint8_t		revision_month;
 	uint16_t		revision_year;
-	char			name[9];
+	char			name[VARNAME_MAX];
 	uint8_t		device_type;
 	uint8_t		data_type;
 	uint8_t		hw_id;

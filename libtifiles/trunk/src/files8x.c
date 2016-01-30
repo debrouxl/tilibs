@@ -565,6 +565,41 @@ static int check_data_type(uint8_t id)
 	return 0;
 }
 
+static int get_native_app_name(const FlashContent *content, char *buffer, size_t buffer_size)
+{
+	const uint8_t *data, *name;
+	uint16_t app_type;
+	uint32_t size, n;
+
+	if (content->num_pages > 0)
+	{
+		data = content->pages[0]->data;
+		size = content->pages[0]->size;
+	}
+	else
+	{
+		data = content->data_part;
+		size = content->data_length;
+	}
+
+	if (size >= 6 && (data[0] & 0xf0) == 0x80 && data[1] == 0x0f)
+	{
+		app_type = (uint16_t)(data[0]) << 8;
+		if (!tifiles_cert_field_find(data + 6, size - 6, app_type + 0x40, &name, &n))
+		{
+			if (n >= buffer_size)
+			{
+				n = buffer_size - 1;
+			}
+			memcpy(buffer, name, n);
+			buffer[n] = 0;
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
 /**
  * ti8x_file_read_flash:
  * @filename: name of flash file to open.
@@ -583,6 +618,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 	Ti8xFlash *content = head;
 	int i;
 	char signature[9];
+	char varname[9];
 	int ret = ERR_FILE_IO;
 
 	if (head == NULL)
@@ -617,7 +653,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 		if (fread_byte(f, &(content->revision_month)) < 0) goto tfrf;
 		if (fread_word(f, &(content->revision_year)) < 0) goto tfrf;
 		if (fskip(f, 1) < 0) goto tfrf;
-		if (fread_8_chars(f, content->name) < 0) goto tfrf;
+		if (fread_8_chars(f, varname) < 0) goto tfrf;
 		if (fskip(f, 23) < 0) goto tfrf;
 		if (fread_byte(f, &(content->device_type)) < 0) goto tfrf;
 		if (fread_byte(f, &(content->data_type)) < 0) goto tfrf;
@@ -729,6 +765,21 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 				content->next = NULL;
 			}
 		}
+
+		if (content->data_type == TI83p_APPL)
+		{
+			// Determine the app name from the internal header if possible.
+			if (!get_native_app_name(content, varname, sizeof(varname)))
+			{
+				tifiles_warning("unable to determine app name from header");
+			}
+		}
+
+		if (content->model_dst == CALC_NONE)
+		{
+			content->model_dst = content->model;
+		}
+		ticonv_varname_from_tifile_s(content->model_dst, varname, content->name, content->data_type);
 
 		// check for end of file
 		if (fread_8_chars(f, signature) < 0)
@@ -1068,6 +1119,7 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 	int bytes_written = 0;
 	long pos;
 	char *filename;
+	char varname[VARNAME_MAX];
 
 	if (head == NULL)
 	{
@@ -1099,7 +1151,7 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 		ve.name[sizeof(ve.name) - 1] = 0;
 		ve.type = content->data_type;
 
-		filename = tifiles_build_filename(content->model, &ve);
+		filename = tifiles_build_filename(content->model_dst, &ve);
 		if (real_fname != NULL)
 		{
 			*real_fname = g_strdup(filename);
@@ -1125,8 +1177,16 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 		if (fwrite_byte(f, content->revision_day) < 0) goto tfwf;
 		if (fwrite_byte(f, content->revision_month) < 0) goto tfwf;
 		if (fwrite_word(f, content->revision_year) < 0) goto tfwf;
-		if (fwrite_byte(f, (uint8_t) strlen(content->name)) < 0) goto tfwf;
-		if (fwrite_8_chars(f, content->name) < 0) goto tfwf;
+
+		memset(varname, 0, sizeof(varname));
+		ticonv_varname_to_tifile_s(content->model_dst, content->name, varname, content->data_type);
+		if (content->data_type == TI83p_APPL)
+		{
+			// Determine the app name from the internal header if possible.
+			get_native_app_name(content, varname, sizeof(varname));
+		}
+		if (fwrite_byte(f, (uint8_t) strlen(varname)) < 0) goto tfwf;
+		if (fwrite_8_chars(f, varname) < 0) goto tfwf;
 		for (i = 0; i < 23; i++)
 		{
 			if (fwrite_byte(f, 0) < 0) goto tfwf;

@@ -432,7 +432,7 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 		{
 			tifiles_warning("Invalid calculator model");
 		}
-		content->model = model;
+		content->model = content->model_dst = model;
 		if (tifiles_calc_is_ti9x(content->model))
 		{
 			time_t tt;
