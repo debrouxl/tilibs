@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-01-30 16:18+0100\n"
+"POT-Creation-Date: 2016-01-31 08:53+0100\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
@@ -47,15 +47,15 @@ msgstr ""
 msgid "FLASH size: %i bytes."
 msgstr ""
 
-#: src/calc_73.c:968 src/calc_84p.c:1559 src/calc_89.c:906 src/calc_89t.c:820
+#: src/calc_73.c:968 src/calc_84p.c:1560 src/calc_89.c:906 src/calc_89t.c:820
 msgid "Setting clock..."
 msgstr ""
 
-#: src/calc_73.c:997 src/calc_84p.c:1637 src/calc_89.c:931 src/calc_89t.c:900
+#: src/calc_73.c:997 src/calc_84p.c:1638 src/calc_89.c:931 src/calc_89t.c:900
 msgid "Getting clock..."
 msgstr ""
 
-#: src/calc_73.c:1052 src/calc_83.c:490 src/calc_84p.c:1699 src/calc_89.c:970
+#: src/calc_73.c:1052 src/calc_83.c:490 src/calc_84p.c:1700 src/calc_89.c:970
 #: src/calc_89t.c:964 src/calc_92.c:593 src/calc_nsp.c:902
 #, c-format
 msgid "Deleting %s..."
@@ -110,37 +110,37 @@ msgstr ""
 msgid "Waiting for var(s)..."
 msgstr ""
 
-#: src/calc_84p.c:1782 src/calc_89t.c:1157
+#: src/calc_84p.c:1783 src/calc_89t.c:1157
 msgid "Getting version..."
 msgstr ""
 
-#: src/calc_84p.c:1934 src/calc_84p.c:1944 src/calc_84p.c:1954
-#: src/calc_84p.c:1971 src/calc_84p.c:1980
+#: src/calc_84p.c:1935 src/calc_84p.c:1945 src/calc_84p.c:1955
+#: src/calc_84p.c:1972 src/calc_84p.c:1981
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr ""
 
-#: src/calc_84p.c:1998
+#: src/calc_84p.c:1999
 msgid "TI-84 Plus thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:2069
+#: src/calc_84p.c:2070
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:2140
+#: src/calc_84p.c:2141
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:2211
+#: src/calc_84p.c:2212
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:2282
+#: src/calc_84p.c:2283
 msgid "TI-82 Advanced thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:2353
+#: src/calc_84p.c:2354
 msgid "TI-84 Plus T thru DirectLink"
 msgstr ""
 

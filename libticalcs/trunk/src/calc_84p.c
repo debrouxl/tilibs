@@ -869,6 +869,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	const int nattrs = 1;
 	char fldname[40], varname[40];
 	uint8_t *data;
+	uint32_t data_length;
 	int page;
 	uint16_t data_addr = 0x4000;
 	uint16_t data_page = 0;
@@ -891,7 +892,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		ret = dusb_cmd_r_var_header(handle, fldname, varname, attrs);
 		if (!ret)
 		{
-			ret = dusb_cmd_r_var_content(handle, NULL, &data);
+			ret = dusb_cmd_r_var_content(handle, &data_length, &data);
 			if (!ret)
 			{
 
@@ -900,11 +901,11 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 				content->name[sizeof(content->name) - 1] = 0;
 				content->data_type = vr->type;
 				content->device_type = DEVICE_TYPE_83P;
-				content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
-				content->pages = tifiles_fp_create_array(content->num_pages);
 
-				q = vr->size / FLASH_PAGE_SIZE;
-				r = vr->size % FLASH_PAGE_SIZE;
+				q = data_length / FLASH_PAGE_SIZE;
+				r = data_length % FLASH_PAGE_SIZE;
+				content->num_pages = q + 1;
+				content->pages = tifiles_fp_create_array(content->num_pages);
 
 				update_->cnt2 = 0;
 				update_->max2 = q;
