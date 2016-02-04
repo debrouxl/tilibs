@@ -299,9 +299,12 @@ int linux_check_root(void)
 
 int linux_check_tty(const char *devname)
 {
-    struct serial_struct serinfo = { 0 };
     int fd;
+#ifdef HAVE_LINUX_SERIAL_H
+    struct serial_struct serinfo;
 
+    memset(&serinfo, 0, sizeof(serinfo));
+#endif
     ticables_info(_("Check for tty support:"));
 #ifdef HAVE_LINUX_SERIAL_H
     ticables_info(_("    tty support: available."));
