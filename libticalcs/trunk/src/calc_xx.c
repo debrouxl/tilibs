@@ -67,6 +67,11 @@ TIEXPORT3 CalcFeatures TICALL ticalcs_calc_features(CalcHandle* handle)
  *
  * Check whether calc is ready.
  *
+ * NOTE: after connecting to the calculator, you usually want to use this command once,
+ * before attempting to use any other commands. This is required on some models (protocols).
+ * There are exceptions to this general rule, especially when a DUSB calculator (84+ family, 89T)
+ * is in the OS receive mode, where the Ready check cannot be performed.
+ *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_isready(CalcHandle* handle)
