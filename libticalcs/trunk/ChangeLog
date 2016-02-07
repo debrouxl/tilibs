@@ -3,6 +3,26 @@ SubVersion: $Id$
 Log of changes (libticalcs):
 
 - xx/xx/201x, version 1.1.9: debrouxl
+	- inline our trivial logging functions, which enables checking arguments wrt. format (without putting format annotations, that is), fix several bugs uncovered by this change; remove all remaining occurrences of TRYC from libticables.
+	- add FTS_NONSILENT in CalcFeatures; advertise it for the 82, 85, 89/92+/89T(DBUS)/V200 and 92.
+	- add Travis CI integration.
+	- replace deprecated AC_PROG_LIBTOOL with LT_INIT.
+	- add bitmap (screen) conversion functions, add ticalcs_calc_recv_screen_rgb888() and ticalcs_free_screen(), add torture tests, replace a number of Glib function calls by indirect equivalent calls.
+	- in calc_84p.c::get_version(), add exact math retrieval, fix bpp, and add 83PCE/84+CE detection; add ticalcs_infos_to_string() (formerly the bulk of tilp_calc_get_infos()), add torture test, use it in test_ticalcs_2, add translations.
+	- add DUSB packet dissection to libticalcs, already a superset of what libticables does for DUSB; add several bounds checks; in torture_ticalcs, use several subroutines to improve maintainability, add torture tests and unit tests.
+	- fix a NULL pointer passed to memcpy in dusb_recv_data_varsize() flagged by ubsan; fix UMRs in dusb_cmd_r_var_header(); add support for receiving RclWindw from 83PCE / 84PCE (found by own tests, thanks Adrien "Adriweb" Bertrand" for the reason); whitespace changes.
+	- fill in TI-eZ80 support in dusb_vpkt.c::workaround_{send,recv}(): computer -> calculator needs ZLPs, but calculator -> computer doesn't. Reported by jacobly.
+	- fix a couple obvious errors in keys files.
+	- import several functions from libti* clients (tilp, titools). Most functions made and/or suggested by Benjamin Moody.
+	- define attribute 0x13 as AID_ARCHIVED2; omit harmful 'archived' attribute when deleting variables on DUSB calculators (84+ family, 83PCE/84+CE, 89T).
+	- make FileContent.num_entries, FlashContent.num_pages, TigContent.n_vars, TigContent.n_apps, CableOptions.timeout, CableOptions.delay unsigned; have several functions of the API take or return unsigned int instead of int.
+	- move some file-static variables (long-standing gripes of multiple persons) to a new struct inside _CalcHandle or use what's available there; add dusb_set_buf_size(), suggested by Benjamin Moody.
+	- scattered fixes resulting from Coverity Scan, afl-fuzz and code inspection.
+	- add a number of helper functions for symmetry, add them to the torture tests, and fix memory leaks & memory errors in the torture tests and/or the libraries.
+	- fix -Wmissing-prototypes warnings, as suggested by Benjamin Moody; fix the build on FreeBSD 10; cleanup for MacOS X (twice, Adrien "Adriweb" Bertrand reported a buggy change).
+	- add support for sending OS upgrade files, FlashApp files and > ~1000-byte regular files to, and receiving FlashApp files from, TI-eZ80 calculators. Add a product ID field to CalcFncts and instances thereof.
+	- add .send_all_vars_backup and .recv_all_vars_backup function pointers to CalcFncts; adjust all instances of CalcFncts; add ticalcs_calc_{send,recv}_all_vars_backup(); change the prototype of internal tixx_recv_all_vars_backup(); reduce code duplication by introducing noop_*() functions in calc_00.c, and use them from other calc_*.c files.
+	- nested folders support for Nspires (SF feature request #3459852); while at it, get rid of TRYF in Nspire code, as well as of the few TRYC in the library.
 	- in the README, mention that autoreconf needs to be run before ./configure can run. Reported by SirCmpwn.
 	- use the correct full name for the V200 PLT. Reported by Adrien "Adriweb" Bertrand.
 	- export ERROR_EOT alongside ERROR_ABORT, it can be useful for some clients of the library. Suggested by Benjamin Moody.

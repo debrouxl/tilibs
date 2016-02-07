@@ -3,6 +3,10 @@ SubVersion: $Id$
 Log of changes (libticonv):
 
 - xx/xx/201x, version 1.1.5: debrouxl
+	- add Travis CI integration.
+	- replace deprecated AC_PROG_LIBTOOL with LT_INIT.
+	- import several functions from libti* clients (tilp, titools). Most functions made and/or suggested by Benjamin Moody.
+	- add a number of helper functions for symmetry, add them to the torture tests, and fix memory leaks & memory errors in the torture tests and/or the libraries.
 	- in the README, mention that autoreconf needs to be run before ./configure can run. Reported by SirCmpwn.
 	- switch to a single, unconditional definition of CalcModel in ticonv.h, include ticonv.h from tifiles.h. The libtifiles binaries have depended on libticonv for years. Suggested by Benjamin Moody.
 	- add initial support for 83PCE / 84+CE / 84+CE-T and 82A calc models, improve support for the 84+CSE (legacy I/O and USB) models, with a sprinkling of refactoring.

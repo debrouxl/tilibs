@@ -3,6 +3,23 @@ SubVersion: $Id$
 Log of changes (libtifiles):
 
 - xx/xx/201x, version 1.1.7: debrouxl
+	- inline our trivial logging functions, which enables checking arguments wrt. format (without putting format annotations, that is), fix several bugs uncovered by this change; remove all remaining occurrences of TRYC from libticables.
+	- add Travis CI integration.
+	- replace deprecated AC_PROG_LIBTOOL with LT_INIT.
+	- in ti8x_file_write_regular(), do not take attr into account twice when computing checksum. Reported by jacobly.
+	- import several functions from libti* clients (tilp, titools). Most functions made and/or suggested by Benjamin Moody.
+	- add a set of certificate parsing functions, suggested by Benjamin Moody. Implementation sketched by Benjamin and Lionel.
+	- add several IDs to types84p.h; fix a couple 83PCE/84+CE file extensions; large refactoring in types*, reducing code duplication a lot.
+	- export several functions from filetypes.c to the public API, add torture tests.
+	- remove "XXx" file extensions for group and backup types on models which don't support them; make it possible to disable a number of file extension checks (for testing purposes); in tifiles_file_is_ti(), call tifiles_file_has_tifl_header().
+	- move the trivial functions from types*.c to the corresponding types*.h under inlinable form. Synchronize the implementations.
+	- move the trivial functions (i.e. most functions) from rwfile.c to rwfile.h under inlinable form. While at it, make byte / character count arguments unsigned. Also, rwfile.c::hexdump() -> misc.c::tifiles_hexdump(), with size-limiting.
+	- make FileContent.num_entries, FlashContent.num_pages, TigContent.n_vars, TigContent.n_apps, CableOptions.timeout, CableOptions.delay unsigned; have several functions of the API take or return unsigned int instead of int.
+	- scattered fixes resulting from Coverity Scan, afl-fuzz and code inspection.
+	- add a number of helper functions for symmetry, add them to the torture tests, and fix memory leaks & memory errors in the torture tests and/or the libraries.
+	- fix -Wmissing-prototypes warnings, as suggested by Benjamin Moody; fix the build on FreeBSD 10; cleanup for MacOS X (twice, Adrien "Adriweb" Bertrand reported a buggy change).
+	- handle TI-eZ80 FlashApp & OS files like TI-68k FlashApp & OS files; libticalcs: add a sanity check on FlashContent at three places, and fix the maximum size for a Flash variable on the TI-68k series.
+	- libtifiles: make several function arguments const or unsigned, slightly proofread tigroup.c; libticalcs: get rid of TRYF in several more files, add brackets around if / for bodies, whitespace changes.
 	- in the README, mention that autoreconf needs to be run before ./configure can run. Reported by SirCmpwn.
 	- switch to a single, unconditional definition of CalcModel in ticonv.h, include ticonv.h from tifiles.h. The libtifiles binaries have depended on libticonv for years. Suggested by Benjamin Moody.
 	- add initial support for 83PCE / 84+CE / 84+CE-T and 82A calc models, improve support for the 84+CSE (legacy I/O and USB) models, with a sprinkling of refactoring.

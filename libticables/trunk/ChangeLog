@@ -3,6 +3,17 @@ SubVersion: $Id$
 Log of changes (libticables):
 
 - xx/xx/201x, version 1.3.5: debrouxl
+	- inline our trivial logging functions, which enables checking arguments wrt. format (without putting format annotations, that is), fix several bugs uncovered by this change; remove all remaining occurrences of TRYC from libticables.
+	- add Travis CI integration.
+	- replace AC_PROG_LIBTOOL with LT_INIT.
+	- synchronize DUSB vpkt array in libticables; add several bounds checks.
+	- add per-handle pre / post receive and pre / post send hooks functionality, add corresponding torture tests.
+	- update CONFIG, promoting the group-less setup for modern udev-based distributions instead of the group-based setup.
+	- make FileContent.num_entries, FlashContent.num_pages, TigContent.n_vars, TigContent.n_apps, CableOptions.timeout, CableOptions.delay unsigned; have several functions of the API take or return unsigned int instead of int.
+	- fix two sets of bugs reported by Benjamin Moody; reduce code duplication by introducing noop_*() functions in link_nul.c, and use them from other link_*.c files; remove long-dead src/win32/link_slv2.c file; whitespace changes.
+	- fix two old bugs related to libusb 1.0 context teardown.
+	- add a number of helper functions for symmetry, add them to the torture tests, and fix memory leaks & memory errors in the torture tests and/or the libraries.
+	- fix -Wmissing-prototypes warnings, as suggested by Benjamin Moody; fix the build on FreeBSD 10; cleanup for MacOS X (twice, Adrien "Adriweb" Bertrand reported a buggy change).
 	- on Windows, enable DTR power supply, to fix operation of some third-party GrayLink cables.
 	- in the README, mention that autoreconf needs to be run before ./configure can run. Reported by SirCmpwn.
 	- new API for probing USB devices.
