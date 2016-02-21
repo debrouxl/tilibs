@@ -969,7 +969,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
-	TRYF(ti73_send_RTS(handle, 13, TI73_CLK, "\0x08", 0x00, 0x00));
+	TRYF(ti73_send_RTS(handle, 13, TI73_CLK, "\0x08\0\0\0\0\0\0\0", 0x00, 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_recv_CTS(handle, 13));
@@ -998,7 +998,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
-	TRYF(ti73_send_REQ(handle, 0x0000, TI73_CLK, "\0x08", 0x00, 0x00));
+	TRYF(ti73_send_REQ(handle, 0x0000, TI73_CLK, "\0x08\0\0\0\0\0\0\0", 0x00, 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_recv_VAR(handle, &varsize, &vartype, varname, &varattr, &version));
