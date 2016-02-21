@@ -63,13 +63,17 @@ static int is_ti83p(CalcModel model)
 	        || (model == CALC_TI83PCE_USB) || (model == CALC_TI84PCE_USB) || (model == CALC_TI82A_USB) || (model == CALC_TI84PT_USB));
 }
 
-static uint16_t compute_backup_sum(BackupContent* content)
+static uint16_t compute_backup_sum(BackupContent* content, uint16_t header_size)
 {
 	uint16_t sum= 0;
 
-	sum += 9;
+	sum += header_size;
 	sum += tifiles_checksum((uint8_t *)&(content->data_length1), 2);
 	sum += content->type;
+	if (header_size >= 12)
+	{
+		sum += content->version;
+	}
 	sum += tifiles_checksum((uint8_t *)&(content->data_length2), 2);
 	sum += tifiles_checksum((uint8_t *)&(content->data_length3), 2);
 	if (content->model != CALC_TI86)
@@ -382,7 +386,8 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
 	long cur_pos = 0;
 	char signature[9];
 	uint16_t sum;
-	uint16_t file_size;
+	uint16_t file_size, header_size;
+	uint8_t extra_header[3] = { 0, 0, 0 };
 	int ret = ERR_FILE_IO;
 
 	if (content == NULL)
@@ -430,7 +435,13 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
 	if (fread_n_chars(f, 42, content->comment) < 0) goto tfrb;
 	if (fread_word(f, NULL) < 0) goto tfrb;
 
-	if (fread_word(f, NULL) < 0) goto tfrb;
+	if (fread_word(f, &header_size) < 0) goto tfrb;
+	if (header_size < 9 || header_size > 12)
+	{
+		ret = ERR_INVALID_FILE;
+		goto tfrb;
+	}
+
 	if (fread_word(f, &(content->data_length1)) < 0) goto tfrb;
 	if (content->data_length1 > file_size)
 	{
@@ -464,6 +475,11 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
 		ret = ERR_INVALID_FILE;
 		goto tfrb;
 	}
+	if (header_size > 9)
+	{
+		if (fread(extra_header, 1, header_size - 9, f) < header_size - 9) goto tfrb;
+	}
+	content->version = extra_header[2];
 
 	if (fread_word(f, NULL) < 0) goto tfrb;
 	content->data_part1 = (uint8_t *)g_malloc0(content->data_length1);
@@ -513,7 +529,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
 	}
 
 	if (fread_word(f, &(content->checksum)) < 0) goto tfrb;
-	sum = compute_backup_sum(content);
+	sum = compute_backup_sum(content, header_size);
 #if defined(CHECKSUM_ENABLED)
 	if (sum != content->checksum)
 	{
@@ -1026,6 +1042,7 @@ tfwr:	// release on exit
 int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
 {
 	FILE *f;
+	uint16_t header_size;
 	uint32_t data_length;
 
 	if (filename == NULL || content == NULL)
@@ -1057,8 +1074,22 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
 	if (fwrite_n_bytes(f, 42, (uint8_t *)content->comment) < 0) goto tfwb;
 	if (fwrite_word(f, data_length) < 0) goto tfwb;
 
+	// Use the old-style header for versions 0 to 5 (84+ OS 2.48 and
+	// earlier), for compatibility with older versions of libtifiles
+	// that assume the header is always 9 bytes.  Backups from newer
+	// OSes (2.53 and later) are incompatible in both directions, so a
+	// new format is needed for version 6 and above.
+	if ((content->version & ~0x20) <= 0x05)
+	{
+		header_size = 9;
+	}
+	else
+	{
+		header_size = 12;
+	}
+
 	// write backup header
-	if (fwrite_word(f, 0x09) < 0) goto tfwb;
+	if (fwrite_word(f, header_size) < 0) goto tfwb;
 	if (fwrite_word(f, content->data_length1) < 0) goto tfwb;
 	if (fwrite_byte(f, content->type) < 0) goto tfwb;
 	if (fwrite_word(f, content->data_length2) < 0) goto tfwb;
@@ -1070,6 +1101,11 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
 	else
 	{
 		if (fwrite_word(f, content->data_length4) < 0) goto tfwb;
+	}
+	if (header_size == 12)
+	{
+		if (fwrite_word(f, 0) < 0) goto tfwb;
+		if (fwrite_byte(f, content->version) < 0) goto tfwb;
 	}
 
 	// write data num_entries
@@ -1089,7 +1125,7 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
 	}
 
 	// checksum = sum of all bytes in bachup headers and data num_entries
-	content->checksum = compute_backup_sum(content);
+	content->checksum = compute_backup_sum(content, header_size);
 	if (fwrite_word(f, content->checksum) < 0) goto tfwb;
 
 	fclose(f);

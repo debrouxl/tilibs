@@ -180,6 +180,7 @@ typedef struct
 	uint16_t	mem_address;	// TI8x only
 
 	uint8_t	type;
+	uint8_t version;			// TI8x only
 
 	uint32_t	data_length;	// TI9x only
 	uint8_t*	data_part;
