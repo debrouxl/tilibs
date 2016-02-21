@@ -442,9 +442,9 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_recv_VAR(handle, &content->data_length1, &content->type, varname, &attr, &ver));
-	content->data_length2 = (uint16_t)varname[0] | (((uint16_t)(varname[1])) << 8);
-	content->data_length3 = (uint16_t)varname[2] | (((uint16_t)(varname[3])) << 8);
-	content->mem_address  = (uint16_t)varname[4] | (((uint16_t)(varname[5])) << 8);
+	content->data_length2 = (uint8_t)varname[0] | (((uint16_t)(uint8_t)varname[1]) << 8);
+	content->data_length3 = (uint8_t)varname[2] | (((uint16_t)(uint8_t)varname[3]) << 8);
+	content->mem_address  = (uint8_t)varname[4] | (((uint16_t)(uint8_t)varname[5]) << 8);
 	TRYF(ti73_send_ACK(handle));
 
 	TRYF(ti73_send_CTS(handle));
