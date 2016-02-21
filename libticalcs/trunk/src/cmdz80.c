@@ -73,7 +73,7 @@ TIEXPORT3 int TICALL ti73_send_VAR(CalcHandle* handle, uint16_t varsize, uint8_t
 
 	ticalcs_info(" PC->TI: VAR (size=0x%04X, id=%02X, name=%s, attr=%i)", varsize, vartype, varname, varattr);
 
-	if (vartype != TI7383_BKUP)
+	if (vartype != TI7383_BKUP || version != 0)
 	{
 		// backup: special header
 		return dbus_send(handle, PC_TI7383, CMD_VAR, 11 + EXTRAS, buffer);
@@ -554,7 +554,7 @@ TIEXPORT3 int TICALL ti73_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t
 	ticonv_varname_to_utf8_sn(handle->model, varname, trans, sizeof(trans), vartype);
 	ticalcs_info(" PC->TI: RTS (size=0x%04X, id=%02X, name=%s, attr=%i)", varsize, vartype, trans, varattr);
 
-	if (vartype != TI7383_BKUP)
+	if (vartype != TI7383_BKUP || version != 0)
 	{
 		// backup: special header
 		return dbus_send(handle, PC_TI7383, CMD_RTS, 11 + EXTRAS, buffer);

@@ -386,8 +386,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	varname[4] = LSB(content->mem_address);
 	varname[5] = MSB(content->mem_address);
 
-	// FIXME: handle version (required for 84+CSE)
-	TRYF(ti73_send_RTS(handle, content->data_length1, TI73_BKUP, varname, 0x00, 0x00));
+	TRYF(ti73_send_RTS(handle, content->data_length1, TI73_BKUP, varname, 0x00, content->version));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_recv_SKP(handle, &rej_code))
@@ -445,6 +444,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	content->data_length2 = (uint8_t)varname[0] | (((uint16_t)(uint8_t)varname[1]) << 8);
 	content->data_length3 = (uint8_t)varname[2] | (((uint16_t)(uint8_t)varname[3]) << 8);
 	content->mem_address  = (uint8_t)varname[4] | (((uint16_t)(uint8_t)varname[5]) << 8);
+	content->version = ver;
 	TRYF(ti73_send_ACK(handle));
 
 	TRYF(ti73_send_CTS(handle));
