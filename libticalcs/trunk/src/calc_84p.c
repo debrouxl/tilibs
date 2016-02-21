@@ -71,7 +71,7 @@ static int		is_ready	(CalcHandle* handle)
 	return ret;
 }
 
-static int		send_key	(CalcHandle* handle, uint16_t key)
+static int		send_key_noack	(CalcHandle* handle, uint16_t key)
 {
 	int ret;
 
@@ -79,10 +79,19 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 	if (!ret)
 	{
 		ret = dusb_cmd_r_delay_ack(handle);
-		if (!ret)
-		{
-			ret = dusb_cmd_r_data_ack(handle);
-		}
+	}
+
+	return ret;
+}
+
+static int		send_key	(CalcHandle* handle, uint16_t key)
+{
+	int ret;
+
+	ret = send_key_noack(handle, key);
+	if (!ret)
+	{
+		ret = dusb_cmd_r_data_ack(handle);
 	}
 
 	return ret;
@@ -553,6 +562,106 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	}
 	dusb_cp_del_array(size, params);
 
+	return ret;
+}
+
+static int		send_backup	(CalcHandle* handle, BackupContent* content)
+{
+	DUSBCalcAttr **attrs;
+	const int nattrs = 3;
+	uint32_t length;
+	uint8_t *data, *p;
+	int ret = 0;
+	static const uint16_t keys[] = {
+		KEY83P_Quit, KEY83P_LinkIO, KEY83P_Right, KEY83P_1
+	};
+	unsigned int i;
+
+	attrs = dusb_ca_new_array(nattrs);
+	attrs[0] = dusb_ca_new(AID_VAR_TYPE, 4);
+	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
+	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI84p_BKUP;
+
+	attrs[1] = dusb_ca_new(AID_VAR_VERSION, 4);
+	attrs[1]->data[0] = 0x00; attrs[1]->data[1] = 0x00;
+	attrs[1]->data[2] = 0x00; attrs[1]->data[3] = content->version;
+
+	attrs[2] = dusb_ca_new(AID_BACKUP_HEADER, 8);
+	attrs[2]->data[0] = MSB(content->data_length1);
+	attrs[2]->data[1] = LSB(content->data_length1);
+	attrs[2]->data[2] = MSB(content->data_length2);
+	attrs[2]->data[3] = LSB(content->data_length2);
+	attrs[2]->data[4] = MSB(content->data_length3);
+	attrs[2]->data[5] = LSB(content->data_length3);
+	attrs[2]->data[6] = MSB(content->mem_address);
+	attrs[2]->data[7] = LSB(content->mem_address);
+
+	length = content->data_length1 + content->data_length2 + content->data_length3;
+	data = p = g_malloc(length);
+	memcpy(p, content->data_part1, content->data_length1);
+	p += content->data_length1;
+	memcpy(p, content->data_part2, content->data_length2);
+	p += content->data_length2;
+	memcpy(p, content->data_part3, content->data_length3);
+
+	// enter manual link mode
+	for (i = 0; i < sizeof(keys) / sizeof(keys[0]) - 1; i++)
+	{
+		ret = send_key(handle, keys[i]);
+		if (ret)
+		{
+			goto end;
+		}
+	}
+	ret = send_key_noack(handle, keys[i]);
+	if (ret)
+	{
+		goto end;
+	}
+
+	// send backup header
+	ret = dusb_cmd_s_rts_ns(handle, "", "!", length, 3, CA(attrs));
+	if (ret)
+	{
+		goto end;
+	}
+	ret = dusb_cmd_r_delay_ack(handle);
+	if (ret)
+	{
+		goto end;
+	}
+
+	// press key to accept the backup
+	ret = send_key_noack(handle, KEY83P_1);
+	if (ret)
+	{
+		goto end;
+	}
+
+	// acknowledgement of RTS
+	ret = dusb_cmd_r_data_ack(handle);
+	if (ret)
+	{
+		goto end;
+	}
+
+	// send backup contents
+	ret = dusb_cmd_s_var_content(handle, length, data);
+	if (ret)
+	{
+		goto end;
+	}
+	ret = dusb_cmd_r_data_ack(handle);
+	if (ret)
+	{
+		goto end;
+	}
+	ret = dusb_cmd_s_eot(handle);
+
+ end:
+	dusb_ca_del_array(nattrs, attrs);
+	g_free(data);
+	
 	return ret;
 }
 
@@ -2008,7 +2117,7 @@ const CalcFncts calc_84p_usb =
 	 "1P",   /* recv_screen */
 	 "1L",   /* get_dirlist */
 	 "",     /* get_memfree */
-	 "",     /* send_backup */
+	 "1P",   /* send_backup */
 	 "",     /* recv_backup */
 	 "2P1L", /* send_var */
 	 "1P1L", /* recv_var */
@@ -2037,7 +2146,7 @@ const CalcFncts calc_84p_usb =
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
-	&noop_send_backup,
+	&send_backup,
 	&noop_recv_backup,
 	&send_var,
 	&recv_var,
@@ -2079,7 +2188,7 @@ const CalcFncts calc_84pcse_usb =
 	 "1P",   /* recv_screen */
 	 "1L",   /* get_dirlist */
 	 "",     /* get_memfree */
-	 "",     /* send_backup */
+	 "1P",   /* send_backup */
 	 "",     /* recv_backup */
 	 "2P1L", /* send_var */
 	 "1P1L", /* recv_var */
@@ -2108,7 +2217,7 @@ const CalcFncts calc_84pcse_usb =
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
-	&noop_send_backup,
+	&send_backup,
 	&noop_recv_backup,
 	&send_var,
 	&recv_var,
@@ -2292,7 +2401,7 @@ const CalcFncts calc_82a_usb =
 	 "1P",   /* recv_screen */
 	 "1L",   /* get_dirlist */
 	 "",     /* get_memfree */
-	 "",     /* send_backup */
+	 "1P",   /* send_backup */
 	 "",     /* recv_backup */
 	 "2P1L", /* send_var */
 	 "1P1L", /* recv_var */
@@ -2321,7 +2430,7 @@ const CalcFncts calc_82a_usb =
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
-	&noop_send_backup,
+	&send_backup,
 	&noop_recv_backup,
 	&send_var,
 	&recv_var,
@@ -2363,7 +2472,7 @@ const CalcFncts calc_84pt_usb =
 	 "1P",   /* recv_screen */
 	 "1L",   /* get_dirlist */
 	 "",     /* get_memfree */
-	 "",     /* send_backup */
+	 "1P",   /* send_backup */
 	 "",     /* recv_backup */
 	 "2P1L", /* send_var */
 	 "1P1L", /* recv_var */
@@ -2392,7 +2501,7 @@ const CalcFncts calc_84pt_usb =
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
-	&noop_send_backup,
+	&send_backup,
 	&noop_recv_backup,
 	&send_var,
 	&recv_var,

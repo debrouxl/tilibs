@@ -83,6 +83,7 @@ extern "C" {
 #define AID_ARCHIVED2 		0x13
 #define AID_LOCKED			0x41
 #define AID_UNKNOWN_42		0x42
+#define AID_BACKUP_HEADER	0xFFFE
 
 // Execute commands
 #define EID_PRGM			0x00
@@ -159,6 +160,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, int naids, c
 TIEXPORT3 int TICALL dusb_cmd_r_var_header(CalcHandle *handle, char *folder, char *name, DUSBCalcAttr **attr);
 
 TIEXPORT3 int TICALL dusb_cmd_s_rts(CalcHandle *handle, const char *folder, const char *name, uint32_t size, int nattrs, const DUSBCalcAttr **attrs);
+TIEXPORT3 int TICALL dusb_cmd_s_rts_ns(CalcHandle *handle, const char *folder, const char *name, uint32_t size, int nattrs, const DUSBCalcAttr **attrs);
 TIEXPORT3 int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const char *name, int naids, const uint16_t *aids, int nattrs, const DUSBCalcAttr **attrs);
 
 TIEXPORT3 int TICALL dusb_cmd_s_var_content(CalcHandle *handle, uint32_t  size, uint8_t  *data);

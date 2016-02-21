@@ -1162,7 +1162,7 @@ end:
 }
 
 // 0x000B: request to send
-TIEXPORT3 int TICALL dusb_cmd_s_rts(CalcHandle *handle, const char *folder, const char *name, uint32_t size, int nattrs, const DUSBCalcAttr **attrs)
+static int dusb_cmd_s_rts2(CalcHandle *handle, const char *folder, const char *name, uint32_t size, int nattrs, const DUSBCalcAttr **attrs, int modeflag)
 {
 	DUSBVirtualPacket* pkt;
 	int pks;
@@ -1206,7 +1206,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_rts(CalcHandle *handle, const char *folder, cons
 	pkt->data[j++] = LSB(MSW(size));
 	pkt->data[j++] = MSB(LSW(size));
 	pkt->data[j++] = LSB(LSW(size));
-	pkt->data[j++] = 0x01;
+	pkt->data[j++] = modeflag;
 
 	pkt->data[j++] = MSB(nattrs);
 	pkt->data[j++] = LSB(nattrs);
@@ -1227,6 +1227,18 @@ TIEXPORT3 int TICALL dusb_cmd_s_rts(CalcHandle *handle, const char *folder, cons
 	ticalcs_info("   folder=%s, name=%s, size=%i, nattrs=%i", folder, name, size, nattrs);
 
 	return retval;
+}
+
+// 0x000B: request to send ("silent")
+TIEXPORT3 int TICALL dusb_cmd_s_rts(CalcHandle *handle, const char *folder, const char *name, uint32_t size, int nattrs, const DUSBCalcAttr **attrs)
+{
+	return dusb_cmd_s_rts2(handle, folder, name, size, nattrs, attrs, 0x01);
+}
+
+// 0x000B: request to send ("non-silent")
+TIEXPORT3 int TICALL dusb_cmd_s_rts_ns(CalcHandle *handle, const char *folder, const char *name, uint32_t size, int nattrs, const DUSBCalcAttr **attrs)
+{
+	return dusb_cmd_s_rts2(handle, folder, name, size, nattrs, attrs, 0x02);
 }
 
 // 0x000C: variable request
