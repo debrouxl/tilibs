@@ -54,7 +54,7 @@ static const char BACKUP_FILE_EXT[CALC_MAX + 1][4] =
 	"",
 	"73b", "82b", "83b", "8Xb", "8Xb", "85b", "86b",
 	"89g", "89g", "92b", "9Xg", "V2g", "8Xg", "89g",
-	"",    "",    "8Xb", "8Xb",   "",  "8Xb", "8Xb",
+	"",    "",    "8Cb", "8Cb", "",    "",    "8Xb",
 	"8Xb",
 	""
 };
@@ -143,12 +143,13 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_backup (CalcModel model)
 			return "83b";
 		case CALC_TI83P:
 		case CALC_TI84P:
-		case CALC_TI84PC:
 		case CALC_TI84P_USB:
-		case CALC_TI84PC_USB:
 		case CALC_TI82A_USB:
 		case CALC_TI84PT_USB:
 			return "8Xb";
+		case CALC_TI84PC:
+		case CALC_TI84PC_USB:
+			return "8Cb";
 		case CALC_TI83PCE_USB:
 		case CALC_TI84PCE_USB:
 			return NULL;
