@@ -51,5 +51,6 @@ extern const CalcFncts calc_84pcse_usb;
 extern const CalcFncts calc_83pce_usb;
 extern const CalcFncts calc_84pce_usb;
 extern const CalcFncts calc_82a_usb;
+extern const CalcFncts calc_84pt_usb;
 
 #endif

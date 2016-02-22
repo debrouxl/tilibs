@@ -111,6 +111,9 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_TI82A_USB
 	&calc_82a_usb,
 #endif
+#ifndef NO_TI84PT_USB
+	&calc_84pt_usb,
+#endif
 	NULL
 };
 
@@ -178,6 +181,9 @@ static const uint32_t supported_calcs =
 #endif
 #ifndef NO_TI82A_USB
 	| (1U << CALC_TI82A_USB)
+#endif
+#ifndef NO_TI84PT_USB
+	| (1U << CALC_TI84PT_USB)
 #endif
 ;
 
@@ -493,7 +499,8 @@ TIEXPORT3 int TICALL ticalcs_model_supports_dusb(CalcModel model)
 	            || model == CALC_TI84PC_USB
 	            || model == CALC_TI83PCE_USB
 	            || model == CALC_TI84PCE_USB
-	            || model == CALC_TI82A_USB));
+	            || model == CALC_TI82A_USB
+	            || model == CALC_TI84PT_USB));
 }
 
 /**

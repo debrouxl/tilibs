@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles2 1.1.7\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-11-12 19:19+0100\n"
+"POT-Creation-Date: 2016-02-22 07:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -102,20 +102,20 @@ msgid ""
 "Cause: the program which uses this library is buggy. Fire-up the developer!"
 msgstr ""
 
-#: src/filetypes.c:1416 src/filetypes.c:1517 src/types68k.c:74
+#: src/filetypes.c:1425 src/filetypes.c:1529 src/types68k.c:74
 #: src/types83p.c:70 src/typesoldz80.c:75
 msgid "OS upgrade"
 msgstr ""
 
-#: src/filetypes.c:1426 src/filetypes.c:1527
+#: src/filetypes.c:1435 src/filetypes.c:1539
 msgid "TIGroup"
 msgstr ""
 
-#: src/filetypes.c:1438 src/filetypes.c:1539
+#: src/filetypes.c:1447 src/filetypes.c:1551
 msgid "Group/Backup"
 msgstr ""
 
-#: src/filetypes.c:1440 src/filetypes.c:1541
+#: src/filetypes.c:1449 src/filetypes.c:1553
 msgid "Group"
 msgstr ""
 
@@ -124,55 +124,55 @@ msgstr ""
 msgid "tifiles library version %s"
 msgstr ""
 
-#: src/type2str.c:215 src/type2str.c:235
+#: src/type2str.c:224 src/type2str.c:244
 msgid "none     "
 msgstr ""
 
-#: src/type2str.c:216 src/type2str.c:237
+#: src/type2str.c:225 src/type2str.c:246
 msgid "locked   "
 msgstr ""
 
-#: src/type2str.c:217 src/type2str.c:239
+#: src/type2str.c:226 src/type2str.c:248
 msgid "archived "
 msgstr ""
 
-#: src/type2str.c:218 src/type2str.c:241
+#: src/type2str.c:227 src/type2str.c:250
 msgid "protected"
 msgstr ""
 
-#: src/type2str.c:260 src/type2str.c:284
+#: src/type2str.c:269 src/type2str.c:293
 msgid "single"
 msgstr ""
 
-#: src/type2str.c:261 src/type2str.c:286
+#: src/type2str.c:270 src/type2str.c:295
 msgid "group"
 msgstr ""
 
-#: src/type2str.c:262 src/type2str.c:288
+#: src/type2str.c:271 src/type2str.c:297
 msgid "regular"
 msgstr ""
 
-#: src/type2str.c:263 src/type2str.c:290
+#: src/type2str.c:272 src/type2str.c:299
 msgid "backup"
 msgstr ""
 
-#: src/type2str.c:264 src/type2str.c:298
+#: src/type2str.c:273 src/type2str.c:307
 msgid "tigroup"
 msgstr ""
 
-#: src/type2str.c:265 src/type2str.c:292
+#: src/type2str.c:274 src/type2str.c:301
 msgid "os"
 msgstr ""
 
-#: src/type2str.c:266 src/type2str.c:294
+#: src/type2str.c:275 src/type2str.c:303
 msgid "application"
 msgstr ""
 
-#: src/type2str.c:267 src/type2str.c:296
+#: src/type2str.c:276 src/type2str.c:305
 msgid "flash"
 msgstr ""
 
-#: src/type2str.c:268
+#: src/type2str.c:277
 msgid "unknown"
 msgstr ""
 

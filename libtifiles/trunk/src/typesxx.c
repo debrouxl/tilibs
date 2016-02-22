@@ -58,8 +58,11 @@ TIEXPORT2 const char *TICALL tifiles_vartype2string(CalcModel model, uint8_t dat
     return ti83p_byte2type(data);
   case CALC_TI84P:
   case CALC_TI84P_USB:
-  case CALC_TI82A_USB:
     return ti84p_byte2type(data);
+  case CALC_TI82A_USB:
+    return ti82a_byte2type(data);
+  case CALC_TI84PT_USB:
+    return ti84pt_byte2type(data);
   case CALC_TI84PC:
   case CALC_TI84PC_USB:
     return ti84pc_byte2type(data);
@@ -123,8 +126,11 @@ TIEXPORT2 uint8_t TICALL tifiles_string2vartype(CalcModel model, const char *s)
     return ti83p_type2byte(s);
   case CALC_TI84P:
   case CALC_TI84P_USB:
-  case CALC_TI82A_USB:
     return ti84p_type2byte(s);
+  case CALC_TI82A_USB:
+    return ti82a_type2byte(s);
+  case CALC_TI84PT_USB:
+    return ti84pt_type2byte(s);
   case CALC_TI84PC:
   case CALC_TI84PC_USB:
     return ti84pc_type2byte(s);
@@ -182,8 +188,11 @@ TIEXPORT2 const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
     return ti83p_byte2fext(data);
   case CALC_TI84P:
   case CALC_TI84P_USB:
-  case CALC_TI82A_USB:
     return ti84p_byte2fext(data);
+  case CALC_TI82A_USB:
+    return ti82a_byte2fext(data);
+  case CALC_TI84PT_USB:
+    return ti84pt_byte2fext(data);
   case CALC_TI84PC:
   case CALC_TI84PC_USB:
     return ti84pc_byte2fext(data);
@@ -194,7 +203,7 @@ TIEXPORT2 const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
   case CALC_TI85:
     return tixx_byte2fext(TI85_CONST, TI85_MAXTYPES, data, "85?");
   case CALC_TI86:
-    return tixx_byte2fext(TI86_CONST, TI86_MAXTYPES, data, "85?");
+    return tixx_byte2fext(TI86_CONST, TI86_MAXTYPES, data, "86?");
 #endif
 #ifndef DISABLE_TI9X
   case CALC_TI89:
@@ -247,8 +256,11 @@ TIEXPORT2 uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
     return ti83p_fext2byte(s);
   case CALC_TI84P:
   case CALC_TI84P_USB:
-  case CALC_TI82A_USB:
     return ti84p_fext2byte(s);
+  case CALC_TI82A_USB:
+    return ti82a_fext2byte(s);
+  case CALC_TI84PT_USB:
+    return ti84pt_fext2byte(s);
   case CALC_TI84PC:
   case CALC_TI84PC_USB:
     return ti84pc_fext2byte(s);
@@ -307,8 +319,11 @@ TIEXPORT2 const char *TICALL tifiles_vartype2type(CalcModel model, uint8_t varty
     return ti83p_byte2desc(vartype);
   case CALC_TI84P:
   case CALC_TI84P_USB:
-  case CALC_TI82A_USB:
     return ti84p_byte2desc(vartype);
+  case CALC_TI82A_USB:
+    return ti82a_byte2desc(vartype);
+  case CALC_TI84PT_USB:
+    return ti84pt_byte2desc(vartype);
   case CALC_TI84PC:
   case CALC_TI84PC_USB:
     return ti84pc_byte2desc(vartype);
@@ -367,8 +382,11 @@ TIEXPORT2 const char *TICALL tifiles_vartype2icon(CalcModel model, uint8_t varty
     return ti83p_byte2icon(vartype);
   case CALC_TI84P:
   case CALC_TI84P_USB:
-  case CALC_TI82A_USB:
     return ti84p_byte2icon(vartype);
+  case CALC_TI82A_USB:
+    return ti82a_byte2icon(vartype);
+  case CALC_TI84PT_USB:
+    return ti84pt_byte2icon(vartype);
   case CALC_TI84PC:
   case CALC_TI84PC_USB:
     return ti84pc_byte2icon(vartype);
@@ -436,6 +454,7 @@ TIEXPORT2 uint8_t TICALL tifiles_folder_type(CalcModel model)
   case CALC_TI83PCE_USB:
   case CALC_TI84PCE_USB:
   case CALC_TI82A_USB:
+  case CALC_TI84PT_USB:
     return TI83p_DIR;
   case CALC_TI85:
     return -1;
@@ -492,6 +511,7 @@ TIEXPORT2 uint8_t TICALL tifiles_flash_type(CalcModel model)
   case CALC_TI84PCE_USB:
     return TI83p_APPL;
   case CALC_TI82A_USB:
+  case CALC_TI84PT_USB:
     return -1;
   case CALC_TI85:
     return -1;
@@ -547,6 +567,7 @@ TIEXPORT2 uint8_t TICALL tifiles_idlist_type(CalcModel model)
   case CALC_TI83PCE_USB:
   case CALC_TI84PCE_USB:
   case CALC_TI82A_USB:
+  case CALC_TI84PT_USB:
     return TI83p_IDLIST;
   case CALC_TI85:
     return -1;
@@ -605,6 +626,7 @@ TIEXPORT2 const char *TICALL tifiles_calctype2signature(CalcModel model)
   case CALC_TI83PCE_USB:
   case CALC_TI84PCE_USB:
   case CALC_TI82A_USB:
+  case CALC_TI84PT_USB:
     return "**TI83F*";
   case CALC_TI85:
     return "**TI85**";

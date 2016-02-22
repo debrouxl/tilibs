@@ -126,7 +126,7 @@ TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 		pkt->size = buf[3] | (((uint32_t)buf[2]) << 8) | (((uint32_t)buf[1]) << 16) | (((uint32_t)buf[0]) << 24);
 		pkt->type = buf[4];
 
-		if (   (handle->model == CALC_TI84P_USB || handle->model == CALC_TI84PC_USB || handle->model == CALC_TI82A_USB)
+		if (   (handle->model == CALC_TI84P_USB || handle->model == CALC_TI84PC_USB || handle->model == CALC_TI82A_USB || handle->model == CALC_TI84PT_USB)
 		    && pkt->size > 250)
 		{
 			ticalcs_warning("Raw packet is unexpectedly large: %u bytes", pkt->size);

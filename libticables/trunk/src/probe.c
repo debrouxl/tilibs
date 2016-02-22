@@ -335,6 +335,10 @@ void translate_usb_device_info(CableDeviceInfo *info, const USBCableInfo *usbinf
 		{
 			info->variant = CABLE_VARIANT_TI83PCE;
 		}
+		else if (!strcmp(usbinfo->product_str, "TI-84 Plus T"))
+		{
+			info->variant = CABLE_VARIANT_TI84PT;
+		}
 		else if (usbinfo->version <= 0x0110)
 		{
 			info->variant = CABLE_VARIANT_TI84PSE;

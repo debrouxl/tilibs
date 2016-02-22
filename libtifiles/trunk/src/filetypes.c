@@ -44,7 +44,8 @@ static const char GROUP_FILE_EXT[CALC_MAX + 1][4] =
 	"",
 	"73g", "82g", "83g", "8Xg", "8Xg", "85g", "86g",
 	"89g", "89g", "92g", "9Xg", "V2g", "8Xg", "89g",
-	"",    "",    "8Xg", "8Xg", "8Xg", "8Xg",
+	"",    "",    "8Xg", "8Xg", "8Xg", "8Xg", "8Xg",
+	"8xg",
 	""
 };
 
@@ -53,7 +54,8 @@ static const char BACKUP_FILE_EXT[CALC_MAX + 1][4] =
 	"",
 	"73b", "82b", "83b", "8Xb", "8Xb", "85b", "86b",
 	"89g", "89g", "92b", "9Xg", "V2g", "8Xg", "89g",
-	"",    "",    "8Xb", "8Xb",   "",  "8Xb",
+	"",    "",    "8Xb", "8Xb",   "",  "8Xb", "8Xb",
+	"8Xb",
 	""
 };
 
@@ -91,6 +93,7 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_group (CalcModel model)
 		case CALC_TI83PCE_USB:
 		case CALC_TI84PCE_USB:
 		case CALC_TI82A_USB:
+		case CALC_TI84PT_USB:
 			return "8Xg"; // There's also 8Cg.
 		case CALC_TI85:
 			return "85g";
@@ -144,6 +147,7 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_backup (CalcModel model)
 		case CALC_TI84P_USB:
 		case CALC_TI84PC_USB:
 		case CALC_TI82A_USB:
+		case CALC_TI84PT_USB:
 			return "8Xb";
 		case CALC_TI83PCE_USB:
 		case CALC_TI84PCE_USB:
@@ -206,6 +210,7 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_flash_app (CalcModel model)
 		case CALC_TI84PCE_USB:
 			return "8Ek";
 		case CALC_TI82A_USB:
+		case CALC_TI84PT_USB:
 			return NULL;
 		case CALC_TI85:
 			return NULL;
@@ -266,6 +271,8 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_flash_os(CalcModel model)
 			return "8Eu";
 		case CALC_TI82A_USB:
 			return "82u";
+		case CALC_TI84PT_USB:
+			return "8Xu";
 		case CALC_TI85:
 			return NULL;
 		case CALC_TI86:
@@ -324,6 +331,7 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_certif(CalcModel model)
 		case CALC_TI84PCE_USB:
 			return "8Eq";
 		case CALC_TI82A_USB:
+		case CALC_TI84PT_USB:
 			return NULL;
 		case CALC_TI85:
 			return NULL;
@@ -686,6 +694,7 @@ TIEXPORT2 int TICALL tifiles_model_to_dev_type(CalcModel model)
 	case CALC_TI83PCE_USB:
 	case CALC_TI84PCE_USB:
 	case CALC_TI82A_USB:
+	case CALC_TI84PT_USB:
 		return DEVICE_TYPE_83P;
 
 	case CALC_TI89:
@@ -1454,8 +1463,11 @@ TIEXPORT2 const char *TICALL tifiles_file_get_type(const char *filename)
 			return ti83p_byte2desc(ti83p_fext2byte(e));
 		case CALC_TI84P:
 		case CALC_TI84P_USB:
-		case CALC_TI82A_USB:
 			return ti84p_byte2desc(ti84p_fext2byte(e));
+		case CALC_TI82A_USB:
+			return ti82a_byte2desc(ti82a_fext2byte(e));
+		case CALC_TI84PT_USB:
+			return ti84pt_byte2desc(ti84pt_fext2byte(e));
 		case CALC_TI84PC:
 		case CALC_TI84PC_USB:
 			return ti84pc_byte2desc(ti84pc_fext2byte(e));
@@ -1555,8 +1567,11 @@ TIEXPORT2 const char *TICALL tifiles_file_get_icon(const char *filename)
 			return ti83p_byte2icon(ti83p_fext2byte(e));
 		case CALC_TI84P:
 		case CALC_TI84P_USB:
-		case CALC_TI82A_USB:
 			return ti84p_byte2icon(ti83p_fext2byte(e));
+		case CALC_TI82A_USB:
+			return ti82a_byte2icon(ti82a_fext2byte(e));
+		case CALC_TI84PT_USB:
+			return ti84pt_byte2icon(ti84pt_fext2byte(e));
 		case CALC_TI84PC:
 		case CALC_TI84PC_USB:
 			return ti84pc_byte2icon(ti84pc_fext2byte(e));

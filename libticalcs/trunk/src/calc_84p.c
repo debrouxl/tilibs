@@ -2344,3 +2344,74 @@ const CalcFncts calc_82a_usb =
 	&send_all_vars_backup,
 	&tixx_recv_all_vars_backup
 };
+
+const CalcFncts calc_84pt_usb =
+{
+	CALC_TI84PT_USB,
+	"TI84PT",
+	"TI-84 Plus T",
+	N_("TI-84 Plus T thru DirectLink"),
+	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | /*OPS_FLASH |*/ OPS_OS |
+	OPS_IDLIST | /*OPS_ROMDUMP |*/ OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
+	OPS_RENAME | OPS_CHATTR |
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	PRODUCT_ID_TI84PT,
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "1L",   /* get_dirlist */
+	 "",     /* get_memfree */
+	 "",     /* send_backup */
+	 "",     /* recv_backup */
+	 "2P1L", /* send_var */
+	 "1P1L", /* recv_var */
+	 "",     /* send_var_ns */
+	 "",     /* recv_var_ns */
+	 "2P1L", /* send_app */
+	 "2P1L", /* recv_app */
+	 "2P",   /* send_os */
+	 "1L",   /* recv_idlist */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "1L",   /* del_var */
+	 "1L",   /* new_folder */
+	 "",     /* get_version */
+	 "1L",   /* send_cert */
+	 "1L",   /* recv_cert */
+	 "",     /* rename */
+	 "",     /* chattr */
+	 "2P",   /* send_all_vars_backup */
+	 "2P",   /* recv_all_vars_backup */ },
+	&is_ready,
+	&send_key,
+	&execute,
+	&recv_screen,
+	&get_dirlist,
+	&get_memfree,
+	&noop_send_backup,
+	&noop_recv_backup,
+	&send_var,
+	&recv_var,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
+	&send_flash,
+	&recv_flash,
+	&send_os,
+	&recv_idlist,
+	&dump_rom_1,
+	&dump_rom_2,
+	&set_clock,
+	&get_clock,
+	&del_var,
+	&noop_new_folder,
+	&get_version,
+	&noop_send_cert,
+	&noop_recv_cert,
+	&rename_var,
+	&change_attr,
+	&send_all_vars_backup,
+	&tixx_recv_all_vars_backup
+};

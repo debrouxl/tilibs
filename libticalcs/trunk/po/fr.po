@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-01-29 19:09+0100\n"
+"POT-Creation-Date: 2016-01-30 16:18+0100\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -136,6 +136,10 @@ msgstr "TI-84 Plus CE via DirectLink"
 #: src/calc_84p.c:2282
 msgid "TI-82 Advanced thru DirectLink"
 msgstr "TI-82 Advanced via DirectLink"
+
+#: src/calc_84p.c:2353
+msgid "TI-84 Plus T thru DirectLink"
+msgstr "TI-84 Plus T via DirectLink"
 
 #: src/calc_89.c:301 src/calc_89.c:366 src/calc_92.c:254
 #, c-format
@@ -426,12 +430,16 @@ msgstr "Cause: un bug. Envoyez-nous un e-mail !"
 #: src/error.c:126
 msgid "Msg: program or variable is incompatible with this OS version."
 msgstr ""
+"Msg: le programme ou la variable est incompatible avec cette version de l'OS."
 
 #: src/error.c:128
 msgid ""
 "Cause: this variable type may not be supported by the target calculator, or "
 "you may need to upgrade your calculator OS."
 msgstr ""
+"Cause: ce type de variable n'est peut-être pas géré par la calculatrice "
+"cible, ou vous avez peut-être besoin de mettre à jour l'OS de la "
+"calculatrice."
 
 #: src/error.c:134
 msgid "Msg: contents has been refused."
@@ -774,16 +782,16 @@ msgstr "Essai avec TI8X... "
 msgid "Calculator type: %s"
 msgstr " Type de calculatrice: %s"
 
-#: src/ticalcs.c:231
+#: src/ticalcs.c:237
 #, c-format
 msgid "ticalcs library version %s"
 msgstr "librairie ticalcs version %s"
 
-#: src/ticalcs.c:373
+#: src/ticalcs.c:379
 msgid "Link calc handle details:"
 msgstr "Détails du descripteur de calculatrice:"
 
-#: src/ticalcs.c:374
+#: src/ticalcs.c:380
 #, c-format
 msgid "  model   : %s"
 msgstr "  modèle  : %s"

@@ -39,6 +39,7 @@ typedef struct {
 	const char * fext83pce;
 	const char * fext84pce;
 	const char * fext82a;
+	const char * fext84pt;
 	const char * icon;
 	const char * desc;
 } TI83p_DATA;
@@ -101,6 +102,12 @@ static inline const char *ti82a_byte2type(uint8_t data)
 {
 	//if(data >= TI82a_MAXTYPES) tifiles_warning(_("%s: unknown type %02X >= %02X."), __FUNCTION__, data, TI82a_MAXTYPES);
 	return (data < TI82a_MAXTYPES) ? ((TI83p_CONST[data].fext82a[2] != '?') ? TI83p_CONST[data].type : "") : "";
+}
+
+static inline const char *ti84pt_byte2type(uint8_t data)
+{
+	//if(data >= TI84pt_MAXTYPES) tifiles_warning(_("%s: unknown type %02X >= %02X."), __FUNCTION__, data, TI84pt_MAXTYPES);
+	return (data < TI84pt_MAXTYPES) ? ((TI83p_CONST[data].fext84pt[2] != '?') ? TI83p_CONST[data].type : "") : "";
 }
 
 static inline const char *ti89_byte2type(uint8_t data)
@@ -230,6 +237,22 @@ static inline uint8_t ti82a_type2byte(const char *s)
 	return i;
 }
 
+static inline uint8_t ti84pt_type2byte(const char *s)
+{
+	uint8_t i;
+
+	for (i = 0; i < TI84pt_MAXTYPES; i++)
+	{
+		if (!strcmp(TI83p_CONST[i].type, s) && TI83p_CONST[i].fext84pt[2] != '?')
+		{
+			break;
+		}
+	}
+
+	//if (i == maxtypes) tifiles_warning(_("%s: unknown type %s."), __FUNCTION__, s);
+	return i;
+}
+
 static inline uint8_t ti89_type2byte(const char *s)
 {
 	uint8_t i;
@@ -335,6 +358,12 @@ static inline const char *ti82a_byte2fext(uint8_t data)
 {
 	//if(data >= TI82a_MAXTYPES) tifiles_warning(_("%s: unknown type %02X >= %02X."), __FUNCTION__, data, TI82a_MAXTYPES);
 	return (data < TI82a_MAXTYPES) ? TI83p_CONST[data].fext82a : "8X?";
+}
+
+static inline const char *ti84pt_byte2fext(uint8_t data)
+{
+	//if(data >= TI84pt_MAXTYPES) tifiles_warning(_("%s: unknown type %02X >= %02X."), __FUNCTION__, data, TI84pt_MAXTYPES);
+	return (data < TI84pt_MAXTYPES) ? TI83p_CONST[data].fext84pt : "8X?";
 }
 
 static inline const char *ti89_byte2fext(uint8_t data)
@@ -464,6 +493,22 @@ static inline uint8_t ti82a_fext2byte(const char *s)
 	return i;
 }
 
+static inline uint8_t ti84pt_fext2byte(const char *s)
+{
+	uint8_t i;
+
+	for (i = 0; i < TI84pt_MAXTYPES; i++)
+	{
+		if (!g_ascii_strcasecmp(TI83p_CONST[i].fext84pt, s))
+		{
+			break;
+		}
+	}
+
+	//if (i == maxtypes) tifiles_warning(_("%s: unknown fext %s."), __FUNCTION__, s);
+	return i;
+}
+
 static inline uint8_t ti89_fext2byte(const char *s)
 {
 	uint8_t i;
@@ -571,6 +616,12 @@ static inline const char *ti82a_byte2desc(uint8_t data)
 	return (data < TI82a_MAXTYPES) ? ((TI83p_CONST[data].fext82a[2] != '?') ? TI83p_CONST[data].desc : _("Unknown")) : _("Unknown");
 }
 
+static inline const char *ti84pt_byte2desc(uint8_t data)
+{
+	//if(data >= TI84pt_MAXTYPES) tifiles_warning(_("%s: unknown type %02X >= %02X."), __FUNCTION__, data, TI84pt_MAXTYPES);
+	return (data < TI84pt_MAXTYPES) ? ((TI83p_CONST[data].fext84pt[2] != '?') ? TI83p_CONST[data].desc : _("Unknown")) : _("Unknown");
+}
+
 static inline const char *ti89_byte2desc(uint8_t data)
 {
 	//if(data >= TI89_MAXTYPES) tifiles_warning(_("%s: unknown type %02X >= %02X."), __FUNCTION__, data, TI89_MAXTYPES);
@@ -636,6 +687,12 @@ static inline const char *ti82a_byte2icon(uint8_t data)
 {
 	//if(data >= TI82a_MAXTYPES) tifiles_warning(_("%s: unknown type %02X >= %02X."), __FUNCTION__, data, TI82a_MAXTYPES);
 	return (data < TI82a_MAXTYPES) ? ((TI83p_CONST[data].fext82a[2] != '?') ? TI83p_CONST[data].icon : "Unknown") : "Unknown";
+}
+
+static inline const char *ti84pt_byte2icon(uint8_t data)
+{
+	//if(data >= TI84pt_MAXTYPES) tifiles_warning(_("%s: unknown type %02X >= %02X."), __FUNCTION__, data, TI84pt_MAXTYPES);
+	return (data < TI84pt_MAXTYPES) ? ((TI83p_CONST[data].fext84pt[2] != '?') ? TI83p_CONST[data].icon : "Unknown") : "Unknown";
 }
 
 static inline const char *ti89_byte2icon(uint8_t data)

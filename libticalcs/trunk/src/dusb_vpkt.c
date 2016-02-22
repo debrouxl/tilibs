@@ -406,7 +406,7 @@ static void workaround_send(CalcHandle *handle, DUSBRawPacket *raw, DUSBVirtualP
 			ticables_cable_send(handle->cable, buf, 0);
 		}
 	}
-	else if (handle->model == CALC_TI84P_USB || handle->model == CALC_TI84PC_USB || handle->model == CALC_TI82A_USB)
+	else if (handle->model == CALC_TI84P_USB || handle->model == CALC_TI84PC_USB || handle->model == CALC_TI82A_USB || handle->model == CALC_TI84PT_USB)
 	{
 		// A 244-byte (program) variable doesn't require this workaround, but bigger (program) variables do.
 		if (raw->type == DUSB_RPKT_VIRT_DATA_LAST && vtl->size > 244 && (vtl->size % 250) == 244)
@@ -554,7 +554,7 @@ TIEXPORT3 int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 			ticalcs_info("  PC->TI: Virtual Packet Data Final");
 #endif
 			// XXX is that workaround necessary on 83PCE/84+CE/84+CE-T ?
-			if (handle->model != CALC_TI84P_USB && handle->model != CALC_TI84PC_USB && handle->model != CALC_TI82A_USB)
+			if (handle->model != CALC_TI84P_USB && handle->model != CALC_TI84PC_USB && handle->model != CALC_TI82A_USB && handle->model != CALC_TI84PT_USB)
 			{
 				workaround_send(handle, &raw, vtl);
 			}
@@ -586,7 +586,7 @@ static void workaround_recv(CalcHandle *handle, DUSBRawPacket * raw, DUSBVirtual
 			ticables_cable_recv(handle->cable, buf, 0);
 		}
 	}
-	else if (handle->model == CALC_TI84P_USB || handle->model == CALC_TI84PC_USB || handle->model == CALC_TI82A_USB)
+	else if (handle->model == CALC_TI84P_USB || handle->model == CALC_TI84PC_USB || handle->model == CALC_TI82A_USB || handle->model == CALC_TI84PT_USB)
 	{
 		if (((raw->size + 5) % 64) == 0)
 		{

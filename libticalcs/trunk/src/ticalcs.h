@@ -137,13 +137,13 @@ typedef enum
 typedef enum 
 {
 	ROMSIZE_AUTO  = 0,
-	ROMSIZE_48KB  = 48,     /* TI80 */
-	ROMSIZE_128KB = 128,    /* TI82, 85 */
-	ROMSIZE_256KB = 256,    /* TI83, 86 */
-	ROMSIZE_512KB = 512,    /* TI83+ */
-	ROMSIZE_1MB   = 1024,   /* TI84+, TI92 */
-	ROMSIZE_2MB   = 2048,   /* TI83+SE, TI-84+SE, TI89, 92-II, 92+ */
-	ROMSIZE_4MB   = 4096,   /* TI-84+CSE, TI89t, V200 */
+	ROMSIZE_48KB  = 48,     /* TI-80 */
+	ROMSIZE_128KB = 128,    /* TI-82, TI-85 */
+	ROMSIZE_256KB = 256,    /* TI-83, TI-86 */
+	ROMSIZE_512KB = 512,    /* TI-83+ */
+	ROMSIZE_1MB   = 1024,   /* TI-84+, TI-92, TI-82A */
+	ROMSIZE_2MB   = 2048,   /* TI-83+SE, TI-84+SE, TI-89, TI-92 II, TI-92+, TI-84+T */
+	ROMSIZE_4MB   = 4096,   /* TI-84+CSE, TI-89T, V200, TI-83PCE, TI-84+CE */
 } CalcDumpSize;
 
 /**
@@ -186,7 +186,8 @@ typedef enum
 	PRODUCT_ID_NSPIRE_CM_CAS = 0x11,
 	PRODUCT_ID_NSPIRE_CM_NONCAS = 0x12,
 	PRODUCT_ID_TI83PCE = 0x13, // These two similar models use the same ID as well.
-	PRODUCT_ID_TI84PCE = 0x13
+	PRODUCT_ID_TI84PCE = 0x13,
+	PRODUCT_ID_TI84PT = 0x1B
 } CalcProductIDs;
 
 /**

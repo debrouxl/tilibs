@@ -46,12 +46,12 @@ TIEXPORT2 const char *TICALL tifiles_model_to_string(CalcModel model)
 	case CALC_TI85:  return "TI85";
 	case CALC_TI86:  return "TI86";
 	case CALC_TI89:  return "TI89";
-	case CALC_TI89T: return "TI89t";
+	case CALC_TI89T: return "TI89T";
 	case CALC_TI92:  return "TI92";
 	case CALC_TI92P: return "TI92+";
 	case CALC_V200:  return "V200";
 	case CALC_TI84P_USB: return "TI84+ USB";
-	case CALC_TI89T_USB: return "TI89t USB";
+	case CALC_TI89T_USB: return "TI89T USB";
 	case CALC_NSPIRE: return "Nspire";
 	case CALC_TI80: return "TI80";
 	case CALC_TI84PC: return "TI84+CSE";
@@ -59,6 +59,7 @@ TIEXPORT2 const char *TICALL tifiles_model_to_string(CalcModel model)
 	case CALC_TI83PCE_USB: return "TI83PCE USB";
 	case CALC_TI84PCE_USB: return "TI84+CE USB";
 	case CALC_TI82A_USB: return "TI82A USB";
+	case CALC_TI84PT_USB: return "TI84+T USB";
 	default: return "unknown";
 	}
 }
@@ -115,9 +116,9 @@ TIEXPORT2 CalcModel TICALL tifiles_string_to_model(const char *str)
 			|| !g_ascii_strcasecmp(str, "89")
 		       )
 			return CALC_TI89;
-		else if(   !g_ascii_strcasecmp(str, "TI-89t")
-			|| !g_ascii_strcasecmp(str, "TI89t")
-			|| !g_ascii_strcasecmp(str, "89t")
+		else if(   !g_ascii_strcasecmp(str, "TI-89T")
+			|| !g_ascii_strcasecmp(str, "TI89T")
+			|| !g_ascii_strcasecmp(str, "89T")
 		       )
 			return CALC_TI89T;
 		else if(   !g_ascii_strcasecmp(str, "TI-92")
@@ -126,11 +127,11 @@ TIEXPORT2 CalcModel TICALL tifiles_string_to_model(const char *str)
 		       )
 			return CALC_TI92;
 		else if(   !g_ascii_strcasecmp(str, "TI-92+")
-		        || !g_ascii_strcasecmp(str, "TI-92p")
+		        || !g_ascii_strcasecmp(str, "TI-92P")
 		        || !g_ascii_strcasecmp(str, "TI92+")
-		        || !g_ascii_strcasecmp(str, "TI92p")
+		        || !g_ascii_strcasecmp(str, "TI92P")
 		        || !g_ascii_strcasecmp(str, "92+")
-		        || !g_ascii_strcasecmp(str, "92p")
+		        || !g_ascii_strcasecmp(str, "92P")
 		       )
 			return CALC_TI92P;
 		else if(   !g_ascii_strcasecmp(str, "TI-V200")
@@ -143,7 +144,7 @@ TIEXPORT2 CalcModel TICALL tifiles_string_to_model(const char *str)
 			|| !g_ascii_strcasecmp(str, "84+ USB")
 		       )
 			return CALC_TI84P_USB;
-		else if(   !g_ascii_strcasecmp(str, "TI-89t USB")
+		else if(   !g_ascii_strcasecmp(str, "TI-89T USB")
 			|| !g_ascii_strcasecmp(str, "TI89T USB")
 			|| !g_ascii_strcasecmp(str, "89T USB")
 		       )
@@ -195,6 +196,14 @@ TIEXPORT2 CalcModel TICALL tifiles_string_to_model(const char *str)
 			|| !g_ascii_strcasecmp(str, "82A")
 		       )
 			return CALC_TI82A_USB;
+		else if(   !g_ascii_strcasecmp(str, "TI-84+T")
+			|| !g_ascii_strcasecmp(str, "TI-84PT")
+			|| !g_ascii_strcasecmp(str, "TI84+T")
+			|| !g_ascii_strcasecmp(str, "TI84PT")
+			|| !g_ascii_strcasecmp(str, "84+T")
+			|| !g_ascii_strcasecmp(str, "84PT")
+		       )
+			return CALC_TI84PT_USB;
 	}
 
 	return CALC_NONE;

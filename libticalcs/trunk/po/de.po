@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-01-29 19:09+0100\n"
+"POT-Creation-Date: 2016-01-30 16:18+0100\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
@@ -138,6 +138,10 @@ msgstr ""
 
 #: src/calc_84p.c:2282
 msgid "TI-82 Advanced thru DirectLink"
+msgstr ""
+
+#: src/calc_84p.c:2353
+msgid "TI-84 Plus T thru DirectLink"
 msgstr ""
 
 #: src/calc_89.c:301 src/calc_89.c:366 src/calc_92.c:254
@@ -751,16 +755,16 @@ msgstr ""
 msgid "Calculator type: %s"
 msgstr ""
 
-#: src/ticalcs.c:231
+#: src/ticalcs.c:237
 #, c-format
 msgid "ticalcs library version %s"
 msgstr ""
 
-#: src/ticalcs.c:373
+#: src/ticalcs.c:379
 msgid "Link calc handle details:"
 msgstr ""
 
-#: src/ticalcs.c:374
+#: src/ticalcs.c:380
 #, c-format
 msgid "  model   : %s"
 msgstr ""
