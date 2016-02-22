@@ -47,6 +47,10 @@
 //#include "rom80.h"
 #include "romdump.h"
 
+#define SEND_SCR ti80_send_SCR
+#define RECV_ACK ti80_recv_ACK
+#define RECV_XDP ti80_recv_XDP
+
 // Screen coordinates of the TI80
 #define TI80_ROWS  48
 #define TI80_COLS  64
@@ -68,14 +72,14 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_height = TI80_ROWS;
 	sc->pixel_format = CALC_PIXFMT_MONO;
 
-	ret = ti80_send_SCR(handle);
+	ret = SEND_SCR(handle);
 	if (!ret)
 	{
-		ret = ti80_recv_ACK(handle, NULL);
+		ret = RECV_ACK(handle, NULL);
 		if (!ret)
 		{
 			uint16_t max_cnt;
-			ret = ti80_recv_XDP(handle, &max_cnt, handle->buffer);
+			ret = RECV_XDP(handle, &max_cnt, handle->buffer);
 			if (!ret)
 			{
 				int stripe, row, i = 0;

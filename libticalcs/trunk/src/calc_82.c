@@ -47,6 +47,19 @@
 #include "rom82.h"
 #include "romdump.h"
 
+#define SEND_SCR ti82_send_SCR
+#define SEND_ACK ti82_send_ACK
+#define SEND_VAR ti82_send_VAR
+#define SEND_XDP ti82_send_XDP
+#define SEND_CTS ti82_send_CTS
+#define SEND_EOT ti82_send_EOT
+
+#define RECV_ACK ti82_recv_ACK
+#define RECV_VAR ti82_recv_VAR
+#define RECV_XDP ti82_recv_XDP
+#define RECV_SKP ti82_recv_SKP
+#define RECV_ERR ti82_recv_ERR
+
 // Screen coordinates of the TI83
 #define TI82_ROWS  64
 #define TI82_COLS  96
@@ -67,18 +80,18 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_height = TI82_ROWS;
 	sc->pixel_format = CALC_PIXFMT_MONO;
 
-	ret = ti82_send_SCR(handle);
+	ret = SEND_SCR(handle);
 	if (!ret)
 	{
-		ret = ti82_recv_ACK(handle, NULL);
+		ret = RECV_ACK(handle, NULL);
 		if (!ret)
 		{
 			uint16_t max_cnt;
-			ret = ti82_recv_XDP(handle, &max_cnt, *bitmap);
+			ret = RECV_XDP(handle, &max_cnt, *bitmap);
 			if (!ret || ret == ERR_CHECKSUM) // problem with checksum
 			{
 				*bitmap = ticalcs_realloc_screen(*bitmap, TI82_COLS * TI82_ROWS / 8);
-				ret = ti82_send_ACK(handle);
+				ret = SEND_ACK(handle);
 			}
 		}
 	}
@@ -101,7 +114,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
-	int err = 0;
+	int ret = 0;
 	uint16_t length;
 	char varname[9];
 	uint8_t rej_code;
@@ -119,8 +132,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	varname[4] = LSB(content->mem_address);
 	varname[5] = MSB(content->mem_address);
 
-	TRYF(ti82_send_VAR(handle, content->data_length1, TI82_BKUP, varname));
-	TRYF(ti82_recv_ACK(handle, &status));
+	TRYF(SEND_VAR(handle, content->data_length1, TI82_BKUP, varname));
+	TRYF(RECV_ACK(handle, &status));
 
 	do
 	{
@@ -132,11 +145,11 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 			return ERR_ABORT;
 		}
 
-		err = ti82_recv_SKP(handle, &rej_code);
+		ret = RECV_SKP(handle, &rej_code);
 	}
-	while (err == ERROR_READ_TIMEOUT);
+	while (ret == ERROR_READ_TIMEOUT);
 
-	TRYF(ti82_send_ACK(handle));
+	TRYF(SEND_ACK(handle));
 	switch (rej_code)
 	{
 	case REJ_EXIT:
@@ -157,22 +170,22 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	update_->max2 = 3;
 	update_->pbar();
 
-	TRYF(ti82_send_XDP(handle, content->data_length1, content->data_part1));
-	TRYF(ti82_recv_ACK(handle, &status));
+	TRYF(SEND_XDP(handle, content->data_length1, content->data_part1));
+	TRYF(RECV_ACK(handle, &status));
 	update_->cnt2++;
 	update_->pbar();
 
-	TRYF(ti82_send_XDP(handle, content->data_length2, content->data_part2));
-	TRYF(ti82_recv_ACK(handle, &status));
+	TRYF(SEND_XDP(handle, content->data_length2, content->data_part2));
+	TRYF(RECV_ACK(handle, &status));
 	update_->cnt2++;
 	update_->pbar();
 
-	TRYF(ti82_send_XDP(handle, content->data_length3, content->data_part3));
-	TRYF(ti82_recv_ACK(handle, &status));
+	TRYF(SEND_XDP(handle, content->data_length3, content->data_part3));
+	TRYF(RECV_ACK(handle, &status));
 	update_->cnt2++;
 	update_->pbar();
 
-	//TRYF(ti82_send_EOT());
+	//TRYF(SEND_EOT(handle));
 
 	return 0;
 }
@@ -189,14 +202,14 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
 	content->comment[sizeof(content->comment) - 1] = 0;
 
-	TRYF(ti82_recv_VAR(handle, &(content->data_length1), &content->type, varname));
+	TRYF(RECV_VAR(handle, &(content->data_length1), &content->type, varname));
 	content->data_length2 = (uint8_t)varname[0] | (((uint16_t)(uint8_t)varname[1]) << 8);
 	content->data_length3 = (uint8_t)varname[2] | (((uint16_t)(uint8_t)varname[3]) << 8);
 	content->mem_address  = (uint8_t)varname[4] | (((uint16_t)(uint8_t)varname[5]) << 8);
-	TRYF(ti82_send_ACK(handle));
+	TRYF(SEND_ACK(handle));
 
-	TRYF(ti82_send_CTS(handle));
-	TRYF(ti82_recv_ACK(handle, NULL));
+	TRYF(SEND_CTS(handle));
+	TRYF(RECV_ACK(handle, NULL));
 
 	update_->text[0] = 0;
 	update_label();
@@ -206,20 +219,20 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	update_->pbar();
 
 	content->data_part1 = tifiles_ve_alloc_data(65536);
-	TRYF(ti82_recv_XDP(handle, &content->data_length1, content->data_part1));
-	TRYF(ti82_send_ACK(handle));
+	TRYF(RECV_XDP(handle, &content->data_length1, content->data_part1));
+	TRYF(SEND_ACK(handle));
 	update_->cnt2++;
 	update_->pbar();
 
 	content->data_part2 = tifiles_ve_alloc_data(65536);
-	TRYF(ti82_recv_XDP(handle, &content->data_length2, content->data_part2));
-	TRYF(ti82_send_ACK(handle));
+	TRYF(RECV_XDP(handle, &content->data_length2, content->data_part2));
+	TRYF(SEND_ACK(handle));
 	update_->cnt2++;
 	update_->pbar();
 
 	content->data_part3 = tifiles_ve_alloc_data(65536);
-	TRYF(ti82_recv_XDP(handle, &content->data_length3, content->data_part3));
-	TRYF(ti82_send_ACK(handle));
+	TRYF(RECV_XDP(handle, &content->data_length3, content->data_part3));
+	TRYF(SEND_ACK(handle));
 	update_->cnt2++;
 	update_->pbar();
 
@@ -237,7 +250,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	unsigned int i;
-	int err;
+	int ret;
 	uint8_t rej_code;
 	uint16_t status;
 
@@ -254,8 +267,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	{
 		VarEntry *entry = content->entries[i];
 
-		TRYF(ti82_send_VAR(handle, (uint16_t)entry->size, entry->type, entry->name));
-		TRYF(ti82_recv_ACK(handle, &status));
+		TRYF(SEND_VAR(handle, (uint16_t)entry->size, entry->type, entry->name));
+		TRYF(RECV_ACK(handle, &status));
 
 		strncpy(update_->text, _("Waiting for user's action..."), sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
@@ -270,11 +283,11 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 				return ERR_ABORT;
 			}
 
-			err = ti82_recv_SKP(handle, &rej_code);
+			ret = RECV_SKP(handle, &rej_code);
 		}
-		while (err == ERROR_READ_TIMEOUT);
+		while (ret == ERROR_READ_TIMEOUT);
 
-		TRYF(ti82_send_ACK(handle));
+		TRYF(SEND_ACK(handle));
 		switch (rej_code)
 		{
 		case REJ_EXIT:
@@ -296,8 +309,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		ticonv_varname_to_utf8_sn(handle->model, entry->name, update_->text, sizeof(update_->text), entry->type);
 		update_label();
 
-		TRYF(ti82_send_XDP(handle, (uint16_t)entry->size, entry->data));
-		TRYF(ti82_recv_ACK(handle, &status));
+		TRYF(SEND_XDP(handle, (uint16_t)entry->size, entry->data));
+		TRYF(RECV_ACK(handle, &status));
 
 		update_->cnt2 = i+1;
 		update_->max2 = content->num_entries;
@@ -307,13 +320,13 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	if (mode & MODE_SEND_EXEC_ASM)
 	{
 		TRYF(ti82_send_asm_exec(handle, content->entries[0]));
-		TRYF(ti82_recv_ERR(handle, &status));
-		TRYF(ti82_send_ACK(handle));
+		TRYF(RECV_ERR(handle, &status));
+		TRYF(SEND_ACK(handle));
 	}
 	else if ((mode & MODE_SEND_ONE_VAR) || (mode & MODE_SEND_LAST_VAR))
 	{
-		TRYF(ti82_send_EOT(handle));
-		TRYF(ti82_recv_ACK(handle, NULL));
+		TRYF(SEND_EOT(handle));
+		TRYF(RECV_ACK(handle, NULL));
 	}
 
 	return 0;
@@ -322,7 +335,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** vr)
 {
 	int nvar = 0;
-	int err = 0;
+	int ret = 0;
 	uint16_t ve_size;
 
 	strncpy(update_->text, _("Waiting for var(s)..."), sizeof(update_->text) - 1);
@@ -346,31 +359,31 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 				return ERR_ABORT;
 			}
 
-			err = ti82_recv_VAR(handle, &ve_size, &(ve->type), ve->name);
+			ret = RECV_VAR(handle, &ve_size, &(ve->type), ve->name);
 			ve->size = ve_size;
 		}
-		while (err == ERROR_READ_TIMEOUT);
+		while (ret == ERROR_READ_TIMEOUT);
 
-		TRYF(ti82_send_ACK(handle));
-		if (err == ERR_EOT)
+		TRYF(SEND_ACK(handle));
+		if (ret == ERR_EOT)
 		{
 			goto exit;
 		}
-		if (err)
+		if (ret)
 		{
-			return err;
+			return ret;
 		}
 
-		TRYF(ti82_send_CTS(handle));
-		TRYF(ti82_recv_ACK(handle, NULL));
+		TRYF(SEND_CTS(handle));
+		TRYF(RECV_ACK(handle, NULL));
 
 		ticonv_varname_to_utf8_sn(handle->model, ve->name, update_->text, sizeof(update_->text), ve->type);
 		update_label();
 
 		ve->data = tifiles_ve_alloc_data(ve->size);
-		TRYF(ti82_recv_XDP(handle, &ve_size, ve->data));
+		TRYF(RECV_XDP(handle, &ve_size, ve->data));
 		ve->size = ve_size;
-		TRYF(ti82_send_ACK(handle));
+		TRYF(SEND_ACK(handle));
 	}
 
 exit:
