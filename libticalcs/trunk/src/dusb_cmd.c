@@ -1601,8 +1601,22 @@ TIEXPORT3 int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, 
 	}
 	if (action == EID_KEY)
 	{
-		pkt->data[j++] = MSB(code);
-		pkt->data[j++] = LSB(code);
+		// TI-89T: big-endian
+		// TI-84+, two-byte keycode: little-endian
+		//  (keyExtend first, kbdKey second)
+		// TI-84+, one-byte keycode: either order works for Z80 OSes,
+		//  but big-endian is required by eZ80
+
+		if (handle->model == CALC_TI89T_USB || MSB(code) == 0)
+		{
+			pkt->data[j++] = MSB(code);
+			pkt->data[j++] = LSB(code);
+		}
+		else
+		{
+			pkt->data[j++] = LSB(code);
+			pkt->data[j++] = MSB(code);
+		}
 	}
 
 	retval = dusb_send_data(handle, pkt);
