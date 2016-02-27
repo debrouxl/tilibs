@@ -383,76 +383,76 @@
 #define KEY83P_Randm            0xfe3f
 #define KEY83P_Aug              0xfe40
 
-#define KEY83P_OneVar                kE1BT+65
-#define KEY83P_TwoVar                kE1BT+66
-#define KEY83P_LR                    kE1BT+67
-#define KEY83P_LRExp                 kE1BT+68
-#define KEY83P_LRLn                  kE1BT+69
-#define KEY83P_LRPwr                 kE1BT+70
-#define KEY83P_MedMed                kE1BT+71
-#define KEY83P_Quad                  kE1BT+72
-#define KEY83P_ClrLst                kE1BT+73
-#define KEY83P_Hist                  kE1BT+74
-#define KEY83P_xyLine                kE1BT+75
-#define KEY83P_Scatter               kE1BT+76
+#define KEY83P_OneVar                0xfe41
+#define KEY83P_TwoVar                0xfe42
+#define KEY83P_LR                    0xfe43
+#define KEY83P_LRExp                 0xfe44
+#define KEY83P_LRLn                  0xfe45
+#define KEY83P_LRPwr                 0xfe46
+#define KEY83P_MedMed                0xfe47
+#define KEY83P_Quad                  0xfe48
+#define KEY83P_ClrLst                0xfe49
+#define KEY83P_Hist                  0xfe4a
+#define KEY83P_xyLine                0xfe4b
+#define KEY83P_Scatter               0xfe4c
 
-#define KEY83P_mRad                  kE1BT+77
-#define KEY83P_mDeg                  kE1BT+78
-#define KEY83P_mNormF                kE1BT+79
-#define KEY83P_mSci                  kE1BT+80
-#define KEY83P_mEng                  kE1BT+81
-#define KEY83P_mFloat                kE1BT+82
+#define KEY83P_mRad                  0xfe4d
+#define KEY83P_mDeg                  0xfe4e
+#define KEY83P_mNormF                0xfe4f
+#define KEY83P_mSci                  0xfe50
+#define KEY83P_mEng                  0xfe51
+#define KEY83P_mFloat                0xfe52
 
-#define KEY83P_Fix                   kE1BT+83
-#define KEY83P_SplitOn               kE1BT+84
-#define KEY83P_FullScreen            kE1BT+85
-#define KEY83P_Stndrd                kE1BT+86
-#define KEY83P_Param                 kE1BT+87
-#define KEY83P_Polar                 kE1BT+88
-#define KEY83P_SeqG                  kE1BT+89
-#define KEY83P_AFillOn               kE1BT+90
-#define KEY83P_AFillOff              kE1BT+91
-#define KEY83P_ACalcOn               kE1BT+92
-#define KEY83P_ACalcOff              kE1BT+93
-#define KEY83P_FNOn                  kE1BT+94
-#define KEY83P_FNOff                 kE1BT+95
+#define KEY83P_Fix                   0xfe53
+#define KEY83P_SplitOn               0xfe54
+#define KEY83P_FullScreen            0xfe55
+#define KEY83P_Stndrd                0xfe56
+#define KEY83P_Param                 0xfe57
+#define KEY83P_Polar                 0xfe58
+#define KEY83P_SeqG                  0xfe59
+#define KEY83P_AFillOn               0xfe5a
+#define KEY83P_AFillOff              0xfe5b
+#define KEY83P_ACalcOn               0xfe5c
+#define KEY83P_ACalcOff              0xfe5d
+#define KEY83P_FNOn                  0xfe5e
+#define KEY83P_FNOff                 0xfe5f
 
-#define KEY83P_PlotsOn               kE1BT+96
-#define KEY83P_PlotsOff              kE1BT+97
+#define KEY83P_PlotsOn               0xfe60
+#define KEY83P_PlotsOff              0xfe61
 
-#define KEY83P_PixelChg              kE1BT+98
+#define KEY83P_PixelChg              0xfe62
 
-#define KEY83P_SendMBL               kE1BT+99
-#define KEY83P_RecvMBL               kE1BT+100
+#define KEY83P_SendMBL               0xfe63
+#define KEY83P_RecvMBL               0xfe64
 
-#define KEY83P_BoxPlot               kE1BT+101
-#define KEY83P_BoxIcon               kE1BT+102
-#define KEY83P_CrossIcon             kE1BT+103
-#define KEY83P_DotIcon               kE1BT+104
+#define KEY83P_BoxPlot               0xfe65
+#define KEY83P_BoxIcon               0xfe66
+#define KEY83P_CrossIcon             0xfe67
+#define KEY83P_DotIcon               0xfe68
 
 #define kE2BT                  (kE1BT+105)
 
-#define KEY83P_Seqential             kE2BT
-#define KEY83P_SimulG                kE2BT+1
-#define KEY83P_PolarG                kE2BT+2
-#define KEY83P_RectG                 kE2BT+3
-#define KEY83P_CoordOn               kE2BT+4
-#define KEY83P_CoordOff              kE2BT+5
-#define KEY83P_DrawLine              kE2BT+6
-#define KEY83P_DrawDot               kE2BT+7
-#define KEY83P_AxisOn                kE2BT+8
-#define KEY83P_AxisOff               kE2BT+9
-#define KEY83P_GridOn                kE2BT+10
-#define KEY83P_GridOff               kE2BT+11
-#define KEY83P_LblOn                 kE2BT+12
-#define KEY83P_LblOff                kE2BT+13
+#define KEY83P_Seqential             0xfe69
+#define KEY83P_SimulG                0xfe6a
+#define KEY83P_PolarG                0xfe6b
+#define KEY83P_RectG                 0xfe6c
+#define KEY83P_CoordOn               0xfe6d
+#define KEY83P_CoordOff              0xfe6e
+#define KEY83P_DrawLine              0xfe6f
+#define KEY83P_DrawDot               0xfe70
+#define KEY83P_AxisOn                0xfe71
+#define KEY83P_AxisOff               0xfe72
+#define KEY83P_GridOn                0xfe73
+#define KEY83P_GridOff               0xfe74
+#define KEY83P_LblOn                 0xfe75
+#define KEY83P_LblOff                0xfe76
 
-#define KEY83P_L1                    kE2BT+14
-#define KEY83P_L2                    kE2BT+15
-#define KEY83P_L3                    kE2BT+16
-#define KEY83P_L4                    kE2BT+17
-#define KEY83P_L5                    kE2BT+18
-#define KEY83P_L6                    kE2BT+19
+#define KEY83P_L1                    0xfe77
+#define KEY83P_L2                    0xfe78
+#define KEY83P_L3                    0xfe79
+#define KEY83P_L4                    0xfe7a
+#define KEY83P_L5                    0xfe7b
+#define KEY83P_L6                    0xfe7c
 
 // FC (ExtendEcho2) prefixed keys:
 
@@ -548,171 +548,485 @@
 #define KEY83P_Str8             0xfc57
 #define KEY83P_Str9             0xfc58
 #define KEY83P_Str0             0xfc59
-#define KEY83P_FinN                  kE2BT2+90
-#define KEY83P_FinI                  kE2BT2+91
-#define KEY83P_FinPV                 kE2BT2+92
-#define KEY83P_FinPMT                kE2BT2+93
-#define KEY83P_FinFV                 kE2BT2+94
-#define KEY83P_FinPY                 kE2BT2+95
-#define KEY83P_FinCY                 kE2BT2+96
-#define KEY83P_FinFPMT               kE2BT2+97
-#define KEY83P_FinFI                 kE2BT2+98
-#define KEY83P_FinFPV                kE2BT2+99
-#define KEY83P_FinFN                 kE2BT2+100
-#define KEY83P_FinFFV                kE2BT2+101
-#define KEY83P_FinNPV                kE2BT2+102
-#define KEY83P_FinIRR                kE2BT2+103
-#define KEY83P_FinBAL                kE2BT2+104
-#define KEY83P_FinPRN                kE2BT2+105
-#define KEY83P_FinINT                kE2BT2+106
-#define KEY83P_SumX                  kE2BT2+107
-#define KEY83P_SumX2                 kE2BT2+108
-#define KEY83P_FinToNom              kE2BT2+109
-#define KEY83P_FinToEff              kE2BT2+110
-#define KEY83P_FinDBD                kE2BT2+111
-#define KEY83P_StatVP                kE2BT2+112
-#define KEY83P_StatZ                 kE2BT2+113
-#define KEY83P_StatT                 kE2BT2+114
-#define KEY83P_StatChi               kE2BT2+115
-#define KEY83P_StatF                 kE2BT2+116
-#define KEY83P_StatDF                kE2BT2+117
-#define KEY83P_StatPhat              kE2BT2+118
-#define KEY83P_StatPhat1             kE2BT2+119
-#define KEY83P_StatPhat2             kE2BT2+120
-#define KEY83P_StatMeanX1            kE2BT2+121
-#define KEY83P_StatMeanX2            kE2BT2+122
-#define KEY83P_StatStdX1             kE2BT2+123
-#define KEY83P_StatStdX2             kE2BT2+124
-#define KEY83P_StatStdXP             kE2BT2+125
-#define KEY83P_StatN1                kE2BT2+126
-#define KEY83P_StatN2                kE2BT2+127
-#define KEY83P_StatLower             kE2BT2+128
-#define KEY83P_StatUpper             kE2BT2+129
-#define KEY83P_uw0                   kE2BT2+130
-#define KEY83P_Imag                  kE2BT2+131
-#define KEY83P_SumY                  kE2BT2+132
-#define KEY83P_Xres                  kE2BT2+133
-#define KEY83P_Stat_s                kE2BT2+134
-#define KEY83P_SumY2                 kE2BT2+135
-#define KEY83P_SumXY                 kE2BT2+136
-#define KEY83P_uXres                 kE2BT2+137
-#define KEY83P_ModBox		        kE2BT2+138
-#define KEY83P_NormProb	            kE2BT2+139
-#define KEY83P_NormalPDF             kE2BT2+140
-#define KEY83P_TPDF                  kE2BT2+141
-#define KEY83P_ChiPDF                kE2BT2+142
-#define KEY83P_FPDF                  kE2BT2+143
-#define KEY83P_MinY                  kE2BT2+144
-#define KEY83P_RandBin               kE2BT2+145
-#define KEY83P_Ref                   kE2BT2+146
-#define KEY83P_RRef                  kE2BT2+147
-#define KEY83P_LRSqr                 kE2BT2+148
-#define KEY83P_BRSqr                 kE2BT2+149
-#define KEY83P_DiagOn                kE2BT2+150
-#define KEY83P_DiagOff               kE2BT2+151
-#define KEY83P_un1                   kE2BT2+152
-#define KEY83P_vn1                   kE2BT2+153
+#define KEY83P_FinN                  0xfc5a
+#define KEY83P_FinI                  0xfc5b
+#define KEY83P_FinPV                 0xfc5c
+#define KEY83P_FinPMT                0xfc5d
+#define KEY83P_FinFV                 0xfc5e
+#define KEY83P_FinPY                 0xfc5f
+#define KEY83P_FinCY                 0xfc60
+#define KEY83P_FinFPMT               0xfc61
+#define KEY83P_FinFI                 0xfc62
+#define KEY83P_FinFPV                0xfc63
+#define KEY83P_FinFN                 0xfc64
+#define KEY83P_FinFFV                0xfc65
+#define KEY83P_FinNPV                0xfc66
+#define KEY83P_FinIRR                0xfc67
+#define KEY83P_FinBAL                0xfc68
+#define KEY83P_FinPRN                0xfc69
+#define KEY83P_FinINT                0xfc6a
+#define KEY83P_SumX                  0xfc6b
+#define KEY83P_SumX2                 0xfc6c
+#define KEY83P_FinToNom              0xfc6d
+#define KEY83P_FinToEff              0xfc6e
+#define KEY83P_FinDBD                0xfc6f
+#define KEY83P_StatVP                0xfc70
+#define KEY83P_StatZ                 0xfc71
+#define KEY83P_StatT                 0xfc72
+#define KEY83P_StatChi               0xfc73
+#define KEY83P_StatF                 0xfc74
+#define KEY83P_StatDF                0xfc75
+#define KEY83P_StatPhat              0xfc76
+#define KEY83P_StatPhat1             0xfc77
+#define KEY83P_StatPhat2             0xfc78
+#define KEY83P_StatMeanX1            0xfc79
+#define KEY83P_StatMeanX2            0xfc7a
+#define KEY83P_StatStdX1             0xfc7b
+#define KEY83P_StatStdX2             0xfc7c
+#define KEY83P_StatStdXP             0xfc7d
+#define KEY83P_StatN1                0xfc7e
+#define KEY83P_StatN2                0xfc7f
+#define KEY83P_StatLower             0xfc80
+#define KEY83P_StatUpper             0xfc81
+#define KEY83P_uw0                   0xfc82
+#define KEY83P_Imag                  0xfc83
+#define KEY83P_SumY                  0xfc84
+#define KEY83P_Xres                  0xfc85
+#define KEY83P_Stat_s                0xfc86
+#define KEY83P_SumY2                 0xfc87
+#define KEY83P_SumXY                 0xfc88
+#define KEY83P_uXres                 0xfc89
+#define KEY83P_ModBox		        0xfc8a
+#define KEY83P_NormProb	            0xfc8b
+#define KEY83P_NormalPDF             0xfc8c
+#define KEY83P_TPDF                  0xfc8d
+#define KEY83P_ChiPDF                0xfc8e
+#define KEY83P_FPDF                  0xfc8f
+#define KEY83P_MinY                  0xfc90
+#define KEY83P_RandBin               0xfc91
+#define KEY83P_Ref                   0xfc92
+#define KEY83P_RRef                  0xfc93
+#define KEY83P_LRSqr                 0xfc94
+#define KEY83P_BRSqr                 0xfc95
+#define KEY83P_DiagOn                0xfc96
+#define KEY83P_DiagOff               0xfc97
+#define KEY83P_un1                   0xfc98
+#define KEY83P_vn1                   0xfc99
 
 #define k83_00End       		KEY83P_vn1
-#define KEY83P_Archive             k83_00End + 1
-#define KEY83P_Unarchive           k83_00End + 2
-#define KEY83P_Asm                 k83_00End + 3
-#define KEY83P_AsmPrgm             k83_00End + 4
-#define KEY83P_AsmComp             k83_00End + 5
+#define KEY83P_Archive             0xfc9a
+#define KEY83P_Unarchive           0xfc9b
+#define KEY83P_Asm                 0xfc9c
+#define KEY83P_AsmPrgm             0xfc9d
+#define KEY83P_AsmComp             0xfc9e
 
-#define KEY83P_capAAcute	       k83_00End + 6
-#define KEY83P_capAGrave	       k83_00End + 7
-#define KEY83P_capACaret	       k83_00End + 8
-#define KEY83P_capADier	       k83_00End + 9
-#define KEY83P_aAcute		       k83_00End + 10
-#define KEY83P_aGrave		       k83_00End + 11
-#define KEY83P_aCaret		       k83_00End + 12
-#define KEY83P_aDier		       k83_00End + 13
-#define KEY83P_capEAcute	       k83_00End + 14
-#define KEY83P_capEGrave	       k83_00End + 15
-#define KEY83P_capECaret	       k83_00End + 16
-#define KEY83P_capEDier	       k83_00End + 17
-#define KEY83P_eAcute		       k83_00End + 18
-#define KEY83P_eGrave		       k83_00End + 19
-#define KEY83P_eCaret		       k83_00End + 20
-#define KEY83P_eDier		       k83_00End + 21
-#define KEY83P_capIAcute	       k83_00End + 22
-#define KEY83P_capIGrave	       k83_00End + 23
-#define KEY83P_capICaret	       k83_00End + 24
-#define KEY83P_capIDier	       k83_00End + 25
-#define KEY83P_iAcute		       k83_00End + 26
-#define KEY83P_iGrave		       k83_00End + 27
-#define KEY83P_iCaret		       k83_00End + 28
-#define KEY83P_iDier		       k83_00End + 29
-#define KEY83P_capOAcute	       k83_00End + 30
-#define KEY83P_capOGrave	       k83_00End + 31
-#define KEY83P_capOCaret	       k83_00End + 32
-#define KEY83P_capODier	       k83_00End + 33
-#define KEY83P_oAcute		       k83_00End + 34
-#define KEY83P_oGrave		       k83_00End + 35
-#define KEY83P_oCaret		       k83_00End + 36
-#define KEY83P_oDier		       k83_00End + 37
-#define KEY83P_capUAcute	       k83_00End + 38
-#define KEY83P_capUGrave	       k83_00End + 39
-#define KEY83P_capUCaret	       k83_00End + 40
-#define KEY83P_capUDier	       k83_00End + 41
-#define KEY83P_uAcute		       k83_00End + 42
-#define KEY83P_uGrave		       k83_00End + 43
-#define KEY83P_uCaret		       k83_00End + 44
-#define KEY83P_uDier		       k83_00End + 45
-#define KEY83P_capCCed	       k83_00End + 46
-#define KEY83P_cCed		       k83_00End + 47
-#define KEY83P_capNTilde	       k83_00End + 48
-#define KEY83P_nTilde		       k83_00End + 49
-#define KEY83P_accent		       k83_00End + 50
-#define KEY83P_grave		       k83_00End + 51
-#define KEY83P_dieresis	       k83_00End + 52
-#define KEY83P_quesDown	       k83_00End + 53
-#define KEY83P_exclamDown            k83_00End + 54
-#define KEY83P_alpha                 k83_00End + 55
-#define KEY83P_beta                 k83_00End +  56
-#define KEY83P_gamma                k83_00End +  57
-#define KEY83P_capDelta             k83_00End +  58
-#define KEY83P_delta                k83_00End +  59
-#define KEY83P_epsilon              k83_00End +  60
-#define KEY83P_lambda               k83_00End +  61
-#define KEY83P_mu                   k83_00End +  62
-#define KEY83P_pi2                  k83_00End +  63
-#define KEY83P_rho                  k83_00End +  64
-#define KEY83P_capSigma             k83_00End +  65
-#define KEY83P_sigma                k83_00End +  66
-#define KEY83P_tau                  k83_00End +  67
-#define KEY83P_phi                  k83_00End +  68
-#define KEY83P_capOmega             k83_00End +  69
-#define KEY83P_phat                 k83_00End +  70
-#define KEY83P_chi2                 k83_00End +  71
-#define KEY83P_statF2               k83_00End +  72
-#define KEY83P_La		     k83_00End + 73
-#define KEY83P_Lb		     k83_00End + 74
-#define KEY83P_Lc		     k83_00End + 75
-#define KEY83P_Ld		     k83_00End + 76
-#define KEY83P_Le		     k83_00End + 77
-#define KEY83P_Lf		     k83_00End + 78
-#define KEY83P_Lg		     k83_00End + 79
-#define KEY83P_Lh		     k83_00End + 80
-#define KEY83P_Li		     k83_00End + 81
-#define KEY83P_Lj		     k83_00End + 82
-#define KEY83P_Lk		     k83_00End + 83
-#define KEY83P_Ll		     k83_00End + 84
-#define KEY83P_Lm		     k83_00End + 85
-#define KEY83P_Lsmalln	    k83_00End +  86
-#define KEY83P_Lo		    k83_00End +  87
-#define KEY83P_Lp		    k83_00End +  88
-#define KEY83P_Lq		    k83_00End +  89
-#define KEY83P_Lsmallr	   k83_00End +  90
-#define KEY83P_Ls		    k83_00End +  91
-#define KEY83P_Lt		    k83_00End +  92
-#define KEY83P_Lu		    k83_00End +  93
-#define KEY83P_Lv		    k83_00End +  94
-#define KEY83P_Lw		    k83_00End +  95
-#define KEY83P_Lx		    k83_00End +  96
-#define KEY83P_Ly		    k83_00End +  97
-#define KEY83P_Lz		    k83_00End +  98
-#define KEY83P_GarbageC	  k83_00End +  99
+#define KEY83P_capAAcute	       0xfc9f
+#define KEY83P_capAGrave	       0xfca0
+#define KEY83P_capACaret	       0xfca1
+#define KEY83P_capADier	       0xfca2
+#define KEY83P_aAcute		       0xfca3
+#define KEY83P_aGrave		       0xfca4
+#define KEY83P_aCaret		       0xfca5
+#define KEY83P_aDier		       0xfca6
+#define KEY83P_capEAcute	       0xfca7
+#define KEY83P_capEGrave	       0xfca8
+#define KEY83P_capECaret	       0xfca9
+#define KEY83P_capEDier	       0xfcaa
+#define KEY83P_eAcute		       0xfcab
+#define KEY83P_eGrave		       0xfcac
+#define KEY83P_eCaret		       0xfcad
+#define KEY83P_eDier		       0xfcae
+#define KEY83P_capIAcute	       0xfcaf
+#define KEY83P_capIGrave	       0xfcb0
+#define KEY83P_capICaret	       0xfcb1
+#define KEY83P_capIDier	       0xfcb2
+#define KEY83P_iAcute		       0xfcb3
+#define KEY83P_iGrave		       0xfcb4
+#define KEY83P_iCaret		       0xfcb5
+#define KEY83P_iDier		       0xfcb6
+#define KEY83P_capOAcute	       0xfcb7
+#define KEY83P_capOGrave	       0xfcb8
+#define KEY83P_capOCaret	       0xfcb9
+#define KEY83P_capODier	       0xfcba
+#define KEY83P_oAcute		       0xfcbb
+#define KEY83P_oGrave		       0xfcbc
+#define KEY83P_oCaret		       0xfcbd
+#define KEY83P_oDier		       0xfcbe
+#define KEY83P_capUAcute	       0xfcbf
+#define KEY83P_capUGrave	       0xfcc0
+#define KEY83P_capUCaret	       0xfcc1
+#define KEY83P_capUDier	       0xfcc2
+#define KEY83P_uAcute		       0xfcc3
+#define KEY83P_uGrave		       0xfcc4
+#define KEY83P_uCaret		       0xfcc5
+#define KEY83P_uDier		       0xfcc6
+#define KEY83P_capCCed	       0xfcc7
+#define KEY83P_cCed		       0xfcc8
+#define KEY83P_capNTilde	       0xfcc9
+#define KEY83P_nTilde		       0xfcca
+#define KEY83P_accent		       0xfccb
+#define KEY83P_grave		       0xfccc
+#define KEY83P_dieresis	       0xfccd
+#define KEY83P_quesDown	       0xfcce
+#define KEY83P_exclamDown            0xfccf
+#define KEY83P_alpha                 0xfcd0
+#define KEY83P_beta                 0xfcd1
+#define KEY83P_gamma                0xfcd2
+#define KEY83P_capDelta             0xfcd3
+#define KEY83P_delta                0xfcd4
+#define KEY83P_epsilon              0xfcd5
+#define KEY83P_lambda               0xfcd6
+#define KEY83P_mu                   0xfcd7
+#define KEY83P_pi2                  0xfcd8
+#define KEY83P_rho                  0xfcd9
+#define KEY83P_capSigma             0xfcda
+#define KEY83P_sigma                0xfcdb
+#define KEY83P_tau                  0xfcdc
+#define KEY83P_phi                  0xfcdd
+#define KEY83P_capOmega             0xfcde
+#define KEY83P_phat                 0xfcdf
+#define KEY83P_chi2                 0xfce0
+#define KEY83P_statF2               0xfce1
+#define KEY83P_La		     0xfce2
+#define KEY83P_Lb		     0xfce3
+#define KEY83P_Lc		     0xfce4
+#define KEY83P_Ld		     0xfce5
+#define KEY83P_Le		     0xfce6
+#define KEY83P_Lf		     0xfce7
+#define KEY83P_Lg		     0xfce8
+#define KEY83P_Lh		     0xfce9
+#define KEY83P_Li		     0xfcea
+#define KEY83P_Lj		     0xfceb
+#define KEY83P_Lk		     0xfcec
+#define KEY83P_Ll		     0xfced
+#define KEY83P_Lm		     0xfcee
+#define KEY83P_Lsmalln	    0xfcef
+#define KEY83P_Lo		    0xfcf0
+#define KEY83P_Lp		    0xfcf1
+#define KEY83P_Lq		    0xfcf2
+#define KEY83P_Lsmallr	   0xfcf3
+#define KEY83P_Ls		    0xfcf4
+#define KEY83P_Lt		    0xfcf5
+#define KEY83P_Lu		    0xfcf6
+#define KEY83P_Lv		    0xfcf7
+#define KEY83P_Lw		    0xfcf8
+#define KEY83P_Lx		    0xfcf9
+#define KEY83P_Ly		    0xfcfa
+#define KEY83P_Lz		    0xfcfb
+#define KEY83P_GarbageC	  0xfcfc
+
+// Key codes added in OS 1.15
+
+#define KEY83P_Backspace     0x21
+
+#define KEY83P_Reserved      0xFB01
+#define KEY83P_AtSign        0xFB02
+#define KEY83P_Pound         0xFB03
+#define KEY83P_Dollar        0xFB04
+#define KEY83P_Ampersand     0xFB05
+#define KEY83P_BackQuote     0xFB06
+#define KEY83P_Semicolon     0xFB07
+#define KEY83P_BackSlash     0xFB08
+#define KEY83P_VertSlash     0xFB09
+#define KEY83P_Underscore    0xFB0A
+#define KEY83P_Tilde         0xFB0B
+#define KEY83P_Percent       0xFB0C
+#define KEY83P_Tab           0xFB0D
+#define KEY83P_ShftTaB       0xFB0E
+#define KEY83P_ShftDel       0xFB0F
+#define KEY83P_ShftBack      0xFB10
+#define KEY83P_ShftPgUp      0xFB11
+#define KEY83P_ShftPgDn      0xFB12
+#define KEY83P_ShftLeft      0xFB13
+#define KEY83P_ShftRight     0xFB14
+#define KEY83P_ShftUp        0xFB15
+#define KEY83P_ShftDn        0xFB16
+#define KEY83P_DiaAdd        0xFB17
+#define KEY83P_DiaSub        0xFB18
+#define KEY83P_DiaTilde      0xFB19
+#define KEY83P_DiaDiv        0xFB1A
+#define KEY83P_DiaBkSlash    0xFB1B
+#define KEY83P_DiaColon      0xFB1C
+#define KEY83P_DiaQuote      0xFB1D
+#define KEY83P_DiaLBrack     0xFB1E
+#define KEY83P_DiaRBrack     0xFB1F
+#define KEY83P_DiaBkSpace    0xFB20
+#define KEY83P_DiaEnter      0xFB21
+#define KEY83P_DiaComma      0xFB22
+#define KEY83P_DiaDel        0xFB23
+#define KEY83P_DiaDecPnt     0xFB24
+#define KEY83P_Dia0          0xFB25
+#define KEY83P_Dia1          0xFB26
+#define KEY83P_Dia2          0xFB27
+#define KEY83P_Dia3          0xFB28
+#define KEY83P_Dia4          0xFB29
+#define KEY83P_Dia5          0xFB2A
+#define KEY83P_Dia6          0xFB2B
+#define KEY83P_Dia7          0xFB2C
+#define KEY83P_Dia8          0xFB2D
+#define KEY83P_Dia9          0xFB2E
+#define KEY83P_DiaTab        0xFB2F
+#define KEY83P_DiaSpace      0xFB30
+#define KEY83P_DiaA          0xFB31
+#define KEY83P_DiaB          0xFB32
+#define KEY83P_DiaC          0xFB33
+#define KEY83P_DiaD          0xFB34
+#define KEY83P_DiaE          0xFB35
+#define KEY83P_DiaF          0xFB36
+#define KEY83P_DiaG          0xFB37
+#define KEY83P_DiaH          0xFB38
+#define KEY83P_DiaI          0xFB39
+#define KEY83P_DiaJ          0xFB3A
+#define KEY83P_DiaK          0xFB3B
+#define KEY83P_DiaL          0xFB3C
+#define KEY83P_DiaM          0xFB3D
+#define KEY83P_DiaN          0xFB3E
+#define KEY83P_DiaO          0xFB3F
+#define KEY83P_DiaP          0xFB40
+#define KEY83P_DiaQ          0xFB41
+#define KEY83P_DiaR          0xFB42
+#define KEY83P_DiaS          0xFB43
+#define KEY83P_DiaT          0xFB44
+#define KEY83P_DiaU          0xFB45
+#define KEY83P_DiaV          0xFB46
+#define KEY83P_DiaW          0xFB47
+#define KEY83P_DiaX          0xFB48
+#define KEY83P_DiaY          0xFB49
+#define KEY83P_DiaZ          0xFB4A
+#define KEY83P_DiaPgUp       0xFB4B
+#define KEY83P_DiaPgDn       0xFB4C
+#define KEY83P_DiaLeft       0xFB4D
+#define KEY83P_DiaRight      0xFB4E
+#define KEY83P_DiaUp         0xFB4F
+#define KEY83P_DiaDn         0xFB50
+#define KEY83P_SqrAdd        0xFB51
+#define KEY83P_SqrSub        0xFB52
+#define KEY83P_SqrTilde      0xFB53
+#define KEY83P_SqrDiv        0xFB54
+#define KEY83P_SqrBkSlash    0xFB55
+#define KEY83P_SqrColon      0xFB56
+#define KEY83P_SqrQuote      0xFB57
+#define KEY83P_SqrLBrack     0xFB58
+#define KEY83P_SqrRBrack     0xFB59
+#define KEY83P_SqrBkSpace    0xFB5A
+#define KEY83P_SqrEnter      0xFB5B
+#define KEY83P_SqrComma      0xFB5C
+#define KEY83P_SqrDel        0xFB5D
+#define KEY83P_SqrDecPnt     0xFB5E
+#define KEY83P_Sqr0          0xFB5F
+#define KEY83P_Sqr1          0xFB60
+#define KEY83P_Sqr2          0xFB61
+#define KEY83P_Sqr3          0xFB62
+#define KEY83P_Sqr4          0xFB63
+#define KEY83P_Sqr5          0xFB64
+#define KEY83P_Sqr6          0xFB65
+#define KEY83P_Sqr7          0xFB66
+#define KEY83P_Sqr8          0xFB67
+#define KEY83P_Sqr9          0xFB68
+#define KEY83P_SqrTab        0xFB69
+#define KEY83P_SqrSpace      0xFB6A
+#define KEY83P_SqrA          0xFB6B
+#define KEY83P_SqrB          0xFB6C
+#define KEY83P_SqrC          0xFB6D
+#define KEY83P_SqrD          0xFB6E
+#define KEY83P_SqrE          0xFB6F
+#define KEY83P_SqrF          0xFB70
+#define KEY83P_SqrG          0xFB71
+#define KEY83P_SqrH          0xFB72
+#define KEY83P_SqrI          0xFB73
+#define KEY83P_SqrJ          0xFB74
+#define KEY83P_SqrK          0xFB75
+#define KEY83P_SqrL          0xFB76
+#define KEY83P_SqrM          0xFB77
+#define KEY83P_SqrN          0xFB78
+#define KEY83P_SqrO          0xFB79
+#define KEY83P_SqrP          0xFB7A
+#define KEY83P_SqrQ          0xFB7B
+#define KEY83P_SqrR          0xFB7C
+#define KEY83P_SqrS          0xFB7D
+#define KEY83P_SquareT       0xFB7E
+#define KEY83P_SqrU          0xFB7F
+#define KEY83P_SqrV          0xFB80
+#define KEY83P_SqrW          0xFB81
+#define KEY83P_SqrX          0xFB82
+#define KEY83P_SqrY          0xFB83
+#define KEY83P_SqrZ          0xFB84
+#define KEY83P_SqrPgUp       0xFB85
+#define KEY83P_SqrPgDn       0xFB86
+#define KEY83P_SqrLeft       0xFB87
+#define KEY83P_SqrRight      0xFB88
+#define KEY83P_SqrUp         0xFB89
+#define KEY83P_SqrDn         0xFB8A
+#define KEY83P_UnDef         0xFB8B
+
+// Key codes added in OS 1.16
+
+#define KEY83P_Lellipsis               0xFB8C
+#define KEY83P_Langle                  0xFB8D
+#define KEY83P_Lss                     0xFB8E
+#define KEY83P_LsupX                   0xFB8F
+#define KEY83P_LsubT                   0xFB90
+#define KEY83P_Lsub0                   0xFB91
+#define KEY83P_Lsub1                   0xFB92
+#define KEY83P_Lsub2                   0xFB93
+#define KEY83P_Lsub3                   0xFB94
+#define KEY83P_Lsub4                   0xFB95
+#define KEY83P_Lsub5                   0xFB96
+#define KEY83P_Lsub6                   0xFB97
+#define KEY83P_Lsub7                   0xFB98
+#define KEY83P_Lsub8                   0xFB99
+#define KEY83P_Lsub9                   0xFB9A
+#define KEY83P_Lten                    0xFB9B
+#define KEY83P_Lleft                   0xFB9C
+#define KEY83P_Lconvert                0xFB9D
+#define KEY83P_LupArrow                0xFB9E
+#define KEY83P_LdownArrow              0xFB9F
+#define KEY83P_Lcross                  0xFBA0
+#define KEY83P_Lintegral               0xFBA1
+#define KEY83P_LsqUp                   0xFBA2
+#define KEY83P_LsqDown                 0xFBA3
+#define KEY83P_Lroot                   0xFBA4
+#define KEY83P_LinvEQ                  0xFBA5
+
+// Key codes added in OS 2.21 (TI-84+)
+
+#define KEY84P_SetDate                 0xFBA6
+#define KEY84P_SetTime                 0xFBA7
+#define KEY84P_CheckTmr                0xFBA8
+#define KEY84P_SetDtFmt                0xFBA9
+#define KEY84P_SetTmFmt                0xFBAA
+#define KEY84P_TimeCnv                 0xFBAB
+#define KEY84P_DayOfWk                 0xFBAC
+#define KEY84P_GetDtStr                0xFBAD
+#define KEY84P_GetTmStr                0xFBAE
+#define KEY84P_GetDate                 0xFBAF
+#define KEY84P_GetTime                 0xFBB0
+#define KEY84P_StartTmr                0xFBB1
+#define KEY84P_GetDtFmt                0xFBB2
+#define KEY84P_GetTmFmt                0xFBB3
+#define KEY84P_IsClockOn               0xFBB4
+#define KEY84P_ClockOff                0xFBB5
+#define KEY84P_ClockOn                 0xFBB6
+#define KEY84P_OpenLib                 0xFBB7
+#define KEY84P_ExecLib                 0xFBB8
+
+// Key codes added in OS 2.30
+
+#define KEY84P_InvT                    0xFBB9
+#define KEY84P_Chi2GOFTest             0xFBBA
+#define KEY84P_LinRegTInt              0xFBBB
+// BC: unknown
+#define KEY84P_ManualFit               0xFBBD
+
+// Key codes for OS 2.53MP / 2.54MP only
+// (note that these conflict with earlier and later OSes)
+
+#define KEY84P_253_LogBASE             0xFBBC
+#define KEY84P_253_SumSeq              0xFBBD
+// BE: unknown
+#define KEY84P_253_FracSlash           0xFBBF
+#define KEY84P_253_Unit                0xFBC0
+#define KEY84P_253_MixSimp             0xFBC1
+#define KEY84P_253_FracDec             0xFBC2
+#define KEY84P_253_Remainder           0xFBC3
+#define KEY84P_253_RandIntNoRep        0xFBC4
+// C5: unknown
+#define KEY84P_253_Placeholder         0xFBC6
+#define KEY84P_253_MATHPRINT           0xFBC7
+#define KEY84P_253_CLASSIC             0xFBC8
+#define KEY84P_253_SimpleMode          0xFBC9
+#define KEY84P_253_MixedMode           0xFBCA
+#define KEY84P_253_AUTO                0xFBCB
+#define KEY84P_253_DEC                 0xFBCC
+#define KEY84P_253_FRAC                0xFBCD
+#define KEY84P_253_ZQuadrant1          0xFBCE
+#define KEY84P_253_ZFracOneHalf        0xFBCF
+#define KEY84P_253_ZFracOneThird       0xFBD0
+#define KEY84P_253_ZFracOneQuarter     0xFBD1
+#define KEY84P_253_ZFracOneFifth       0xFBD2
+#define KEY84P_253_ZFracOneEighth      0xFBD3
+#define KEY84P_253_ZFracOneTenth       0xFBD4
+// D5: unknown
+#define KEY84P_253_ManualFit           0xFBD6
+
+// Key codes added in OS 2.55MP
+
+// BE: unknown
+// BF: unknown
+#define KEY84P_ZQuadrant1              0xFBC0
+#define KEY84P_ZFracOneHalf            0xFBC1
+#define KEY84P_ZFracOneThird           0xFBC2
+#define KEY84P_ZFracOneQuarter         0xFBC3
+#define KEY84P_ZFracOneFifth           0xFBC4
+#define KEY84P_ZFracOneEighth          0xFBC5
+#define KEY84P_ZFracOneTenth           0xFBC6
+#define KEY84P_LogBASE                 0xFBC7
+#define KEY84P_SumSeq                  0xFBC8
+// C9: unknown
+#define KEY84P_FracSlash               0xFBCA
+#define KEY84P_Unit                    0xFBCB
+#define KEY84P_MixSimp                 0xFBCC
+#define KEY84P_FracDec                 0xFBCD
+#define KEY84P_Remainder               0xFBCE
+#define KEY84P_RandIntNoRep            0xFBCF
+// D0: unknown
+#define KEY84P_Placeholder             0xFBD1
+#define KEY84P_MATHPRINT               0xFBD2
+#define KEY84P_CLASSIC                 0xFBD3
+#define KEY84P_SimpleMode              0xFBD4
+#define KEY84P_MixedMode               0xFBD5
+#define KEY84P_AUTO                    0xFBD6
+#define KEY84P_DEC                     0xFBD7
+#define KEY84P_FRAC                    0xFBD8
+#define KEY84P_STATWIZARD_ON           0xFBD9
+#define KEY84P_STATWIZARD_OFF          0xFBDA
+
+// Key codes added in OS 4.0 (TI-84+CSE)
+
+#define KEY84PC_BLUE                   0xFBDB
+#define KEY84PC_RED                    0xFBDC
+#define KEY84PC_BLACK                  0xFBDD
+#define KEY84PC_MAGENTA                0xFBDE
+#define KEY84PC_GREEN                  0xFBDF
+#define KEY84PC_ORANGE                 0xFBE0
+#define KEY84PC_BROWN                  0xFBE1
+#define KEY84PC_NAVY                   0xFBE2
+#define KEY84PC_LTBLUE                 0xFBE3
+#define KEY84PC_YELLOW                 0xFBE4
+#define KEY84PC_WHITE                  0xFBE5
+#define KEY84PC_LTGRAY                 0xFBE6
+#define KEY84PC_MEDGRAY                0xFBE7
+#define KEY84PC_GRAY                   0xFBE8
+#define KEY84PC_DARKGRAY               0xFBE9
+#define KEY84PC_Image1                 0xFBEA
+#define KEY84PC_Image2                 0xFBEB
+#define KEY84PC_Image3                 0xFBEC
+#define KEY84PC_Image4                 0xFBED
+#define KEY84PC_Image5                 0xFBEE
+#define KEY84PC_Image6                 0xFBEF
+#define KEY84PC_Image7                 0xFBF0
+#define KEY84PC_Image8                 0xFBF1
+#define KEY84PC_Image9                 0xFBF2
+#define KEY84PC_Image0                 0xFBF3
+#define KEY84PC_GridLine               0xFBF4
+#define KEY84PC_BackgroundOn           0xFBF5
+#define KEY84PC_BackgroundOff          0xFBF6
+#define KEY84PC_GraphColor             0xFBF7
+#define KEY84PC_QuickPlotAndFitEq      0xFBF8
+
+#define KEY84PC_TextColor              0xFA01
+#define KEY84PC_Asm84PCPrgm            0xFA02
+#define KEY84PC_DetectAsymOn           0xFA03
+#define KEY84PC_DetectAsymOff          0xFA04
+#define KEY84PC_BorderColor            0xFA05
+#define KEY84PC_SmallDotIcon           0xFA06
+#define KEY84PC_Thin                   0xFA07
+#define KEY84PC_DotThin                0xFA08
+
+// Key codes added in OS 5.0 (TI-84+CE)
+
+// 09-14: unknown
+#define KEY84PCE_PlySmlt2              0xFA15
+#define KEY84PCE_Asm84CEPrgm           0xFA16
 
 #endif
