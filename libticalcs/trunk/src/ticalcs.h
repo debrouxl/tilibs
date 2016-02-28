@@ -760,10 +760,10 @@ typedef struct
 	/*********************/
 
 	// ticalcs.c
-	TIEXPORT3 const char* TICALL ticalcs_version_get (void);
-	TIEXPORT3 uint32_t    TICALL ticalcs_supported_calcs (void);
+	TIEXPORT3 const char* TICALL ticalcs_version_get(void);
+	TIEXPORT3 uint32_t    TICALL ticalcs_supported_calcs(void);
 
-	TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel);
+	TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model);
 	TIEXPORT3 int         TICALL ticalcs_handle_del(CalcHandle *handle);
 	TIEXPORT3 int         TICALL ticalcs_handle_show(CalcHandle *handle);
 
@@ -771,6 +771,10 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle *handle);
 
 	TIEXPORT3 int TICALL ticalcs_update_set(CalcHandle *handle, CalcUpdate*);
+
+	TIEXPORT3 int TICALL ticalcs_model_supports_dbus(CalcModel model);
+	TIEXPORT3 int TICALL ticalcs_model_supports_dusb(CalcModel model);
+	TIEXPORT3 int TICALL ticalcs_model_supports_nsp(CalcModel model);
 
 	// error.c
 	TIEXPORT3 int         TICALL ticalcs_error_get (int number, char **message);

@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 
   utf8 = ticonv_varname_to_utf8(CALC_TI92, ti92_varname, -1);
   printf("UTF-8 varname: &lt;%s&gt; (%i)\n", ti92_varname, (int)strlen(ti92_varname));
-  g_free(utf8);
+  ticonv_utf8_free(utf8);
 }</pre>
 That's all !<br><br>
 <strong>NOTE</strong>: for this example to work, you probably have to add compiler options related to the include path and library path, e.g.

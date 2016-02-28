@@ -37,10 +37,6 @@
 #include "ticonv.h"
 #include "charset.h"
 
-#define TIE		TIEXPORT4
-#define TIC		TICALL
-
-
 /* This is a version of tifiles_string_to_model without the "USB" variants
    which don't make much sense for charset use. And we can't use tifiles
    functions here anyway (otherwise we'd have a circular dependency). */
@@ -90,7 +86,7 @@ static CalcModel ticonv_string_to_model(const char *str)
 
 /* Allocate descriptor for code conversion from codeset FROMCODE to
    codeset TOCODE.  */
-TIE ticonv_iconv_t TIC ticonv_iconv_open (const char *tocode, const char *fromcode)
+TIEXPORT4 ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const char *fromcode)
 {
   ticonv_iconv_t cd;
   cd.src_calc=ticonv_string_to_model(fromcode);
@@ -104,7 +100,7 @@ TIE ticonv_iconv_t TIC ticonv_iconv_open (const char *tocode, const char *fromco
 /* Convert at most *INBYTESLEFT bytes from *INBUF according to the
    code conversion algorithm specified by CD and place up to
    *OUTBYTESLEFT bytes in buffer at *OUTBUF.  */
-TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
+TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
                              size_t *__restrict inbytesleft,
                              char **__restrict outbuf,
                              size_t *__restrict outbytesleft)
@@ -143,7 +139,7 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
         temp=g_realloc(temp,(tempsize+temp2size)<<1);
         memcpy(temp+tempsize,temp2,temp2size);
         tempsize+=temp2size;
-        g_free(temp2);
+        ticonv_utf16_free(temp2);
       }
       g_free(input);
       iconv_src=temp;
@@ -268,10 +264,10 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
           if (!*p) *p='_';
         }
         l1=strlen(tmp1);
-        g_free(tmp1);
+        ticonv_ti_free(tmp1);
         tmp2=ticonv_charset_utf16_to_ti(cd.src_calc,temp);
         l2=strlen(tmp2);
-        g_free(tmp2);
+        ticonv_ti_free(tmp2);
         *inbuf+=l2-l1;
         *inbytesleft-=l2-l1;
       } else {
@@ -282,13 +278,13 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
       *inbuf=iconv_src;
       *inbytesleft=iconv_inbytes;
     }
-    g_free(temp);
+    ticonv_utf16_free(temp);
     return result;
   }
 }
 
 /* Free resources allocated for descriptor CD for code conversion.  */
-TIE int TIC ticonv_iconv_close (ticonv_iconv_t cd)
+TIEXPORT4 int TICALL ticonv_iconv_close (ticonv_iconv_t cd)
 {
   return iconv_close(cd.iconv_desc);
 }

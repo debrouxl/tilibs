@@ -42,13 +42,7 @@
  **/
 TIEXPORT2 int TICALL tifiles_calc_is_ti8x(CalcModel model)
 {
-	return ((model == CALC_TI73) || (model == CALC_TI82) ||
-	        (model == CALC_TI82) || (model == CALC_TI83) ||
-	        (model == CALC_TI83P) || (model == CALC_TI84P) ||
-	        (model == CALC_TI85) || (model == CALC_TI86) ||
-	        (model == CALC_TI84P_USB) || (model == CALC_TI84PC) ||
-	        (model == CALC_TI84PC_USB) || (model == CALC_TI83PCE_USB) ||
-	        (model == CALC_TI84PCE_USB) ||(model == CALC_TI82A_USB));
+	return ticonv_model_is_tiz80(model) || ticonv_model_is_tiez80(model);
 }
 
 /**
@@ -61,9 +55,7 @@ TIEXPORT2 int TICALL tifiles_calc_is_ti8x(CalcModel model)
  **/
 TIEXPORT2 int TICALL tifiles_calc_is_ti9x(CalcModel model)
 {
-	return ((model == CALC_TI89) || (model == CALC_TI89T) ||
-	        (model == CALC_TI92) || (model == CALC_TI92P) || (model == CALC_V200) ||
-	        (model == CALC_TI89T_USB));
+	return ticonv_model_is_ti68k(model);
 }
 
 /**
@@ -87,7 +79,7 @@ TIEXPORT2 int TICALL tifiles_calc_are_compat(CalcModel model, CalcModel ref)
 	{
 		return !0;
 	}
-	else if ((model == CALC_NSPIRE) && (ref == CALC_NSPIRE))
+	else if (ticonv_model_is_tinspire(model) && ticonv_model_is_tinspire(ref))
 	{
 		return !0;
 	}

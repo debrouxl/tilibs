@@ -227,25 +227,21 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
  **/
 TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned short *utf16)
 {
+	char * out = NULL;
 	if (utf16 != NULL)
 	{
 		char * ti = g_malloc0(4*ticonv_utf16_strlen(utf16) + 1);	// upper bound
-		char * out = ticonv_charset_utf16_to_ti_s(model, utf16, ti);
-		if (out != NULL)
+		out = ticonv_charset_utf16_to_ti_s(model, utf16, ti);
+		if (out == NULL)
 		{
-			return out;
-		}
-		else
-		{
-			g_free(ti);
-			return NULL;
+			ticonv_ti_free(ti);
 		}
 	}
 	else
 	{
 		g_critical("%s: utf16 is NULL", __FUNCTION__);
-		return NULL;
 	}
+	return out;
 }
 
 /**
@@ -324,26 +320,21 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
  **/
 TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti)
 {
+	unsigned short * out = NULL;
 	if (ti != NULL)
 	{
 		unsigned short * utf16 = g_malloc0(4 * strlen(ti) + 2);	// upper bound
-		unsigned short * out = ticonv_charset_ti_to_utf16_s(model, ti, utf16);
-		if (out != NULL)
+		out = ticonv_charset_ti_to_utf16_s(model, ti, utf16);
+		if (out == NULL)
 		{
-			return out;
+			ticonv_utf16_free(utf16);
 		}
-		else
-		{
-			g_free(utf16);
-			return NULL;
-		}
-
 	}
 	else
 	{
 		g_critical("%s: ti is NULL", __FUNCTION__);
-		return NULL;
 	}
+	return out;
 }
 
 /**
@@ -367,7 +358,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, cons
 	{
 		char * tmp = ticonv_varname_detokenize(model, src, type);
 		unsigned short * utf16 = ticonv_charset_ti_to_utf16_s(model, tmp, dst);
-		g_free(tmp);
+		ticonv_varname_free(tmp);
 		return utf16;
 	}
 	else
@@ -397,7 +388,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const 
 	{
 		char * tmp = ticonv_varname_detokenize(model, src, type);
 		unsigned short * utf16 = ticonv_charset_ti_to_utf16(model, tmp);
-		g_free(tmp);
+		ticonv_varname_free(tmp);
 		return utf16;
 	}
 	else
@@ -427,7 +418,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, 
 	{
 		unsigned short * utf16 = ticonv_varname_to_utf16(model, src, type);
 		gchar * utf8 = ticonv_utf16_to_utf8(utf16);
-		g_free(utf16);
+		ticonv_utf16_free(utf16);
 		return utf8;
 	}
 	else
@@ -460,7 +451,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src
 		if (tmp != NULL)
 		{
 			strcpy(dst, tmp);
-			g_free(tmp);
+			ticonv_utf8_free(tmp);
 			return dst;
 		}
 		else
@@ -495,7 +486,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_filename(CalcModel model, const char *s
 	{
 		unsigned short * utf16 = ticonv_varname_to_utf16(model, src, type);
 		char * gfe = ticonv_utf16_to_gfe(model, utf16);
-		g_free(utf16);
+		ticonv_utf16_free(utf16);
 		return gfe;
 	}
 	else
@@ -528,7 +519,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char 
 		if (tmp != NULL)
 		{
 			strcpy(dst, tmp);
-			g_free(tmp);
+			ticonv_gfe_free(tmp);
 			return dst;
 		}
 		else
@@ -614,7 +605,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *s
 		if (tmp)
 		{
 			strcpy(dst, tmp);
-			g_free(tmp);
+			ticonv_varname_free(tmp);
 			return dst;
 		}
 		else
@@ -657,17 +648,17 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *s
 		ti = ticonv_varname_detokenize(CALC_TI84P, src, type);
 
 		utf16 = ticonv_charset_ti_to_utf16(CALC_TI84P, ti);
-		g_free(ti);
+		ticonv_varname_free(ti);
 
 		dst = ticonv_charset_utf16_to_ti(CALC_TI84P_USB, utf16);
-		g_free(utf16);
+		ticonv_utf16_free(utf16);
 	}
 	else if (model == CALC_TI89T_USB)
 	{
 		utf16 = ticonv_charset_ti_to_utf16(CALC_TI89T, src);
 
 		dst = ticonv_charset_utf16_to_ti(CALC_TI89T_USB, utf16);
-		g_free(utf16);
+		ticonv_utf16_free(utf16);
 	}
 	else
 	{
@@ -697,7 +688,7 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char 
 		if (tmp != NULL)
 		{
 			strcpy(dst, tmp);
-			g_free(tmp);
+			ticonv_ti_free(tmp);
 			return dst;
 		}
 		else
@@ -725,6 +716,7 @@ TIEXPORT4 int TICALL ticonv_model_uses_utf8(CalcModel model)
 	// In 2015, the blacklist condition about twice longer than the equivalent whitelist condition,
 	// but less likely to get future models (most of which should have exclusively direct USB connectivity) wrong.
 	return (   model != CALC_NONE
+	        && model <  CALC_MAX
 	        && model != CALC_TI73
 	        && model != CALC_TI82
 	        && model != CALC_TI83
@@ -739,4 +731,123 @@ TIEXPORT4 int TICALL ticonv_model_uses_utf8(CalcModel model)
 	        && model != CALC_V200
 	        && model != CALC_TI80
 	        && model != CALC_TI84PC);
+}
+
+/**
+ * ticonv_model_is_tiz80:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model is considered a TI-Z80 calculator, based on a Z80 processor.
+ *
+ * Return value: nonzero if the calculator is a TI-Z80 calculator, zero if it doesn't.
+ */
+TIEXPORT4 int TICALL ticonv_model_is_tiz80(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ ( model == CALC_TI73
+	            || model == CALC_TI82
+	            || model == CALC_TI83
+	            || model == CALC_TI83P
+	            || model == CALC_TI84P
+	            || model == CALC_TI85
+	            || model == CALC_TI86
+	            || model == CALC_TI84P_USB
+	            || model == CALC_TI84PC
+	            || model == CALC_TI84PC_USB
+	            || model == CALC_TI82A_USB));
+}
+
+/**
+ * ticonv_model_is_tiez80:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model is considered a TI-eZ80 calculator, based on an eZ80 processor.
+ *
+ * Return value: nonzero if the calculator is a TI-eZ80 calculator, zero if it doesn't.
+ */
+TIEXPORT4 int TICALL ticonv_model_is_tiez80(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ ( model == CALC_TI83PCE_USB
+	            || model == CALC_TI84PCE_USB));
+}
+
+/**
+ * ticonv_model_is_ti68k:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model is considered a TI-68k calculator, based on a 68000 processor.
+ *
+ * Return value: nonzero if the calculator is a TI-68k calculator, zero if it doesn't.
+ */
+TIEXPORT4 int TICALL ticonv_model_is_ti68k(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ ( model == CALC_TI89
+	            || model == CALC_TI89T
+	            || model == CALC_TI92
+	            || model == CALC_TI92P
+	            || model == CALC_V200
+	            || model == CALC_TI89T_USB));
+}
+
+/**
+ * ticonv_model_is_tinspire:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model is a TI-Nspire calculator.
+ *
+ * Return value: nonzero if the calculator is a TI-Nspire calculator, zero if it doesn't.
+ */
+TIEXPORT4 int TICALL ticonv_model_is_tinspire(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ (model == CALC_NSPIRE));
+}
+
+/**
+ * ticonv_model_has_legacy_ioport:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model has a legacy I/O port: female proprietary 2.5mm stereo jack.
+ *
+ * Return value: nonzero if the calculator has a legacy I/O port, zero if it doesn't.
+ */
+TIEXPORT4 int TICALL ticonv_model_has_legacy_ioport(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ ( model == CALC_TI73
+	            || model == CALC_TI82
+	            || model == CALC_TI83
+	            || model == CALC_TI83P
+	            || model == CALC_TI84P
+	            || model == CALC_TI85
+	            || model == CALC_TI86
+	            || model == CALC_TI89
+	            || model == CALC_TI89T
+	            || model == CALC_TI92
+	            || model == CALC_TI92P
+	            || model == CALC_V200
+	            || model == CALC_TI80
+	            || model == CALC_TI84PC));
+}
+
+/**
+ * ticonv_model_has_usb_ioport:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model has an USB I/O port: female mini-USB A/B port.
+ *
+ * Return value: nonzero if the calculator has an USB I/O port, zero if it doesn't.
+ */
+TIEXPORT4 int TICALL ticonv_model_has_usb_ioport(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ ( model == CALC_TI84P_USB
+	            || model == CALC_TI89T_USB
+	            || model == CALC_NSPIRE
+	            || model == CALC_TI84PC_USB
+	            || model == CALC_TI83PCE_USB
+	            || model == CALC_TI84PCE_USB
+	            || model == CALC_TI82A_USB));
 }

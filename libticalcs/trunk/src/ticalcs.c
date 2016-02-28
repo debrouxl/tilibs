@@ -447,3 +447,66 @@ TIEXPORT3 int TICALL ticalcs_update_set(CalcHandle* handle, CalcUpdate* upd)
 	return 0;
 
 }
+
+/**
+ * ticalcs_model_supports_dbus:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model supports the protocol dubbed DBUS by libticalcs.
+ * That is, the standard protocol used by TI-Z80 and TI-68k calculators over the legacy I/O.
+ *
+ * Return value: nonzero if the calculator supports the DBUS protocol, zero if it doesn't.
+ */
+TIEXPORT3 int TICALL ticalcs_model_supports_dbus(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ ( model == CALC_TI73
+	            || model == CALC_TI82
+	            || model == CALC_TI83
+	            || model == CALC_TI83P
+	            || model == CALC_TI84P
+	            || model == CALC_TI85
+	            || model == CALC_TI86
+	            || model == CALC_TI89
+	            || model == CALC_TI89T
+	            || model == CALC_TI92
+	            || model == CALC_TI92P
+	            || model == CALC_V200
+	            || model == CALC_TI80
+	            || model == CALC_TI84PC));
+}
+
+/**
+ * ticalcs_model_supports_dusb:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model supports the protocol dubbed DUSB by libticalcs.
+ * That is, the standard protocol used by TI-Z80, TI-eZ80 and TI-68k calculators over the USB port.
+ *
+ * Return value: nonzero if the calculator supports the DUSB protocol, zero if it doesn't.
+ */
+TIEXPORT3 int TICALL ticalcs_model_supports_dusb(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ ( model == CALC_TI84P_USB
+	            || model == CALC_TI89T_USB
+	            || model == CALC_TI84PC_USB
+	            || model == CALC_TI83PCE_USB
+	            || model == CALC_TI84PCE_USB
+	            || model == CALC_TI82A_USB));
+}
+
+/**
+ * ticalcs_model_supports_nsp:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model supports the protocol dubbed NSP by libticalcs.
+ * That is, the standard protocol used by TI-Nspire calculators over the USB port.
+ *
+ * Return value: nonzero if the calculator supports the NSP protocol, zero if it doesn't.
+ */
+TIEXPORT3 int TICALL ticalcs_model_supports_nsp(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ ( model == CALC_NSPIRE));
+}
