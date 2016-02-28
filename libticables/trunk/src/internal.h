@@ -84,6 +84,7 @@ typedef struct {
 } USBCableInfo;
 
 int usb_probe_device_info(const USBCableInfo **list, int *count);
+void translate_usb_device_info(CableDeviceInfo *info, const USBCableInfo *usbinfo);
 
 int dbus_decomp(const char *filename, int resync);
 int dusb_decomp(const char *filename);

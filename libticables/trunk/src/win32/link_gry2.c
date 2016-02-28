@@ -385,5 +385,6 @@ const CableFncts cable_gry =
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&gry_set_device
+	&gry_set_device,
+	NULL
 };

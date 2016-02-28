@@ -113,6 +113,7 @@ typedef struct
 	struct libusb_device *device;
 	struct libusb_device_handle *handle;
 
+	USBCableInfo cable_info;
 	int      nBytesRead;
 	uint8_t  rBuf[64];
 	uint8_t* rBufPtr;
@@ -130,6 +131,7 @@ static int completed = 0;
 // convenient macros
 #define uDev       (((usb_struct *)(h->priv2))->device)
 #define uHdl       (((usb_struct *)(h->priv2))->handle)
+#define cable_info (((usb_struct *)(h->priv2))->cable_info)
 #define max_ps     (((usb_struct *)(h->priv2))->max_ps)
 #define was_max_ps (((usb_struct *)(h->priv2))->was_max_ps)
 #define nBytesRead (((usb_struct *)(h->priv2))->nBytesRead)
@@ -420,6 +422,7 @@ static int slv_open(CableHandle *h)
 		return ret;
 	}
 
+	cable_info = tigl_devices[h->address];
 	uDev = tigl_devices[h->address].dev;
 	uInEnd  = 0x81;
 	uOutEnd = 0x02;
@@ -474,6 +477,12 @@ static int slv_close(CableHandle *h)
 	free(h->priv2);
 	h->priv2 = NULL;
 
+	return 0;
+}
+
+static int slv_get_device_info(CableHandle *h, CableDeviceInfo *info)
+{
+	translate_usb_device_info(info, &cable_info);
 	return 0;
 }
 
@@ -890,7 +899,8 @@ const CableFncts cable_slv =
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&noop_set_device
+	&noop_set_device,
+	&slv_get_device_info
 };
 
 const CableFncts cable_raw =
@@ -906,7 +916,8 @@ const CableFncts cable_raw =
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&noop_set_device
+	&noop_set_device,
+	&slv_get_device_info
 };
 
 //=======================

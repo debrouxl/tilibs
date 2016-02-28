@@ -285,7 +285,7 @@ TIEXPORT1 int TICALL ticables_free_usb_devices(int *array)
 	return 0;
 }
 
-static void translate_usb_device_info(CableDeviceInfo *info, const USBCableInfo *usbinfo)
+void translate_usb_device_info(CableDeviceInfo *info, const USBCableInfo *usbinfo)
 {
 	if (usbinfo->pid == PID_TIGLUSB)
 	{

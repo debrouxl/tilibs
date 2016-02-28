@@ -391,5 +391,6 @@ const CableFncts cable_par =
 	&par_set_red_wire, &par_set_white_wire,
 	&par_get_red_wire, &par_get_white_wire,
 	&par_set_raw, &par_get_raw,
-	&par_set_device
+	&par_set_device,
+	NULL
 };

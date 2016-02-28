@@ -599,6 +599,43 @@ TIEXPORT1 int TICALL ticables_cable_set_device(CableHandle* handle, const char *
 }
 
 /**
+ * ticables_cable_get_device_info:
+ * @handle: a previously allocated handle
+ * @info: pointer to structure to store device info
+ *
+ * Get the type of device on the other end of the cable, if this can
+ * be determined.
+ */
+TIEXPORT1 int TICALL ticables_cable_get_device_info(CableHandle *handle, CableDeviceInfo *info)
+{
+	const CableFncts *cable;
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(info);
+
+	cable = handle->cable;
+	VALIDATE_CABLEFNCTS(cable);
+
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	handle->busy = 1;
+	if (cable->get_device_info)
+	{
+		ret = (cable->get_device_info)(handle, info);
+	}
+	else
+	{
+		info->family = CABLE_FAMILY_DBUS;
+		info->variant = CABLE_VARIANT_UNKNOWN;
+	}
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
  * ticables_cable_progress_reset:
  * @handle: a previously allocated handle
  *

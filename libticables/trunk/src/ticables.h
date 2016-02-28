@@ -157,6 +157,19 @@ typedef enum
 } CableVariant;
 
 /**
+ * CableDeviceInfo:
+ * @family: calculator family
+ * @variant: calculator variant
+ *
+ * Information returned for each cable by ticables_get_usb_device_info.
+ */
+typedef struct
+{
+	CableFamily     family;
+	CableVariant    variant;
+} CableDeviceInfo;
+
+/**
  * DataRate:
  * @count: number of bytes transferred
  * @start: the time when transfer started
@@ -231,6 +244,7 @@ struct _CableFncts
 	int (*set_raw)  (CableHandle *, int);
 	int (*get_raw)  (CableHandle *, int *);
 	int (*set_device) (CableHandle*, const char*);
+	int (*get_device_info) (CableHandle *, CableDeviceInfo *);
 };
 
 typedef int (*ticables_pre_send_hook_type)(CableHandle * handle, uint8_t * data, uint32_t len);
@@ -286,19 +300,6 @@ struct _CableHandle
 	ticables_pre_recv_hook_type pre_recv_hook;
 	ticables_post_recv_hook_type post_recv_hook;
 };
-
-/**
- * CableDeviceInfo:
- * @family: calculator family
- * @variant: calculator variant
- *
- * Information returned for each cable by ticables_get_usb_device_info.
- */
-typedef struct
-{
-	CableFamily     family;
-	CableVariant    variant;
-} CableDeviceInfo;
 
 /**
  * CableOptions:
@@ -378,6 +379,7 @@ typedef struct
 
 	TIEXPORT1 int TICALL ticables_cable_set_device(CableHandle *handle, const char *device);
 
+	TIEXPORT1 int TICALL ticables_cable_get_device_info(CableHandle *handle, CableDeviceInfo *info);
 
 	TIEXPORT1 int TICALL ticables_progress_reset(CableHandle *handle);
 	TIEXPORT1 int TICALL ticables_progress_get(CableHandle *handle, int *count, int *msec, float *rate);

@@ -337,5 +337,6 @@ const CableFncts cable_vti =
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&noop_set_device
+	&noop_set_device,
+	NULL
 };
