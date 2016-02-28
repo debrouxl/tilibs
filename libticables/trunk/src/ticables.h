@@ -64,6 +64,7 @@ typedef enum
 	CABLE_NUL = 0,
 	CABLE_GRY, CABLE_BLK, CABLE_PAR, CABLE_SLV, CABLE_USB,
 	CABLE_VTI, CABLE_TIE, CABLE_ILP, CABLE_DEV,
+	CABLE_TCPC, CABLE_TCPS,
 	CABLE_MAX
 } CableModel;
 
@@ -242,7 +243,7 @@ typedef int (*ticables_post_recv_hook_type)(CableHandle * handle, uint8_t * data
  * @model: cable model
  * @port: generic port
  * @timeout: timeout value in 0.1 seconds
- * @delay: inter-bit delay for serial/parallel cable in µs
+ * @delay: inter-bit delay for serial/parallel cable in us
  * @device: device name like COMx or ttySx (if used)
  * @address: I/O base address of device (if used)
  * @cable: a Cable structure used by this handle
@@ -304,7 +305,7 @@ typedef struct
  * @cable_model: model
  * @cable_port: port
  * @cable_timeout: timeout in tenth of seconds
- * @cable_delay: inter-bit delay in µs
+ * @cable_delay: inter-bit delay in us
  * @calc_model: calculator model
  *
  * A convenient structure free of use by the user.
