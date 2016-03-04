@@ -170,6 +170,7 @@ static int get_dirlist(CalcHandle *h)
 static int send_backup(CalcHandle* h)
 {
 	char filename[1030];
+	char filename2[1030];
 	int ret;
 
 	filename[0] = 0;
@@ -179,8 +180,8 @@ static int send_backup(CalcHandle* h)
 	{
 		return 0;
 	}
-	strcat(filename, ".");
-	strcat(filename, tifiles_fext_of_backup(h->model));
+	snprintf(filename2, sizeof(filename2) - 1, "%s.%s", filename, tifiles_fext_of_backup(h->model));
+	filename2[sizeof(filename2) - 1] = 0;
 
 	return ticalcs_calc_send_backup2(h, filename);
 }
@@ -188,6 +189,7 @@ static int send_backup(CalcHandle* h)
 static int recv_backup(CalcHandle* h)
 {
 	char filename[1030];
+	char filename2[1030];
 	int ret;
 
 	filename[0] = 0;
@@ -197,8 +199,8 @@ static int recv_backup(CalcHandle* h)
 	{
 		return 0;
 	}
-	strcat(filename, ".");
-	strcat(filename, tifiles_fext_of_backup(h->model));
+	snprintf(filename2, sizeof(filename2) - 1, "%s.%s", filename, tifiles_fext_of_backup(h->model));
+	filename2[sizeof(filename2) - 1] = 0;
 
 	return ticalcs_calc_recv_backup2(h, filename);
 }
@@ -310,17 +312,19 @@ static int recv_var_ns(CalcHandle* h)
 
 static int send_flash(CalcHandle *h)
 {
-	char filename[1030] = "";
+	char filename[1030];
+	char filename2[1030];
 	int ret;
 
+	filename[0] = 0;
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if (ret < 1)
 	{
 		return 0;
 	}
-	strcat(filename, ".");
-	strcat(filename, tifiles_fext_of_flash_app(h->model));
+	snprintf(filename2, sizeof(filename2) - 1, "%s.%s", filename, tifiles_fext_of_flash_app(h->model));
+	filename2[sizeof(filename2) - 1] = 0;
 
 	return ticalcs_calc_send_app2(h, filename);
 }
