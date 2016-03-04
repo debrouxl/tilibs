@@ -447,7 +447,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
-	int ret = 0;
+	int ret;
 	uint16_t length;
 	char varname[9];
 	uint8_t rej_code;
@@ -611,7 +611,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
-	int ret = 0;
+	int ret;
 	char varname[9];
 
 	content->model = handle->model;
@@ -886,7 +886,7 @@ static int		send_var_8386	(CalcHandle* handle, CalcMode mode, FileContent* conte
 	update_->cnt2 = 0;
 	update_->max2 = content->num_entries;
 
-	for (i = 0; i < content->num_entries; i++) 
+	for (i = 0; !ret && i < content->num_entries; i++)
 	{
 		VarEntry *entry = content->entries[i];
 
@@ -945,18 +945,16 @@ static int		send_var_8386	(CalcHandle* handle, CalcMode mode, FileContent* conte
 			if (!ret)
 			{
 				ret = SEND_EOT(handle);
+				if (!ret)
+				{
+					ticalcs_info("Sent variable #%u", i);
+
+					update_->cnt2 = i+1;
+					update_->max2 = content->num_entries;
+					update_->pbar();
+				}
 			}
 		}
-		if (ret)
-		{
-			break;
-		}
-
-		ticalcs_info("Sent variable #%u", i);
-
-		update_->cnt2 = i+1;
-		update_->max2 = content->num_entries;
-		update_->pbar();
 	}
 
 	return ret;

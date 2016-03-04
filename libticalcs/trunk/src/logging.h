@@ -29,6 +29,4 @@
 #define ticalcs_warning(format, ...) g_log("ticalcs", G_LOG_LEVEL_WARNING, format, ##__VA_ARGS__)
 #define ticalcs_critical(format, ...) g_log("ticalcs", G_LOG_LEVEL_CRITICAL, format, ##__VA_ARGS__)
 
-#define TRYF(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
-
 #endif

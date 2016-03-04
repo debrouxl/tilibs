@@ -210,13 +210,6 @@ static inline GNode * dirlist_create_append_node(void * data, GNode ** tree)
 int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content);
 
 
-#ifndef WORDS_BIGENDIAN
-# define fixup(x) (x &= 0x0000ffff)
-#else
-# define fixup(x) (x >>= 16)
-#endif /* !WORDS_BIGENDIAN */
-
-
 // calc_00.c
 
 int noop_is_ready (CalcHandle* handle);
