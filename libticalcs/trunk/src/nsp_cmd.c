@@ -31,8 +31,6 @@
 #include "internal.h"
 #include "logging.h"
 #include "error.h"
-#include "macros.h"
-#include "pause.h"
 
 #include "nsp_vpkt.h"
 #include "nsp_cmd.h"
@@ -431,8 +429,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_dir_enum_next(CalcHandle *handle, char* name, uin
 		}
 
 		data_size = pkt->data[1] + 2;
-		strncpy(name, (char *)pkt->data + 2, data_size);
-		name[data_size] = 0;
+		ticalcs_strlcpy(name, (char *)pkt->data + 2, data_size + 1);
 		o = data_size - 10;
 
 		if (size)

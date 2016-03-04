@@ -32,7 +32,6 @@
 #include "dusb_vpkt.h"
 #include "logging.h"
 #include "error.h"
-#include "macros.h"
 
 typedef struct
 {

@@ -33,14 +33,11 @@
 #include <string.h>
 #include <time.h>
 
-#include <ticonv.h>
 #include "ticalcs.h"
 #include "gettext.h"
 #include "internal.h"
 #include "logging.h"
 #include "error.h"
-#include "pause.h"
-#include "macros.h"
 
 #include "dusb_vpkt.h"
 #include "dusb_cmd.h"
@@ -452,8 +449,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		VarEntry *ve;
 
 		ve = tifiles_ve_create();
-		strncpy(ve->name, "Window", sizeof(ve->name) - 1);
-		ve->name[sizeof(ve->name) - 1] = 0;
+		ticalcs_strlcpy(ve->name, "Window", sizeof(ve->name));
 		ve->type = TI84p_WINDW;
 		node = dirlist_create_append_node(ve, &folder);
 		if (node != NULL)
@@ -461,22 +457,13 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			ve = tifiles_ve_create();
 			// Actually, "RclWindw" works even on an old 84+ running OS 2.43, but libticalcs
 			// has been using "RclWin" successfully on TI-Z80 DUSB models since the beginning...
-			if (handle->model == CALC_TI84PC_USB || handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
-			{
-				strncpy(ve->name, "RclWindw", sizeof(ve->name) - 1);
-			}
-			else
-			{
-				strncpy(ve->name, "RclWin", sizeof(ve->name) - 1);
-			}
-			ve->name[sizeof(ve->name) - 1] = 0;
+			ticalcs_strlcpy(ve->name, (handle->model == CALC_TI84PC_USB || handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB) ? "RclWindw" : "RclWin", sizeof(ve->name));
 			ve->type = TI84p_ZSTO;
 			node = dirlist_create_append_node(ve, &folder);
 			if (node != NULL)
 			{
 				ve = tifiles_ve_create();
-				strncpy(ve->name, "TblSet", sizeof(ve->name) - 1);
-				ve->name[sizeof(ve->name) - 1] = 0;
+				ticalcs_strlcpy(ve->name, "TblSet", sizeof(ve->name));
 				ve->type = TI84p_TABLE;
 				node = dirlist_create_append_node(ve, &folder);
 			}
@@ -508,8 +495,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				break;
 			}
 
-			strncpy(ve->name, varname, sizeof(ve->name) - 1);
-			ve->name[sizeof(ve->name) - 1] = 0;
+			ticalcs_strlcpy(ve->name, varname, sizeof(ve->name));
 			ve->size = (  (((uint32_t)(attr[0]->data[0])) << 24)
 			            | (((uint32_t)(attr[0]->data[1])) << 16)
 			            | (((uint32_t)(attr[0]->data[2])) <<  8)
@@ -526,8 +512,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			}
 
 			utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-			snprintf(update_->text, sizeof(update_->text) - 1, _("Parsing %s"), utf8);
-			update_->text[sizeof(update_->text) - 1] = 0;
+			ticalcs_slprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
 			ticonv_utf8_free(utf8);
 			update_label();
 		}
@@ -756,8 +741,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 			if (!ret)
 			{
 				content->model = handle->model;
-				strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
-				content->comment[sizeof(content->comment) - 1] = 0;
+				ticalcs_strlcpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment));
 				content->num_entries = 1;
 
 				content->entries = tifiles_ve_create_array(1);
@@ -1006,8 +990,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 			{
 
 				content->model = handle->model;
-				strncpy(content->name, vr->name, sizeof(content->name) - 1);
-				content->name[sizeof(content->name) - 1] = 0;
+				ticalcs_strlcpy(content->name, vr->name, sizeof(content->name));
 				content->data_type = vr->type;
 				content->device_type = DEVICE_TYPE_83P;
 
@@ -1089,8 +1072,7 @@ static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarReq
 			{
 
 				content->model = handle->model;
-				strncpy(content->name, vr->name, sizeof(content->name) - 1);
-				content->name[sizeof(content->name) - 1] = 0;
+				ticalcs_strlcpy(content->name, vr->name, sizeof(content->name));
 				content->data_type = vr->type;
 				content->device_type = DEVICE_TYPE_83P;
 				content->data_length = data_length;
@@ -1449,8 +1431,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	uint32_t i, varsize;
 	int ret;
 
-	strncpy(update_->text, "ID-LIST", sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_strlcpy(update_->text, "ID-LIST", sizeof(update_->text));
 	update_label();
 
 	attrs = dusb_ca_new_array(nattrs);
@@ -1576,7 +1557,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 					ticables_cable_reset(handle->cable);
 
 					memset(&ve, 0, sizeof(VarEntry));
-					strncpy(ve.name, "ROMDATA", sizeof(ve.name));
+					ticalcs_strlcpy(ve.name, "ROMDATA", sizeof(ve.name));
 					ve.type = 0x06; // PPRGM / ASM.
 
 					content = tifiles_content_create_regular(handle->model);
@@ -1666,8 +1647,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 
 	calc_time = (uint32_t)difftime(c, r);
 
-	strncpy(update_->text, _("Setting clock..."), sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_strlcpy(update_->text, _("Setting clock..."), sizeof(update_->text));
 	update_label();
 
 	do {
@@ -1744,8 +1724,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	int ret;
 
 	// get raw clock
-	strncpy(update_->text, _("Getting clock..."), sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_strlcpy(update_->text, _("Getting clock..."), sizeof(update_->text));
 	update_label();
 
 	params = dusb_cp_new_array(size);
@@ -1806,8 +1785,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	int ret;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
 	update_label();
 
@@ -1889,8 +1867,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	int i = 0;
 	int ret;
 
-	strncpy(update_->text, _("Getting version..."), sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_strlcpy(update_->text, _("Getting version..."), sizeof(update_->text));
 	update_label();
 
 	memset(infos, 0, sizeof(CalcInfos));
@@ -1914,18 +1891,15 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->mask |= INFOS_DEVICE_TYPE;
 			i++;
 
-			strncpy(infos->product_name, (char*)params[i]->data, sizeof(infos->product_name) - 1);
-			infos->product_name[sizeof(infos->product_name) - 1] = 0;
+			ticalcs_strlcpy(infos->product_name, (char *)params[i]->data, sizeof(infos->product_name));
 			infos->mask |= INFOS_PRODUCT_NAME;
 			i++;
 
 			product_id = params[i]->data[0];
-			snprintf(infos->main_calc_id, 11, "%02X%02X%02X%02X%02X",
+			ticalcs_slprintf(infos->main_calc_id, sizeof(infos->main_calc_id), "%02X%02X%02X%02X%02X",
 				product_id, params[i]->data[1], params[i]->data[2], params[i]->data[3], params[i]->data[4]);
-			infos->main_calc_id[sizeof(infos->main_calc_id) - 1] = 0;
 			infos->mask |= INFOS_MAIN_CALC_ID;
-			strncpy(infos->product_id, infos->main_calc_id, sizeof(infos->product_id) - 1);
-			infos->product_id[sizeof(infos->product_id) - 1] = 0;
+			ticalcs_strlcpy(infos->product_id, infos->main_calc_id, sizeof(infos->product_id));
 			infos->mask |= INFOS_PRODUCT_ID;
 			i++;
 
@@ -1941,13 +1915,11 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->mask |= INFOS_SUB_LANG_ID;
 			i++;
 
-			snprintf(infos->boot_version, sizeof(infos->boot_version) - 1, "%1d.%02d", params[i]->data[1], params[i]->data[2]);
-			infos->boot_version[sizeof(infos->boot_version) - 1] = 0;
+			ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1d.%02d", params[i]->data[1], params[i]->data[2]);
 			infos->mask |= INFOS_BOOT_VERSION;
 			i++;
 
-			snprintf(infos->os_version, sizeof(infos->os_version) - 1, "%1d.%02d", params[i]->data[1], params[i]->data[2]);
-			infos->os_version[sizeof(infos->os_version) - 1] = 0;
+			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1d.%02d", params[i]->data[1], params[i]->data[2]);
 			infos->mask |= INFOS_OS_VERSION;
 			i++;
 

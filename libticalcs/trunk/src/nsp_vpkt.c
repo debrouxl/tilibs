@@ -41,7 +41,6 @@
 #include "internal.h"
 #include "logging.h"
 #include "error.h"
-#include "macros.h"
 
 #include "nsp_vpkt.h"
 

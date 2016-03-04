@@ -33,14 +33,11 @@
 #include <string.h>
 #include <time.h>
 
-#include <ticonv.h>
 #include "ticalcs.h"
 #include "gettext.h"
 #include "internal.h"
 #include "logging.h"
 #include "error.h"
-#include "pause.h"
-#include "macros.h"
 
 #include "cmd68k.h"
 #include "keys92p.h"
@@ -248,14 +245,12 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 		if (ve->type == TI92_DIR) 
 		{
-			strncpy(folder_name, ve->name, sizeof(folder_name) - 1);
-			folder_name[sizeof(folder_name) - 1] = 0;
+			ticalcs_strlcpy(folder_name, ve->name, sizeof(folder_name));
 			folder = dirlist_create_append_node(ve, vars);
 		} 
 		else 
 		{
-			strncpy(ve->folder, folder_name, sizeof(ve->folder) - 1);
-			ve->folder[sizeof(ve->folder) - 1] = 0;
+			ticalcs_strlcpy(ve->folder, folder_name, sizeof(ve->folder));
 
 			if (!strcmp(ve->folder, "main") && (!strcmp(ve->name, "regcoef") || !strcmp(ve->name, "regeq")))
 			{
@@ -289,8 +284,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-		snprintf(update_->text, sizeof(update_->text) - 1, _("Parsing %s/%s"), ((VarEntry *) (folder->data))->name, utf8);
-		update_->text[sizeof(update_->text) - 1] = 0;
+		ticalcs_slprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"), ((VarEntry *) (folder->data))->name, utf8);
 		ticonv_utf8_free(utf8);
 		update_->label();
 	}
@@ -348,16 +342,14 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(RECV_ACK(handle, &unused));
 
 	content->model = CALC_TI92;
-	strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
-	content->comment[sizeof(content->comment) - 1] = 0;
+	ticalcs_strlcpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment));
 	content->data_part = tifiles_ve_alloc_data(128 * 1024);
 	content->type = TI92_BKUP;
 	content->data_length = 0;
 
 	for (block = 0;; block++) 
 	{
-		snprintf(update_->text, sizeof(update_->text) - 1, _("Block #%2i"), block);
-		update_->text[sizeof(update_->text) - 1] = 0;
+		ticalcs_slprintf(update_->text, sizeof(update_->text), _("Block #%2i"), block);
 		update_label();
     
 		err = RECV_VAR(handle, &block_size, &content->type, content->rom_version);
@@ -407,8 +399,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 		if (mode & MODE_LOCAL_PATH)
 		{
-			strncpy(varname, entry->name, sizeof(varname) - 1);
-			varname[sizeof(varname) - 1] = 0;
+			ticalcs_strlcpy(varname, entry->name, sizeof(varname));
 		}
 		else
 		{
@@ -449,8 +440,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	char varname[18];
 
 	content->model = CALC_TI92;
-	strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
-	content->comment[sizeof(content->comment) - 1] = 0;
+	ticalcs_strlcpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment));
 	content->num_entries = 1;
 	content->entries = tifiles_ve_create_array(1);
 	ve = content->entries[0] = tifiles_ve_create();
@@ -504,8 +494,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 		content->entries = tifiles_ve_resize_array(content->entries, nvar+1);
 		ve = content->entries[nvar-1] = tifiles_ve_create();
-		strncpy(ve->folder, "main", sizeof(ve->folder) - 1);
-		ve->folder[sizeof(ve->folder) - 1] = 0;
+		ticalcs_strlcpy(ve->folder, "main", sizeof(ve->folder));
 
 		err = RECV_VAR(handle, &ve->size, &ve->type, tipath);
 		TRYF(SEND_ACK(handle));
@@ -523,17 +512,13 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		if ((tiname = strchr(tipath, '\\')) != NULL) 
 		{
 			*tiname = '\0';
-			strncpy(ve->folder, tipath, sizeof(ve->folder) - 1);
-			ve->folder[sizeof(ve->folder) - 1] = 0;
-			strncpy(ve->name, tiname + 1, sizeof(ve->name) - 1);
-			ve->name[sizeof(ve->name) - 1] = 0;
+			ticalcs_strlcpy(ve->folder, tipath, sizeof(ve->folder));
+			ticalcs_strlcpy(ve->name, tiname + 1, sizeof(ve->name));
 		}
 		else 
 		{
-			strncpy(ve->folder, "main", sizeof(ve->folder) - 1);
-			ve->folder[sizeof(ve->folder) - 1] = 0;
-			strncpy(ve->name, tipath, sizeof(ve->name) - 1);
-			ve->name[sizeof(ve->name) - 1] = 0;
+			ticalcs_strlcpy(ve->folder, "main", sizeof(ve->folder));
+			ticalcs_strlcpy(ve->name, tipath, sizeof(ve->name));
 		}
 
 		ticonv_varname_to_utf8_sn(handle->model, ve->name, update_->text, sizeof(update_->text), ve->type);
@@ -611,8 +596,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
-	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
 	update_label();
 
@@ -651,8 +635,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, "a1234567");
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
-	snprintf(update_->text, sizeof(update_->text) - 1, _("Creating %s..."), utf8);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
 	ticonv_utf8_free(utf8);
 	update_label();
 
@@ -670,8 +653,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	TRYF(RECV_ACK(handle, NULL));
 
 	// delete 'a1234567' variable
-	strncpy(vr->name, "a1234567", sizeof(vr->name) - 1);
-	vr->name[sizeof(vr->name) - 1] = 0;
+	ticalcs_strlcpy(vr->name, "a1234567", sizeof(vr->name));
 	return del_var(handle, vr);
 }
 
@@ -689,6 +671,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 	memset(infos, 0, sizeof(CalcInfos));
 	strncpy(infos->os_version, name, 4);
+	infos->os_version[4] = 0;
 	infos->hw_version = 1;
 	infos->mask = INFOS_OS_VERSION | INFOS_HW_VERSION;
 

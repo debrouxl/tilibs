@@ -228,6 +228,7 @@ TIEXPORT3 int TICALL ticalcs_library_init(void)
 #endif
 #else
 	strncpy(locale_dir, LOCALEDIR, sizeof(locale_dir) - 21);
+	locale_dir[sizeof(locale_dir) - 21] = 0;
 #endif
 
 	if (ticalcs_instance)

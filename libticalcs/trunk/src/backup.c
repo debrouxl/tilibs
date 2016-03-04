@@ -30,12 +30,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <ticonv.h>
 #include "ticalcs.h"
 #include "internal.h"
 #include "logging.h"
 #include "error.h"
-#include "pause.h"
 #include "cmd68k.h"
 
 int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content)
@@ -129,8 +127,7 @@ end:
 			cnt->entries = NULL;
 			tifiles_content_delete_regular(cnt);
 
-			strncpy(content->comment, tifiles_comment_set_group(), sizeof(content->comment) - 1);
-			content->comment[sizeof(content->comment) - 1] = 0;
+			ticalcs_strlcpy(content->comment, tifiles_comment_set_group(), sizeof(content->comment));
 		}
 	}
 
@@ -262,8 +259,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 
 						// can't overwrite apps so check before sending app
 						memset(&ve, 0, sizeof(VarEntry));
-						strncpy(ve.name, te->content.flash->name, sizeof(ve.name) - 1);
-						ve.name[sizeof(ve.name) - 1] = 0;
+						ticalcs_strlcpy(ve.name, te->content.flash->name, sizeof(ve.name));
 						if (!ticalcs_dirlist_ve_exist(apps, &ve))
 						{
 							ret = handle->calc->send_app(handle, te->content.flash);

@@ -35,14 +35,11 @@
 #include <string.h>
 #include <time.h>
 
-#include <ticonv.h>
 #include "ticalcs.h"
 #include "gettext.h"
 #include "internal.h"
 #include "logging.h"
 #include "error.h"
-#include "pause.h"
-#include "macros.h"
 
 #include "dbus_pkt.h"
 #include "cmdz80.h"
@@ -367,8 +364,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-		snprintf(update_->text, sizeof(update_->text) - 1, _("Parsing %s"), utf8);
-		update_->text[sizeof(update_->text) - 1] = 0;
+		ticalcs_slprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
 		ticonv_utf8_free(utf8);
 		update_label();
 	}
@@ -455,8 +451,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	uint8_t attr, ver;
 
 	content->model = handle->model;
-	strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
-	content->comment[sizeof(content->comment) - 1] = 0;
+	ticalcs_strlcpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment));
 
 	TRYF(SEND_REQ(handle, 0x0000, TI73_BKUP, "\0\0\0\0\0\0\0", 0x00, 0x00));
 	TRYF(RECV_ACK(handle, NULL));
@@ -560,8 +555,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t ve_size;
 
 	content->model = handle->model;
-	strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
-	content->comment[sizeof(content->comment) - 1] = 0;
+	ticalcs_strlcpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment));
 	content->num_entries = 1;
 
 	content->entries = tifiles_ve_create_array(1);
@@ -735,8 +729,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	update_label();
 
 	content->model = handle->model;
-	strncpy(content->name, vr->name, sizeof(content->name) - 1);
-	content->name[sizeof(content->name) - 1] = 0;
+	ticalcs_strlcpy(content->name, vr->name, sizeof(content->name));
 	content->data_type = vr->type;
 	content->device_type = handle->model == CALC_TI73 ? DEVICE_TYPE_73 : DEVICE_TYPE_83P;
 	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
@@ -841,8 +834,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	uint8_t data[16];
 	int i;
 
-	strncpy(update_->text, "ID-LIST", sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_strlcpy(update_->text, "ID-LIST", sizeof(update_->text));
 	update_label();
 
 	TRYF(SEND_REQ(handle, 0x0000, TI73_IDLIST, "\0\0\0\0\0\0\0", 0x00, 0x00));
@@ -986,8 +978,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	buffer[7] = _clock->time_format;
 	buffer[8] = 0xff;
 
-	strncpy(update_->text, _("Setting clock..."), sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_strlcpy(update_->text, _("Setting clock..."), sizeof(update_->text));
 	update_label();
 
 	TRYF(SEND_RTS(handle, 13, TI73_CLK, "\0x08\0\0\0\0\0\0\0", 0x00, 0x00));
@@ -1015,8 +1006,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	struct tm ref, *cur;
 	time_t r, c, now;
 
-	strncpy(update_->text, _("Getting clock..."), sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_strlcpy(update_->text, _("Getting clock..."), sizeof(update_->text));
 	update_label();
 
 	TRYF(SEND_REQ(handle, 0x0000, TI73_CLK, "\0x08\0\0\0\0\0\0\0", 0x00, 0x00));
@@ -1070,8 +1060,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	char *utf8;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
 	update_label();
 
@@ -1097,17 +1086,13 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	memset(infos, 0, sizeof(CalcInfos));
 	if (handle->model == CALC_TI73)
 	{
-		snprintf(infos->os_version, sizeof(infos->os_version) - 1, "%1x.%02x", buf[0], buf[1]);
-		infos->os_version[sizeof(infos->os_version) - 1] = 0;
-		snprintf(infos->boot_version, sizeof(infos->boot_version) - 1, "%1x.%02x", buf[2], buf[3]);
-		infos->boot_version[sizeof(infos->boot_version) - 1] = 0;
+		ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1x.%02x", buf[0], buf[1]);
+		ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1x.%02x", buf[2], buf[3]);
 	}
 	else
 	{
-		snprintf(infos->os_version, sizeof(infos->os_version) - 1, "%1i.%02i", buf[0], buf[1]);
-		infos->os_version[sizeof(infos->os_version) - 1] = 0;
-		snprintf(infos->boot_version, sizeof(infos->boot_version) - 1, "%1i.%02i", buf[2], buf[3]);
-		infos->boot_version[sizeof(infos->boot_version) - 1] = 0;
+		ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1i.%02i", buf[0], buf[1]);
+		ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%02i", buf[2], buf[3]);
 	}
 	infos->battery = (buf[4] & 1) ? 0 : 1;
 	infos->hw_version = buf[5];
@@ -1191,8 +1176,7 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	int i;
 	uint8_t buf[256];
 
-	strncpy(update_->text, _("Receiving certificate"), sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_strlcpy(update_->text, _("Receiving certificate"), sizeof(update_->text));
 	update_label();
 
 	content->model = handle->model;

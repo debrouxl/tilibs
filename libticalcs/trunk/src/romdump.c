@@ -33,8 +33,6 @@
 #include "dbus_pkt.h"
 #include "logging.h"
 #include "error.h"
-#include "macros.h"
-#include "pause.h"
 #include "romdump.h"
 
 #define MAX_RETRY	3
@@ -315,8 +313,7 @@ int rd_dump(CalcHandle* handle, const char *filename)
 		return ERR_OPEN_FILE;
 	}
 
-	strncpy(update_->text, "Receiving data...", sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_strlcpy(update_->text, "Receiving data...", sizeof(update_->text));
 	update_label();
 
 	// check if ready

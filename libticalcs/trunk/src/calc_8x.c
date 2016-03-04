@@ -34,14 +34,11 @@
 #include <time.h>
 #include <ctype.h>
 
-#include <ticonv.h>
 #include "ticalcs.h"
 #include "gettext.h"
 #include "internal.h"
 #include "logging.h"
 #include "error.h"
-#include "pause.h"
-#include "macros.h"
 
 #include "dbus_pkt.h"
 #include "cmdz80.h"
@@ -400,8 +397,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				}
 
 				utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-				snprintf(update_->text, sizeof(update_->text) - 1, _("Parsing %s"), utf8);
-				update_->text[sizeof(update_->text) - 1] = 0;
+				ticalcs_slprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
 				ticonv_utf8_free(utf8);
 				update_label();
 			}
@@ -489,8 +485,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 		}
 		else
 		{
-			strncpy(update_->text, _("Waiting for user's action..."), sizeof(update_->text) - 1);
-			update_->text[sizeof(update_->text) - 1] = 0;
+			ticalcs_strlcpy(update_->text, _("Waiting for user's action..."), sizeof(update_->text));
 			update_label();
 
 			do
@@ -619,8 +614,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	char varname[9];
 
 	content->model = handle->model;
-	strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
-	content->comment[sizeof(content->comment) - 1] = 0;
+	ticalcs_strlcpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment));
 
 	if (handle->model == CALC_TI83)
 	{
@@ -636,8 +630,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	}
 	else
 	{
-		strncpy(update_->text, _("Waiting for backup..."), sizeof(update_->text) - 1);
-		update_->text[sizeof(update_->text) - 1] = 0;
+		ticalcs_strlcpy(update_->text, _("Waiting for backup..."), sizeof(update_->text));
 		update_label();
 	}
 
@@ -780,8 +773,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			break;
 		}
 
-		strncpy(update_->text, _("Waiting for user's action..."), sizeof(update_->text) - 1);
-		update_->text[sizeof(update_->text) - 1] = 0;
+		ticalcs_strlcpy(update_->text, _("Waiting for user's action..."), sizeof(update_->text));
 		update_label();
 
 		do
@@ -977,8 +969,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t ve_size;
 
 	content->model = handle->model;
-	strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
-	content->comment[sizeof(content->comment) - 1] = 0;
+	ticalcs_strlcpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment));
 	content->num_entries = 1;
 	content->entries = tifiles_ve_create_array(1);
 	ve = content->entries[0] = tifiles_ve_create();
@@ -1038,8 +1029,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	int ret = 0;
 	uint16_t ve_size;
 
-	strncpy(update_->text, _("Waiting for var(s)..."), sizeof(update_->text) - 1);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_strlcpy(update_->text, _("Waiting for var(s)..."), sizeof(update_->text));
 	update_label();
 
 	content->model = handle->model;
@@ -1110,14 +1100,12 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	content->num_entries = nvar;
 	if (nvar == 1)
 	{
-		strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
-		content->comment[sizeof(content->comment) - 1] = 0;
+		ticalcs_strlcpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment));
 		*vr = tifiles_ve_dup(content->entries[0]);
 	}
 	else
 	{
-		strncpy(content->comment, tifiles_comment_set_group(), sizeof(content->comment) - 1);
-		content->comment[sizeof(content->comment) - 1] = 0;
+		ticalcs_strlcpy(content->comment, tifiles_comment_set_group(), sizeof(content->comment));
 		*vr = NULL;
 	}
 
@@ -1217,8 +1205,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	char *utf8;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
 	update_label();
 

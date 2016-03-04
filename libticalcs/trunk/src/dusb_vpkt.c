@@ -33,7 +33,6 @@
 #include "internal.h"
 #include "logging.h"
 #include "error.h"
-#include "macros.h"
 
 #include "dusb_rpkt.h"
 #include "dusb_vpkt.h"

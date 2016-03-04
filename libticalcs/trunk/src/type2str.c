@@ -21,9 +21,10 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "gettext.h"
 
 #include "ticalcs.h"
+#include "gettext.h"
+#include "internal.h"
 #include "logging.h"
 #include "error.h"
 
@@ -233,7 +234,7 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 			sprintf(flash_free, "%lu B (%lu KB)", (unsigned long)infos->flash_free, (unsigned long)((infos->flash_free + 512) >> 10));
 		}
 
-		snprintf(str, maxlen,
+		ticalcs_slprintf(str, maxlen,
 			"%s"
 			"%s\n"
 			"%s"

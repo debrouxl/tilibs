@@ -31,7 +31,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ticonv.h>
 #include "ticalcs.h"
 #include "internal.h"
 #include "gettext.h"
@@ -522,8 +521,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 		fe = tifiles_ve_create();
 		if (fe != NULL)
 		{
-			strncpy(fe->name, entry->folder, sizeof(fe->name) - 1);
-			fe->name[sizeof(fe->name) - 1] = 0;
+			ticalcs_strlcpy(fe->name, entry->folder, sizeof(fe->name));
 			fe->type = TI89_DIR;
 
 			parent = g_node_new(fe);

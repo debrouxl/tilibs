@@ -31,7 +31,6 @@
 #include "internal.h"
 #include "logging.h"
 #include "error.h"
-#include "macros.h"
 
 #define VPKT_DBG	1	// 1 = verbose, 2 = more verbose
 

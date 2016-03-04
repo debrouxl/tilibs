@@ -33,7 +33,6 @@
 #include "dbus_pkt.h"
 #include "error.h"
 #include "gettext.h"
-#include "pause.h"
 #include "calc_xx.h"
 #include "dusb_vpkt.h"
 #include "dusb_cmd.h"

@@ -31,7 +31,6 @@
 #include "dbus_pkt.h"
 #include "logging.h"
 #include "error.h"
-#include "macros.h"
 
 // We split packets into chunks to get control regularly and update statistics.
 

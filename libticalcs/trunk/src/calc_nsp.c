@@ -33,14 +33,11 @@
 #include <string.h>
 #include <time.h>
 
-#include <ticonv.h>
 #include "ticalcs.h"
 #include "gettext.h"
 #include "internal.h"
 #include "logging.h"
 #include "error.h"
-#include "pause.h"
-#include "macros.h"
 
 #include "nsp_vpkt.h"
 #include "nsp_cmd.h"
@@ -424,8 +421,7 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 
 			fe = tifiles_ve_create();
 
-			strncpy(fe->folder, folder_name + 1, sizeof(fe->folder) - 1); // Skip leading /
-			fe->folder[sizeof(fe->folder) - 1] = 0;
+			ticalcs_strlcpy(fe->folder, folder_name + 1, sizeof(fe->folder)); // Skip leading /
 			fe->size = varsize;
 			fe->type = vartype;
 			fe->attr = ATTRB_NONE;
@@ -447,8 +443,7 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 				}
 				// else there is no extension to remove.
 			}
-			strncpy(fe->name, varname, sizeof(fe->name) - 1);
-			fe->name[sizeof(fe->name) - 1] = 0;
+			ticalcs_strlcpy(fe->name, varname, sizeof(fe->name));
 
 			node = dirlist_create_append_node(fe, vars);
 			if (!node)
@@ -504,8 +499,7 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 					separator_if_any = "";
 				}
 
-				snprintf(new_folder_name, sizeof(new_folder_name) - 1, "%s%s%s", folder_name, separator_if_any, ((VarEntry *)(folder->data))->name);
-				new_folder_name[sizeof(new_folder_name) - 1] = 0;
+				ticalcs_slprintf(new_folder_name, sizeof(new_folder_name), "%s%s%s", folder_name, separator_if_any, ((VarEntry *)(folder->data))->name);
 
 				ticalcs_info(_("Directory listing in <%s>...\n"), new_folder_name);
 
@@ -699,8 +693,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 						VarEntry *ve;
 
 						content->model = handle->model;
-						strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
-						content->comment[sizeof(content->comment) - 1] = 0;
+						ticalcs_strlcpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment));
 						content->num_entries = 1;
 
 						content->entries = tifiles_ve_create_array(1);
@@ -815,6 +808,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 			if (!ret)
 			{
 				strncpy((char *)id, (char*)(data + 82), 28);
+				id[28] = 0;
 				g_free(data);
 			}
 		}
@@ -899,8 +893,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	path = build_path(handle->model, vr);
 	utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
-	snprintf(update_->text, sizeof(update_->text) - 1, _("Deleting %s..."), utf8);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
 	update_label();
 
@@ -930,8 +923,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 	path = g_strconcat("/", vr->folder, NULL);
 	utf8 = ticonv_varname_to_utf8(handle->model, path, -1);
-	snprintf(update_->text, sizeof(update_->text) - 1, _("Creating %s..."), utf8);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
 	ticonv_utf8_free(utf8);
 	update_label();
 
@@ -973,8 +965,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			break;
 		}
 
-		strncpy(infos->product_name, (char*)data, sizeof(infos->product_name) - 1);
-		infos->product_name[sizeof(infos->product_name) - 1] = 0;
+		ticalcs_strlcpy(infos->product_name, (char *)data, sizeof(infos->product_name));
 		infos->mask = INFOS_PRODUCT_NAME;
 
 		g_free(data);
@@ -1038,16 +1029,13 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		infos->clock_speed = data[35];
 		infos->mask |= INFOS_CLOCK_SPEED;
 
-		snprintf(infos->os_version, sizeof(infos->os_version) - 1, "%1i.%1i.%04i", data[36], data[37], (((int)data[38]) << 8) | data[39]);
-		infos->os_version[sizeof(infos->os_version) - 1] = 0;
+		ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1i.%1i.%04i", data[36], data[37], (((int)data[38]) << 8) | data[39]);
 		infos->mask |= INFOS_OS_VERSION;
 
-		snprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%1i.%04i", data[40], data[41], (((int)data[42]) << 8) | data[43]);
-		infos->boot_version[sizeof(infos->boot_version) - 1] = 0;
+		ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%1i.%04i", data[40], data[41], (((int)data[42]) << 8) | data[43]);
 		infos->mask |= INFOS_BOOT_VERSION;
 
-		snprintf(infos->boot2_version, sizeof(infos->boot2_version), "%1i.%1i.%04i", data[44], data[45], (((int)data[46]) << 8) | data[47]);
-		infos->boot2_version[sizeof(infos->boot2_version) - 1] = 0;
+		ticalcs_slprintf(infos->boot2_version, sizeof(infos->boot2_version), "%1i.%1i.%04i", data[44], data[45], (((int)data[46]) << 8) | data[47]);
 		infos->mask |= INFOS_BOOT2_VERSION;
 
 		infos->hw_version = (  (((uint32_t)data[48]) << 24)
@@ -1104,8 +1092,7 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	path2 = build_path(handle->model, newname);
 	utf81 = ticonv_varname_to_utf8(handle->model, path1, oldname->type);
 	utf82 = ticonv_varname_to_utf8(handle->model, path2, newname->type);
-	snprintf(update_->text, sizeof(update_->text) - 1, _("Renaming %s to %s..."), utf81, utf82);
-	update_->text[sizeof(update_->text) - 1] = 0;
+	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Renaming %s to %s..."), utf81, utf82);
 	ticonv_utf8_free(utf82);
 	ticonv_utf8_free(utf81);
 	update_label();

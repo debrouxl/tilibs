@@ -26,6 +26,8 @@
 #define __TICALCS_INTERNAL__
 
 #include "error.h"
+#include "pause.h"
+#include "macros.h"
 
 #define VALIDATE_NONNULL(ptr) \
 	do \
@@ -195,6 +197,14 @@ static inline GNode * dirlist_create_append_node(void * data, GNode ** tree)
 	}
 	return node;
 }
+
+#define ticalcs_slprintf(str, size, format, ...) \
+	snprintf(str, size - 1, format, ##__VA_ARGS__); \
+	str[size - 1] = 0;
+
+#define ticalcs_strlcpy(dst, src, size) \
+	strncpy(dst, src, size - 1); \
+	dst[size - 1] = 0;
 
 // backup.c
 int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content);

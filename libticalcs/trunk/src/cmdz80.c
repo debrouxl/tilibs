@@ -29,13 +29,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <ticonv.h>
 #include "ticalcs.h"
 #include "internal.h"
 #include "dbus_pkt.h"
 #include "error.h"
 #include "logging.h"
-#include "macros.h"
 #include "cmdz80.h"
 
 #ifdef _MSC_VER
