@@ -625,31 +625,36 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** vr)
 {
 	uint16_t unused;
-	int nvar, err;
+	int nvar, ret = 0;
 	char tipath[18];
 	char *tiname;
 
 	content->model = handle->model;
+	content->num_entries = 0;
 
 	// receive packets
-	for (nvar = 1;; nvar++)
+	for (nvar = 0;; nvar++)
 	{
-		VarEntry *ve;
+		VarEntry *ve = tifiles_ve_create();
+		int ret2;
 
-		content->entries = tifiles_ve_resize_array(content->entries, nvar+1);
-		ve = content->entries[nvar-1] = tifiles_ve_create();
 		ticalcs_strlcpy(ve->folder, "main", sizeof(ve->folder));
 
-		err = RECV_VAR(handle, &ve->size, &ve->type, tipath);
-		TRYF(SEND_ACK(handle));
+		ret = RECV_VAR(handle, &ve->size, &ve->type, tipath);
+		ret2 = SEND_ACK(handle);
 
-		if (err == ERR_EOT)	// end of transmission
+		if (ret)
 		{
-			break;
+			if (ret == ERR_EOT)	// end of transmission
+			{
+				ret = 0;
+			}
+			goto error;
 		}
-		else
+		if (ret2)
 		{
-			content->num_entries = nvar;
+			ret = ret2;
+			goto error;
 		}
 
 		// from Christian (calculator can send varname or fldname/varname)
@@ -668,16 +673,34 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		ticonv_varname_to_utf8_sn(handle->model, ve->name, update_->text, sizeof(update_->text), ve->type);
 		update_label();
 
-		TRYF(SEND_CTS(handle));
-		TRYF(RECV_ACK(handle, NULL));
+		ret = SEND_CTS(handle);
+		if (!ret)
+		{
+			ret = RECV_ACK(handle, NULL);
+			if (!ret)
+			{
+				ve->data = tifiles_ve_alloc_data(ve->size + 4);
+				ret = RECV_XDP(handle, &unused, ve->data);
+				if (!ret)
+				{
+					memmove(ve->data, ve->data + 4, ve->size);
+					ret = SEND_ACK(handle);
+				}
+			}
+		}
 
-		ve->data = tifiles_ve_alloc_data(ve->size + 4);
-		TRYF(RECV_XDP(handle, &unused, ve->data));
-		memmove(ve->data, ve->data + 4, ve->size);
-		TRYF(SEND_ACK(handle));
+		if (!ret)
+		{
+			tifiles_content_add_entry(content, ve);
+		}
+		else
+		{
+error:
+			tifiles_ve_delete(ve);
+			break;
+		}
 	}
 
-	nvar--;
 	if (nvar > 1)
 	{
 		*vr = NULL;
@@ -687,7 +710,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		*vr = tifiles_ve_dup(content->entries[0]);
 	}
 
-	return 0;
+	return ret;
 }
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
@@ -873,7 +896,6 @@ static int		dump_rom_1	(CalcHandle* handle)
 	return err;
 }
 
-// same code as calc_92.c
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
 	// Launch program by remote control

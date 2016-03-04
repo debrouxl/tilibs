@@ -206,7 +206,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	return ret;
 }
 
-static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
+static int		get_dirlist_92	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
 	VarEntry info;
 	int ret;
@@ -334,7 +334,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
 	uint32_t block_size;
-	int block, err;
+	int block, ret = 0;
 	uint16_t unused;
 	uint8_t *ptr;
 
@@ -349,19 +349,26 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 	for (block = 0;; block++) 
 	{
+		int ret2;
+
 		ticalcs_slprintf(update_->text, sizeof(update_->text), _("Block #%2i"), block);
 		update_label();
     
-		err = RECV_VAR(handle, &block_size, &content->type, content->rom_version);
-		TRYF(SEND_ACK(handle));
+		ret = RECV_VAR(handle, &block_size, &content->type, content->rom_version);
+		ret2 = SEND_ACK(handle);
 
-		if (err == ERR_EOT)
+		if (ret)
 		{
+			if (ret == ERR_EOT)
+			{
+				ret = 0;
+			}
 			break;
 		}
-		if (err)
+		if (ret2)
 		{
-			return err;
+			ret = ret2;
+			break;
 		}
 
 		TRYF(SEND_CTS(handle));
@@ -374,10 +381,10 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		content->data_length += block_size;
 	}
 
-	return 0;
+	return ret;
 }
 
-static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
+static int		send_var_92	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	unsigned int i;
 	uint16_t status;
@@ -399,10 +406,12 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 		if (mode & MODE_LOCAL_PATH)
 		{
+			// local & not backup
 			ticalcs_strlcpy(varname, entry->name, sizeof(varname));
 		}
 		else
 		{
+			// full or backup
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 		}
 
@@ -475,37 +484,42 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	return send_var(handle, mode, content);
+	return send_var_92(handle, mode, content);
 }
 
 static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** vr)
 {
 	uint16_t unused;
-	int nvar, err;
+	int nvar, ret = 0;
 	char tipath[18];
 	char *tiname;
 
 	content->model = handle->model;
+	content->num_entries = 0;
 
 	// receive packets
-	for (nvar = 1;; nvar++)
+	for (nvar = 0;; nvar++)
 	{
-		VarEntry *ve;
+		VarEntry *ve = tifiles_ve_create();
+		int ret2;
 
-		content->entries = tifiles_ve_resize_array(content->entries, nvar+1);
-		ve = content->entries[nvar-1] = tifiles_ve_create();
 		ticalcs_strlcpy(ve->folder, "main", sizeof(ve->folder));
 
-		err = RECV_VAR(handle, &ve->size, &ve->type, tipath);
-		TRYF(SEND_ACK(handle));
+		ret = RECV_VAR(handle, &ve->size, &ve->type, tipath);
+		ret2 = SEND_ACK(handle);
 
-		if (err == ERR_EOT)	// end of transmission
+		if (ret)
 		{
-			break;
+			if (ret == ERR_EOT)	// end of transmission
+			{
+				ret = 0;
+			}
+			goto error;
 		}
-		else
+		if (ret2)
 		{
-			content->num_entries = nvar;
+			ret = ret2;
+			goto error;
 		}
 
 		// from Christian (calculator can send varname or fldname/varname)
@@ -524,16 +538,34 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		ticonv_varname_to_utf8_sn(handle->model, ve->name, update_->text, sizeof(update_->text), ve->type);
 		update_label();
 
-		TRYF(SEND_CTS(handle));
-		TRYF(RECV_ACK(handle, NULL));
+		ret = SEND_CTS(handle);
+		if (!ret)
+		{
+			ret = RECV_ACK(handle, NULL);
+			if (!ret)
+			{
+				ve->data = tifiles_ve_alloc_data(ve->size + 4);
+				ret = RECV_XDP(handle, &unused, ve->data);
+				if (!ret)
+				{
+					memmove(ve->data, ve->data + 4, ve->size);
+					ret = SEND_ACK(handle);
+				}
+			}
+		}
 
-		ve->data = tifiles_ve_alloc_data(ve->size + 4);
-		TRYF(RECV_XDP(handle, &unused, ve->data));
-		memmove(ve->data, ve->data + 4, ve->size);
-		TRYF(SEND_ACK(handle));
+		if (!ret)
+		{
+			tifiles_content_add_entry(content, ve);
+		}
+		else
+		{
+error:
+			tifiles_ve_delete(ve);
+			break;
+		}
 	}
 
-	nvar--;
 	if (nvar > 1)
 	{
 		*vr = NULL;
@@ -543,7 +575,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		*vr = tifiles_ve_dup(content->entries[0]);
 	}
 
-	return 0;
+	return ret;
 }
 
 static int		dump_rom_1	(CalcHandle* handle)
@@ -588,7 +620,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	return rd_dump(handle, filename);
 }
 
-static int		del_var		(CalcHandle* handle, VarRequest* vr)
+static int		del_var_92		(CalcHandle* handle, VarRequest* vr)
 {
 	int i;
 	char varname[18];
@@ -652,12 +684,14 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	TRYF(SEND_EOT(handle));
 	TRYF(RECV_ACK(handle, NULL));
 
+	PAUSE(250);
+
 	// delete 'a1234567' variable
 	ticalcs_strlcpy(vr->name, "a1234567", sizeof(vr->name));
-	return del_var(handle, vr);
+	return del_var_92(handle, vr);
 }
 
-static int		get_version	(CalcHandle* handle, CalcInfos* infos)
+static int		get_version_92	(CalcHandle* handle, CalcInfos* infos)
 {
 	uint32_t size;
 	uint8_t type;
@@ -724,11 +758,11 @@ const CalcFncts calc_92 =
 	&send_key,
 	&execute,
 	&recv_screen,
-	&get_dirlist,
+	&get_dirlist_92,
 	&get_memfree,
 	&send_backup,
 	&recv_backup,
-	&send_var,
+	&send_var_92,
 	&recv_var,
 	&send_var_ns,
 	&recv_var_ns,
@@ -740,9 +774,9 @@ const CalcFncts calc_92 =
 	&dump_rom_2,
 	&noop_set_clock,
 	&noop_get_clock,
-	&del_var,
+	&del_var_92,
 	&new_folder,
-	&get_version,
+	&get_version_92,
 	&noop_send_cert,
 	&noop_recv_cert,
 	&noop_rename_var,

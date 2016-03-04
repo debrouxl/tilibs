@@ -480,7 +480,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	{
 		for (;;)
 		{
-			VarEntry *ve = tifiles_ve_create();
+			VarEntry *ve;
 
 			attr = dusb_ca_new_array(size);
 			ret = dusb_cmd_r_var_header(handle, fldname, varname, attr);
@@ -495,6 +495,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				break;
 			}
 
+			ve = tifiles_ve_create();
 			ticalcs_strlcpy(ve->name, varname, sizeof(ve->name));
 			ve->size = (  (((uint32_t)(attr[0]->data[0])) << 24)
 			            | (((uint32_t)(attr[0]->data[1])) << 16)

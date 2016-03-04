@@ -375,19 +375,20 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				ret = RECV_VAR(handle, &ve_size, &ve->type, ve->name);
 				ve->size = ve_size;
 				ret2 = SEND_ACK(handle);
+				if (ret)
+				{
+					if (ret == ERR_EOT)	// end of transmission
+					{
+						ret = 0;
+					}
+error:
+					tifiles_ve_delete(ve);
+					break;
+				}
 				if (ret2)
 				{
 					ret = ret2;
-					break;
-				}
-				if (ret == ERR_EOT)
-				{
-					ret = 0;
-					break;
-				}
-				else if (ret != 0)
-				{
-					break;
+					goto error;
 				}
 
 				node = dirlist_create_append_node(ve, &folder);
@@ -1033,13 +1034,12 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	update_label();
 
 	content->model = handle->model;
+	content->num_entries = 0;
 
 	for (nvar = 0;; nvar++)
 	{
-		VarEntry *ve;
-
-		content->entries = tifiles_ve_resize_array(content->entries, nvar+1);
-		ve = content->entries[nvar] = tifiles_ve_create();
+		VarEntry *ve = tifiles_ve_create();
+		int ret2;
 
 		do
 		{
@@ -1047,7 +1047,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			if (update_->cancel)
 			{
 				ret = ERR_ABORT;
-				break;
+				goto error;
 			}
 
 			ret = RECV_VAR(handle, &ve_size, &(ve->type), ve->name);
@@ -1055,49 +1055,53 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		}
 		while (ret == ERROR_READ_TIMEOUT);
 
-		if (ret)
-		{
-			break;
-		}
+		ret2 = SEND_ACK(handle);
 
-		ret = SEND_ACK(handle);
-		if (ret == ERR_EOT)
-		{
-			ret = 0;
-			break;
-		}
 		if (ret)
 		{
-			break;
+			if (ret == ERR_EOT)	// end of transmission
+			{
+				ret = 0;
+			}
+			goto error;
+		}
+		if (ret2)
+		{
+			ret = ret2;
+			goto error;
 		}
 
 		ret = SEND_CTS(handle);
 		if (!ret)
 		{
 			ret = RECV_ACK(handle, NULL);
-		}
-		if (ret)
-		{
-			break;
+			if (!ret)
+			{
+				ticonv_varname_to_utf8_sn(handle->model, ve->name, update_->text, sizeof(update_->text), ve->type);
+				update_label();
+
+				ve->data = tifiles_ve_alloc_data(ve->size);
+				ret = RECV_XDP(handle, &ve_size, ve->data);
+				if (!ret)
+				{
+					ve->size = ve_size;
+					ret = SEND_ACK(handle);
+				}
+			}
 		}
 
-		ticonv_varname_to_utf8_sn(handle->model, ve->name, update_->text, sizeof(update_->text), ve->type);
-		update_label();
-
-		ve->data = tifiles_ve_alloc_data(ve->size);
-		ret = RECV_XDP(handle, &ve_size, ve->data);
 		if (!ret)
 		{
-			ve->size = ve_size;
-			ret = SEND_ACK(handle);
+			tifiles_content_add_entry(content, ve);
 		}
-		if (ret)
+		else
 		{
+error:
+			tifiles_ve_delete(ve);
 			break;
 		}
 	}
 
-	content->num_entries = nvar;
 	if (nvar == 1)
 	{
 		ticalcs_strlcpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment));

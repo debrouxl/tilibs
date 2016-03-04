@@ -335,17 +335,25 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	{
 		VarEntry *ve = tifiles_ve_create();
 		uint16_t ve_size;
+		int ret2;
 
 		ret = RECV_VAR(handle, &ve_size, &ve->type, ve->name, &ve->attr, &ve->version);
 		ve->size = ve_size;
-		TRYF(SEND_ACK(handle));
-		if (ret == ERR_EOT)
+		ret2 = SEND_ACK(handle);
+		if (ret)
 		{
+			if (ret == ERR_EOT)
+			{
+				ret = 0;
+			}
+error:
+			tifiles_ve_delete(ve);
 			break;
 		}
-		else if (ret != 0)
+		if (ret2)
 		{
-			return ret;
+			ret = ret2;
+			goto error;
 		}
 
 		if (ve->type == TI73_APPL)
@@ -369,7 +377,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		update_label();
 	}
 
-	return 0;
+	return ret;
 }
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
@@ -712,7 +720,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
 {
-	int ret;
+	int ret = 0;
 	FlashPage *fp;
 	uint16_t data_addr;
 	uint16_t old_page = 0;
@@ -747,16 +755,22 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	for (size = 0, first_block = 1, offset = 0;;)
 	{
 		char name[9];
+		int ret2;
 
 		ret = RECV_VAR2(handle, &data_length, &data_type, name, &data_addr, &data_page);
-		TRYF(SEND_ACK(handle));
-		if (ret == ERR_EOT)
-		{
-			goto exit;
-		}
+		ret2 = SEND_ACK(handle);
 		if (ret)
 		{
-			return ret;
+			if (ret == ERR_EOT)
+			{
+				ret = 0;
+			}
+			break;
+		}
+		if (ret2)
+		{
+			ret = ret2;
+			break;
 		}
 
 		if (first_block)
@@ -807,20 +821,17 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		update_->pbar();
 	}
 
-exit:
-	{
-		fp->addr = data_addr & 0x4000;
-		fp->page = old_page;
-		fp->flag = 0x80;
-		fp->size = offset;
-		fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
-		memcpy(fp->data, buf, fp->size);
-		page++;
-	}
+	fp->addr = data_addr & 0x4000;
+	fp->page = old_page;
+	fp->flag = 0x80;
+	fp->size = offset;
+	fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
+	memcpy(fp->data, buf, fp->size);
+	page++;
 
 	content->num_pages = page;
 
-	return 0;
+	return ret;
 }
 
 static int		recv_idlist	(CalcHandle* handle, uint8_t* id)

@@ -186,7 +186,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	{
 		for (;;)
 		{
-			VarEntry *ve = tifiles_ve_create();
+			VarEntry *ve;
 			GNode *node;
 
 			attr = dusb_ca_new_array(size);
@@ -202,6 +202,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				break;
 			}
 
+			ve = tifiles_ve_create();
 			ticalcs_strlcpy(ve->folder, fldname, sizeof(ve->folder));
 			ticalcs_strlcpy(ve->name, varname, sizeof(ve->name));
 			ve->size = (  (((uint32_t)(attr[3]->data[0])) << 24)
