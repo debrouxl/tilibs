@@ -3,9 +3,8 @@
 src/backup.c
 src/calc_00.c
 src/calc_73.c
-src/calc_83.c
 src/calc_84p.c
-src/calc_86.c
+src/calc_8x.c
 src/calc_89.c
 src/calc_89t.c
 src/calc_92.c
