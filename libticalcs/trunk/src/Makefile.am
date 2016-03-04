@@ -23,7 +23,7 @@ libticalcs2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticalcs2_la_SOURCES = *.h \
 	backup.c \
 	calc_00.c calc_xx.c \
-	calc_73.c calc_82.c calc_83.c calc_85.c calc_86.c \
+	calc_73.c calc_83.c calc_85.c calc_86.c \
 	calc_89.c calc_92.c \
 	calc_84p.c calc_89t.c \
 	calc_nsp.c \

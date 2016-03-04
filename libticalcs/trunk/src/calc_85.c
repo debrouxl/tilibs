@@ -21,7 +21,7 @@
  */
 
 /*
-	TI85 support.
+	TI82/85 support.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -44,23 +44,28 @@
 
 #include "dbus_pkt.h"
 #include "cmdz80.h"
+#include "rom82.h"
 #include "rom85.h"
 #include "romdump.h"
 
-#define SEND_SCR ti85_send_SCR
-#define SEND_ACK ti85_send_ACK
-#define SEND_VAR ti85_send_VAR
-#define SEND_XDP ti85_send_XDP
-#define SEND_CTS ti85_send_CTS
-#define SEND_EOT ti85_send_EOT
+#define SEND_SCR ((handle->model < CALC_TI85) ? ti82_send_SCR : ti85_send_SCR)
+#define SEND_ACK ((handle->model < CALC_TI85) ? ti82_send_ACK : ti85_send_ACK)
+#define SEND_VAR ((handle->model < CALC_TI85) ? ti82_send_VAR : ti85_send_VAR)
+#define SEND_XDP ((handle->model < CALC_TI85) ? ti82_send_XDP : ti85_send_XDP)
+#define SEND_CTS ((handle->model < CALC_TI85) ? ti82_send_CTS : ti85_send_CTS)
+#define SEND_EOT ((handle->model < CALC_TI85) ? ti82_send_EOT : ti85_send_EOT)
 
-#define RECV_ACK ti85_recv_ACK
-#define RECV_VAR ti85_recv_VAR
-#define RECV_XDP ti85_recv_XDP
-#define RECV_SKP ti85_recv_SKP
+#define RECV_ACK ((handle->model < CALC_TI85) ? ti82_recv_ACK : ti85_recv_ACK)
+#define RECV_VAR ((handle->model < CALC_TI85) ? ti82_recv_VAR : ti85_recv_VAR)
+#define RECV_XDP ((handle->model < CALC_TI85) ? ti82_recv_XDP : ti85_recv_XDP)
+#define RECV_SKP ((handle->model < CALC_TI85) ? ti82_recv_SKP : ti85_recv_SKP)
 #define RECV_ERR ti82_recv_ERR
 
-// Screen coordinates of the TI85
+// Screen coordinates of the TI-82
+#define TI82_ROWS  64
+#define TI82_COLS  96
+
+// Screen coordinates of the TI-85
 #define TI85_ROWS  64
 #define TI85_COLS  128
 
@@ -74,10 +79,20 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		return ERR_MALLOC;
 	}
 
-	sc->width = TI85_COLS;
-	sc->height = TI85_ROWS;
-	sc->clipped_width = TI85_COLS;
-	sc->clipped_height = TI85_ROWS;
+	if (handle->model < CALC_TI85)
+	{
+		sc->width = TI82_COLS;
+		sc->height = TI82_ROWS;
+		sc->clipped_width = TI82_COLS;
+		sc->clipped_height = TI82_ROWS;
+	}
+	else
+	{
+		sc->width = TI85_COLS;
+		sc->height = TI85_ROWS;
+		sc->clipped_width = TI85_COLS;
+		sc->clipped_height = TI85_ROWS;
+	}
 	sc->pixel_format = CALC_PIXFMT_MONO;
 
 	ret = SEND_SCR(handle);
@@ -90,7 +105,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 			ret = RECV_XDP(handle, &max_cnt, *bitmap);
 			if (!ret || ret == ERR_CHECKSUM) // problem with checksum
 			{
-				*bitmap = ticalcs_realloc_screen(*bitmap, TI85_COLS * TI85_ROWS / 8);
+				*bitmap = ticalcs_realloc_screen(*bitmap, (handle->model < CALC_TI85) ? TI82_COLS * TI82_ROWS / 8 : TI85_COLS * TI85_ROWS / 8);
 				ret = SEND_ACK(handle);
 			}
 		}
@@ -132,111 +147,211 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	varname[4] = LSB(content->mem_address);
 	varname[5] = MSB(content->mem_address);
 
-	TRYF(SEND_VAR(handle, content->data_length1, TI85_BKUP, varname));
-	TRYF(RECV_ACK(handle, &status));
-
 	do
 	{
-		// wait for user's action
-		update_refresh();
-
-		if (update_->cancel)
+		ret = SEND_VAR(handle, content->data_length1, (handle->model < CALC_TI85) ? TI82_BKUP : TI85_BKUP, varname);
+		if (!ret)
 		{
-			return ERR_ABORT;
+			ret = RECV_ACK(handle, &status);
+		}
+		if (ret)
+		{
+			break;
 		}
 
-		ret = RECV_SKP(handle, &rej_code);
-	}
-	while (ret == ERROR_READ_TIMEOUT);
+		do
+		{
+			// wait for user's action
+			update_refresh();
 
-	TRYF(SEND_ACK(handle));
-	switch (rej_code)
-	{
-	case REJ_EXIT:
-	case REJ_SKIP:
-		return ERR_ABORT;
-	case REJ_MEMORY:
-		return ERR_OUT_OF_MEMORY;
-	case 0:						// CTS
+			if (update_->cancel)
+			{
+				ret = ERR_ABORT;
+				break;
+			}
+
+			ret = RECV_SKP(handle, &rej_code);
+		}
+		while (ret == ERROR_READ_TIMEOUT);
+
+		if (!ret)
+		{
+			ret = SEND_ACK(handle);
+		}
+		if (ret)
+		{
+			break;
+		}
+
+		switch (rej_code)
+		{
+		case REJ_EXIT:
+		case REJ_SKIP:
+			ret = ERR_ABORT;
+			break;
+		case REJ_MEMORY:
+			ret = ERR_OUT_OF_MEMORY;
+			// Fall through.
+		case 0:						// CTS
+			break;
+		default:
+			ret = ERR_VAR_REJECTED;
+			break;
+		}
+
+		if (ret)
+		{
+			break;
+		}
+
+		update_->text[0] = 0;
+		update_label();
+
+		update_->cnt2 = 0;
+		update_->max2 = 3;
+		update_->pbar();
+
+		ret = SEND_XDP(handle, content->data_length1, content->data_part1);
+		if (!ret)
+		{
+			ret = RECV_ACK(handle, &status);
+		}
+		if (ret)
+		{
+			break;
+		}
+		update_->cnt2++;
+		update_->pbar();
+
+		ret = SEND_XDP(handle, content->data_length2, content->data_part2);
+		if (!ret)
+		{
+			ret = RECV_ACK(handle, &status);
+		}
+		if (ret)
+		{
+			break;
+		}
+		update_->cnt2++;
+		update_->pbar();
+
+		ret = SEND_XDP(handle, content->data_length3, content->data_part3);
+		if (!ret)
+		{
+			ret = RECV_ACK(handle, &status);
+		}
+		if (ret)
+		{
+			break;
+		}
+		update_->cnt2++;
+		update_->pbar();
+
+		if (handle->model < CALC_TI85)
+		{
+			//ret = SEND_EOT(handle);
+		}
+		else
+		{
+			ret = SEND_EOT(handle);
+		}
+
 		break;
-	default:
-		return ERR_VAR_REJECTED;
-	}
+	} while(0);
 
-	update_->text[0] = 0;
-	update_label();
-
-	update_->cnt2 = 0;
-	update_->max2 = 3;
-	update_->pbar();
-
-	TRYF(SEND_XDP(handle, content->data_length1, content->data_part1));
-	TRYF(RECV_ACK(handle, &status));
-	update_->cnt2++;
-	update_->pbar();
-
-	TRYF(SEND_XDP(handle, content->data_length2, content->data_part2));
-	TRYF(RECV_ACK(handle, &status));
-	update_->cnt2++;
-	update_->pbar();
-
-	TRYF(SEND_XDP(handle, content->data_length3, content->data_part3));
-	TRYF(RECV_ACK(handle, &status));
-	update_->cnt2++;
-	update_->pbar();
-
-	return SEND_EOT(handle);
+	return ret;
 }
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
-	char varname[9] = { 0 };
+	int ret = 0;
+	char varname[9];
 
 	strncpy(update_->text, _("Waiting for backup..."), sizeof(update_->text) - 1);
 	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
-	content->model = CALC_TI85;
+	content->model = handle->model;
 	strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
 	content->comment[sizeof(content->comment) - 1] = 0;
 
-	TRYF(RECV_VAR(handle, &(content->data_length1), &content->type, varname));
-	content->data_length2 = (uint8_t)varname[0] | (((uint16_t)(uint8_t)varname[1]) << 8);
-	content->data_length3 = (uint8_t)varname[2] | (((uint16_t)(uint8_t)varname[3]) << 8);
-	content->mem_address  = (uint8_t)varname[4] | (((uint16_t)(uint8_t)varname[5]) << 8);
-	TRYF(SEND_ACK(handle));
+	varname[0] = 0;
+	do
+	{
+		ret = RECV_VAR(handle, &(content->data_length1), &content->type, varname);
+		if (ret)
+		{
+			break;
+		}
+		content->data_length2 = (uint8_t)varname[0] | (((uint16_t)(uint8_t)varname[1]) << 8);
+		content->data_length3 = (uint8_t)varname[2] | (((uint16_t)(uint8_t)varname[3]) << 8);
+		content->mem_address  = (uint8_t)varname[4] | (((uint16_t)(uint8_t)varname[5]) << 8);
+		ret = SEND_ACK(handle);
+		if (ret)
+		{
+			break;
+		}
 
-	TRYF(SEND_CTS(handle));
-	TRYF(RECV_ACK(handle, NULL));
+		ret = SEND_CTS(handle);
+		if (!ret)
+		{
+			ret = RECV_ACK(handle, NULL);
+		}
+		if (ret)
+		{
+			break;
+		}
 
-	update_->text[0] = 0;
-	update_label();
+		update_->text[0] = 0;
+		update_label();
 
-	update_->cnt2 = 0;
-	update_->max2 = 3;
-	update_->pbar();
+		update_->cnt2 = 0;
+		update_->max2 = 3;
+		update_->pbar();
 
-	content->data_part1 = tifiles_ve_alloc_data(65536);
-	TRYF(RECV_XDP(handle, &content->data_length1, content->data_part1));
-	TRYF(SEND_ACK(handle));
-	update_->cnt2++;
-	update_->pbar();
+		content->data_part1 = tifiles_ve_alloc_data(65536);
+		ret = RECV_XDP(handle, &content->data_length1, content->data_part1);
+		if (!ret)
+		{
+			ret = SEND_ACK(handle);
+		}
+		if (ret)
+		{
+			break;
+		}
+		update_->cnt2++;
+		update_->pbar();
 
-	content->data_part2 = tifiles_ve_alloc_data(65536);
-	TRYF(RECV_XDP(handle, &content->data_length2, content->data_part2));
-	TRYF(SEND_ACK(handle));
-	update_->cnt2++;
-	update_->pbar();
+		content->data_part2 = tifiles_ve_alloc_data(65536);
+		ret = RECV_XDP(handle, &content->data_length2, content->data_part2);
+		if (!ret)
+		{
+			ret = SEND_ACK(handle);
+		}
+		if (ret)
+		{
+			break;
+		}
+		update_->cnt2++;
+		update_->pbar();
 
-	content->data_part3 = tifiles_ve_alloc_data(65536);
-	TRYF(RECV_XDP(handle, &content->data_length3, content->data_part3));
-	TRYF(SEND_ACK(handle));
-	update_->cnt2++;
-	update_->pbar();
+		content->data_part3 = tifiles_ve_alloc_data(65536);
+		ret = RECV_XDP(handle, &content->data_length3, content->data_part3);
+		if (!ret)
+		{
+			ret = SEND_ACK(handle);
+		}
+		if (ret)
+		{
+			break;
+		}
+		update_->cnt2++;
+		update_->pbar();
 
-	content->data_part4 = NULL;
+		content->data_part4 = NULL;
+	} while(0);
 
-	return 0;
+	return ret;
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content);
@@ -265,8 +380,15 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	{
 		VarEntry *entry = content->entries[i];
 
-		TRYF(SEND_VAR(handle, (uint16_t)entry->size, entry->type, entry->name));
-		TRYF(RECV_ACK(handle, &status));
+		ret = SEND_VAR(handle, (uint16_t)entry->size, entry->type, entry->name);
+		if (!ret)
+		{
+			ret = RECV_ACK(handle, &status);
+		}
+		if (ret)
+		{
+			break;
+		}
 
 		strncpy(update_->text, _("Waiting for user's action..."), sizeof(update_->text) - 1);
 		update_->text[sizeof(update_->text) - 1] = 0;
@@ -278,37 +400,62 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			update_refresh();
 			if (update_->cancel)
 			{
-				return ERR_ABORT;
+				ret = ERR_ABORT;
+				break;
 			}
 
 			ret = RECV_SKP(handle, &rej_code);
 		}
 		while (ret == ERROR_READ_TIMEOUT);
 
-		TRYF(SEND_ACK(handle));
+		if (!ret)
+		{
+			ret = SEND_ACK(handle);
+		}
+		if (ret)
+		{
+			break;
+		}
+
 		switch (rej_code)
 		{
 		case REJ_EXIT:
-			return ERR_ABORT;
+			ret = ERR_ABORT;
+			break;
 		case REJ_SKIP:
 			if (mode & MODE_SEND_EXEC_ASM)
 			{
-				return ERR_ABORT;
+				ret = ERR_ABORT;
+				break;
 			}
 			continue;
 		case REJ_MEMORY:
-			return ERR_OUT_OF_MEMORY;
+			ret = ERR_OUT_OF_MEMORY;
+			// Fall through.
 		case 0:						// CTS
 			break;
 		default:
-			return ERR_VAR_REJECTED;
+			ret = ERR_VAR_REJECTED;
+			break;
+		}
+
+		if (ret)
+		{
+			break;
 		}
 
 		ticonv_varname_to_utf8_sn(handle->model, entry->name, update_->text, sizeof(update_->text), entry->type);
 		update_label();
 
-		TRYF(SEND_XDP(handle, (uint16_t)entry->size, entry->data));
-		TRYF(RECV_ACK(handle, &status));
+		ret = SEND_XDP(handle, (uint16_t)entry->size, entry->data);
+		if (!ret)
+		{
+			ret = RECV_ACK(handle, &status);
+		}
+		if (ret)
+		{
+			break;
+		}
 
 		update_->cnt2 = i+1;
 		update_->max2 = content->num_entries;
@@ -317,17 +464,26 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 	if (mode & MODE_SEND_EXEC_ASM)
 	{
-		TRYF(ti82_send_asm_exec(handle, content->entries[0]));
-		TRYF(RECV_ERR(handle, &status));
-		TRYF(SEND_ACK(handle));
+		ret = ti82_send_asm_exec(handle, content->entries[0]);
+		if (!ret)
+		{
+			ret = RECV_ERR(handle, &status);
+			if (!ret)
+			{
+				ret = SEND_ACK(handle);
+			}
+		}
 	}
 	else if ((mode & MODE_SEND_ONE_VAR) || (mode & MODE_SEND_LAST_VAR))
 	{
-		TRYF(SEND_EOT(handle));
-		TRYF(RECV_ACK(handle, NULL));
+		ret = SEND_EOT(handle);
+		if (!ret)
+		{
+			ret = RECV_ACK(handle, NULL);
+		}
 	}
 
-	return 0;
+	return ret;
 }
 
 static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** vr)
@@ -340,9 +496,9 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	update_->text[sizeof(update_->text) - 1] = 0;
 	update_label();
 
-	content->model = CALC_TI85;
+	content->model = handle->model;
 
-	for (nvar = 0;; nvar++) 
+	for (nvar = 0;; nvar++)
 	{
 		VarEntry *ve;
 
@@ -354,7 +510,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			update_refresh();
 			if (update_->cancel)
 			{
-				return ERR_ABORT;
+				ret = ERR_ABORT;
+				break;
 			}
 
 			ret = RECV_VAR(handle, &ve_size, &(ve->type), ve->name);
@@ -362,29 +519,49 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		}
 		while (ret == ERROR_READ_TIMEOUT);
 
-		TRYF(SEND_ACK(handle));
+		if (ret)
+		{
+			break;
+		}
+
+		ret = SEND_ACK(handle);
 		if (ret == ERR_EOT)
 		{
-			goto exit;
+			ret = 0;
+			break;
 		}
 		if (ret)
 		{
-			return ret;
+			break;
 		}
 
-		TRYF(SEND_CTS(handle));
-		TRYF(RECV_ACK(handle, NULL));
+		ret = SEND_CTS(handle);
+		if (!ret)
+		{
+			ret = RECV_ACK(handle, NULL);
+		}
+		if (ret)
+		{
+			break;
+		}
 
 		ticonv_varname_to_utf8_sn(handle->model, ve->name, update_->text, sizeof(update_->text), ve->type);
 		update_label();
 
 		ve->data = tifiles_ve_alloc_data(ve->size);
-		TRYF(RECV_XDP(handle, &ve_size, ve->data));
+		ret = RECV_XDP(handle, &ve_size, ve->data);
+		if (ret)
+		{
+			break;
+		}
 		ve->size = ve_size;
-		TRYF(SEND_ACK(handle));
+		ret = SEND_ACK(handle);
+		if (ret)
+		{
+			break;
+		}
 	}
 
-exit:
 	content->num_entries = nvar;
 	if (nvar == 1)
 	{
@@ -399,13 +576,20 @@ exit:
 		*vr = NULL;
 	}
 
-	return 0;
+	return ret;
 }
 
 static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Send dumping program
-	return rd_send(handle, "romdump.85s", romDumpSize85, romDump85);
+	if (handle->model == CALC_TI82)
+	{
+		return rd_send(handle, "romdump.82p", romDumpSize82, romDump82);
+	}
+	else // if (handle->model == CALC_TI85)
+	{
+		return rd_send(handle, "romdump.85s", romDumpSize85, romDump85);
+	}
 }
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
@@ -414,13 +598,82 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	return rd_dump(handle, filename);
 }
 
-const CalcFncts calc_85 = 
+const CalcFncts calc_82 =
+{
+	CALC_TI82,
+	"TI82",
+	"TI-82",
+	"TI-82",
+	OPS_SCREEN | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
+	FTS_BACKUP | FTS_NONSILENT,
+	PRODUCT_ID_NONE,
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "",     /* get_dirlist */
+	 "",     /* get_memfree */
+	 "2P1L", /* send_backup */
+	 "2P1L", /* recv_backup */
+	 "",     /* send_var */
+	 "",     /* recv_var */
+	 "2P1L", /* send_var_ns */
+	 "1P1L", /* recv_var_ns */
+	 "",     /* send_app */
+	 "",     /* recv_app */
+	 "",     /* send_os */
+	 "",     /* recv_idlist */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "",     /* del_var */
+	 "",     /* new_folder */
+	 "",     /* get_version */
+	 "",     /* send_cert */
+	 "",     /* recv_cert */
+	 "",     /* rename */
+	 "",     /* chattr */
+	 "",     /* send_all_vars_backup */
+	 ""      /* recv_all_vars_backup */ },
+	&noop_is_ready,
+	&noop_send_key,
+	&noop_execute,
+	&recv_screen,
+	&noop_get_dirlist,
+	&get_memfree,
+	&send_backup,
+	&recv_backup,
+	&send_var,
+	&noop_recv_var,
+	&send_var_ns,
+	&recv_var_ns,
+	&noop_send_flash,
+	&noop_recv_flash,
+	&noop_send_os,
+	&noop_recv_idlist,
+	&dump_rom_1,
+	&dump_rom_2,
+	&noop_set_clock,
+	&noop_get_clock,
+	&noop_del_var,
+	&noop_new_folder,
+	&noop_get_version,
+	&noop_send_cert,
+	&noop_recv_cert,
+	&noop_rename_var,
+	&noop_change_attr,
+	&noop_send_all_vars_backup,
+	&noop_recv_all_vars_backup
+};
+
+const CalcFncts calc_85 =
 {
 	CALC_TI85,
 	"TI85",
 	"TI-85",
 	"TI-85",
-	OPS_SCREEN | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP | 
+	OPS_SCREEN | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
 	FTS_BACKUP | FTS_NONSILENT,
 	PRODUCT_ID_NONE,
 	{"",     /* is_ready */
