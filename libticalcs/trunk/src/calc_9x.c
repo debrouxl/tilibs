@@ -21,7 +21,7 @@
  */
 
 /*
-	TI89/TI92+/V200/TI89 Titanium support.
+	TI89/TI92+/V200/TI89T/TI92 support.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -41,38 +41,42 @@
 
 #include "cmd68k.h"
 #include "rom89.h"
+#include "rom92f2.h"
 #include "romdump.h"
 #include "keys89.h"
 #include "keys92p.h"
 
-#define SEND_RDY ti89_send_RDY
-#define SEND_KEY ti89_send_KEY
-#define SEND_SCR ti89_send_SCR
-#define SEND_ACK ti89_send_ACK
-#define SEND_VAR ti89_send_VAR
-#define SEND_XDP ti89_send_XDP
-#define SEND_REQ ti89_send_REQ
-#define SEND_RTS ti89_send_RTS
+#define SEND_RDY (handle->model != CALC_TI92 ? ti89_send_RDY : ti92_send_RDY)
+#define SEND_KEY (handle->model != CALC_TI92 ? ti89_send_KEY : ti92_send_KEY)
+#define SEND_SCR (handle->model != CALC_TI92 ? ti89_send_SCR : ti92_send_SCR)
+#define SEND_ACK (handle->model != CALC_TI92 ? ti89_send_ACK : ti92_send_ACK)
+#define SEND_VAR (handle->model != CALC_TI92 ? ti89_send_VAR : ti92_send_VAR)
+#define SEND_XDP (handle->model != CALC_TI92 ? ti89_send_XDP : ti92_send_XDP)
+#define SEND_REQ (handle->model != CALC_TI92 ? ti89_send_REQ : ti92_send_REQ)
+#define SEND_RTS (handle->model != CALC_TI92 ? ti89_send_RTS : ti92_send_RTS)
 #define SEND_RTS2 ti89_send_RTS2
-#define SEND_CTS ti89_send_CTS
-#define SEND_CNT ti89_send_CNT
+#define SEND_CTS (handle->model != CALC_TI92 ? ti89_send_CTS : ti92_send_CTS)
+#define SEND_CNT (handle->model != CALC_TI92 ? ti89_send_CNT : ti92_send_CNT)
 #define SEND_DEL ti89_send_DEL
 #define SEND_VER ti89_send_VER
-#define SEND_EOT ti89_send_EOT
+#define SEND_EOT (handle->model != CALC_TI92 ? ti89_send_EOT : ti92_send_EOT)
 
-#define RECV_ACK ti89_recv_ACK
-#define RECV_VAR ti89_recv_VAR
-#define RECV_XDP ti89_recv_XDP
-#define RECV_CTS ti89_recv_CTS
-#define RECV_SKP ti89_recv_SKP
-#define RECV_CNT ti89_recv_CNT
-#define RECV_EOT ti89_recv_EOT
+#define RECV_ACK (handle->model != CALC_TI92 ? ti89_recv_ACK : ti92_recv_ACK)
+#define RECV_VAR (handle->model != CALC_TI92 ? ti89_recv_VAR : ti92_recv_VAR)
+#define RECV_XDP (handle->model != CALC_TI92 ? ti89_recv_XDP : ti92_recv_XDP)
+#define RECV_CTS (handle->model != CALC_TI92 ? ti89_recv_CTS : ti92_recv_CTS)
+#define RECV_SKP (handle->model != CALC_TI92 ? ti89_recv_SKP : ti92_recv_SKP)
+#define RECV_CNT (handle->model != CALC_TI92 ? ti89_recv_CNT : ti92_recv_CNT)
+#define RECV_EOT (handle->model != CALC_TI92 ? ti89_recv_EOT : ti92_recv_EOT)
 
-// Screen coordinates of the TI89
+// Screen coordinates of the TI-89 / TI-92+
 #define TI89_ROWS          128
 #define TI89_COLS          240
 #define TI89_ROWS_VISIBLE  100
 #define TI89_COLS_VISIBLE  160
+
+#define TI92_ROWS  128
+#define TI92_COLS  240
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -130,9 +134,8 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 			}
 		}
 	}
-	else if (handle->model == CALC_TI92P || handle->model == CALC_V200)
+	else if (handle->model == CALC_TI92 || handle->model == CALC_TI92P || handle->model == CALC_V200)
 	{
-		// TI92+ or V200
 		ret = send_key(handle, KEY92P_CTRL + KEY92P_Q);
 		if (!ret)
 		{
@@ -208,22 +211,15 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 	sc->width = TI89_COLS;
 	sc->height = TI89_ROWS;
-	switch (handle->model) 
+	if (handle->model == CALC_TI89 || handle->model == CALC_TI89T)
 	{
-	case CALC_TI89:
-	case CALC_TI89T:
 		sc->clipped_width = TI89_COLS_VISIBLE;
 		sc->clipped_height = TI89_ROWS_VISIBLE;
-		break;
-	case CALC_TI92P:
-	case CALC_V200:
+	}
+	else
+	{
 		sc->clipped_width = TI89_COLS;
 		sc->clipped_height = TI89_ROWS;
-		break;
-	default:
-		sc->clipped_width = TI89_COLS;
-		sc->clipped_height = TI89_ROWS;
-		break;
 	}
 	sc->pixel_format = CALC_PIXFMT_MONO;
 
@@ -434,11 +430,182 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	return 0;
 }
 
+static int		get_dirlist_92	(CalcHandle* handle, GNode** vars, GNode** apps)
+{
+	VarEntry info;
+	int ret;
+
+	ret = dirlist_init_trees(handle, vars, apps);
+	if (ret)
+	{
+		return ret;
+	}
+
+	TRYF(SEND_REQ(handle, 0, TI92_RDIR, "\0\0\0\0\0\0\0"));
+	TRYF(RECV_ACK(handle, NULL));
+	TRYF(RECV_VAR(handle, &info.size, &info.type, info.name));
+
+	for (;;) 
+	{
+		VarEntry *ve = tifiles_ve_create();
+		GNode *folder = NULL;
+		char folder_name[9];
+		char *utf8;
+		uint8_t * buffer = handle->buffer;
+		uint16_t unused;
+
+		TRYF(SEND_ACK(handle));
+		TRYF(SEND_CTS(handle));
+
+		TRYF(RECV_ACK(handle, NULL));
+		TRYF(RECV_XDP(handle, &unused, buffer));
+
+		memcpy(ve->name, buffer + 4, 8);	// skip 4 extra 00s
+		ve->name[8] = '\0';
+		ve->type = buffer[12];
+		ve->attr = buffer[13];
+		ve->size = buffer[14] | (((uint32_t)buffer[15]) << 8) | (((uint32_t)buffer[16]) << 16) | (((uint32_t)buffer[17]) << 24);
+		ve->folder[0] = 0;
+
+		if (ve->type == TI92_DIR) 
+		{
+			ticalcs_strlcpy(folder_name, ve->name, sizeof(folder_name));
+			folder = dirlist_create_append_node(ve, vars);
+		} 
+		else 
+		{
+			ticalcs_strlcpy(ve->folder, folder_name, sizeof(ve->folder));
+
+			if (!strcmp(ve->folder, "main") && (!strcmp(ve->name, "regcoef") || !strcmp(ve->name, "regeq")))
+			{
+				tifiles_ve_delete(ve);
+			}
+			else
+			{
+				GNode *node = dirlist_create_append_node(ve, &folder);
+				if (node == NULL)
+				{
+					return ERR_MALLOC;
+				}
+			}
+		}
+
+		ticalcs_info(_("Name: %8s | Type: %8s | Attr: %i  | Size: %08X"), 
+			ve->name, 
+			tifiles_vartype2string(handle->model, ve->type),
+			ve->attr,
+			ve->size);
+
+		TRYF(SEND_ACK(handle));
+		ret = RECV_CNT(handle);
+		if (ret == ERR_EOT)
+		{
+			break;
+		}
+		if (ret)
+		{
+			return ret;
+		}
+
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+		ticalcs_slprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"), ((VarEntry *) (folder->data))->name, utf8);
+		ticonv_utf8_free(utf8);
+		update_->label();
+	}
+
+	return SEND_ACK(handle);
+}
+
 static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t *flash)
 {
 	(void)handle;
 	*ram = *flash = -1;
 	return 0;
+}
+
+static int		send_backup	(CalcHandle* handle, BackupContent* content)
+{
+	int i;
+	int nblocks;
+
+	TRYF(SEND_VAR(handle, content->data_length, TI92_BKUP, content->rom_version));
+	TRYF(RECV_ACK(handle, NULL));
+
+	update_->cnt2 = 0;
+	nblocks = content->data_length / 1024;
+	handle->updat->max2 = nblocks;
+
+	for (i = 0; i <= nblocks; i++) 
+	{
+		uint32_t length = (i != nblocks) ? 1024 : content->data_length % 1024;
+
+		TRYF(SEND_VAR(handle, length, TI92_BKUP, content->rom_version));
+		TRYF(RECV_ACK(handle, NULL));
+
+		TRYF(RECV_CTS(handle));
+		TRYF(SEND_ACK(handle));
+
+		TRYF(SEND_XDP(handle, length, content->data_part + 1024 * i));
+		TRYF(RECV_ACK(handle, NULL));
+
+		handle->updat->cnt2 = i;
+		update_pbar();
+	}
+
+	return SEND_EOT(handle);
+}
+
+static int		recv_backup	(CalcHandle* handle, BackupContent* content)
+{
+	uint32_t block_size;
+	int block, ret = 0;
+	uint16_t unused;
+	uint8_t *ptr;
+
+	TRYF(SEND_REQ(handle, 0, TI92_BKUP, "main\\backup"));
+	TRYF(RECV_ACK(handle, &unused));
+
+	content->model = CALC_TI92;
+	ticalcs_strlcpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment));
+	content->data_part = tifiles_ve_alloc_data(128 * 1024);
+	content->type = TI92_BKUP;
+	content->data_length = 0;
+
+	for (block = 0;; block++) 
+	{
+		int ret2;
+
+		ticalcs_slprintf(update_->text, sizeof(update_->text), _("Block #%2i"), block);
+		update_label();
+    
+		ret = RECV_VAR(handle, &block_size, &content->type, content->rom_version);
+		ret2 = SEND_ACK(handle);
+
+		if (ret)
+		{
+			if (ret == ERR_EOT)
+			{
+				ret = 0;
+			}
+			break;
+		}
+		if (ret2)
+		{
+			ret = ret2;
+			break;
+		}
+
+		TRYF(SEND_CTS(handle));
+		TRYF(RECV_ACK(handle, NULL));
+
+		ptr = content->data_part + content->data_length;
+		TRYF(RECV_XDP(handle, &unused, ptr));
+		memmove(ptr, ptr + 4, block_size);
+		TRYF(SEND_ACK(handle));
+		content->data_length += block_size;
+	}
+
+	return ret;
 }
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
@@ -511,8 +678,9 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t status;
 	VarEntry *ve;
 	uint16_t unused;
-	char  varname[20];
+	char varname[20];
 
+	content->model = handle->model;
 	ve = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
@@ -584,7 +752,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			continue;
 		}
 
-		if ((mode & MODE_LOCAL_PATH) && !(mode & MODE_BACKUP))
+		if ((mode & MODE_LOCAL_PATH) && ((handle->model == CALC_TI92) || !(mode & MODE_BACKUP)))
 		{
 			// local & not backup
 			ticalcs_strlcpy(varname, entry->name, sizeof(varname));
@@ -611,7 +779,9 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		TRYF(SEND_EOT(handle));
 		TRYF(RECV_ACK(handle, NULL));
 
-		if (mode & MODE_BACKUP)
+		ticalcs_info("Sent variable #%u", i);
+
+		if (mode & MODE_BACKUP || handle->model == CALC_TI92)
 		{
 			update_->cnt2 = i+1;
 			update_->max2 = content->num_entries;
@@ -871,7 +1041,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 
 static int		dump_rom_1	(CalcHandle* handle)
 {
-	int err;
+	int ret;
 	// Go back to homescreen
 	PAUSE(200);
 	if (handle->model == CALC_TI89 || handle->model == CALC_TI89T)
@@ -880,7 +1050,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 		TRYF(send_key(handle, KEY89_CLEAR));
 		TRYF(send_key(handle, KEY89_CLEAR));
 	}
-	else if (handle->model == CALC_TI92P || handle->model == CALC_V200)
+	else if (handle->model == CALC_TI92 || handle->model == CALC_TI92P || handle->model == CALC_V200)
 	{
 		// TI92+ or V200
 		TRYF(send_key(handle, KEY92P_CTRL + KEY92P_Q));
@@ -890,10 +1060,17 @@ static int		dump_rom_1	(CalcHandle* handle)
 	PAUSE(200);
 
 	// Send dumping program
-	err = rd_send(handle, "romdump.89z", romDumpSize89, romDump89);
+	if (handle->model != CALC_TI92)
+	{
+		ret = rd_send(handle, "romdump.89z", romDumpSize89, romDump89);
+	}
+	else
+	{
+		ret = rd_send(handle, "romdump.92p", romDumpSize92, romDump92);
+	}
 	PAUSE(1000);
 
-	return err;
+	return ret;
 }
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
@@ -1007,6 +1184,45 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	return RECV_ACK(handle, NULL);
 }
 
+static int		del_var_92		(CalcHandle* handle, VarRequest* vr)
+{
+	int i;
+	char varname[18];
+	char *utf8;
+
+	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
+	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
+	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	ticonv_utf8_free(utf8);
+	update_label();
+
+	send_key(handle, KEY92P_ON);
+	send_key(handle, KEY92P_ESC);
+	send_key(handle, KEY92P_ESC);
+	send_key(handle, KEY92P_ESC);
+	send_key(handle, KEY92P_2ND + KEY92P_ESC);
+	send_key(handle, KEY92P_2ND + KEY92P_ESC);
+	send_key(handle, KEY92P_CTRL + KEY92P_Q);
+	send_key(handle, KEY92P_CLEAR);
+	send_key(handle, KEY92P_CLEAR);
+	send_key(handle, 'd');
+	send_key(handle, 'e');
+	send_key(handle, 'l');
+	send_key(handle, 'v');
+	send_key(handle, 'a');
+	send_key(handle, 'r');
+	send_key(handle, KEY92P_SPACE);
+
+	for (i = 0; i < (int)strlen(varname); i++)
+	{
+		send_key(handle, varname[i]);
+	}
+
+	send_key(handle, KEY92P_ENTER);
+
+	return 0;
+}
+
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
 	uint8_t data[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x40, 0x00, 0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x23 };
@@ -1036,7 +1252,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 	// delete 'a1234567' variable
 	ticalcs_strlcpy(vr->name, "a1234567", sizeof(vr->name));
-	return del_var(handle, vr);
+	return ((handle->model != CALC_TI92) ? del_var : del_var_92)(handle, vr);
 }
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
@@ -1078,6 +1294,30 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	tifiles_hexdump(buf, length);
 	ticalcs_info(_("  OS: %s"), infos->os_version);
 	ticalcs_info(_("  BIOS: %s"), infos->boot_version);
+	ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "low");
+
+	return 0;
+}
+
+static int		get_version_92	(CalcHandle* handle, CalcInfos* infos)
+{
+	uint32_t size;
+	uint8_t type;
+	char name[32];
+
+	TRYF(SEND_REQ(handle, 0, TI92_BKUP, "main\\version"));
+	TRYF(RECV_ACK(handle, NULL));
+    
+	TRYF(RECV_VAR(handle, &size, &type, name));
+	TRYF(SEND_EOT(handle));
+
+	memset(infos, 0, sizeof(CalcInfos));
+	strncpy(infos->os_version, name, 4);
+	infos->os_version[4] = 0;
+	infos->hw_version = 1;
+	infos->mask = INFOS_OS_VERSION | INFOS_HW_VERSION;
+
+	ticalcs_info(_("  OS: %s"), infos->os_version);
 	ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "low");
 
 	return 0;
@@ -1397,4 +1637,74 @@ const CalcFncts calc_v2 =
 	&noop_change_attr,
 	&send_all_vars_backup,
 	&tixx_recv_all_vars_backup,
+};
+
+const CalcFncts calc_92 = 
+{
+	CALC_TI92,
+	"TI92",
+	"TI-92",
+	"TI-92",
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
+	FTS_SILENT | FTS_FOLDER | FTS_BACKUP | FTS_NONSILENT,
+	PRODUCT_ID_NONE,
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "1L",   /* get_dirlist */
+	 "",     /* get_memfree */
+	 "2P",   /* send_backup */
+	 "1P1L", /* recv_backup */
+	 "2P1L", /* send_var */
+	 "1P1L", /* recv_var */
+	 "2P1L", /* send_var_ns */
+	 "1P1L", /* recv_var_ns */
+	 "",     /* send_app */
+	 "",     /* recv_app */
+	 "",     /* send_os */
+	 "",     /* recv_idlist */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "1L",   /* del_var */
+	 "1L",   /* new_folder */
+	 "",     /* get_version */
+	 "",     /* send_cert */
+	 "",     /* recv_cert */
+	 "",     /* rename */
+	 "",     /* chattr */
+	 "",     /* send_all_vars_backup */
+	 ""      /* recv_all_vars_backup */ },
+	&is_ready,
+	&send_key,
+	&execute,
+	&recv_screen,
+	&get_dirlist_92,
+	&get_memfree,
+	&send_backup,
+	&recv_backup,
+	&send_var_ns,
+	&recv_var,
+	&send_var_ns,
+	&recv_var_ns,
+	&noop_send_flash,
+	&noop_recv_flash,
+	&noop_send_os,
+	&noop_recv_idlist,
+	&dump_rom_1,
+	&dump_rom_2,
+	&noop_set_clock,
+	&noop_get_clock,
+	&del_var_92,
+	&new_folder,
+	&get_version_92,
+	&noop_send_cert,
+	&noop_recv_cert,
+	&noop_rename_var,
+	&noop_change_attr,
+	&noop_send_all_vars_backup,
+	&noop_recv_all_vars_backup,
 };
