@@ -286,7 +286,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 			if (fread_byte(f, &name_length) < 0) goto tfrr;
 		}
 		if (fread_n_chars(f, name_length, varname) < 0) goto tfrr;
-		ticonv_varname_from_tifile_s(content->model_dst, varname, entry->name, entry->type);
+		ticonv_varname_from_tifile_sn(content->model_dst, varname, entry->name, sizeof(entry->name), entry->type);
 		if ((content->model == CALC_TI86) && padded86)
 		{
 			for (j = 0; j < 8U - name_length; j++)
@@ -779,7 +779,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 		{
 			content->model_dst = content->model;
 		}
-		ticonv_varname_from_tifile_s(content->model_dst, varname, content->name, content->data_type);
+		ticonv_varname_from_tifile_sn(content->model_dst, varname, content->name, sizeof(content->name), content->data_type);
 
 		// check for end of file
 		if (fread_8_chars(f, signature) < 0)
@@ -953,7 +953,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 		if (fwrite_word(f, (uint16_t)entry->size) < 0) goto tfwr;
 		if (fwrite_byte(f, entry->type) < 0) goto tfwr;
 		memset(varname, 0, sizeof(varname));
-		ticonv_varname_to_tifile_s(content->model_dst, entry->name, varname, entry->type);
+		ticonv_varname_to_tifile_sn(content->model_dst, entry->name, varname, sizeof(varname), entry->type);
 		if (is_ti8586(content->model)) 
 		{
 			name_length = strlen(varname);
@@ -1146,6 +1146,11 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 				break;
 			}
 		}
+		if (content == NULL)
+		{
+			tifiles_critical("%s: content is NULL", __FUNCTION__);
+			return ERR_BAD_FILE;
+		}
 
 		strncpy(ve.name, content->name, sizeof(ve.name) - 1);
 		ve.name[sizeof(ve.name) - 1] = 0;
@@ -1179,7 +1184,7 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 		if (fwrite_word(f, content->revision_year) < 0) goto tfwf;
 
 		memset(varname, 0, sizeof(varname));
-		ticonv_varname_to_tifile_s(content->model_dst, content->name, varname, content->data_type);
+		ticonv_varname_to_tifile_sn(content->model_dst, content->name, varname, sizeof(varname), content->data_type);
 		if (content->data_type == TI83p_APPL)
 		{
 			// Determine the app name from the internal header if possible.

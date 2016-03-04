@@ -547,7 +547,7 @@ TIEXPORT2 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, Flash
 	{
 		for (i = 0; i < n; i++)
 		{
-			TigEntry *te = (TigEntry *)g_malloc0(sizeof(TigEntry));
+			TigEntry *te;
 			VarEntry ve;
 			FlashContent *ptr;
 
@@ -558,7 +558,13 @@ TIEXPORT2 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, Flash
 					break;
 				}
 			}
+			if (ptr == NULL)
+			{
+				tifiles_critical("%s: ptr is NULL, skipping", __FUNCTION__);
+				continue;
+			}
 
+			te = (TigEntry *)g_malloc0(sizeof(TigEntry));
 			ve.folder[0] = 0;
 			strncpy(ve.name, ptr->name, sizeof(ve.name) - 1);
 			ve.name[sizeof(ve.name) - 1] = 0;
@@ -979,7 +985,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 	{
 		if (arc)
 		{
-			archive_read_finish(arc);
+			archive_read_free(arc);
 		}
 		fclose(tigf);
 		return ERR_FILE_ZIP;
@@ -1087,7 +1093,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 
 	// Close
 tfrt_exit:
-	archive_read_finish(arc);
+	archive_read_free(arc);
 	fclose(tigf);
 	return ret;
 }
@@ -1217,7 +1223,7 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 		if (arc)
 		{
 			archive_write_close(arc);
-			archive_write_finish(arc);
+			archive_write_free(arc);
 		}
 		fclose(tigf);
 		return ERR_FILE_OPEN;
@@ -1299,7 +1305,7 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 	{
 		err = ERR_FILE_IO;
 	}
-	archive_write_finish(arc);
+	archive_write_free(arc);
 	fclose(tigf);
 	return err;
 }
@@ -1336,7 +1342,7 @@ TIEXPORT2 int TICALL tifiles_file_display_tigroup(const char *filename)
 	{
 		if (arc)
 		{
-			archive_read_finish(arc);
+			archive_read_free(arc);
 		}
 		fclose(tigf);
 		return ERR_FILE_ZIP;
@@ -1356,7 +1362,7 @@ TIEXPORT2 int TICALL tifiles_file_display_tigroup(const char *filename)
 		g_free(dispname);
 	}
 
-	archive_read_finish(arc);
+	archive_read_free(arc);
 	fclose(tigf);
 	return 0;
 }

@@ -125,7 +125,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 
 	if (fread_word(f, NULL) < 0) goto tfrr;
 	if (fread_8_chars(f, default_folder) < 0) goto tfrr;
-	ticonv_varname_from_tifile_s(content->model_dst, default_folder, content->default_folder, -1);
+	ticonv_varname_from_tifile_sn(content->model_dst, default_folder, content->default_folder, sizeof(content->default_folder), -1);
 	strncpy(current_folder, content->default_folder, sizeof(current_folder) - 1);
 	current_folder[sizeof(current_folder) - 1] = 0;
 	if (fread_n_chars(f, 40, content->comment) < 0) goto tfrr;
@@ -150,7 +150,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 			goto tfrr;
 		}
 		if (fread_8_chars(f, varname) < 0)  goto tfrr;
-		ticonv_varname_from_tifile_s(content->model_dst, varname, entry->name, entry->type);
+		ticonv_varname_from_tifile_sn(content->model_dst, varname, entry->name, sizeof(entry->name), entry->type);
 		if (fread_byte(f, &(entry->type)) < 0) goto tfrr;
 		if (fread_byte(f, &(entry->attr)) < 0) goto tfrr;
 		entry->attr = (entry->attr == 2 || entry->attr == 3) ? ATTRB_ARCHIVED : entry->attr;
@@ -630,7 +630,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 		strncpy(content->default_folder, content->entries[0]->folder, sizeof(content->default_folder) - 1);
 		content->default_folder[sizeof(content->default_folder) - 1] = 0;
 	}
-	ticonv_varname_to_tifile_s(content->model, content->default_folder, default_folder, -1);
+	ticonv_varname_to_tifile_sn(content->model, content->default_folder, default_folder, sizeof(default_folder), -1);
 	if (fwrite_8_chars(f, default_folder) < 0) goto tfwr;
 	if (fwrite_n_bytes(f, 40, (uint8_t *)content->comment) < 0) goto tfwr;
 	if (content->num_entries > 1) 
@@ -659,7 +659,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 		if (content->num_entries > 1)	// single var does not have folder entry
 		{
 			if (fwrite_long(f, offset) < 0) goto tfwr;
-			ticonv_varname_to_tifile_s(content->model, fentry->folder, fldname, -1);
+			ticonv_varname_to_tifile_sn(content->model, fentry->folder, fldname, sizeof(fldname), -1);
 			if (fwrite_8_chars(f, fldname) < 0) goto tfwr;
 			if (fwrite_byte(f, (uint8_t)tifiles_folder_type(content->model)) < 0) goto tfwr;
 			if (fwrite_byte(f, 0x00) < 0) goto tfwr;
@@ -674,7 +674,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 			uint8_t attr = ATTRB_NONE;
 
 			if (fwrite_long(f, offset) < 0) goto tfwr;
-			ticonv_varname_to_tifile_s(content->model, entry->name, varname, entry->type);
+			ticonv_varname_to_tifile_sn(content->model, entry->name, varname, sizeof(varname), entry->type);
 			if (fwrite_8_chars(f, varname) < 0) goto tfwr;
 			if (fwrite_byte(f, entry->type) < 0) goto tfwr;
 			attr = (entry->attr == ATTRB_ARCHIVED) ? 3 : entry->attr;
@@ -809,6 +809,11 @@ int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
 			{
 				break;
 			}
+		}
+		if (content == NULL)
+		{
+			tifiles_critical("%s: content is NULL", __FUNCTION__);
+			return ERR_BAD_FILE;
 		}
 
 		strncpy(ve.name, content->name, sizeof(ve.name) - 1);
