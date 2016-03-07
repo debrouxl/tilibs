@@ -84,16 +84,11 @@ TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id)
 // XXX should this variable be per-handle ?
 static GList *vtl_pkt_list = NULL;
 
-TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port)
+TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd)
 {
 	NSPVirtualPacket* vtl = g_malloc0(sizeof(NSPVirtualPacket)); // aborts the program if it fails.
 
-	vtl->src_addr = src_addr;
-	vtl->src_port = src_port;
-	vtl->dst_addr = dst_addr;
-	vtl->dst_port = dst_port;
-	vtl->size = size;
-	vtl->data = g_malloc0(size+1); // aborts the program if it fails.
+	nsp_vtl_pkt_fill(vtl, size, src_addr, src_port, dst_addr, dst_port, cmd, size ? g_malloc0(size + 1) : NULL); // aborts the program if it fails.
 
 	vtl_pkt_list = g_list_append(vtl_pkt_list, vtl);
 
@@ -102,7 +97,25 @@ TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(uint32_t size, uint16_t sr
 
 TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new(void)
 {
-	return nsp_vtl_pkt_new_ex(0, 0, 0, 0, 0);
+	return nsp_vtl_pkt_new_ex(0, 0, 0, 0, 0, 0);
+}
+
+TIEXPORT3 void TICALL nsp_vtl_pkt_fill(NSPVirtualPacket* vtl, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data)
+{
+	if (vtl != NULL)
+	{
+		vtl->src_addr = src_addr;
+		vtl->src_port = src_port;
+		vtl->dst_addr = dst_addr;
+		vtl->dst_port = dst_port;
+		vtl->cmd = cmd;
+		vtl->size = size;
+		vtl->data = data;
+	}
+	else
+	{
+		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
+	}
 }
 
 TIEXPORT3 void TICALL nsp_vtl_pkt_del(NSPVirtualPacket* vtl)
@@ -111,7 +124,7 @@ TIEXPORT3 void TICALL nsp_vtl_pkt_del(NSPVirtualPacket* vtl)
 	{
 		vtl_pkt_list = g_list_remove(vtl_pkt_list, vtl);
 
-		g_free(vtl->data);
+		g_free(vtl->data); vtl->data = NULL;
 		g_free(vtl);
 	}
 	else
@@ -122,6 +135,11 @@ TIEXPORT3 void TICALL nsp_vtl_pkt_del(NSPVirtualPacket* vtl)
 
 void nsp_vtl_pkt_purge(void)
 {
+	unsigned int list_length = g_list_length(vtl_pkt_list);
+	if (list_length != 0)
+	{
+		ticalcs_critical("%s: NSP vpkt list has non-zero length %u", __FUNCTION__, list_length);
+	}
 	g_list_foreach(vtl_pkt_list, (GFunc)nsp_vtl_pkt_del, NULL);
 	g_list_free(vtl_pkt_list);
 	vtl_pkt_list = NULL;
@@ -246,22 +264,7 @@ TIEXPORT3 int TICALL nsp_send_ack(CalcHandle* handle)
 
 TIEXPORT3 int TICALL nsp_send_nack(CalcHandle* handle)
 {
-	NSPRawPacket pkt;
-
-	VALIDATE_HANDLE(handle);
-
-	ticalcs_info("  sending nAck:");
-
-	memset(&pkt, 0, sizeof(pkt));
-	pkt.data_size = 2;
-	pkt.src_addr = NSP_SRC_ADDR;
-	pkt.src_port = NSP_PORT_PKT_NACK;
-	pkt.dst_addr = NSP_DEV_ADDR;
-	pkt.dst_port = nsp_dst_port;
-	pkt.data[0] = MSB(NSP_PORT_LOGIN);
-	pkt.data[1] = LSB(NSP_PORT_LOGIN);
-
-	return nsp_send(handle, &pkt);
+	return nsp_send_nack_ex(handle, nsp_dst_port);
 }
 
 TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle* handle, uint16_t port)
@@ -415,6 +418,10 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(vtl);
+	if (vtl->size && !vtl->data)
+	{
+		return ERR_INVALID_PARAMETER;
+	}
 
 	memset(&raw, 0, sizeof(raw));
 	raw.src_addr = vtl->src_addr;
@@ -458,7 +465,10 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 		{
 			raw.data_size = r + 1;
 			raw.data[0] = vtl->cmd;
-			memcpy(raw.data + 1, vtl->data + offset, r);
+			if (vtl->data)
+			{
+				memcpy(raw.data + 1, vtl->data + offset, r);
+			}
 			offset += r;
 
 			ret = nsp_send(handle, &raw);

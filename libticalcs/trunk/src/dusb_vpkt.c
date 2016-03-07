@@ -125,6 +125,11 @@ TIEXPORT3 void TICALL dusb_vtl_pkt_del(DUSBVirtualPacket* vtl)
 
 void dusb_vtl_pkt_purge(void)
 {
+	unsigned int list_length = g_list_length(vtl_pkt_list);
+	if (list_length != 0)
+	{
+		ticalcs_critical("%s: DUSB vpkt list has non-zero length %u", __FUNCTION__, list_length);
+	}
 	g_list_foreach(vtl_pkt_list, (GFunc)dusb_vtl_pkt_del, NULL);
 	g_list_free(vtl_pkt_list);
 	vtl_pkt_list = NULL;
@@ -439,6 +444,10 @@ TIEXPORT3 int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(vtl);
+	if (vtl->size && !vtl->data)
+	{
+		return ERR_INVALID_PARAMETER;
+	}
 
 	memset(&raw, 0, sizeof(raw));
 
@@ -456,7 +465,10 @@ TIEXPORT3 int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 			raw.data[3] = LSB(LSW(vtl->size));
 			raw.data[4] = MSB(vtl->type);
 			raw.data[5] = LSB(vtl->type);
-			memcpy(&raw.data[DUSB_DH_SIZE], vtl->data, vtl->size);
+			if (vtl->data)
+			{
+				memcpy(&raw.data[DUSB_DH_SIZE], vtl->data, vtl->size);
+			}
 
 			ret = dusb_send(handle, &raw);
 			if (ret)

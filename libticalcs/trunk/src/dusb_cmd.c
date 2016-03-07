@@ -209,7 +209,11 @@ TIEXPORT3 void TICALL dusb_ca_del_array(int size, DUSBCalcAttr **attrs)
 
 void dusb_cpca_purge(void)
 {
-	//printf("cpca_purge: %p %i\n", cpca_list, g_list_length(cpca_list));
+	unsigned int list_length = g_list_length(cpca_list);
+	if (list_length != 0)
+	{
+		ticalcs_critical("%s: DUSB cpca list has non-zero length %u", __FUNCTION__, list_length);
+	}
 	g_list_foreach(cpca_list, (GFunc)dusb_ca_del, NULL);
 	g_list_free(cpca_list);
 	cpca_list = NULL;
