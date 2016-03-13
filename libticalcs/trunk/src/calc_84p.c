@@ -267,7 +267,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		{
 			VarEntry *ve;
 
-			attr = dusb_ca_new_array(size);
+			attr = dusb_ca_new_array(handle, size);
 			ret = dusb_cmd_r_var_header(handle, fldname, varname, attr);
 			if (ret)
 			{
@@ -276,7 +276,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				{
 					ret = 0;
 				}
-				dusb_ca_del_array(size, attr);
+				dusb_ca_del_array(handle, size, attr);
 				break;
 			}
 
@@ -288,7 +288,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			            | (((uint32_t)(attr[0]->data[3]))      ));
 			ve->type = (uint32_t)(attr[1]->data[3]);
 			ve->attr = attr[2]->data[0] ? ATTRB_ARCHIVED : ATTRB_NONE;
-			dusb_ca_del_array(size, attr);
+			dusb_ca_del_array(handle, size, attr);
 
 			node = dirlist_create_append_node(ve, (ve->type != TI73_APPL) ? &folder : &root);
 			if (!node)
@@ -314,7 +314,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	DUSBCalcParam **params;
 	int ret;
 
-	params = dusb_cp_new_array(size);
+	params = dusb_cp_new_array(handle, size);
 	ret = dusb_cmd_s_param_request(handle, size, pids);
 	if (!ret)
 	{
@@ -331,7 +331,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 			         | (((uint32_t)(params[1]->data[7]))      ));
 		}
 	}
-	dusb_cp_del_array(size, params);
+	dusb_cp_del_array(handle, size, params);
 
 	return ret;
 }
@@ -348,16 +348,16 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	};
 	unsigned int i;
 
-	attrs = dusb_ca_new_array(nattrs);
-	attrs[0] = dusb_ca_new(AID_VAR_TYPE, 4);
+	attrs = dusb_ca_new_array(handle, nattrs);
+	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI84p_BKUP;
 
-	attrs[1] = dusb_ca_new(AID_VAR_VERSION, 4);
+	attrs[1] = dusb_ca_new(handle, AID_VAR_VERSION, 4);
 	attrs[1]->data[0] = 0x00; attrs[1]->data[1] = 0x00;
 	attrs[1]->data[2] = 0x00; attrs[1]->data[3] = content->version;
 
-	attrs[2] = dusb_ca_new(AID_BACKUP_HEADER, 8);
+	attrs[2] = dusb_ca_new(handle, AID_BACKUP_HEADER, 8);
 	attrs[2]->data[0] = MSB(content->data_length1);
 	attrs[2]->data[1] = LSB(content->data_length1);
 	attrs[2]->data[2] = MSB(content->data_length2);
@@ -430,7 +430,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	ret = dusb_cmd_s_eot(handle);
 
  end:
-	dusb_ca_del_array(nattrs, attrs);
+	dusb_ca_del_array(handle, nattrs, attrs);
 	g_free(data);
 	
 	return ret;
@@ -455,17 +455,17 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		ticonv_varname_to_utf8_sn(handle->model, ve->name, update_->text, sizeof(update_->text), ve->type);
 		update_label();
 
-		attrs = dusb_ca_new_array(nattrs);
-		attrs[0] = dusb_ca_new(AID_VAR_TYPE, 4);
+		attrs = dusb_ca_new_array(handle, nattrs);
+		attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE, 4);
 		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ve->type;
-		attrs[1] = dusb_ca_new(AID_ARCHIVED, 1);
+		attrs[1] = dusb_ca_new(handle, AID_ARCHIVED, 1);
 		attrs[1]->data[0] = ve->attr == ATTRB_ARCHIVED ? 1 : 0;
-		attrs[2] = dusb_ca_new(AID_VAR_VERSION, 4);
+		attrs[2] = dusb_ca_new(handle, AID_VAR_VERSION, 4);
 		attrs[2]->data[3] = ve->version;
 
 		ret = dusb_cmd_s_rts(handle, "", ve->name, ve->size, nattrs, CA(attrs));
-		dusb_ca_del_array(nattrs, attrs);
+		dusb_ca_del_array(handle, nattrs, attrs);
 		if (ret)
 		{
 			break;
@@ -510,16 +510,16 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
 	update_label();
 
-	attrs = dusb_ca_new_array(nattrs);
-	attrs[0] = dusb_ca_new(AID_VAR_TYPE2, 4);
+	attrs = dusb_ca_new_array(handle, nattrs);
+	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
 	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
-	dusb_ca_del_array(nattrs, attrs);
+	dusb_ca_del_array(handle, nattrs, attrs);
 	if (!ret)
 	{
-		attrs = dusb_ca_new_array(naids);
+		attrs = dusb_ca_new_array(handle, naids);
 		ret = dusb_cmd_r_var_header(handle, fldname, varname, attrs);
 		if (!ret)
 		{
@@ -566,7 +566,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 				g_free(data);
 			}
 		}
-		dusb_ca_del_array(naids, attrs);
+		dusb_ca_del_array(handle, naids, attrs);
 	}
 
 	return ret;
@@ -645,15 +645,15 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	ticonv_varname_to_utf8_sn(handle->model, ptr->name, update_->text, sizeof(update_->text), ptr->data_type);
 	update_label();
 
-	attrs = dusb_ca_new_array(nattrs);
-	attrs[0] = dusb_ca_new(AID_VAR_TYPE, 4);
+	attrs = dusb_ca_new_array(handle, nattrs);
+	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ptr->data_type;
-	attrs[1] = dusb_ca_new(AID_ARCHIVED, 1);
+	attrs[1] = dusb_ca_new(handle, AID_ARCHIVED, 1);
 	attrs[1]->data[0] = 0;
 
 	ret = dusb_cmd_s_rts(handle, "", ptr->name, size, nattrs, CA(attrs));
-	dusb_ca_del_array(nattrs, attrs);
+	dusb_ca_del_array(handle, nattrs, attrs);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);
@@ -711,15 +711,15 @@ static int		send_flash_834pce	(CalcHandle* handle, FlashContent* content)
 	ticonv_varname_to_utf8_sn(handle->model, ptr->name, update_->text, sizeof(update_->text), ptr->data_type);
 	update_label();
 
-	attrs = dusb_ca_new_array(nattrs);
-	attrs[0] = dusb_ca_new(AID_VAR_TYPE, 4);
+	attrs = dusb_ca_new_array(handle, nattrs);
+	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0F;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ptr->data_type;
-	attrs[1] = dusb_ca_new(AID_ARCHIVED, 1);
+	attrs[1] = dusb_ca_new(handle, AID_ARCHIVED, 1);
 	attrs[1]->data[0] = 1;
 
 	ret = dusb_cmd_s_rts(handle, "", ptr->name, size, nattrs, CA(attrs));
-	dusb_ca_del_array(nattrs, attrs);
+	dusb_ca_del_array(handle, nattrs, attrs);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);
@@ -758,16 +758,16 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
 	update_label();
 
-	attrs = dusb_ca_new_array(nattrs);
-	attrs[0] = dusb_ca_new(AID_VAR_TYPE2, 4);
+	attrs = dusb_ca_new_array(handle, nattrs);
+	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
 	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
-	dusb_ca_del_array(nattrs, attrs);
+	dusb_ca_del_array(handle, nattrs, attrs);
 	if (!ret)
 	{
-		attrs = dusb_ca_new_array(naids);
+		attrs = dusb_ca_new_array(handle, naids);
 		ret = dusb_cmd_r_var_header(handle, fldname, varname, attrs);
 		if (!ret)
 		{
@@ -820,7 +820,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 				g_free(data);
 			}
 		}
-		dusb_ca_del_array(naids, attrs);
+		dusb_ca_del_array(handle, naids, attrs);
 	}
 
 	return ret;
@@ -840,16 +840,16 @@ static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarReq
 	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
 	update_label();
 
-	attrs = dusb_ca_new_array(nattrs);
-	attrs[0] = dusb_ca_new(AID_VAR_TYPE2, 4);
+	attrs = dusb_ca_new_array(handle, nattrs);
+	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0F;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
 	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
-	dusb_ca_del_array(nattrs, attrs);
+	dusb_ca_del_array(handle, nattrs, attrs);
 	if (!ret)
 	{
-		attrs = dusb_ca_new_array(naids);
+		attrs = dusb_ca_new_array(handle, naids);
 		ret = dusb_cmd_r_var_header(handle, fldname, varname, attrs);
 		if (!ret)
 		{
@@ -868,7 +868,7 @@ static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarReq
 				// Do NOT g_free(data);
 			}
 		}
-		dusb_ca_del_array(naids, attrs);
+		dusb_ca_del_array(handle, naids, attrs);
 	}
 
 	return ret;
@@ -960,15 +960,15 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		{
 			break;
 		}
-		params = dusb_cp_new_array(size);
+		params = dusb_cp_new_array(handle, size);
 		ret = dusb_cmd_r_param_data(handle, size, params);
 		if (ret)
 		{
-			dusb_cp_del_array(size, params);
+			dusb_cp_del_array(handle, size, params);
 			break;
 		}
 		boot = !params[0]->data[0];
-		dusb_cp_del_array(size, params);
+		dusb_cp_del_array(handle, size, params);
 
 		// start OS transfer
 		ret = dusb_cmd_s_os_begin(handle, os_size);
@@ -1220,16 +1220,16 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	ticalcs_strlcpy(update_->text, "ID-LIST", sizeof(update_->text));
 	update_label();
 
-	attrs = dusb_ca_new_array(nattrs);
-	attrs[0] = dusb_ca_new(AID_VAR_TYPE2, 4);
+	attrs = dusb_ca_new_array(handle, nattrs);
+	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI83p_IDLIST;
 
 	ret = dusb_cmd_s_var_request(handle, "", "IDList", naids, aids, nattrs, CA(attrs));
-	dusb_ca_del_array(nattrs, attrs);
+	dusb_ca_del_array(handle, nattrs, attrs);
 	if (!ret)
 	{
-		attrs = dusb_ca_new_array(naids);
+		attrs = dusb_ca_new_array(handle, naids);
 		ret = dusb_cmd_r_var_header(handle, folder, name, attrs);
 		if (!ret)
 		{
@@ -1249,7 +1249,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 				g_free(data);
 			}
 		}
-		dusb_ca_del_array(naids, attrs);
+		dusb_ca_del_array(handle, naids, attrs);
 	}
 
 	return ret;
@@ -1437,13 +1437,13 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	update_label();
 
 	do {
-		param = dusb_cp_new(PID_CLK_SEC, 4);
+		param = dusb_cp_new(handle, PID_CLK_SEC, 4);
 		param->data[0] = MSB(MSW(calc_time));
 		param->data[1] = LSB(MSW(calc_time));
 		param->data[2] = MSB(LSW(calc_time));
 		param->data[3] = LSB(LSW(calc_time));
 		ret = dusb_cmd_s_param_set(handle, param);
-		dusb_cp_del(param);
+		dusb_cp_del(handle, param);
 		if (ret)
 		{
 			break;
@@ -1455,10 +1455,10 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 			break;
 		}
 
-		param = dusb_cp_new(PID_CLK_DATE_FMT, 1);
+		param = dusb_cp_new(handle, PID_CLK_DATE_FMT, 1);
 		param->data[0] = _clock->date_format == 3 ? 0 : _clock->date_format;
 		ret = dusb_cmd_s_param_set(handle, param);
-		dusb_cp_del(param);
+		dusb_cp_del(handle, param);
 		if (ret)
 		{
 			break;
@@ -1470,10 +1470,10 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 			break;
 		}
 
-		param = dusb_cp_new(PID_CLK_TIME_FMT, 1);
+		param = dusb_cp_new(handle, PID_CLK_TIME_FMT, 1);
 		param->data[0] = _clock->time_format == 24 ? 1 : 0;
 		ret = dusb_cmd_s_param_set(handle, param);
-		dusb_cp_del(param);
+		dusb_cp_del(handle, param);
 		if (ret)
 		{
 			break;
@@ -1484,10 +1484,10 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 		{
 			break;
 		}
-		param = dusb_cp_new(PID_CLK_ON, 1);
+		param = dusb_cp_new(handle, PID_CLK_ON, 1);
 		param->data[0] = _clock->state;
 		ret = dusb_cmd_s_param_set(handle, param);
-		dusb_cp_del(param);
+		dusb_cp_del(handle, param);
 		if (ret)
 		{
 			break;
@@ -1513,7 +1513,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	ticalcs_strlcpy(update_->text, _("Getting clock..."), sizeof(update_->text));
 	update_label();
 
-	params = dusb_cp_new_array(size);
+	params = dusb_cp_new_array(handle, size);
 	ret = dusb_cmd_s_param_request(handle, size, pids);
 	if (!ret)
 	{
@@ -1558,7 +1558,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 			}
 		}
 	}
-	dusb_cp_del_array(size, params);
+	dusb_cp_del_array(handle, size, params);
 
 	return ret;
 }
@@ -1575,13 +1575,13 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	ticonv_utf8_free(utf8);
 	update_label();
 
-	attr = dusb_ca_new_array(size);
-	attr[0] = dusb_ca_new(0x0011, 4);
+	attr = dusb_ca_new_array(handle, size);
+	attr[0] = dusb_ca_new(handle, 0x0011, 4);
 	attr[0]->data[0] = 0xF0; attr[0]->data[1] = 0x0B;
 	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
 
 	ret = dusb_cmd_s_var_delete(handle, "", vr->name, size, CA(attr));
-	dusb_ca_del_array(size, attr);
+	dusb_ca_del_array(handle, size, attr);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);
@@ -1596,13 +1596,13 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	const int size = 1;
 	int ret;
 
-	attrs = dusb_ca_new_array(size);
-	attrs[0] = dusb_ca_new(AID_VAR_TYPE2, 4);
+	attrs = dusb_ca_new_array(handle, size);
+	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = oldname->type;
 
 	ret = dusb_cmd_s_var_modify(handle, "", oldname->name, 1, CA(attrs), "", newname->name, 0, NULL);
-	dusb_ca_del_array(size, attrs);
+	dusb_ca_del_array(handle, size, attrs);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);
@@ -1617,19 +1617,19 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 	DUSBCalcAttr **dstattrs;
 	int ret;
 
-	srcattrs = dusb_ca_new_array(1);
-	srcattrs[0] = dusb_ca_new(AID_VAR_TYPE2, 4);
+	srcattrs = dusb_ca_new_array(handle, 1);
+	srcattrs[0] = dusb_ca_new(handle, AID_VAR_TYPE2, 4);
 	srcattrs[0]->data[0] = 0xF0; srcattrs[0]->data[1] = 0x07;
 	srcattrs[0]->data[2] = 0x00; srcattrs[0]->data[3] = vr->type;
 
-	dstattrs = dusb_ca_new_array(1);
-	dstattrs[0] = dusb_ca_new(AID_ARCHIVED, 1);
+	dstattrs = dusb_ca_new_array(handle, 1);
+	dstattrs[0] = dusb_ca_new(handle, AID_ARCHIVED, 1);
 	/* use 0xff here rather than 0x01 to work around an OS bug */
 	dstattrs[0]->data[0] = (attr == ATTRB_ARCHIVED ? 0xff : 0x00);
 
 	ret = dusb_cmd_s_var_modify(handle, "", vr->name, 1, CA(srcattrs), "", vr->name, 1, CA(dstattrs));
-	dusb_ca_del_array(1, dstattrs);
-	dusb_ca_del_array(1, srcattrs);
+	dusb_ca_del_array(handle, 1, dstattrs);
+	dusb_ca_del_array(handle, 1, srcattrs);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);
@@ -1657,7 +1657,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	update_label();
 
 	memset(infos, 0, sizeof(CalcInfos));
-	params = dusb_cp_new_array(size);
+	params = dusb_cp_new_array(handle, size);
 
 	// TODO rewrite this function to ask for parameters in multiple phases, starting with 0x000A, then
 	// model-dependent sets of parameters. That's how TI-Connect CE 5.x does.
@@ -1853,7 +1853,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->mask |= INFOS_CALC_MODEL;
 		}
 	}
-	dusb_cp_del_array(size, params);
+	dusb_cp_del_array(handle, size, params);
 
 	return ret;
 }

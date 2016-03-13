@@ -323,6 +323,10 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 			handle->model = model;
 			handle->calc = calc;
 			handle->updat = (CalcUpdate *)&default_update;
+
+			handle->priv.nsp_src_port = 0x8001;
+			handle->priv.nsp_dst_port = 0x4003; // NSP_PORT_ADDR_REQUEST
+
 			handle->buffer = (uint8_t *)g_malloc(65536 + 6);
 			if (handle->buffer == NULL)
 			{

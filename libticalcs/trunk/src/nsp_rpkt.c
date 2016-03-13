@@ -111,11 +111,6 @@ static int hexdump(uint8_t *data, uint32_t size)
 	return 0;
 }
 
-// XXX these variables should be per-handle.
-uint8_t		nsp_seq_ti;
-uint8_t		nsp_seq_pc;
-uint8_t		nsp_seq;
-
 TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 {
 	uint8_t buf[sizeof(NSPRawPacket)] = { 0 };
@@ -131,15 +126,15 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 	if (pkt->src_port == 0x00fe || pkt->src_port == 0x00ff || pkt->src_port == 0x00d3)
 	{
 		pkt->ack = 0x0a;
-		pkt->seq = nsp_seq;
+		pkt->seq = handle->priv.nsp_seq;
 	}
 	else
 	{
-		if (!nsp_seq_pc)
+		if (!handle->priv.nsp_seq_pc)
 		{
-			nsp_seq_pc++;
+			handle->priv.nsp_seq_pc++;
 		}
-		pkt->seq = nsp_seq_pc;
+		pkt->seq = handle->priv.nsp_seq_pc;
 	}
 
 	ticalcs_info("   %04x:%04x->%04x:%04x AK=%02x SQ=%02x HC=%02x DC=%04x (%i bytes)", 
@@ -212,11 +207,11 @@ TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 
 		if (pkt->src_port == 0x00fe || pkt->src_port == 0x00ff || pkt->src_port == 0x00d3)
 		{
-			nsp_seq_pc++;
+			handle->priv.nsp_seq_pc++;
 		}
 		else
 		{
-			nsp_seq = pkt->seq;
+			handle->priv.nsp_seq = pkt->seq;
 		}
 
 		// Next, follows data

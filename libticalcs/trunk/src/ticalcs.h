@@ -724,6 +724,13 @@ struct _CalcHandle
 		unsigned int progress_min_size; // don't refresh if packet is smaller than some amount.
 		unsigned int romdump_std_blk; // number of full-size blocks
 		unsigned int romdump_sav_blk; // number of compressed blocks
+		void * dusb_vtl_pkt_list;
+		void * dusb_cpca_list;
+		void * nsp_vtl_pkt_list;
+		uint8_t nsp_seq_pc;
+		uint8_t nsp_seq;
+		uint16_t nsp_src_port;
+		uint16_t nsp_dst_port;
 	} priv;
 };
 

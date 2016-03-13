@@ -92,47 +92,52 @@ TIEXPORT3 const char* TICALL dusb_vpkt_type2name(uint16_t id)
 
 // Creation/Destruction/Garbage Collecting of packets
 
-// XXX should this variable be per-handle ?
-static GList *vtl_pkt_list = NULL;
-
-TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new(uint32_t size, uint16_t type)
+TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new(CalcHandle * handle, uint32_t size, uint16_t type)
 {
-	DUSBVirtualPacket* vtl = g_malloc0(sizeof(DUSBVirtualPacket)); // aborts the program if it fails.
+	DUSBVirtualPacket* vtl = NULL;
 
-	vtl->size = size;
-	vtl->type = type;
-	vtl->data = g_malloc0(size + DUSB_DH_SIZE); // aborts the program if it fails.
+	if (ticalcs_validate_handle(handle))
+	{
+		GList * vtl_pkt_list;
 
-	vtl_pkt_list = g_list_append(vtl_pkt_list, vtl);
+		vtl = g_malloc0(sizeof(DUSBVirtualPacket)); // aborts the program if it fails.
+
+		vtl->size = size;
+		vtl->type = type;
+		vtl->data = g_malloc0(size + DUSB_DH_SIZE); // aborts the program if it fails.
+
+		vtl_pkt_list = g_list_append((GList *)(handle->priv.dusb_vtl_pkt_list), vtl);
+		handle->priv.dusb_vtl_pkt_list = (void *)vtl_pkt_list;
+	}
+	else
+	{
+		ticalcs_critical("%s: handle is invalid", __FUNCTION__);
+	}
 
 	return vtl;
 }
 
-TIEXPORT3 void TICALL dusb_vtl_pkt_del(DUSBVirtualPacket* vtl)
+TIEXPORT3 void TICALL dusb_vtl_pkt_del(CalcHandle * handle, DUSBVirtualPacket* vtl)
 {
-	if (vtl != NULL)
-	{
-		vtl_pkt_list = g_list_remove(vtl_pkt_list, vtl);
+	GList *vtl_pkt_list;
 
-		g_free(vtl->data);
-		g_free(vtl);
+	if (!ticalcs_validate_handle(handle))
+	{
+		ticalcs_critical("%s: handle is invalid", __FUNCTION__);
+		return;
 	}
-	else
+
+	if (vtl == NULL)
 	{
 		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
+		return;
 	}
-}
 
-void dusb_vtl_pkt_purge(void)
-{
-	unsigned int list_length = g_list_length(vtl_pkt_list);
-	if (list_length != 0)
-	{
-		ticalcs_critical("%s: DUSB vpkt list has non-zero length %u", __FUNCTION__, list_length);
-	}
-	g_list_foreach(vtl_pkt_list, (GFunc)dusb_vtl_pkt_del, NULL);
-	g_list_free(vtl_pkt_list);
-	vtl_pkt_list = NULL;
+	vtl_pkt_list = g_list_remove((GList *)(handle->priv.dusb_vtl_pkt_list), vtl);
+	handle->priv.dusb_vtl_pkt_list = (void *)vtl_pkt_list;
+
+	g_free(vtl->data);
+	g_free(vtl);
 }
 
 // Raw packets

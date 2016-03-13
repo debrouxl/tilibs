@@ -146,7 +146,7 @@ static int recv_screen(CalcHandle *h)
 	int ret;
 
 	ret = ticalcs_calc_recv_screen(h, &sc, &bitmap);
-	//free(bitmap);
+	ticalcs_free_screen(bitmap);
 	return ret;
 }
 
@@ -569,10 +569,30 @@ static int nsp_send_key(CalcHandle *h)
 {
 	static const uint8_t HOME[] = {0x00, 0xFD, 0x00};
 	static const uint8_t A[] = {97, 102, 0};
+	static const uint8_t ZERO[] = {48, 80, 0};
+	static const uint8_t ONE[] = {49, 115, 0};
+	static const uint8_t TWO[] = {50, 83, 0};
+	static const uint8_t THREE[] = {51, 51, 0};
+	static const uint8_t FOUR[] = {52, 114, 0};
+	static const uint8_t FIVE[] = {53, 82, 0};
+	static const uint8_t SIX[] = {54, 50, 0};
+	static const uint8_t SEVEN[] = {55, 113, 0};
+	static const uint8_t EIGHT[] = {56, 81, 0};
+	static const uint8_t NINE[] = {57, 49, 0};
 
 	nsp_cmd_s_keypress_event(h, HOME);
 	nsp_cmd_s_keypress_event(h, A);
-	nsp_cmd_s_keypress_event(h, HOME);
+	nsp_cmd_s_keypress_event(h, ZERO);
+	nsp_cmd_s_keypress_event(h, ONE);
+	nsp_cmd_s_keypress_event(h, TWO);
+	nsp_cmd_s_keypress_event(h, THREE);
+	nsp_cmd_s_keypress_event(h, FOUR);
+	nsp_cmd_s_keypress_event(h, FIVE);
+	nsp_cmd_s_keypress_event(h, SIX);
+	nsp_cmd_s_keypress_event(h, SEVEN);
+	nsp_cmd_s_keypress_event(h, EIGHT);
+	nsp_cmd_s_keypress_event(h, NINE);
+//	nsp_cmd_s_keypress_event(h, HOME);
 
 	return 0;
 }

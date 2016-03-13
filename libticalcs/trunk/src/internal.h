@@ -41,18 +41,18 @@
 #define VALIDATE_HANDLE(handle) \
 	do \
 	{ \
-		if (handle == NULL) \
+		if (!ticalcs_validate_handle(handle)) \
 		{ \
-			ticalcs_critical("%s: " #handle " is NULL", __FUNCTION__); \
+			ticalcs_critical("%s: " #handle " is invalid", __FUNCTION__); \
 			return ERR_INVALID_HANDLE; \
 		} \
 	} while(0);
 #define VALIDATE_CALCFNCTS(calc) \
 	do \
 	{ \
-		if (calc == NULL) \
+		if (!ticalcs_validate_calcfncts(calc)) \
 		{ \
-			ticalcs_critical("%s: " # calc " is NULL", __FUNCTION__); \
+			ticalcs_critical("%s: " # calc " is invalid", __FUNCTION__); \
 			return ERR_INVALID_HANDLE; \
 		} \
 	} while(0);
@@ -145,6 +145,15 @@
 		} \
 	} while(0);
 
+static inline int ticalcs_validate_handle(CalcHandle * handle)
+{
+	return handle != NULL;
+}
+
+static inline int ticalcs_validate_calcfncts(const CalcFncts * calc)
+{
+	return calc != NULL;
+}
 
 static inline void * ticalcs_alloc_screen(size_t len)
 {
@@ -248,22 +257,10 @@ int noop_recv_all_vars_backup (CalcHandle* handle, FileContent* content);
 int ti82_send_asm_exec(CalcHandle*, VarEntry * var);
 
 
-// dusb_vpkt.c
-
-void dusb_vtl_pkt_purge(void);
-
-
 // dusb_cmd.c
 
 int dusb_check_cmd_data(CalcModel model, const uint8_t * data, uint32_t len, uint32_t vtl_size, uint16_t vtl_type);
 int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32_t len, uint32_t vtl_size, uint16_t vtl_type);
-
-
-// nsp_vpkt.c
-
-extern uint16_t nsp_src_port;
-extern uint16_t nsp_dst_port;
-void nsp_vtl_pkt_purge(void);
 
 
 // dusb_cmd.c
@@ -277,7 +274,5 @@ void nsp_vtl_pkt_purge(void);
 		ticalcs_critical("%s: " #attrs " is NULL", __FUNCTION__); \
 		return ERR_INVALID_PARAMETER; \
 	}
-
-void dusb_cpca_purge(void);
 
 #endif // __TICALCS_INTERNAL__

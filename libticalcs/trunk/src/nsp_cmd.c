@@ -95,13 +95,13 @@ TIEXPORT3 int TICALL nsp_cmd_r_login(CalcHandle *handle)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new();
+	pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving login:");
 
 	retval = nsp_recv_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -115,14 +115,14 @@ TIEXPORT3 int TICALL nsp_cmd_s_status(CalcHandle *handle, uint8_t status)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, nsp_dst_port, CMD_STATUS);
+	pkt = nsp_vtl_pkt_new_ex(handle, 1, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, handle->priv.nsp_dst_port, CMD_STATUS);
 
 	ticalcs_info("  sending status (%04x):", status);
 
 	pkt->data[0] = status;
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -135,7 +135,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_status(CalcHandle *handle, uint8_t *status)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new();
+	pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving status:");
 
@@ -162,7 +162,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_status(CalcHandle *handle, uint8_t *status)
 	}
 
 end:
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -178,11 +178,11 @@ TIEXPORT3 int TICALL nsp_cmd_s_dev_infos(CalcHandle *handle, uint8_t cmd)
 
 	ticalcs_info("  requesting device information (cmd = %02x):", cmd);
 
-	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_DEV_INFOS, cmd);
+	pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_DEV_INFOS, cmd);
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -197,7 +197,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_dev_infos(CalcHandle *handle, uint8_t *cmd, uint3
 	VALIDATE_NONNULL(size);
 	VALIDATE_NONNULL(data);
 
-	pkt = nsp_vtl_pkt_new();
+	pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving device information:");
 
@@ -209,7 +209,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_dev_infos(CalcHandle *handle, uint8_t *cmd, uint3
 		memcpy(*data, pkt->data, pkt->size);
 	}
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -223,13 +223,13 @@ TIEXPORT3 int TICALL nsp_cmd_s_screen_rle(CalcHandle *handle, uint8_t cmd)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_SCREEN_RLE, cmd);
+	pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_SCREEN_RLE, cmd);
 
 	ticalcs_info("  requesting RLE screenshot (cmd = %02x):", cmd);
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -244,7 +244,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_screen_rle(CalcHandle *handle, uint8_t *cmd, uint
 	VALIDATE_NONNULL(size);
 	VALIDATE_NONNULL(data);
 
-	pkt = nsp_vtl_pkt_new();
+	pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving RLE screenshot:");
 
@@ -258,7 +258,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_screen_rle(CalcHandle *handle, uint8_t *cmd, uint
 		memcpy(*data, pkt->data, pkt->size);
 	}
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -275,7 +275,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_dir_attributes(CalcHandle *handle, const char *na
 	VALIDATE_NONNULL(name);
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
-	pkt = nsp_vtl_pkt_new_ex(1 + len + 1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_ATTRIBUTES);
+	pkt = nsp_vtl_pkt_new_ex(handle, 1 + len + 1, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_ATTRIBUTES);
 
 	ticalcs_info("  unknown directory list command in <%s>:", name);
 
@@ -284,7 +284,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_dir_attributes(CalcHandle *handle, const char *na
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -296,7 +296,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_dir_attributes(CalcHandle *handle, uint32_t *size
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new();
+	pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  unknown directory list command reply received:");
 
@@ -330,7 +330,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_dir_attributes(CalcHandle *handle, uint32_t *size
 	}
 
 end:
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -346,7 +346,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_dir_enum_init(CalcHandle *handle, const char *nam
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
 
-	pkt = nsp_vtl_pkt_new_ex(len + 1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_DIRLIST_INIT);
+	pkt = nsp_vtl_pkt_new_ex(handle, len + 1, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_DIRLIST_INIT);
 
 	ticalcs_info("  initiating directory listing in <%s>:", name);
 
@@ -354,7 +354,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_dir_enum_init(CalcHandle *handle, const char *nam
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -371,14 +371,14 @@ TIEXPORT3 int TICALL nsp_cmd_s_dir_enum_next(CalcHandle *handle)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_DIRLIST_NEXT);
+	pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_DIRLIST_NEXT);
 	if (pkt != NULL)
 	{
 		ticalcs_info("  requesting next directory entry:");
 
 		retval = nsp_send_data(handle, pkt);
 
-		nsp_vtl_pkt_del(pkt);
+		nsp_vtl_pkt_del(handle, pkt);
 	}
 	else
 	{
@@ -399,7 +399,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_dir_enum_next(CalcHandle *handle, char* name, uin
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(name);
 
-	pkt = nsp_vtl_pkt_new();
+	pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  next directory entry:");
 
@@ -438,7 +438,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_dir_enum_next(CalcHandle *handle, char* name, uin
 	}
 
 end:
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -450,13 +450,13 @@ TIEXPORT3 int TICALL nsp_cmd_s_dir_enum_done(CalcHandle *handle)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_DIRLIST_DONE);
+	pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_DIRLIST_DONE);
 
 	ticalcs_info("  closing directory listing:");
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -479,7 +479,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_put_file(CalcHandle *handle, const char *name, ui
 	VALIDATE_NONNULL(name);
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
-	pkt = nsp_vtl_pkt_new_ex(6 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_PUT_FILE);
+	pkt = nsp_vtl_pkt_new_ex(handle, 6 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_PUT_FILE);
 
 	ticalcs_info("  sending variable:");
 
@@ -494,7 +494,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_put_file(CalcHandle *handle, const char *name, ui
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -511,7 +511,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_put_file_eot(CalcHandle *handle)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(2, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_PUT_FILE_EOT);
+	pkt = nsp_vtl_pkt_new_ex(handle, 2, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_PUT_FILE_EOT);
 
 	ticalcs_info("  sending EOT:");
 
@@ -519,7 +519,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_put_file_eot(CalcHandle *handle)
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -539,13 +539,13 @@ TIEXPORT3 int TICALL nsp_cmd_s_get_file(CalcHandle *handle, const char *name)
 
 	ticalcs_info("  requesting variable:");
 
-	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_GET_FILE);
+	pkt = nsp_vtl_pkt_new_ex(handle, 2 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_GET_FILE);
 	pkt->data[0] = 0x01;
 	put_str(pkt->data + 1, name);
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -557,7 +557,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_get_file(CalcHandle *handle, uint32_t *size)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new();
+	pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  file size:");
 
@@ -582,7 +582,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_get_file(CalcHandle *handle, uint32_t *size)
 	}
 
 end:
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -597,7 +597,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_del_file(CalcHandle *handle, const char *name)
 	VALIDATE_NONNULL(name);
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
-	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_DEL_FILE);
+	pkt = nsp_vtl_pkt_new_ex(handle, 2 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_DEL_FILE);
 
 	ticalcs_info("  deleting variable:");
 
@@ -606,7 +606,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_del_file(CalcHandle *handle, const char *name)
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -627,7 +627,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_new_folder(CalcHandle *handle, const char *name)
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
 
-	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_NEW_FOLDER);
+	pkt = nsp_vtl_pkt_new_ex(handle, 2 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_NEW_FOLDER);
 
 	ticalcs_info("  creating folder:");
 
@@ -636,7 +636,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_new_folder(CalcHandle *handle, const char *name)
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -657,7 +657,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_del_folder(CalcHandle *handle, const char *name)
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
 
-	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_DEL_FOLDER);
+	pkt = nsp_vtl_pkt_new_ex(handle, 2 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_DEL_FOLDER);
 
 	ticalcs_info("  deleting folder:");
 
@@ -666,7 +666,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_del_folder(CalcHandle *handle, const char *name)
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -690,7 +690,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_copy_file(CalcHandle *handle, const char *name, c
 	len = strlen(name) < 8 ? 8 : strlen(name);
 	len2 = strlen(name2) < 8 ? 8 : strlen(name2);
 
-	pkt = nsp_vtl_pkt_new_ex(3 + len + len2, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_COPY_FILE);
+	pkt = nsp_vtl_pkt_new_ex(handle, 3 + len + len2, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_COPY_FILE);
 
 	ticalcs_info("  copying file:");
 
@@ -700,7 +700,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_copy_file(CalcHandle *handle, const char *name, c
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -726,14 +726,14 @@ TIEXPORT3 int TICALL nsp_cmd_s_rename_file(CalcHandle *handle, const char *name,
 
 	ticalcs_info("  renaming file:");
 
-	pkt = nsp_vtl_pkt_new_ex(3 + len + len2, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_RENAME_FILE);
+	pkt = nsp_vtl_pkt_new_ex(handle, 3 + len + len2, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_RENAME_FILE);
 	pkt->data[0] = 0x01;
 	put_str(pkt->data + 1, name);
 	put_str(pkt->data + 2 + len, name2);
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -750,13 +750,13 @@ TIEXPORT3 int TICALL nsp_cmd_s_file_ok(CalcHandle *handle)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_OK);
+	pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_OK);
 
 	ticalcs_info("  sending file contents:");
 
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -768,7 +768,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_file_ok(CalcHandle *handle)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new();
+	pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  file status:");
 
@@ -792,7 +792,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_file_ok(CalcHandle *handle)
 		}
 	}
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -805,14 +805,14 @@ TIEXPORT3 int TICALL nsp_cmd_s_file_contents(CalcHandle *handle, uint32_t size, 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_CONTENTS);
+	pkt = nsp_vtl_pkt_new_ex(handle, size, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, CMD_FM_CONTENTS);
 
 	ticalcs_info("  sending file contents:");
 
 	memcpy(pkt->data, data, size);
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -826,7 +826,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_file_contents(CalcHandle *handle, uint32_t *size,
 	VALIDATE_NONNULL(size);
 	VALIDATE_NONNULL(data);
 
-	pkt = nsp_vtl_pkt_new();
+	pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving file contents:");
 
@@ -840,7 +840,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_file_contents(CalcHandle *handle, uint32_t *size,
 		memcpy(*data, pkt->data, pkt->size);
 	}
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -854,7 +854,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_os_install(CalcHandle *handle, uint32_t size)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(4, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_OS_INSTALL, CMD_OS_INSTALL);
+	pkt = nsp_vtl_pkt_new_ex(handle, 4, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_OS_INSTALL, CMD_OS_INSTALL);
 
 	ticalcs_info("  installing OS:");
 
@@ -864,7 +864,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_os_install(CalcHandle *handle, uint32_t size)
 	pkt->data[3] = LSB(LSW(size));
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -876,7 +876,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_os_install(CalcHandle *handle)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new();
+	pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving OS installation:");
 
@@ -890,7 +890,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_os_install(CalcHandle *handle)
 		}
 	}
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -903,14 +903,14 @@ TIEXPORT3 int TICALL nsp_cmd_s_os_contents(CalcHandle *handle, uint32_t size, ui
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_OS_INSTALL, CMD_OS_CONTENTS);
+	pkt = nsp_vtl_pkt_new_ex(handle, size, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_OS_INSTALL, CMD_OS_CONTENTS);
 
 	ticalcs_info("  sending OS contents:");
 
 	memcpy(pkt->data, data, size);
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -923,7 +923,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_progress(CalcHandle *handle, uint8_t *value)
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(value);
 
-	pkt = nsp_vtl_pkt_new();
+	pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  OS installation status:");
 
@@ -944,7 +944,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_progress(CalcHandle *handle, uint8_t *value)
 			retval = ERR_INVALID_PACKET;
 			break;
 		}
-		nsp_vtl_pkt_del(pkt);
+		nsp_vtl_pkt_del(handle, pkt);
 	}
 
 	return retval;
@@ -961,7 +961,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_generic_data(CalcHandle *handle, uint32_t size, u
 
 	ticalcs_info("  sending generic data of size %lu (%lX) with command %02X:", (unsigned long)size, (unsigned long)size, cmd);
 
-	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, sid, cmd);
+	pkt = nsp_vtl_pkt_new_ex(handle, size, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, sid, cmd);
 
 	if (data)
 	{
@@ -969,7 +969,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_generic_data(CalcHandle *handle, uint32_t size, u
 	}
 	retval = nsp_send_data(handle, pkt);
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -981,7 +981,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_generic_data(CalcHandle *handle, uint32_t *size, 
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new();
+	pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving generic data:");
 
@@ -1004,7 +1004,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_generic_data(CalcHandle *handle, uint32_t *size, 
 		}
 	}
 
-	nsp_vtl_pkt_del(pkt);
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }
@@ -1038,8 +1038,8 @@ TIEXPORT3 int TICALL nsp_cmd_s_keypress_event(CalcHandle *handle, const uint8_t 
 	retval = nsp_session_open(handle, SID_KEYPRESSES);
 	if (!retval)
 	{
-		pkt1 = nsp_vtl_pkt_new_ex(3, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_KEYPRESSES, 0x01);
-		pkt2 = nsp_vtl_pkt_new_ex(25, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_KEYPRESSES, 0);
+		pkt1 = nsp_vtl_pkt_new_ex(handle, 3, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_KEYPRESSES, 0x01);
+		pkt2 = nsp_vtl_pkt_new_ex(handle, 25, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_KEYPRESSES, 0);
 
 		pkt1->data[2] = 0x80;
 		retval = nsp_send_data(handle, pkt1);
@@ -1055,8 +1055,8 @@ TIEXPORT3 int TICALL nsp_cmd_s_keypress_event(CalcHandle *handle, const uint8_t 
 			retval = nsp_send_data(handle, pkt2);
 		}
 
-		nsp_vtl_pkt_del(pkt2);
-		nsp_vtl_pkt_del(pkt1);
+		nsp_vtl_pkt_del(handle, pkt2);
+		nsp_vtl_pkt_del(handle, pkt1);
 
 		if (!retval)
 		{
