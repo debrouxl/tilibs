@@ -2,7 +2,7 @@
 /* $Id$ */
 
 /*  libticalcs2 - hand-helds support library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 1999-2005  Romain Liévin
  *  Copyright (C) 2006  Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
