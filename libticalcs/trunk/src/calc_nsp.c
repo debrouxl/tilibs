@@ -196,90 +196,6 @@ static int		is_ready	(CalcHandle* handle)
 	return ret;
 }
 
-static uint8_t* rle_uncompress(CalcScreenCoord* sc, const uint8_t *src, uint32_t size, int type)
-{
-	uint8_t * dst = NULL;
-
-	if (type == 0)
-	{
-		// Nspire (CAS) Clickpad & Touchpad, 4 bpp
-		uint8_t *q;
-		uint32_t i;
-		dst = ticalcs_alloc_screen(sc->width * sc->height / 2);
-
-		if (dst != NULL)
-		{
-			for (i = 0, q = dst; i < size;)
-			{
-				int8_t rec = src[i++];
-
-				if (rec >= 0)
-				{
-					// Positive count: "repeat 8-bit value" block.
-					uint8_t cnt = ((uint8_t)rec) + 1;
-					uint8_t val = src[i++];
-
-					memset(q, val, cnt);
-					q += cnt;
-				}
-				else
-				{
-					// Negative count: "verbatim" block of 8-bit values.
-					uint8_t cnt = ((uint8_t)-rec) + 1;
-
-					memcpy(q, src+i, cnt);
-					q += cnt;
-					i += cnt;
-				}
-			}
-		}
-	}
-	else if (type == 1)
-	{
-		// Nspire (CAS) CX & CM, 16 bpp
-		uint8_t *q;
-		uint32_t i;
-		dst = ticalcs_alloc_screen(sc->width * sc->height * 2);
-
-		if (dst != NULL)
-		{
-			for (i = 0, q = dst; i < size;)
-			{
-				int8_t rec = src[i++];
-
-				if (rec >= 0)
-				{
-					// Positive count: "repeat 32-bit value" block.
-					uint8_t cnt = ((uint8_t)rec) + 1;
-					uint32_t val;
-					uint8_t j;
-
-					memcpy(&val, src + i, sizeof(uint32_t));
-					for (j = 0; j < cnt; j++)
-					{
-						//*((uint32_t *)q) = val;
-						memcpy(q, &val, 4);
-						q += 4;
-					}
-					i += 4;
-				}
-				else
-				{
-					// Negative count: "verbatim" block of 32-bit values.
-					uint8_t cnt = ((uint8_t)-rec) + 1;
-
-					memcpy(q, src + i, cnt * 4);
-					q += cnt * 4;
-					i += cnt * 4;
-				}
-			}
-		}
-	}
-	// else do nothing, shouldn't happen anyway.
-
-	return dst;
-}
-
 // Forward declaration
 static int		get_version	(CalcHandle* handle, CalcInfos* infos);
 
@@ -292,18 +208,14 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	ret = get_version(handle, &infos);
 	if (!ret)
 	{
-		int type;
-
 		if (infos.bits_per_pixel == 4)
 		{
 			// Nspire (CAS) Clickpad or Touchpad.
-			type = 0;
 			sc->pixel_format = CALC_PIXFMT_GRAY_4;
 		}
 		else if (infos.bits_per_pixel == 16)
 		{
-			// Nspire (CAS) CX.
-			type = 1;
+			// Nspire (CAS) CX or CM.
 			sc->pixel_format = CALC_PIXFMT_RGB_565_LE;
 		}
 		else
@@ -353,13 +265,25 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 						ret = nsp_cmd_r_screen_rle(handle, &cmd, &size, &data);
 						if (!ret)
 						{
-							*bitmap = rle_uncompress(sc, data, size, type);
-							g_free(data);
-
-							if (*bitmap == NULL)
+							uint32_t len = sc->width * sc->height * infos.bits_per_pixel / 8;
+							uint8_t * dst = ticalcs_alloc_screen(len);
+							if (dst != NULL)
+							{
+								ret = ticalcs_screen_nspire_rle_uncompress(sc->pixel_format, data, size, dst, len);
+								if (!ret)
+								{
+									*bitmap = dst;
+								}
+								else
+								{
+									ticalcs_free_screen(dst);
+								}
+							}
+							else
 							{
 								ret = ERR_MALLOC;
 							}
+							g_free(data);
 						}
 					}
 				}

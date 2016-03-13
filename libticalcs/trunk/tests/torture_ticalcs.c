@@ -189,18 +189,22 @@ static void torture_ticalcs(void)
     PRINTF(ticalcs_screen_convert_native_to_rgb888, INT, 1, NULL, 0x12345678, 0x12345678, (void *)0x12345678);
 
     PRINTF(ticalcs_screen_convert_native_to_rgb888, INT, 1, (void *)0x12345678, 0x12345678, 0x12345678, NULL);
+    PRINTF(ticalcs_screen_nspire_rle_uncompress, INT, 1, (void *)0x12345678, 0x12345678, NULL, 0x12345678);
+    PRINTF(ticalcs_screen_nspire_rle_uncompress, INT, 1, NULL, 0x12345678, (void *)0x12345678, 0x12345678);
+    PRINTF(ticalcs_screen_84pcse_rle_uncompress, INT, (void *)0x12345678, 0x12345678, NULL, 0x12345678);
+    PRINTF(ticalcs_screen_84pcse_rle_uncompress, INT, NULL, 0x12345678, (void *)0x12345678, 0x12345678);
 // tikeys.c
     PRINTF(ticalcs_keys_73, PTR, 0);
     PRINTF(ticalcs_keys_83, PTR, 0);
     PRINTF(ticalcs_keys_83p, PTR, 0);
     PRINTF(ticalcs_keys_86, PTR, 0);
     PRINTF(ticalcs_keys_89, PTR, 0);
+
     PRINTF(ticalcs_keys_92p, PTR, 0);
 // probe.c
     PRINTF(ticalcs_probe_calc, INT, NULL, (void *)0x12345678);
     PRINTF(ticalcs_probe_calc, INT, (void *)0x12345678, NULL);
     PRINTF(ticalcs_probe_usb_calc, INT, NULL, (void *)0x12345678);
-
     PRINTF(ticalcs_probe_usb_calc, INT, (void *)0x12345678, NULL);
     PRINTF(ticalcs_probe, INT, -1, -1, NULL, -1);
     PRINTF(ticalcs_device_info_to_model, INT, NULL);
@@ -208,23 +212,23 @@ static void torture_ticalcs(void)
     PRINTF(ticalcs_remap_model_to_usb, INT, 0, 0);
 // dbus_pkt.c
     PRINTF(dbus_send, INT, NULL, 0, 0, 0, (void *)0x12345678);
+
     PRINTF(dbus_recv, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
-
     PRINTF(dbus_recv_header, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv_header, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv_header, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(dbus_recv_header, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
     PRINTF(dbus_recv_data, INT, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv_data, INT, (void *)0x12345678, NULL, (void *)0x12345678);
+
     PRINTF(dbus_recv_data, INT, (void *)0x12345678, (void *)0x12345678, NULL);
 // dusb_rpkt.c
     PRINTF(dusb_send, INT, NULL, (void *)0x12345678);
     PRINTF(dusb_send, INT, (void *)0x12345678, NULL);
     PRINTF(dusb_recv, INT, NULL, (void *)0x12345678);
-
     PRINTF(dusb_recv, INT, (void *)0x12345678, NULL);
 // nsp_rpkt.c
     PRINTF(nsp_send, INT, NULL, (void *)0x12345678);

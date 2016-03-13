@@ -248,7 +248,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 						if (!ret)
 						{
 							*bitmap = ticalcs_alloc_screen(TI84PC_ROWS * TI84PC_COLS * 2);
-							ret = ti84pcse_decompress_screen(*bitmap, TI84PC_ROWS * TI84PC_COLS * 2, data, size);
+							ret = ticalcs_screen_84pcse_rle_uncompress(data, size, *bitmap, TI84PC_ROWS * TI84PC_COLS * 2);
 						}
 					}
 				}

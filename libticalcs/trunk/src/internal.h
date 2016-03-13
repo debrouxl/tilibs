@@ -243,11 +243,6 @@ int noop_send_all_vars_backup (CalcHandle* handle, FileContent* content);
 int noop_recv_all_vars_backup (CalcHandle* handle, FileContent* content);
 
 
-// calc_84p.c
-
-int ti84pcse_decompress_screen(uint8_t *dest, uint32_t dest_length, const uint8_t *src, uint32_t src_length);
-
-
 // cmdz80.c
 
 int ti82_send_asm_exec(CalcHandle*, VarEntry * var);

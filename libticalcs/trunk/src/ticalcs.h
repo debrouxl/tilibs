@@ -893,6 +893,8 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_screen_convert_gs4_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst);
 	TIEXPORT3 int TICALL ticalcs_screen_convert_rgb565le_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst);
 	TIEXPORT3 int TICALL ticalcs_screen_convert_native_to_rgb888(CalcPixelFormat format, const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst);
+	TIEXPORT3 int TICALL ticalcs_screen_nspire_rle_uncompress(CalcPixelFormat format, const uint8_t * src, uint32_t input_size, uint8_t * dst, uint32_t max_output_size);
+	TIEXPORT3 int TICALL ticalcs_screen_84pcse_rle_uncompress(const uint8_t * src, uint32_t src_length, uint8_t * dst, uint32_t dst_length);
 
 	// tikeys.c
 	TIEXPORT3 const CalcKey* TICALL ticalcs_keys_73 (uint8_t ascii_code);
