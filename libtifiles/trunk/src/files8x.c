@@ -164,7 +164,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 	}
 	file_size = (uint32_t)cur_pos;
 
-	if (fread_8_chars(f, signature) < 0) goto tfrr;
+	if (fread_8_chars(f, signature) < 0) goto tfrr; // Offset 0
 	content->model = tifiles_signature2calctype(signature);
 	if (content->model == CALC_NONE)
 	{
@@ -175,9 +175,9 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 	{
 		content->model_dst = content->model;
 	}
-	if (fskip(f, 3) < 0) goto tfrr;
-	if (fread_n_chars(f, 42, content->comment) < 0) goto tfrr;
-	if (fread_word(f, &data_size) < 0) goto tfrr;
+	if (fskip(f, 3) < 0) goto tfrr; // Offset 0x8
+	if (fread_n_chars(f, 42, content->comment) < 0) goto tfrr; // Offset 0xB
+	if (fread_word(f, &data_size) < 0) goto tfrr; // Offset 0x35
 	if ((uint32_t)data_size > file_size)
 	{
 		ret = ERR_INVALID_FILE;
@@ -185,7 +185,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 	}
 
 	// search for the number of entries by parsing the whole file
-	offset = ftell(f);
+	offset = ftell(f); // Offset 0x37
 	if (offset == -1L) goto tfrr;
 
 	for (i = 0;; i++) 
@@ -203,7 +203,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 			break;
 		}
 
-		if (fread_word(f, &tmp) < 0) goto tfrr;
+		if (fread_word(f, &tmp) < 0) goto tfrr; // Offset N, 0x37 for the first entry
 		if (tmp == 0x0D)
 		{
 			ti83p_flag = !0;		// true TI83+ file (2 extra bytes)
@@ -212,14 +212,14 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 		if (content->model == CALC_TI85)
 		{
 			// length &  name with no padding
-			if (fskip(f, 3) < 0) goto tfrr;
-			if (fread_byte(f, &name_length) < 0) goto tfrr;
+			if (fskip(f, 3) < 0) goto tfrr; // Offset N+2, 0x39 for the first entry
+			if (fread_byte(f, &name_length) < 0) goto tfrr; // Offset N+5, 0x3C for the first entry
 			if (name_length > 8)
 			{
 				ret = ERR_INVALID_FILE;
 				goto tfrr;
 			}
-			if (fskip(f, name_length) < 0) goto tfrr;
+			if (fskip(f, name_length) < 0) goto tfrr; // Offset N+6+name_length, 0x3D for the first entry
 		}
 		else if (content->model == CALC_TI86)
 		{
@@ -230,14 +230,14 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 			 */
 			padded86 = tmp < 0x0C ? 0 : !0;	// TI-85 style file
 
-			if (fskip(f, 3) < 0) goto tfrr;
-			if (fread_byte(f, &name_length) < 0) goto tfrr;
+			if (fskip(f, 3) < 0) goto tfrr; // Offset N+2, 0x39 for the first entry
+			if (fread_byte(f, &name_length) < 0) goto tfrr; // Offset N+5, 0x3C for the first entry
 			if (name_length > 8)
 			{
 				ret = ERR_INVALID_FILE;
 				goto tfrr;
 			}
-			if (fskip(f, name_length) < 0) goto tfrr;
+			if (fskip(f, name_length) < 0) goto tfrr; // Offset N+6+name_length, 0x3D for the first entry
 
 			if (padded86)
 			{
@@ -246,17 +246,17 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 		}
 		else if (ti83p_flag)
 		{
-			if (fskip(f, 13) < 0) goto tfrr;
+			if (fskip(f, 13) < 0) goto tfrr; // Offset N+2, 0x39 for the first entry.
 		}
 		else
 		{
-			if (fskip(f, 11) < 0) goto tfrr;
+			if (fskip(f, 11) < 0) goto tfrr; // Offset N+2, 0x39 for the first entry.
 		}
-		if (fread_word(f, &tmp) < 0) goto tfrr;
+		if (fread_word(f, &tmp) < 0) goto tfrr; // Offset depends on model.
 		if (fskip(f, tmp) < 0) goto tfrr;
 	}
 
-	if (fseek(f, offset, SEEK_SET) < 0) goto tfrr;
+	if (fseek(f, offset, SEEK_SET) < 0) goto tfrr; // Offset 0x37
 
 	content->num_entries = i;
 	content->entries = g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
@@ -271,25 +271,25 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 		VarEntry *entry = content->entries[i] = g_malloc0(sizeof(VarEntry));
 		uint16_t packet_length, entry_size;
 
-		if (fread_word(f, &packet_length) < 0) goto tfrr;
+		if (fread_word(f, &packet_length) < 0) goto tfrr; // Offset 0x37
 		if ((uint32_t)packet_length > file_size)
 		{
 			ret = ERR_INVALID_FILE;
 			goto tfrr;
 		}
-		if (fread_word(f, &entry_size) < 0) goto tfrr;
+		if (fread_word(f, &entry_size) < 0) goto tfrr; // Offset 0x39
 		if ((uint32_t)entry_size > file_size)
 		{
 			ret = ERR_INVALID_FILE;
 			goto tfrr;
 		}
 		entry->size = entry_size;
-		if (fread_byte(f, &(entry->type)) < 0) goto tfrr;
+		if (fread_byte(f, &(entry->type)) < 0) goto tfrr; // Offset 0x3B
 		if (is_ti8586(content->model))
 		{
-			if (fread_byte(f, &name_length) < 0) goto tfrr;
+			if (fread_byte(f, &name_length) < 0) goto tfrr; // Offset 0x3C
 		}
-		if (fread_n_chars(f, name_length, varname) < 0) goto tfrr;
+		if (fread_n_chars(f, name_length, varname) < 0) goto tfrr; // Offset up to 0x44
 		ticonv_varname_from_tifile_sn(content->model_dst, varname, entry->name, sizeof(entry->name), entry->type);
 		if ((content->model == CALC_TI86) && padded86)
 		{
@@ -301,7 +301,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 		if (ti83p_flag) 
 		{
 			uint16_t attribute;
-			if (fread_word(f, &attribute) < 0) goto tfrr;
+			if (fread_word(f, &attribute) < 0) goto tfrr; // Offset 0x44
 			// Handle both the files created by TI-Connect and the files created by
 			// some broken versions of libtifiles.
 			if (attribute == 0x80)

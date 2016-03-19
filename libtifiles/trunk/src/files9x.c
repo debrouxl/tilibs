@@ -111,7 +111,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 	}
 	file_size = (uint32_t)cur_pos;
 
-	if (fread_8_chars(f, signature) < 0) goto tfrr;
+	if (fread_8_chars(f, signature) < 0) goto tfrr; // Offset 0
 	content->model = tifiles_signature2calctype(signature);
 	if (content->model == CALC_NONE)
 	{
@@ -123,13 +123,13 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 		content->model_dst = content->model;
 	}
 
-	if (fread_word(f, NULL) < 0) goto tfrr;
-	if (fread_8_chars(f, default_folder) < 0) goto tfrr;
+	if (fread_word(f, NULL) < 0) goto tfrr; // Offset 0x8
+	if (fread_8_chars(f, default_folder) < 0) goto tfrr; // Offset 0xA
 	ticonv_varname_from_tifile_sn(content->model_dst, default_folder, content->default_folder, sizeof(content->default_folder), -1);
 	strncpy(current_folder, content->default_folder, sizeof(current_folder) - 1);
 	current_folder[sizeof(current_folder) - 1] = 0;
-	if (fread_n_chars(f, 40, content->comment) < 0) goto tfrr;
-	if (fread_word(f, &tmp) < 0) goto tfrr;
+	if (fread_n_chars(f, 40, content->comment) < 0) goto tfrr; // Offset 0x12
+	if (fread_word(f, &tmp) < 0) goto tfrr; // Offset 0x3A
 	content->num_entries = tmp;
 
 	content->entries = g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
@@ -143,18 +143,18 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 	{
 		VarEntry *entry = content->entries[j] = g_malloc0(sizeof(VarEntry));
 
-		if (fread_long(f, &curr_offset) < 0) goto tfrr;
+		if (fread_long(f, &curr_offset) < 0) goto tfrr; // Offset N, 0x3C for the first entry
 		if (curr_offset > file_size)
 		{
 			ret = ERR_INVALID_FILE;
 			goto tfrr;
 		}
-		if (fread_8_chars(f, varname) < 0)  goto tfrr;
+		if (fread_8_chars(f, varname) < 0)  goto tfrr; // Offset N+4, 0x40 for the first entry
 		ticonv_varname_from_tifile_sn(content->model_dst, varname, entry->name, sizeof(entry->name), entry->type);
-		if (fread_byte(f, &(entry->type)) < 0) goto tfrr;
-		if (fread_byte(f, &(entry->attr)) < 0) goto tfrr;
+		if (fread_byte(f, &(entry->type)) < 0) goto tfrr; // Offset N+12, 0x48 for the first entry
+		if (fread_byte(f, &(entry->attr)) < 0) goto tfrr; // Offset N+13, 0x49 for the first entry
 		entry->attr = (entry->attr == 2 || entry->attr == 3) ? ATTRB_ARCHIVED : entry->attr;
-		if (fread_word(f, NULL) < 0) goto tfrr;
+		if (fread_word(f, NULL) < 0) goto tfrr; // Offset N+14, 0x4A for the first entry
 
 		if (entry->type == TI92_DIR) // same as TI89_DIR, TI89t_DIR, ...
 		{
@@ -172,7 +172,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 			current_folder[sizeof(entry->folder) - 1] = 0;
 			cur_pos = ftell(f);
 			if (cur_pos < 0) goto tfrr;
-			if (fread_long(f, &next_offset) < 0) goto tfrr;
+			if (fread_long(f, &next_offset) < 0) goto tfrr; // Offset N+16, 0x4C for the first entry
 			if (next_offset > file_size)
 			{
 				ret = ERR_INVALID_FILE;
@@ -192,8 +192,8 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 			}
 
 			if (fseek(f, curr_offset, SEEK_SET)) goto tfrr;
-			if (fread_long(f, NULL) < 0) goto tfrr;	// 4 bytes (NULL)
-			if (fread(entry->data, 1, entry->size, f) < entry->size) goto tfrr;
+			if (fread_long(f, NULL) < 0) goto tfrr;	// Normally: offset N+22, 0x52 for the first entry
+			if (fread(entry->data, 1, entry->size, f) < entry->size) goto tfrr; // Normally: offset N+26, 0x56 for the first entry
 
 			if (fread_word(f, &checksum) < 0) goto tfrr;
 			if (fseek(f, cur_pos, SEEK_SET)) goto tfrr;
