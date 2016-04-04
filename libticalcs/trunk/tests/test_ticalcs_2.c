@@ -897,12 +897,13 @@ int main(int argc, char **argv)
 	CalcModel calc_model = CALC_NONE;
 	CableHandle* cable = NULL;
 	CalcHandle* calc = NULL;
-	int err, i;
-	int do_exit=0;
+	int err = 0, i;
+	int do_exit = 0;
 	unsigned int choice;
 	char* colon;
+	int do_probe = 1;
 
-	while((i = getopt(argc, argv, "c:m:")) != -1)
+	while ((i = getopt(argc, argv, "c:m:n")) != -1)
 	{
 		if (i == 'c')
 		{
@@ -918,9 +919,13 @@ int main(int argc, char **argv)
 		{
 			calc_model = ticalcs_string_to_model(optarg);
 		}
+		else if (i == 'n')
+		{
+			do_probe = 0;
+		}
 		else
 		{
-			fprintf(stderr, "Usage: %s [-c CABLE[:PORT]] [-m CALC]\n", argv[0]);
+			fprintf(stderr, "Usage: %s [-n (no probe)] [-c CABLE[:PORT]] [-m CALC]\n", argv[0]);
 			return 1;
 		}
 	}
@@ -934,7 +939,7 @@ int main(int argc, char **argv)
 	ticalcs_library_init();
 
 	// set cable
-	if (cable_model == CABLE_NUL)
+	if (do_probe && cable_model == CABLE_NUL)
 	{
 		int *pids, npids;
 
@@ -970,7 +975,8 @@ int main(int argc, char **argv)
 
 		default:
 			fprintf(stderr, "Unrecognized PID %04x\n", pids[0]);
-			goto end;
+			free(pids);
+			return 1;
 		}
 
 		free(pids);
@@ -980,16 +986,16 @@ int main(int argc, char **argv)
 	if (cable == NULL)
 	{
 		fprintf(stderr, "ticables_handle_new failed\n");
-		return -1;
+		goto end;
 	}
 
 	// set calc
-	if (calc_model == CALC_NONE)
+	if (do_probe && calc_model == CALC_NONE)
 	{
 		if (ticalcs_probe(cable_model, port_number, &calc_model, 1))
 		{
 			fprintf(stderr, "No calculator found\n");
-			return 1;
+			goto end;
 		}
 	}
 
@@ -997,11 +1003,18 @@ int main(int argc, char **argv)
 	if (calc == NULL)
 	{
 		fprintf(stderr, "ticalcs_handle_new failed\n");
-		return -1;
+		goto end;
 	}
 
 	// attach cable to calc (and open cable)
 	err = ticalcs_cable_attach(calc, cable);
+	if (err != 0)
+	{
+		fprintf(stderr, "ticalcs_cable_attach failed %d\n", err);
+		goto end;
+	}
+
+	ticables_options_set_timeout(cable, 50);
 
 	do
 	{
@@ -1009,7 +1022,7 @@ int main(int argc, char **argv)
 		printf("Choose an action:\n");
 		for(i = 0; i < (int)(sizeof(fnct_menu)/sizeof(fnct_menu[0])); i++)
 		{
-			printf("%2i. %s\n", i, fnct_menu[i].desc);
+			printf("%2d. %s\n", i, fnct_menu[i].desc);
 		}
 		printf("Your choice: ");
 
@@ -1028,11 +1041,14 @@ int main(int argc, char **argv)
 		// Process choice
 		if (choice < sizeof(fnct_menu)/sizeof(fnct_menu[0]) && fnct_menu[choice].fnct)
 		{
-			(fnct_menu[choice].fnct)(calc);
+			err = (fnct_menu[choice].fnct)(calc);
+		}
+		if (choice && err)
+		{
+			fprintf(stderr, "Function %d returned %d\n", choice, err);
 		}
 		printf("\n");
-
-	} while(!do_exit);
+	} while (!do_exit);
 
 	// detach cable (made by handle_del, too)
 	err = ticalcs_cable_detach(calc);
@@ -1042,5 +1058,5 @@ end:
 	ticalcs_handle_del(calc);
 	ticables_handle_del(cable);
 
-	return 0;
+	return err;
 }
