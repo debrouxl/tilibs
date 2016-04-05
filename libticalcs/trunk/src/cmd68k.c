@@ -170,11 +170,9 @@ TIEXPORT3 int TICALL ti92_send_XDP(CalcHandle* handle, uint32_t length, const ui
  */
 TIEXPORT3 int TICALL ti89_send_SKP(CalcHandle* handle, uint8_t rej_code)
 {
-	uint8_t buffer[4] = { 0, 0, 0, 0 };
+	uint8_t buffer[4] = { rej_code, 0, 0, 0 };
 
 	VALIDATE_HANDLE(handle);
-
-	buffer[0] = rej_code;
 
 	ticalcs_info(" PC->TI: SKP (rejection code = %i)", rej_code);
 	return dbus_send(handle, PC_TI9X, CMD_SKP, 3, buffer);
@@ -435,7 +433,7 @@ TIEXPORT3 int TICALL ti89_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t
 
 TIEXPORT3 int TICALL ti92_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
-	uint8_t buffer[32] = { 0 };
+	uint8_t buffer[32];
 	uint16_t len;
 
 	VALIDATE_HANDLE(handle);
@@ -461,7 +459,7 @@ TIEXPORT3 int TICALL ti92_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t
 
 TIEXPORT3 int TICALL ti89_send_RTS2(CalcHandle* handle, uint32_t varsize, uint8_t vartype, uint8_t hw_id)
 {
-	uint8_t buffer[10];
+	uint8_t buffer[9];
 
 	VALIDATE_HANDLE(handle);
 
@@ -509,10 +507,8 @@ TIEXPORT3 int TICALL ti89_send_DEL(CalcHandle* handle, uint32_t varsize, uint8_t
 	buffer[5] = len;
 	memcpy(buffer + 6, varname, len);
 
-	len += 6;
-
 	ticalcs_info(" PC->TI: DEL (size=0x%08X=%i, id=%02X, name=%s)", varsize, varsize, vartype, varname);
-	return dbus_send(handle, PC_TI9X, CMD_DEL, len, buffer);
+	return dbus_send(handle, PC_TI9X, CMD_DEL, 6 + len, buffer);
 }
 
 /* VAR: receive variable (std var header: variable length) */

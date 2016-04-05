@@ -168,7 +168,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	int ret;
-	uint8_t *buf = handle->buffer;
+	uint8_t *buffer = handle->buffer2;
 	uint8_t *data = NULL;
 
 	data = (uint8_t *)ticalcs_alloc_screen(65537U);
@@ -213,7 +213,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 						while (1)
 						{
-							ret = RECV_XDP(handle, &pktsize, buf);
+							ret = RECV_XDP(handle, &pktsize, buffer);
 							if (ret == ERR_EOT)
 							{
 								ret = SEND_ACK(handle);
@@ -224,7 +224,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 							if (*bitmap != NULL)
 							{
 								data = *bitmap;
-								memcpy(data + size, buf, pktsize);
+								memcpy(data + size, buffer, pktsize);
 								size += pktsize;
 
 								ret = SEND_ACK(handle);
@@ -287,13 +287,13 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		ret = RECV_ACK(handle, &unused);
 		if (!ret)
 		{
-			ret = RECV_XDP(handle, &unused, handle->buffer);
+			ret = RECV_XDP(handle, &unused, handle->buffer2);
 			if (!ret)
 			{
 				ret = SEND_ACK(handle);
 				if (!ret)
 				{
-					uint8_t * mem = (uint8_t *)handle->buffer;
+					uint8_t * mem = (uint8_t *)handle->buffer2;
 					memory = (((uint32_t)(mem[1])) << 8) | mem[0]; // Clamp mem_free to a 16-bit value.
 				}
 			}
@@ -411,13 +411,13 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 		ret = RECV_ACK(handle, &unused);
 		if (!ret)
 		{
-			ret = RECV_XDP(handle, &unused, handle->buffer);
+			ret = RECV_XDP(handle, &unused, handle->buffer2);
 			if (!ret)
 			{
 				ret = SEND_EOT(handle);
 				if (!ret)
 				{
-					uint8_t * mem = (uint8_t *)handle->buffer;
+					uint8_t * mem = (uint8_t *)handle->buffer2;
 					*ram = (((uint32_t)(mem[1])) << 8) | mem[0]; // Clamp mem_free to a 16-bit value.
 				}
 			}
@@ -940,7 +940,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	int first_block;
 	int page;
 	int offset;
-	uint8_t buf[FLASH_PAGE_SIZE + 4];
+	uint8_t buffer[FLASH_PAGE_SIZE + 4];
 
 	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
 	update_label();
@@ -1003,7 +1003,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 			fp->flag = 0x80;
 			fp->size = offset;
 			fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
-			memcpy(fp->data, buf, fp->size);
+			memcpy(fp->data, buffer, fp->size);
 
 			page++;
 			offset = 0;
@@ -1018,7 +1018,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 			ret = RECV_ACK(handle, NULL);
 			if (!ret)
 			{
-				ret = RECV_XDP(handle, &data_length, &buf[offset]);
+				ret = RECV_XDP(handle, &data_length, &buffer[offset]);
 				if (!ret)
 				{
 					ret = SEND_ACK(handle);
@@ -1035,9 +1035,9 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 			first_block = 0;
 
 			/* compute actual application size */
-			if (buf[0] == 0x80 && buf[1] == 0x0f)
+			if (buffer[0] == 0x80 && buffer[1] == 0x0f)
 			{
-				uint32_t len = ((uint32_t)(buf[2])) << 24 | ((uint32_t)(buf[3])) << 16 | ((uint32_t)(buf[4])) << 8 | (uint32_t)(buf[5]);
+				uint32_t len = ((uint32_t)(buffer[2])) << 24 | ((uint32_t)(buffer[3])) << 16 | ((uint32_t)(buffer[4])) << 8 | (uint32_t)(buffer[5]);
 				update_->max2 = len + 75;
 			}
 		}
@@ -1054,7 +1054,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	fp->flag = 0x80;
 	fp->size = offset;
 	fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
-	memcpy(fp->data, buf, fp->size);
+	memcpy(fp->data, buffer, fp->size);
 	page++;
 
 	content->num_pages = page;
@@ -1296,7 +1296,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	uint8_t varattr;
 	uint8_t version;
 	char varname[9];
-	uint8_t buffer[32];
+	uint8_t * buffer = handle->buffer2;
 	uint32_t calc_time;
 
 	struct tm ref, *cur;

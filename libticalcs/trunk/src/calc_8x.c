@@ -290,7 +290,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		ret = RECV_ACK(handle, &unused);
 		if (!ret)
 		{
-			ret = RECV_XDP(handle, &unused, handle->buffer);
+			ret = RECV_XDP(handle, &unused, handle->buffer2);
 			if (!ret)
 			{
 				ret = SEND_ACK(handle);
@@ -301,7 +301,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	if (!ret)
 	{
 		VarEntry *ve;
-		uint8_t * mem = (uint8_t *)handle->buffer;
+		uint8_t * mem = (uint8_t *)handle->buffer2;
 
 		folder = dirlist_create_append_node(NULL, vars);
 
@@ -422,13 +422,13 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 		ret = RECV_ACK(handle, &unused);
 		if (!ret)
 		{
-			ret = RECV_XDP(handle, &unused, handle->buffer);
+			ret = RECV_XDP(handle, &unused, handle->buffer2);
 			if (!ret)
 			{
 				ret = SEND_EOT(handle);
 				if (!ret)
 				{
-					uint8_t * mem = (uint8_t *)handle->buffer;
+					uint8_t * mem = (uint8_t *)handle->buffer2;
 					if (handle->model == CALC_TI83)
 					{
 						*ram = (((uint32_t)(mem[1])) << 8) | mem[0]; // Clamp mem_free to a 16-bit value.

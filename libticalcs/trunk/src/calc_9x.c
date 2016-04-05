@@ -267,7 +267,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
 	VarEntry info;
 	uint16_t block_size;
-	uint8_t * buffer = handle->buffer;
+	uint8_t * buffer = handle->buffer2;
 	int ret;
 	int i, j;
 	uint8_t extra = (handle->model == CALC_V200) ? 8 : 0;
@@ -511,7 +511,7 @@ static int		get_dirlist_92	(CalcHandle* handle, GNode** vars, GNode** apps)
 		GNode *folder = NULL;
 		char folder_name[9];
 		char *utf8;
-		uint8_t * buffer = handle->buffer;
+		uint8_t * buffer = handle->buffer2;
 		uint16_t unused;
 
 		folder_name[8] = 0;
@@ -746,7 +746,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	for (i = 0; !ret && i < content->num_entries; i++)
 	{
 		VarEntry *entry = content->entries[i];
-		uint8_t * buffer = handle->buffer;
+		uint8_t * buffer = handle->buffer2;
 		uint8_t vartype = entry->type;
 		char varname[18];
 
@@ -789,6 +789,10 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 					ret = SEND_ACK(handle);
 					if (!ret)
 					{
+						buffer[0] = 0;
+						buffer[1] = 0;
+						buffer[2] = 0;
+						buffer[3] = 0;
 						memcpy(buffer + 4, entry->data, entry->size);
 						ret = SEND_XDP(handle, entry->size + 4, buffer);
 						if (!ret)
@@ -935,7 +939,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	for (i = 0; !ret && i < content->num_entries; i++)
 	{
 		VarEntry *entry = content->entries[i];
-		uint8_t * buffer = handle->buffer;
+		uint8_t * buffer = handle->buffer2;
 		uint8_t vartype = entry->type;
 		char varname[18];
 
@@ -970,6 +974,10 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 					ret = SEND_ACK(handle);
 					if (!ret)
 					{
+						buffer[0] = 0;
+						buffer[1] = 0;
+						buffer[2] = 0;
+						buffer[3] = 0;
 						memcpy(buffer + 4, entry->data, entry->size);
 						ret = SEND_XDP(handle, entry->size + 4, buffer);
 						if (!ret)
@@ -1483,7 +1491,8 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 						ret = RECV_ACK(handle, NULL);
 						if (!ret)
 						{
-							ret = RECV_XDP(handle, &pktsize, handle->buffer);
+							uint8_t * buffer = (uint8_t *)(handle->buffer2);
+							ret = RECV_XDP(handle, &pktsize, buffer);
 							if (!ret)
 							{
 								ret = SEND_ACK(handle);
@@ -1495,7 +1504,6 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 										ret = SEND_ACK(handle);
 										if (!ret)
 										{
-											uint8_t * buffer = (uint8_t *)(handle->buffer);
 											_clock->year = (((uint16_t)buffer[6]) << 8) | buffer[7];
 											_clock->month = buffer[8];
 											_clock->day = buffer[9];

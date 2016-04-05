@@ -692,7 +692,7 @@ struct _CalcFncts
  * @update: callbacks for GUI interaction
  * @unused1: unused member kept for API compatibility purposes
  * @buffer: allocated data buffer for internal use
- * @unused2: unused member kept for API compatibility purposes
+ * @buffer2: allocated data buffer for internal use
  * @open: device has been opened
  * @busy: transfer is in progress
  * @cable: handle on cable used with this model
@@ -710,7 +710,7 @@ struct _CalcHandle
 
 	void*		unused1;
 	void*		buffer; // used as data buffer
-	void*		unused2;
+	void*		buffer2;
 
 	int			open;
 	int			busy;

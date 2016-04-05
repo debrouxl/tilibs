@@ -333,6 +333,13 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 				g_free(handle);
 				handle = NULL;
 			}
+			handle->buffer2 = (uint8_t *)g_malloc(65536 + 6);
+			if (handle->buffer2 == NULL)
+			{
+				g_free(handle->buffer);
+				g_free(handle);
+				handle = NULL;
+			}
 		}
 	}
 
@@ -356,6 +363,11 @@ TIEXPORT3 int TICALL ticalcs_handle_del(CalcHandle* handle)
 	if (handle->attached)
 	{
 		ticalcs_cable_detach(handle);
+	}
+
+	if (handle->buffer2)
+	{
+		g_free(handle->buffer2);
 	}
 
 	if (handle->buffer)

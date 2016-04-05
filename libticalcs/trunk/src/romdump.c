@@ -30,7 +30,6 @@
 
 #include "ticalcs.h"
 #include "internal.h"
-#include "dbus_pkt.h"
 #include "logging.h"
 #include "error.h"
 #include "romdump.h"
@@ -77,7 +76,7 @@ static int send_pkt(CalcHandle* handle, uint16_t cmd, uint16_t len, uint8_t* dat
 	return ticables_cable_send(handle->cable, buf, len+6);
 }
 
-static int cmd_is_valid(uint16_t cmd)
+static inline int cmd_is_valid(uint16_t cmd)
 {
 	switch(cmd)
 	{
