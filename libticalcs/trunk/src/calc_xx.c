@@ -446,6 +446,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode, Fi
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_FILECONTENT(content);
+	VALIDATE_FILECONTENT_ENTRIES(content);
 
 	calc = handle->calc;
 	VALIDATE_CALCFNCTS(calc);
@@ -520,6 +521,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_FILECONTENT(content);
+	VALIDATE_FILECONTENT_ENTRIES(content);
 
 	calc = handle->calc;
 	VALIDATE_CALCFNCTS(calc);
@@ -557,7 +559,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_FILECONTENT(content);
-	VALIDATE_VARENTRY(var);
+	VALIDATE_NONNULL(var);
 
 	calc = handle->calc;
 	VALIDATE_CALCFNCTS(calc);
@@ -1131,6 +1133,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_all_vars_backup(CalcHandle* handle, FileC
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_FILECONTENT(content);
+	VALIDATE_FILECONTENT_ENTRIES(content);
 
 	calc = handle->calc;
 	VALIDATE_CALCFNCTS(calc);
@@ -1409,7 +1412,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(filename);
-	VALIDATE_VARENTRY(vr);
+	VALIDATE_NONNULL(vr);
 
 	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
 	RETURN_IF_HANDLE_NOT_OPEN(handle);

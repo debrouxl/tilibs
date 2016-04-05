@@ -529,20 +529,26 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	uint8_t status;
 	gchar *path;
 	int ret;
-	VarEntry * ve;
+	VarEntry * entry;
 
 	update_->cnt2 = 0;
 	update_->max2 = 1;
 	update_->pbar();
 
-	ve = content->entries[0];
+	entry = content->entries[0];
 
-	if (ve->action == ACT_SKIP)
+	if (!ticalcs_validate_varentry(entry))
+	{
+		ticalcs_critical("%s: skipping invalid content entry #0", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
+
+	if (entry->action == ACT_SKIP)
 	{
 		return 0;
 	}
 
-	//if (!strlen(ve->folder))
+	//if (!strlen(entry->folder))
 	//{
 	//	return ERR_ABORT;
 	//}
@@ -553,19 +559,19 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		return ret;
 	}
 
-	path = build_path(handle->model, ve);
+	path = build_path(handle->model, entry);
 
-	ticonv_varname_to_utf8_sn(handle->model, path, update_->text, sizeof(update_->text), ve->type);
+	ticonv_varname_to_utf8_sn(handle->model, path, update_->text, sizeof(update_->text), entry->type);
 	update_label();
 
-	ret = nsp_cmd_s_put_file(handle, path, ve->size);
+	ret = nsp_cmd_s_put_file(handle, path, entry->size);
 	g_free(path);
 	if (!ret)
 	{
 		ret = nsp_cmd_r_put_file(handle);
 		if (!ret)
 		{
-			ret = nsp_cmd_s_file_contents(handle, ve->size, ve->data);
+			ret = nsp_cmd_s_file_contents(handle, entry->size, entry->data);
 			if (!ret)
 			{
 				ret = nsp_cmd_r_status(handle, &status);

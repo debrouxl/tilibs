@@ -288,9 +288,6 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	unsigned int i;
-	DUSBCalcAttr **attrs;
-	const int nattrs = 4;
-	uint32_t pkt_size;
 	int ret = 0;
 
 	update_->cnt2 = 0;
@@ -298,38 +295,55 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
-		VarEntry *ve = content->entries[i];
+		DUSBCalcAttr **attrs;
+		const int nattrs = 4;
+		VarEntry * entry = content->entries[i];
+		uint32_t pkt_size;
+		uint32_t size;
 		char varname[18];
 
-		if (ve->action == ACT_SKIP)
+		if (!ticalcs_validate_varentry(entry))
 		{
+			ticalcs_critical("%s: skipping invalid content entry #%u", __FUNCTION__, i);
 			continue;
 		}
 
-		if (ve->folder[0])
+		if (entry->action == ACT_SKIP)
 		{
-			tifiles_build_fullname(handle->model, varname, ve->folder, ve->name);
+			ticalcs_info("%s: skipping variable #%u because requested", __FUNCTION__, i);
+			continue;
+		}
+
+		if (entry->folder[0])
+		{
+			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 		}
 		else
 		{
-			ticalcs_strlcpy(varname, ve->name, sizeof(varname));
+			ticalcs_strlcpy(varname, entry->name, sizeof(varname));
 		}
 
-		ticonv_varname_to_utf8_sn(handle->model, varname, update_->text, sizeof(update_->text), ve->type);
+		ticonv_varname_to_utf8_sn(handle->model, varname, update_->text, sizeof(update_->text), entry->type);
 		update_label();
 
 		attrs = dusb_ca_new_array(handle, nattrs);
 		attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE, 4);
 		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
-		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ve->type;
+		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = entry->type;
 		attrs[1] = dusb_ca_new(handle, AID_ARCHIVED, 1);
-		attrs[1]->data[0] = ve->attr == ATTRB_ARCHIVED ? 1 : 0;
+		attrs[1]->data[0] = entry->attr == ATTRB_ARCHIVED ? 1 : 0;
 		attrs[2] = dusb_ca_new(handle, AID_VAR_VERSION, 4);
 		attrs[2]->data[0] = 0;
 		attrs[3] = dusb_ca_new(handle, AID_LOCKED, 1);
-		attrs[3]->data[0] = ve->attr == ATTRB_LOCKED ? 1 : 0;
+		attrs[3]->data[0] = entry->attr == ATTRB_LOCKED ? 1 : 0;
 
-		if (!(ve->size & 1))
+		size = entry->size;
+		if (entry->size >= 65536U)
+		{
+			ticalcs_critical("%s: variable size %u is suspiciously large", __FUNCTION__, size);
+		}
+
+		if (!(size & 1))
 		{
 			ret = is_ready(handle);
 		}
@@ -340,7 +354,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			break;
 		}
 
-		ret = dusb_cmd_s_rts(handle, ve->folder, ve->name, ve->size, nattrs, CA(attrs));
+		ret = dusb_cmd_s_rts(handle, entry->folder, entry->name, size, nattrs, CA(attrs));
 		dusb_ca_del_array(handle, nattrs, attrs);
 		if (ret)
 		{
@@ -356,9 +370,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			Moreover, buffer has to be smaller. Ti-Connect always use 0x3A which is very small for big variables.
 			I prefer using an heuristic value to optimize data rate.
 		*/
-		if (ve->size & 1)
+		if (size & 1)
 		{
-			pkt_size = ve->size / 10;
+			pkt_size = size / 10;
 			pkt_size >>= 1;
 			pkt_size <<= 1;
 
@@ -379,7 +393,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			}
 		}
 
-		ret = dusb_cmd_s_var_content(handle, ve->size, ve->data);
+		ret = dusb_cmd_s_var_content(handle, size, entry->data);
 		if (ret)
 		{
 			break;
@@ -395,7 +409,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			break;
 		}
 
-		update_->cnt2 = i+1;
+		update_->cnt2 = i + 1;
 		update_->max2 = content->num_entries;
 		update_->pbar();
 

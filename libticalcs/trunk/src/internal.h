@@ -59,7 +59,7 @@
 #define VALIDATE_BACKUPCONTENT(content) \
 	do \
 	{ \
-		if (content == NULL) \
+		if (!ticalcs_validate_backupcontent(content)) \
 		{ \
 			ticalcs_critical("%s: " #content " is NULL", __FUNCTION__); \
 			return ERR_INVALID_PARAMETER; \
@@ -68,16 +68,25 @@
 #define VALIDATE_FILECONTENT(content) \
 	do \
 	{ \
-		if (content == NULL) \
+		if (!ticalcs_validate_filecontent(content)) \
 		{ \
 			ticalcs_critical("%s: " #content " is NULL", __FUNCTION__); \
+			return ERR_INVALID_PARAMETER; \
+		} \
+	} while(0);
+#define VALIDATE_FILECONTENT_ENTRIES(content) \
+	do \
+	{ \
+		if (!ticalcs_validate_filecontent_entries(content)) \
+		{ \
+			ticalcs_critical("%s: " #content "->entries is NULL", __FUNCTION__); \
 			return ERR_INVALID_PARAMETER; \
 		} \
 	} while(0);
 #define VALIDATE_FLASHCONTENT(content) \
 	do \
 	{ \
-		if (content == NULL) \
+		if (!ticalcs_validate_flashcontent(content)) \
 		{ \
 			ticalcs_critical("%s: " #content " is NULL", __FUNCTION__); \
 			return ERR_INVALID_PARAMETER; \
@@ -86,7 +95,7 @@
 #define VALIDATE_VARENTRY(var) \
 	do \
 	{ \
-		if (var == NULL) \
+		if (!ticalcs_validate_varentry(var)) \
 		{ \
 			ticalcs_critical("%s: " #var " is NULL", __FUNCTION__); \
 			return ERR_INVALID_PARAMETER; \
@@ -95,7 +104,7 @@
 #define VALIDATE_VARREQUEST(var) \
 	do \
 	{ \
-		if (var == NULL) \
+		if (!ticalcs_validate_varrequest(var)) \
 		{ \
 			ticalcs_critical("%s: " #var " is NULL", __FUNCTION__); \
 			return ERR_INVALID_PARAMETER; \
@@ -153,6 +162,36 @@ static inline int ticalcs_validate_handle(CalcHandle * handle)
 static inline int ticalcs_validate_calcfncts(const CalcFncts * calc)
 {
 	return calc != NULL;
+}
+
+static inline int ticalcs_validate_backupcontent(BackupContent * content)
+{
+	return content != NULL;
+}
+
+static inline int ticalcs_validate_filecontent(FileContent * content)
+{
+	return content != NULL;
+}
+
+static inline int ticalcs_validate_filecontent_entries(FileContent * content)
+{
+	return content->num_entries == 0 || content->entries != NULL;
+}
+
+static inline int ticalcs_validate_flashcontent(FlashContent * content)
+{
+	return content != NULL;
+}
+
+static inline int ticalcs_validate_varentry(VarEntry * var)
+{
+	return var != NULL;
+}
+
+static inline int ticalcs_validate_varrequest(VarRequest * var)
+{
+	return var != NULL;
 }
 
 static inline void * ticalcs_alloc_screen(size_t len)

@@ -766,8 +766,31 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = content->entries[i];
+		uint16_t size;
 
-		ret = SEND_VAR(handle, (uint16_t)entry->size, entry->type, entry->name);
+		if (!ticalcs_validate_varentry(entry))
+		{
+			ticalcs_critical("%s: skipping invalid content entry #%u", __FUNCTION__, i);
+			continue;
+		}
+
+		if (entry->action == ACT_SKIP)
+		{
+			ticalcs_info("%s: skipping variable #%u because requested", __FUNCTION__, i);
+			continue;
+		}
+
+		if (entry->size >= 65536U)
+		{
+			ticalcs_critical("%s: oversized variable has size %u, clamping to 65535", __FUNCTION__, entry->size);
+			size = 65535;
+		}
+		else
+		{
+			size = (uint16_t)entry->size;
+		}
+
+		ret = SEND_VAR(handle, size, entry->type, entry->name);
 		if (!ret)
 		{
 			ret = RECV_ACK(handle, &status);
@@ -833,7 +856,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		ticonv_varname_to_utf8_sn(handle->model, entry->name, update_->text, sizeof(update_->text), entry->type);
 		update_label();
 
-		ret = SEND_XDP(handle, (uint16_t)entry->size, entry->data);
+		ret = SEND_XDP(handle, size, entry->data);
 		if (!ret)
 		{
 			ret = RECV_ACK(handle, &status);
@@ -892,13 +915,31 @@ static int		send_var_8386	(CalcHandle* handle, CalcMode mode, FileContent* conte
 	for (i = 0; !ret && i < content->num_entries; i++)
 	{
 		VarEntry *entry = content->entries[i];
+		uint16_t size;
 
-		if (entry->action == ACT_SKIP)
+		if (!ticalcs_validate_varentry(entry))
 		{
+			ticalcs_critical("%s: skipping invalid content entry #%u", __FUNCTION__, i);
 			continue;
 		}
 
-		ret = SEND_RTS(handle, (uint16_t)entry->size, entry->type, entry->name);
+		if (entry->action == ACT_SKIP)
+		{
+			ticalcs_info("%s: skipping variable #%u because requested", __FUNCTION__, i);
+			continue;
+		}
+
+		if (entry->size >= 65536U)
+		{
+			ticalcs_critical("%s: oversized variable has size %u, clamping to 65535", __FUNCTION__, entry->size);
+			size = 65535;
+		}
+		else
+		{
+			size = (uint16_t)entry->size;
+		}
+
+		ret = SEND_RTS(handle, size, entry->type, entry->name);
 		if (!ret)
 		{
 			ret = RECV_ACK(handle, &status);
@@ -941,7 +982,7 @@ static int		send_var_8386	(CalcHandle* handle, CalcMode mode, FileContent* conte
 		ticonv_varname_to_utf8_sn(handle->model, entry->name, update_->text, sizeof(update_->text), entry->type);
 		update_label();
 
-		ret = SEND_XDP(handle, (uint16_t)entry->size, entry->data);
+		ret = SEND_XDP(handle, size, entry->data);
 		if (!ret)
 		{
 			ret = RECV_ACK(handle, &status);

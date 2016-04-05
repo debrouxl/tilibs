@@ -439,32 +439,46 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	unsigned int i;
-	DUSBCalcAttr **attrs;
-	const int nattrs = 3;
 	int ret = 0;
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
-		VarEntry *ve = content->entries[i];
+		DUSBCalcAttr **attrs;
+		const int nattrs = 3;
+		VarEntry *entry = content->entries[i];
+		uint32_t size;
 
-		if (ve->action == ACT_SKIP)
+		if (!ticalcs_validate_varentry(entry))
 		{
+			ticalcs_critical("%s: skipping invalid content entry #%u", __FUNCTION__, i);
 			continue;
 		}
 
-		ticonv_varname_to_utf8_sn(handle->model, ve->name, update_->text, sizeof(update_->text), ve->type);
+		if (entry->action == ACT_SKIP)
+		{
+			ticalcs_info("%s: skipping variable #%u because requested", __FUNCTION__, i);
+			continue;
+		}
+
+		ticonv_varname_to_utf8_sn(handle->model, entry->name, update_->text, sizeof(update_->text), entry->type);
 		update_label();
 
 		attrs = dusb_ca_new_array(handle, nattrs);
 		attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE, 4);
 		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
-		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ve->type;
+		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = entry->type;
 		attrs[1] = dusb_ca_new(handle, AID_ARCHIVED, 1);
-		attrs[1]->data[0] = ve->attr == ATTRB_ARCHIVED ? 1 : 0;
+		attrs[1]->data[0] = entry->attr == ATTRB_ARCHIVED ? 1 : 0;
 		attrs[2] = dusb_ca_new(handle, AID_VAR_VERSION, 4);
-		attrs[2]->data[3] = ve->version;
+		attrs[2]->data[3] = entry->version;
 
-		ret = dusb_cmd_s_rts(handle, "", ve->name, ve->size, nattrs, CA(attrs));
+		size = entry->size;
+		if (entry->size >= 65536U)
+		{
+			ticalcs_critical("%s: variable size %u is suspiciously large", __FUNCTION__, size);
+		}
+
+		ret = dusb_cmd_s_rts(handle, "", entry->name, size, nattrs, CA(attrs));
 		dusb_ca_del_array(handle, nattrs, attrs);
 		if (ret)
 		{
@@ -475,7 +489,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		{
 			break;
 		}
-		ret = dusb_cmd_s_var_content(handle, ve->size, ve->data);
+		ret = dusb_cmd_s_var_content(handle, size, entry->data);
 		if (ret)
 		{
 			break;
@@ -490,6 +504,11 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		{
 			break;
 		}
+
+		update_->cnt2 = i + 1;
+		update_->max2 = content->num_entries;
+		update_->pbar();
+
 		PAUSE(50);	// needed
 	}
 

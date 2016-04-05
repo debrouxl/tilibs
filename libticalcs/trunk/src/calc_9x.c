@@ -677,7 +677,6 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		ret = RECV_ACK(handle, &unused);
 		if (!ret)
 		{
-
 			content->model = CALC_TI92;
 			ticalcs_strlcpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment));
 			content->data_part = tifiles_ve_alloc_data(128 * 1024);
@@ -745,10 +744,20 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 	for (i = 0; !ret && i < content->num_entries; i++)
 	{
-		VarEntry *entry = content->entries[i];
+		VarEntry *entry;
 		uint8_t * buffer = handle->buffer2;
-		uint8_t vartype = entry->type;
+		uint8_t vartype;
 		char varname[18];
+		uint32_t size;
+
+		entry = content->entries[i];
+		if (!ticalcs_validate_varentry(entry))
+		{
+			ticalcs_critical("%s: skipping invalid content entry #%u", __FUNCTION__, i);
+			continue;
+		}
+
+		vartype = entry->type;
 
 		if (entry->action == ACT_SKIP)
 		{
@@ -777,7 +786,14 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		case ATTRB_ARCHIVED: vartype = 0x27; break;
 		}
 
-		ret = SEND_RTS(handle, entry->size, vartype, varname);
+		size = entry->size;
+		if (size >= 65536U)
+		{
+			ticalcs_critical("%s: oversized variable has size %u, clamping to 65535", __FUNCTION__, size);
+			size = 65535;
+		}
+
+		ret = SEND_RTS(handle, size, vartype, varname);
 		if (!ret)
 		{
 			ret = RECV_ACK(handle, NULL);
@@ -793,8 +809,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 						buffer[1] = 0;
 						buffer[2] = 0;
 						buffer[3] = 0;
-						memcpy(buffer + 4, entry->data, entry->size);
-						ret = SEND_XDP(handle, entry->size + 4, buffer);
+						memcpy(buffer + 4, entry->data, size);
+						ret = SEND_XDP(handle, size + 4, buffer);
 						if (!ret)
 						{
 							ret = RECV_ACK(handle, &status);
@@ -938,13 +954,24 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 	for (i = 0; !ret && i < content->num_entries; i++)
 	{
-		VarEntry *entry = content->entries[i];
+		VarEntry *entry;
 		uint8_t * buffer = handle->buffer2;
-		uint8_t vartype = entry->type;
+		uint8_t vartype;
 		char varname[18];
+		uint32_t size;
+
+		entry = content->entries[i];
+		if (!ticalcs_validate_varentry(entry))
+		{
+			ticalcs_critical("%s: skipping invalid content entry #%u", __FUNCTION__, i);
+			continue;
+		}
+
+		vartype = entry->type;
 
 		if (entry->action == ACT_SKIP)
 		{
+			ticalcs_info("%s: skipping variable #%u because requested", __FUNCTION__, i);
 			continue;
 		}
 
@@ -962,7 +989,14 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		ticonv_varname_to_utf8_sn(handle->model, varname, update_->text, sizeof(update_->text), vartype);
 		update_label();
 
-		ret = SEND_VAR(handle, entry->size, vartype, varname);
+		size = entry->size;
+		if (size >= 65536U)
+		{
+			ticalcs_critical("%s: oversized variable has size %u, clamping to 65535", __FUNCTION__, size);
+			size = 65535;
+		}
+
+		ret = SEND_VAR(handle, size, vartype, varname);
 		if (!ret)
 		{
 			ret = RECV_ACK(handle, NULL);
@@ -978,8 +1012,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 						buffer[1] = 0;
 						buffer[2] = 0;
 						buffer[3] = 0;
-						memcpy(buffer + 4, entry->data, entry->size);
-						ret = SEND_XDP(handle, entry->size + 4, buffer);
+						memcpy(buffer + 4, entry->data, size);
+						ret = SEND_XDP(handle, size + 4, buffer);
 						if (!ret)
 						{
 							ret = RECV_ACK(handle, &status);
