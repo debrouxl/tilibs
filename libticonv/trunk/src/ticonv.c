@@ -730,7 +730,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src
 	}
 
 	// Do TI-UTF-8 -> UTF-16,UTF-16 -> TI-8x/9x charset
-	if (model == CALC_TI84P_USB || model == CALC_TI84PC_USB || model == CALC_TI83PCE_USB || model == CALC_TI84PCE_USB || model == CALC_TI82A_USB || model == CALC_TI84PT_USB)
+	if (model == CALC_TI84P_USB || model == CALC_TI82A_USB || model == CALC_TI84PT_USB)
 	{
 		utf16 = ticonv_charset_ti_to_utf16(CALC_TI84P_USB, src);
 
@@ -738,6 +738,16 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src
 		ticonv_utf16_free(utf16);
 
 		dst = ticonv_varname_tokenize(CALC_TI84P, ti, type);
+		ticonv_ti_free(ti);
+	}
+	else if (model == CALC_TI84PC_USB || model == CALC_TI83PCE_USB || model == CALC_TI84PCE_USB)
+	{
+		utf16 = ticonv_charset_ti_to_utf16(CALC_TI84PC_USB, src);
+
+		ti = ticonv_charset_utf16_to_ti(CALC_TI84PC, utf16);
+		ticonv_utf16_free(utf16);
+
+		dst = ticonv_varname_tokenize(CALC_TI84PC, ti, type);
 		ticonv_ti_free(ti);
 	}
 	else if (model == CALC_TI89T_USB)
@@ -859,7 +869,7 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *s
 		return NULL;
 	}
 
-	if (model == CALC_TI84P_USB || model == CALC_TI84PC_USB || model == CALC_TI83PCE_USB || model == CALC_TI84PCE_USB || model == CALC_TI82A_USB || model == CALC_TI84PT_USB)
+	if (model == CALC_TI84P_USB || model == CALC_TI82A_USB || model == CALC_TI84PT_USB)
 	{
 		ti = ticonv_varname_detokenize(CALC_TI84P, src, type);
 
@@ -867,6 +877,16 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *s
 		ticonv_varname_free(ti);
 
 		dst = ticonv_charset_utf16_to_ti(CALC_TI84P_USB, utf16);
+		ticonv_utf16_free(utf16);
+	}
+	else if (model == CALC_TI84PC_USB || model == CALC_TI83PCE_USB || model == CALC_TI84PCE_USB)
+	{
+		ti = ticonv_varname_detokenize(CALC_TI84PC, src, type);
+
+		utf16 = ticonv_charset_ti_to_utf16(CALC_TI84PC, ti);
+		ticonv_varname_free(ti);
+
+		dst = ticonv_charset_utf16_to_ti(CALC_TI84PC_USB, utf16);
 		ticonv_utf16_free(utf16);
 	}
 	else if (model == CALC_TI89T_USB)
