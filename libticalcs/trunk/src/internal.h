@@ -261,7 +261,7 @@ int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content);
 // calc_00.c
 
 int noop_is_ready (CalcHandle* handle);
-int noop_send_key (CalcHandle* handle, uint16_t key);
+int noop_send_key (CalcHandle* handle, uint32_t key);
 int noop_execute (CalcHandle* handle, VarEntry *ve, const char* args);
 int noop_recv_screen (CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap);
 int noop_get_dirlist (CalcHandle* handle, GNode** vars, GNode** apps);

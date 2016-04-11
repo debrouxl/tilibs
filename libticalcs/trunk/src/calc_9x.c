@@ -96,14 +96,15 @@ static int		is_ready	(CalcHandle* handle)
 	return ret;
 }
 
-static int		send_key	(CalcHandle* handle, uint16_t key)
+static int		send_key	(CalcHandle* handle, uint32_t key)
 {
 	int ret;
+	uint16_t status;
 
-	ret = SEND_KEY(handle, key);
+	ret = SEND_KEY(handle, (uint16_t)key);
 	if (!ret)
 	{
-		ret = RECV_ACK(handle, &key);
+		ret = RECV_ACK(handle, &status);
 
 		PAUSE(50);
 	}
@@ -111,16 +112,10 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 	return ret;
 }
 
-static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
+static int go_to_homescreen(CalcHandle * handle)
 {
-	int ret = 0;
+	int ret;
 
-	if (ve->type == TI89_APPL)
-	{
-		return ERR_VOID_FUNCTION;
-	}
-
-	// Go back to homescreen
 	PAUSE(200);
 	if (handle->model == CALC_TI89 || handle->model == CALC_TI89T)
 	{
@@ -151,23 +146,37 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 		ret = ERR_VOID_FUNCTION;
 	}
 
+	return ret;
+}
+
+static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
+{
+	int ret = 0;
+
+	if (ve->type == TI89_APPL)
+	{
+		return ERR_VOID_FUNCTION;
+	}
+
+	ret = go_to_homescreen(handle);
+
 	if (!ret)
 	{
 		unsigned int i;
 		// Launch program by remote control
 		for (i = 0; !ret && i < strlen(ve->folder); i++)
 		{
-			ret = send_key(handle, (ve->folder)[i]);
+			ret = send_key(handle, (uint32_t)(uint8_t)((ve->folder)[i]));
 		}
 
 		if (!ret && strcmp(ve->folder, ""))
 		{
-			ret = send_key(handle, '\\');
+			ret = send_key(handle, (uint32_t)'\\');
 		}
 
 		for (i = 0; !ret && i < strlen(ve->name); i++)
 		{
-			ret = send_key(handle, (ve->name)[i]);
+			ret = send_key(handle, (uint32_t)(uint8_t)((ve->name)[i]));
 		}
 
 		if (!ret)
@@ -179,7 +188,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 				{
 					for (i = 0; !ret && i < strlen(args); i++)
 					{
-						ret = send_key(handle, args[i]);
+						ret = send_key(handle, (uint32_t)(uint8_t)(args[i]));
 					}
 				}
 				if (!ret)
@@ -1366,32 +1375,8 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 static int		dump_rom_1	(CalcHandle* handle)
 {
 	int ret = 0;
-	// Go back to homescreen
-	PAUSE(200);
-	if (handle->model == CALC_TI89 || handle->model == CALC_TI89T)
-	{
-		ret = send_key(handle, KEY89_HOME);
-		if (!ret)
-		{
-			ret = send_key(handle, KEY89_CLEAR);
-			if (!ret)
-			{
-				ret = send_key(handle, KEY89_CLEAR);
-			}
-		}
-	}
-	else if (handle->model == CALC_TI92 || handle->model == CALC_TI92P || handle->model == CALC_V200)
-	{
-		ret = send_key(handle, KEY92P_CTRL + KEY92P_Q);
-		if (!ret)
-		{
-			ret = send_key(handle, KEY92P_CLEAR);
-			if (!ret)
-			{
-				ret = send_key(handle, KEY92P_CLEAR);
-			}
-		}
-	}
+
+	ret = go_to_homescreen(handle);
 	PAUSE(200);
 
 	if (!ret)
@@ -1424,7 +1409,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	// Launch program by remote control
 	for (i = 0; !ret && i < sizeof(keys) / sizeof(keys[0]); i++)
 	{
-		ret = send_key(handle, keys[i]);
+		ret = send_key(handle, (uint32_t)(keys[i]));
 	}
 	PAUSE(200);
 
@@ -1606,11 +1591,11 @@ static int		del_var_92		(CalcHandle* handle, VarRequest* vr)
 
 	for (i = 0; !ret && i < sizeof(keys) / sizeof(keys[0]); i++)
 	{
-		ret = send_key(handle, keys[i]);
+		ret = send_key(handle, (uint32_t)(keys[i]));
 	}
 	for (i = 0; !ret && i < strlen(varname); i++)
 	{
-		ret = send_key(handle, (uint16_t)(uint8_t)(varname[i]));
+		ret = send_key(handle, (uint32_t)(uint8_t)(varname[i]));
 	}
 
 	if (!ret)

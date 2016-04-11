@@ -640,7 +640,7 @@ struct _CalcFncts
 
 	int		(*is_ready)		(CalcHandle*);
 
-	int		(*send_key)		(CalcHandle*, uint16_t);
+	int		(*send_key)		(CalcHandle*, uint32_t);
 	int		(*execute)		(CalcHandle*, VarEntry*, const char*);
 
 	int		(*recv_screen)	(CalcHandle*, CalcScreenCoord*, uint8_t**);
@@ -793,7 +793,7 @@ typedef struct
 
 	TIEXPORT3 int TICALL ticalcs_calc_isready(CalcHandle *handle);
 
-	TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle *handle, uint16_t);
+	TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle *handle, uint32_t);
 	TIEXPORT3 int TICALL ticalcs_calc_execute(CalcHandle *handle, VarEntry*, const char*);
 
 	TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle *handle, CalcScreenCoord* sc, uint8_t** bitmap);

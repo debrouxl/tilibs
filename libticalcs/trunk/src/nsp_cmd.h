@@ -155,8 +155,9 @@ TIEXPORT3 int TICALL nsp_cmd_r_os_install(CalcHandle *handle);
 TIEXPORT3 int TICALL nsp_cmd_s_os_contents(CalcHandle *handle, uint32_t size, uint8_t *data);
 TIEXPORT3 int TICALL nsp_cmd_r_progress(CalcHandle *handle, uint8_t *value);
 
+TIEXPORT3 int TICALL nsp_cmd_s_key(CalcHandle *handle, uint32_t code);
 TIEXPORT3 int TICALL nsp_cmd_s_keypress_event(CalcHandle *handle, const uint8_t keycode[3]);
-// There doesn't seem to be a need for nsp_cmd_r_keypress_event.
+// There doesn't seem to be a need for nsp_cmd_r_key / nsp_cmd_r_keypress_event.
 
 #ifdef __cplusplus
 }

@@ -38,7 +38,7 @@ int noop_is_ready (CalcHandle* handle)
 	return 0;
 }
 
-int noop_send_key (CalcHandle* handle, uint16_t key)
+int noop_send_key (CalcHandle* handle, uint32_t key)
 {
 	(void)handle, (void)key;
 	return 0;

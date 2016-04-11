@@ -1025,37 +1025,38 @@ TIEXPORT3 int TICALL nsp_cmd_r_echo(CalcHandle *handle, uint32_t *size, uint8_t 
 
 /////////////----------------
 
-TIEXPORT3 int TICALL nsp_cmd_s_keypress_event(CalcHandle *handle, const uint8_t keycode[3])
+TIEXPORT3 int TICALL nsp_cmd_s_key(CalcHandle *handle, uint32_t code)
 {
 	NSPVirtualPacket * pkt1, * pkt2;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
-	VALIDATE_NONNULL(keycode);
 
-	ticalcs_info("  sending keypress event:");
+	ticalcs_info("  sending key:");
 
 	retval = nsp_session_open(handle, SID_KEYPRESSES);
 	if (!retval)
 	{
 		pkt1 = nsp_vtl_pkt_new_ex(handle, 3, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_KEYPRESSES, 0x01);
-		pkt2 = nsp_vtl_pkt_new_ex(handle, 25, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_KEYPRESSES, 0);
 
 		pkt1->data[2] = 0x80;
 		retval = nsp_send_data(handle, pkt1);
 
 		if (!retval)
 		{
+			pkt2 = nsp_vtl_pkt_new_ex(handle, 25, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_KEYPRESSES, 0);
+
 			pkt2->data[3] = 0x08;
 			pkt2->data[4] = 0x02;
-			pkt2->data[5] = keycode[0];
-			pkt2->data[7] = keycode[1];
-			pkt2->data[23] = keycode[2];
+			pkt2->data[5] = (uint8_t)(code >> 16);
+			pkt2->data[7] = (uint8_t)(code >>  8);
+			pkt2->data[23] = (uint8_t)(code & 0xFF);
 
 			retval = nsp_send_data(handle, pkt2);
+
+			nsp_vtl_pkt_del(handle, pkt2);
 		}
 
-		nsp_vtl_pkt_del(handle, pkt2);
 		nsp_vtl_pkt_del(handle, pkt1);
 
 		if (!retval)
@@ -1067,4 +1068,15 @@ TIEXPORT3 int TICALL nsp_cmd_s_keypress_event(CalcHandle *handle, const uint8_t 
 	return retval;
 }
 
-// There doesn't seem to be a need for cmd_r_keypress_event.
+TIEXPORT3 int TICALL nsp_cmd_s_keypress_event(CalcHandle *handle, const uint8_t keycode[3])
+{
+	uint32_t key;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(keycode);
+
+	key = ((uint32_t)(keycode[0]) << 16) | ((uint32_t)(keycode[1]) << 8) | (uint32_t)(keycode[2]);
+	return nsp_cmd_s_key(handle, key);
+}
+
+// There doesn't seem to be a need for cmd_r_key / cmd_r_keypress_event.

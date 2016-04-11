@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-04-05 20:44+0200\n"
+"POT-Creation-Date: 2016-04-11 17:23+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
@@ -28,72 +28,72 @@ msgstr ""
 msgid "Dummy hand-held used when no calc is set"
 msgstr ""
 
-#: src/calc_73.c:392 src/calc_84p.c:301 src/calc_8x.c:401
+#: src/calc_73.c:393 src/calc_84p.c:301 src/calc_8x.c:402
 #, c-format
 msgid "Parsing %s"
 msgstr ""
 
-#: src/calc_73.c:853
+#: src/calc_73.c:854
 msgid "Battery low, stopping flash app transfer"
 msgstr ""
 
-#: src/calc_73.c:858 src/calc_73.c:1501 src/calc_9x.c:1154 src/calc_89t.c:492
+#: src/calc_73.c:859 src/calc_73.c:1502 src/calc_9x.c:1163 src/calc_89t.c:492
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr ""
 
-#: src/calc_73.c:859 src/calc_73.c:1502 src/calc_9x.c:1155 src/calc_89t.c:493
+#: src/calc_73.c:860 src/calc_73.c:1503 src/calc_9x.c:1164 src/calc_89t.c:493
 #, c-format
 msgid "FLASH size: %i bytes."
 msgstr ""
 
-#: src/calc_73.c:1277 src/calc_84p.c:1455 src/calc_9x.c:1463 src/calc_89t.c:823
+#: src/calc_73.c:1278 src/calc_84p.c:1455 src/calc_9x.c:1448 src/calc_89t.c:823
 msgid "Setting clock..."
 msgstr ""
 
-#: src/calc_73.c:1323 src/calc_84p.c:1532 src/calc_9x.c:1507 src/calc_89t.c:902
+#: src/calc_73.c:1324 src/calc_84p.c:1532 src/calc_9x.c:1492 src/calc_89t.c:902
 msgid "Getting clock..."
 msgstr ""
 
-#: src/calc_73.c:1399 src/calc_84p.c:1593 src/calc_8x.c:1254 src/calc_9x.c:1571
-#: src/calc_9x.c:1603 src/calc_89t.c:965 src/calc_nsp.c:826
+#: src/calc_73.c:1400 src/calc_84p.c:1593 src/calc_8x.c:1255 src/calc_9x.c:1556
+#: src/calc_9x.c:1588 src/calc_89t.c:965 src/calc_nsp.c:835
 #, c-format
 msgid "Deleting %s..."
 msgstr ""
 
-#: src/calc_73.c:1473 src/calc_9x.c:1730 src/calc_9x.c:1763
+#: src/calc_73.c:1474 src/calc_9x.c:1715 src/calc_9x.c:1748
 #, c-format
 msgid "  OS: %s"
 msgstr ""
 
-#: src/calc_73.c:1474 src/calc_9x.c:1731
+#: src/calc_73.c:1475 src/calc_9x.c:1716
 #, c-format
 msgid "  BIOS: %s"
 msgstr ""
 
-#: src/calc_73.c:1475
+#: src/calc_73.c:1476
 #, c-format
 msgid "  HW: %i"
 msgstr ""
 
-#: src/calc_73.c:1476 src/calc_9x.c:1732 src/calc_9x.c:1764
+#: src/calc_73.c:1477 src/calc_9x.c:1717 src/calc_9x.c:1749
 #, c-format
 msgid "  Battery: %s"
 msgstr " Batterie: %s"
 
-#: src/calc_73.c:1476 src/type2str.c:330
+#: src/calc_73.c:1477 src/type2str.c:330
 msgid "good"
 msgstr "gut"
 
-#: src/calc_73.c:1476 src/type2str.c:330
+#: src/calc_73.c:1477 src/type2str.c:330
 msgid "low"
 msgstr "niedrig"
 
-#: src/calc_73.c:1548 src/calc_9x.c:1221
+#: src/calc_73.c:1549 src/calc_9x.c:1230
 msgid "Header sent completely."
 msgstr ""
 
-#: src/calc_73.c:1561
+#: src/calc_73.c:1562
 msgid "Receiving certificate"
 msgstr ""
 
@@ -131,48 +131,48 @@ msgstr ""
 msgid "TI-84 Plus T thru DirectLink"
 msgstr ""
 
-#: src/calc_8x.c:492 src/calc_8x.c:803
+#: src/calc_8x.c:493 src/calc_8x.c:804
 msgid "Waiting for user's action..."
 msgstr ""
 
-#: src/calc_8x.c:637
+#: src/calc_8x.c:638
 msgid "Waiting for backup..."
 msgstr ""
 
-#: src/calc_8x.c:1075
+#: src/calc_8x.c:1076
 msgid "Waiting for var(s)..."
 msgstr ""
 
-#: src/calc_9x.c:344 src/calc_9x.c:432 src/calc_9x.c:571
+#: src/calc_9x.c:353 src/calc_9x.c:441 src/calc_9x.c:580
 #, c-format
 msgid "Name: %8s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr ""
 
-#: src/calc_9x.c:377
+#: src/calc_9x.c:386
 #, c-format
 msgid "Directory listing in %8s..."
 msgstr ""
 
-#: src/calc_9x.c:440 src/calc_9x.c:595 src/calc_89t.c:249
+#: src/calc_9x.c:449 src/calc_9x.c:604 src/calc_89t.c:249
 #, c-format
 msgid "Parsing %s/%s"
 msgstr ""
 
-#: src/calc_9x.c:690
+#: src/calc_9x.c:699
 #, c-format
 msgid "Block #%2i"
 msgstr ""
 
-#: src/calc_9x.c:1633 src/calc_89t.c:1061 src/calc_nsp.c:856
+#: src/calc_9x.c:1618 src/calc_89t.c:1061 src/calc_nsp.c:865
 #, c-format
 msgid "Creating %s..."
 msgstr ""
 
-#: src/calc_9x.c:2025
+#: src/calc_9x.c:2010
 msgid "V200 Personal Learning Tool"
 msgstr ""
 
-#: src/calc_89t.c:996 src/calc_nsp.c:1025
+#: src/calc_89t.c:996 src/calc_nsp.c:1034
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr ""
@@ -186,27 +186,27 @@ msgstr ""
 msgid "TI-89 Titanium thru DirectLink"
 msgstr ""
 
-#: src/calc_nsp.c:223
+#: src/calc_nsp.c:232
 #, c-format
 msgid "Unknown calculator model with %d bpp\n"
 msgstr ""
 
-#: src/calc_nsp.c:379
+#: src/calc_nsp.c:388
 #, c-format
 msgid "Name: %s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr ""
 
-#: src/calc_nsp.c:412
+#: src/calc_nsp.c:421
 #, c-format
 msgid "Not enumerating documents in %s because it's not a folder\n"
 msgstr ""
 
-#: src/calc_nsp.c:428
+#: src/calc_nsp.c:437
 #, c-format
 msgid "Directory listing in <%s>...\n"
 msgstr ""
 
-#: src/calc_nsp.c:1048
+#: src/calc_nsp.c:1057
 msgid "Nspire thru DirectLink"
 msgstr ""
 
@@ -216,7 +216,7 @@ msgstr ""
 
 #: src/calc_xx.c:125
 #, c-format
-msgid "Sending key %04x:"
+msgid "Sending key %08x:"
 msgstr ""
 
 #: src/calc_xx.c:162

@@ -66,12 +66,12 @@ static int		is_ready	(CalcHandle* handle)
 	return ret;
 }
 
-static int		send_key	(CalcHandle* handle, uint16_t key)
+static int		send_key	(CalcHandle* handle, uint32_t key)
 {
 	int ret;
 
 	PAUSE(25);	// this pause is needed between 2 keys
-	ret = dusb_cmd_s_execute(handle, "", "", EID_KEY, "", key);
+	ret = dusb_cmd_s_execute(handle, "", "", EID_KEY, "", (uint16_t)key);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);

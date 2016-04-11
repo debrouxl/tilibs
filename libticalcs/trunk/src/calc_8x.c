@@ -86,17 +86,18 @@
 #define TI86_ROWS  64
 #define TI86_COLS  128
 
-static int		send_key	(CalcHandle* handle, uint16_t key)
+static int		send_key	(CalcHandle* handle, uint32_t key)
 {
 	int ret;
+	uint16_t status;
 
-	ret = SEND_KEY(handle, key);
+	ret = SEND_KEY(handle, (uint16_t)key);
 	if (!ret)
 	{
-		ret = RECV_ACK(handle, &key);
+		ret = RECV_ACK(handle, &status);
 		if (handle->model != CALC_TI83 && !ret)
 		{
-			ret = RECV_ACK(handle, &key);
+			ret = RECV_ACK(handle, &status);
 		}
 	}
 
@@ -139,7 +140,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 				for (i = 0; !ret && i < strlen(ve->name); i++)
 				{
 					const CalcKey *ck = ticalcs_keys_83((ve->name)[i]);
-					ret = send_key(handle, ck->normal.value);
+					ret = send_key(handle, (uint32_t)(ck->normal.value));
 				}
 
 				if (!ret)
@@ -1196,7 +1197,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 		// Launch program by remote control
 		for (i = 0; !ret && i < sizeof(keys) / sizeof(keys[0]); i++)
 		{
-			ret = send_key(handle, keys[i]);
+			ret = send_key(handle, (uint32_t)(keys[i]));
 			PAUSE(100);
 		}
 	}
@@ -1214,7 +1215,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 		// Launch program by remote control
 		for (i = 0; !ret && i < (sizeof(keys) / sizeof(keys[0])) - 1; i++)
 		{
-			ret = send_key(handle, keys[i]);
+			ret = send_key(handle, (uint32_t)(keys[i]));
 		}
 
 		if (!ret)
@@ -1258,7 +1259,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	// Input keys by remote control
 	for (i = 0; !ret && i < sizeof(keys) / sizeof(keys[0]); i++)
 	{
-		ret = send_key(handle, keys[i]);
+		ret = send_key(handle, (uint32_t)(keys[i]));
 	}
 
 	for (i = 0; !ret && i < strlen(vr->name); i++)
@@ -1267,11 +1268,11 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 		if (isdigit(c))
 		{
-			ret = send_key(handle, (uint16_t)(0x008e + c - '0'));
+			ret = send_key(handle, (uint32_t)(0x008e + c - '0'));
 		}
 		else
 		{
-			ret = send_key(handle, (uint16_t)(0x009a + c - 'A'));
+			ret = send_key(handle, (uint32_t)(0x009a + c - 'A'));
 		}
 	}
 

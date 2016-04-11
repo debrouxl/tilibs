@@ -108,7 +108,7 @@ TIEXPORT3 int TICALL ticalcs_calc_isready(CalcHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
+TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint32_t key)
 {
 	const CalcFncts *calc;
 	int ret = 0;
@@ -122,7 +122,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Sending key %04x:"), key);
+	ticalcs_info(_("Sending key %08x:"), key);
 	handle->busy = 1;
 	if (calc->send_key)
 	{

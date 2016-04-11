@@ -68,11 +68,11 @@ static int		is_ready	(CalcHandle* handle)
 	return ret;
 }
 
-static int		send_key_noack	(CalcHandle* handle, uint16_t key)
+static int		send_key_noack	(CalcHandle* handle, uint32_t key)
 {
 	int ret;
 
-	ret = dusb_cmd_s_execute(handle, "", "", EID_KEY, "", key);
+	ret = dusb_cmd_s_execute(handle, "", "", EID_KEY, "", (uint16_t)key);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_delay_ack(handle);
@@ -81,7 +81,7 @@ static int		send_key_noack	(CalcHandle* handle, uint16_t key)
 	return ret;
 }
 
-static int		send_key	(CalcHandle* handle, uint16_t key)
+static int		send_key	(CalcHandle* handle, uint32_t key)
 {
 	int ret;
 
@@ -378,13 +378,13 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	// enter manual link mode
 	for (i = 0; i < sizeof(keys) / sizeof(keys[0]) - 1; i++)
 	{
-		ret = send_key(handle, keys[i]);
+		ret = send_key(handle, (uint32_t)(keys[i]));
 		if (ret)
 		{
 			goto end;
 		}
 	}
-	ret = send_key_noack(handle, keys[i]);
+	ret = send_key_noack(handle, (uint32_t)(keys[i]));
 	if (ret)
 	{
 		goto end;
@@ -1338,7 +1338,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 			PAUSE(200);
 			for (i = 0; i < sizeof(keys) / sizeof(keys[0]); i++)
 			{
-				ret = send_key(handle, keys[i]);
+				ret = send_key(handle, (uint32_t)(keys[i]));
 				if (ret)
 				{
 					goto end;

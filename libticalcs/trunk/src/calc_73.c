@@ -95,14 +95,15 @@ static int		is_ready	(CalcHandle* handle)
 	return ret;
 }
 
-static int		send_key	(CalcHandle* handle, uint16_t key)
+static int		send_key	(CalcHandle* handle, uint32_t key)
 {
 	int ret;
+	uint16_t status;
 
-	ret = SEND_KEY(handle, key);
+	ret = SEND_KEY(handle, (uint16_t)key);
 	if (!ret)
 	{
-		ret = RECV_ACK(handle, &key);	// when the key is received
+		ret = RECV_ACK(handle, &status);	// when the key is received
 		if (!ret)
 		{
 			ret = RECV_ACK(handle, NULL);	// after it completes the resulting action
@@ -149,7 +150,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 				for (i = 0; !ret && i < strlen(ve->name); i++)
 				{
 					const CalcKey *ck = ticalcs_keys_83p((ve->name)[i]);
-					ret = send_key(handle, ck->normal.value);
+					ret = send_key(handle, (uint32_t)(ck->normal.value));
 				}
 
 				if (!ret)
@@ -1200,7 +1201,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	PAUSE(200);
 	for (i = 0; !ret && i < nkeys - 1; i++)
 	{
-		ret = send_key(handle, keys[i]);
+		ret = send_key(handle, (uint32_t)(keys[i]));
 		PAUSE(100);
 	}
 

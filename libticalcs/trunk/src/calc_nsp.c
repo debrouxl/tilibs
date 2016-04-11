@@ -196,6 +196,15 @@ static int		is_ready	(CalcHandle* handle)
 	return ret;
 }
 
+static int		send_key	(CalcHandle* handle, uint32_t key)
+{
+	int ret;
+
+	ret = nsp_cmd_s_key(handle, key);
+
+	return ret;
+}
+
 // Forward declaration
 static int		get_version	(CalcHandle* handle, CalcInfos* infos);
 
@@ -1080,7 +1089,7 @@ const CalcFncts calc_nsp =
 	 "2P1L", /* send_all_vars_backup */
 	 "2P1L"  /* recv_all_vars_backup */ },
 	&is_ready,
-	&noop_send_key,
+	&send_key,
 	&noop_execute,
 	&recv_screen,
 	&get_dirlist,
