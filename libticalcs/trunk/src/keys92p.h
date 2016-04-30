@@ -24,7 +24,6 @@
 
 // Keys codes of the TI92/TI92+
 
-
 #define KEY92P_CR     13
 #define KEY92P_ENTER  13
 #define KEY92P_SPACE  32

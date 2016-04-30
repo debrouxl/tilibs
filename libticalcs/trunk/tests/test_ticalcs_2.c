@@ -40,6 +40,7 @@
 #include "../src/nsp_cmd.h"
 #include "../src/cmdz80.h"
 #include "../src/dusb_rpkt.h"
+#include "../src/keysnsp.h"
 
 #undef VERSION
 #define VERSION "Test program"
@@ -567,32 +568,32 @@ static int probe_calc(CalcHandle *h)
 
 static int nsp_send_key(CalcHandle *h)
 {
-	static const uint8_t HOME[] = {0x00, 0xFD, 0x00};
+	//static const uint8_t HOME[] = {0x00, 0xFD, 0x00};
 	static const uint8_t A[] = {97, 102, 0};
-	static const uint8_t ZERO[] = {48, 80, 0};
+	//static const uint8_t ZERO[] = {48, 80, 0};
 	static const uint8_t ONE[] = {49, 115, 0};
-	static const uint8_t TWO[] = {50, 83, 0};
+	//static const uint8_t TWO[] = {50, 83, 0};
 	static const uint8_t THREE[] = {51, 51, 0};
-	static const uint8_t FOUR[] = {52, 114, 0};
+	//static const uint8_t FOUR[] = {52, 114, 0};
 	static const uint8_t FIVE[] = {53, 82, 0};
-	static const uint8_t SIX[] = {54, 50, 0};
+	//static const uint8_t SIX[] = {54, 50, 0};
 	static const uint8_t SEVEN[] = {55, 113, 0};
-	static const uint8_t EIGHT[] = {56, 81, 0};
+	//static const uint8_t EIGHT[] = {56, 81, 0};
 	static const uint8_t NINE[] = {57, 49, 0};
 
-	nsp_cmd_s_keypress_event(h, HOME);
+	ticalcs_calc_send_key(h, KEYNSP_HOME);
 	nsp_cmd_s_keypress_event(h, A);
-	nsp_cmd_s_keypress_event(h, ZERO);
+	ticalcs_calc_send_key(h, KEYNSP_ZERO);
 	nsp_cmd_s_keypress_event(h, ONE);
-	nsp_cmd_s_keypress_event(h, TWO);
+	ticalcs_calc_send_key(h, KEYNSP_TWO);
 	nsp_cmd_s_keypress_event(h, THREE);
-	nsp_cmd_s_keypress_event(h, FOUR);
+	ticalcs_calc_send_key(h, KEYNSP_FOUR);
 	nsp_cmd_s_keypress_event(h, FIVE);
-	nsp_cmd_s_keypress_event(h, SIX);
+	ticalcs_calc_send_key(h, KEYNSP_SIX);
 	nsp_cmd_s_keypress_event(h, SEVEN);
-	nsp_cmd_s_keypress_event(h, EIGHT);
+	ticalcs_calc_send_key(h, KEYNSP_EIGHT);
 	nsp_cmd_s_keypress_event(h, NINE);
-//	nsp_cmd_s_keypress_event(h, HOME);
+	ticalcs_calc_send_key(h, KEYNSP_HOME);
 
 	return 0;
 }
@@ -878,7 +879,7 @@ static struct
 	{ "New folder", new_folder },
 	{ "Get version", get_version },
 	{ "Probe calc", probe_calc },
-	{ "Nspire-specific send key", nsp_send_key },
+	{ "Nspire-specific and generic send key", nsp_send_key },
 	{ "83+-family-specific memory dump", ti83pfamily_dump },
 	{ "83+-family-specific enable key echo", ti83pfamily_eke },
 	{ "83+-family-specific disable key echo", ti83pfamily_dke },
