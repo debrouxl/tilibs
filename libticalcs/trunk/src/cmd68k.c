@@ -60,6 +60,14 @@ TIEXPORT3 uint8_t TICALL ti68k_handle_to_dbus_mid(CalcHandle * handle)
 	return 0;
 }
 
+static inline int ti68k_send_simple_cmd(CalcHandle * handle, uint8_t target, uint8_t cmd, const char * cmdname, uint16_t length, const uint8_t* data)
+{
+	VALIDATE_HANDLE(handle);
+
+	ticalcs_info(" PC->TI: %s", cmdname);
+	return dbus_send(handle, target, cmd, length, data);
+}
+
 static const uint8_t dbus_errors[] = { 0x03, 0x25, 0x1e, 0x21, 0x07, 0x24, 0x08 };
 
 static int err_code(uint8_t *data)
@@ -115,10 +123,7 @@ TIEXPORT3 int TICALL ti68k_send_VAR(CalcHandle* handle, uint32_t varsize, uint8_
 
 TIEXPORT3 int TICALL ti68k_send_CTS(CalcHandle* handle, uint8_t target)
 {
-	VALIDATE_HANDLE(handle);
-
-	ticalcs_info(" PC->TI: CTS");
-	return dbus_send(handle, target, CMD_CTS, 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, CMD_CTS, "CTS", 2, NULL);
 }
 
 TIEXPORT3 int TICALL ti68k_send_XDP(CalcHandle* handle, uint32_t length, const uint8_t * data, uint8_t target)
@@ -149,42 +154,27 @@ TIEXPORT3 int TICALL ti92_send_SKP(CalcHandle* handle, uint8_t rej_code)
 
 TIEXPORT3 int TICALL ti68k_send_ACK(CalcHandle* handle, uint8_t target)
 {
-	VALIDATE_HANDLE(handle);
-
-	ticalcs_info(" PC->TI: ACK");
-	return dbus_send(handle, target, CMD_ACK, 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, CMD_ACK, "ACK", 2, NULL);
 }
 
 TIEXPORT3 int TICALL ti68k_send_ERR(CalcHandle* handle, uint8_t target)
 {
-	VALIDATE_HANDLE(handle);
-
-	ticalcs_info(" PC->TI: ERR");
-	return dbus_send(handle, target, CMD_ERR, 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, CMD_ERR, "ERR", 2, NULL);
 }
 
 TIEXPORT3 int TICALL ti68k_send_RDY(CalcHandle* handle, uint8_t target)
 {
-	VALIDATE_HANDLE(handle);
-
-	ticalcs_info(" PC->TI: RDY?");
-	return dbus_send(handle, target, CMD_RDY, 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, CMD_RDY, "RDY", 2, NULL);
 }
 
 TIEXPORT3 int TICALL ti68k_send_SCR(CalcHandle* handle, uint8_t target)
 {
-	VALIDATE_HANDLE(handle);
-
-	ticalcs_info(" PC->TI: SCR");
-	return dbus_send(handle, target, CMD_SCR, 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, CMD_SCR, "SCR", 2, NULL);
 }
 
 TIEXPORT3 int TICALL ti68k_send_CNT(CalcHandle* handle, uint8_t target)
 {
-	VALIDATE_HANDLE(handle);
-
-	ticalcs_info(" PC->TI: CNT");
-	return dbus_send(handle, target, CMD_CNT, 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, CMD_CNT, "CNT", 2, NULL);
 }
 
 TIEXPORT3 int TICALL ti68k_send_KEY(CalcHandle* handle, uint16_t scancode, uint8_t target)
@@ -199,10 +189,7 @@ TIEXPORT3 int TICALL ti68k_send_KEY(CalcHandle* handle, uint16_t scancode, uint8
 
 TIEXPORT3 int TICALL ti68k_send_EOT(CalcHandle* handle, uint8_t target)
 {
-	VALIDATE_HANDLE(handle);
-
-	ticalcs_info(" PC->TI: EOT");
-	return dbus_send(handle, target, CMD_EOT, 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, CMD_EOT, "EOT", 2, NULL);
 }
 
 TIEXPORT3 int TICALL ti89_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
@@ -342,10 +329,7 @@ TIEXPORT3 int TICALL ti89_send_RTS2(CalcHandle* handle, uint32_t varsize, uint8_
 
 TIEXPORT3 int TICALL ti89_send_VER(CalcHandle* handle)
 {
-	VALIDATE_HANDLE(handle);
-
-	ticalcs_info(" PC->TI: VER");
-	return dbus_send(handle, ti68k_handle_to_dbus_mid(handle), CMD_VER, 2, NULL);
+	return ti68k_send_simple_cmd(handle, ti68k_handle_to_dbus_mid(handle), CMD_VER, "VER", 2, NULL);
 }
 
 TIEXPORT3 int TICALL ti89_send_DEL(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
