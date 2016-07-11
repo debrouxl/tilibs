@@ -50,20 +50,20 @@
 #include "keys83.h"
 #include "keys86.h"
 
-#define SEND_KEY ((handle->model < CALC_TI85) ? ti82_send_KEY : ti85_send_KEY)
-#define SEND_SCR ((handle->model < CALC_TI85) ? ti82_send_SCR : ti85_send_SCR)
-#define SEND_ACK ((handle->model < CALC_TI85) ? ti82_send_ACK : ti85_send_ACK)
-#define SEND_VAR ((handle->model < CALC_TI85) ? ti82_send_VAR : ti85_send_VAR)
-#define SEND_XDP ((handle->model < CALC_TI85) ? ti82_send_XDP : ti85_send_XDP)
-#define SEND_REQ ((handle->model < CALC_TI85) ? ti82_send_REQ : ti85_send_REQ)
-#define SEND_RTS ((handle->model < CALC_TI85) ? ti82_send_RTS : ti85_send_RTS)
-#define SEND_CTS ((handle->model < CALC_TI85) ? ti82_send_CTS : ti85_send_CTS)
-#define SEND_EOT ((handle->model < CALC_TI85) ? ti82_send_EOT : ti85_send_EOT)
+#define SEND_KEY(handle, scancode) ((handle->model < CALC_TI85) ? ti82_send_KEY(handle, scancode) : ti85_send_KEY(handle, scancode))
+#define SEND_SCR(handle) ((handle->model < CALC_TI85) ? ti82_send_SCR(handle) : ti85_send_SCR(handle))
+#define SEND_ACK(handle) ((handle->model < CALC_TI85) ? ti82_send_ACK(handle) : ti85_send_ACK(handle))
+#define SEND_VAR(handle, varsize, vartype, varname) ((handle->model < CALC_TI85) ? ti82_send_VAR(handle, varsize, vartype, varname) : ti85_send_VAR(handle, varsize, vartype, varname))
+#define SEND_XDP(handle, length, data) ((handle->model < CALC_TI85) ? ti82_send_XDP(handle, length, data) : ti85_send_XDP(handle, length, data))
+#define SEND_REQ(handle, varsize, vartype, varname) ((handle->model < CALC_TI85) ? ti82_send_REQ(handle, varsize, vartype, varname) : ti85_send_REQ(handle, varsize, vartype, varname))
+#define SEND_RTS(handle, varsize, vartype, varname) ((handle->model < CALC_TI85) ? ti82_send_RTS(handle, varsize, vartype, varname) : ti85_send_RTS(handle, varsize, vartype, varname))
+#define SEND_CTS(handle) ((handle->model < CALC_TI85) ? ti82_send_CTS(handle) : ti85_send_CTS(handle))
+#define SEND_EOT(handle) ((handle->model < CALC_TI85) ? ti82_send_EOT(handle) : ti85_send_EOT(handle))
 
-#define RECV_ACK ((handle->model < CALC_TI85) ? ti82_recv_ACK : ti85_recv_ACK)
-#define RECV_VAR ((handle->model < CALC_TI85) ? ti82_recv_VAR : ti85_recv_VAR)
-#define RECV_XDP ((handle->model < CALC_TI85) ? ti82_recv_XDP : ti85_recv_XDP)
-#define RECV_SKP ((handle->model < CALC_TI85) ? ti82_recv_SKP : ti85_recv_SKP)
+#define RECV_ACK(handle, status) ((handle->model < CALC_TI85) ? ti82_recv_ACK(handle, status) : ti85_recv_ACK(handle, status))
+#define RECV_VAR(handle, varsize, vartype, varname) ((handle->model < CALC_TI85) ? ti82_recv_VAR(handle, varsize, vartype, varname) : ti85_recv_VAR(handle, varsize, vartype, varname))
+#define RECV_XDP(handle, length, data) ((handle->model < CALC_TI85) ? ti82_recv_XDP(handle, length, data) : ti85_recv_XDP(handle, length, data))
+#define RECV_SKP(handle, rej_code) ((handle->model < CALC_TI85) ? ti82_recv_SKP(handle, rej_code) : ti85_recv_SKP(handle, rej_code))
 #define RECV_ERR ti82_recv_ERR
 
 // Screen coordinates of the TI-80

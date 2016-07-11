@@ -46,28 +46,28 @@
 #include "keys89.h"
 #include "keys92p.h"
 
-#define SEND_RDY (handle->model != CALC_TI92 ? ti89_send_RDY : ti92_send_RDY)
-#define SEND_KEY (handle->model != CALC_TI92 ? ti89_send_KEY : ti92_send_KEY)
-#define SEND_SCR (handle->model != CALC_TI92 ? ti89_send_SCR : ti92_send_SCR)
-#define SEND_ACK (handle->model != CALC_TI92 ? ti89_send_ACK : ti92_send_ACK)
-#define SEND_VAR (handle->model != CALC_TI92 ? ti89_send_VAR : ti92_send_VAR)
-#define SEND_XDP (handle->model != CALC_TI92 ? ti89_send_XDP : ti92_send_XDP)
-#define SEND_REQ (handle->model != CALC_TI92 ? ti89_send_REQ : ti92_send_REQ)
-#define SEND_RTS (handle->model != CALC_TI92 ? ti89_send_RTS : ti92_send_RTS)
+#define SEND_RDY(handle) (handle->model != CALC_TI92 ? ti89_send_RDY(handle) : ti92_send_RDY(handle))
+#define SEND_KEY(handle, scancode) (handle->model != CALC_TI92 ? ti89_send_KEY(handle, scancode) : ti92_send_KEY(handle, scancode))
+#define SEND_SCR(handle) (handle->model != CALC_TI92 ? ti89_send_SCR(handle) : ti92_send_SCR(handle))
+#define SEND_ACK(handle) (handle->model != CALC_TI92 ? ti89_send_ACK(handle) : ti92_send_ACK(handle))
+#define SEND_VAR(handle, varsize, vartype, varname) (handle->model != CALC_TI92 ? ti89_send_VAR(handle, varsize, vartype, varname) : ti92_send_VAR(handle, varsize, vartype, varname))
+#define SEND_XDP(handle, length, data) (handle->model != CALC_TI92 ? ti89_send_XDP(handle, length, data) : ti92_send_XDP(handle, length, data))
+#define SEND_REQ(handle, varsize, vartype, varname) (handle->model != CALC_TI92 ? ti89_send_REQ(handle, varsize, vartype, varname) : ti92_send_REQ(handle, varsize, vartype, varname))
+#define SEND_RTS(handle, varsize, vartype, varname) (handle->model != CALC_TI92 ? ti89_send_RTS(handle, varsize, vartype, varname) : ti92_send_RTS(handle, varsize, vartype, varname))
 #define SEND_RTS2 ti89_send_RTS2
-#define SEND_CTS (handle->model != CALC_TI92 ? ti89_send_CTS : ti92_send_CTS)
-#define SEND_CNT (handle->model != CALC_TI92 ? ti89_send_CNT : ti92_send_CNT)
+#define SEND_CTS(handle) (handle->model != CALC_TI92 ? ti89_send_CTS(handle) : ti92_send_CTS(handle))
+#define SEND_CNT(handle) (handle->model != CALC_TI92 ? ti89_send_CNT(handle) : ti92_send_CNT(handle))
 #define SEND_DEL ti89_send_DEL
 #define SEND_VER ti89_send_VER
-#define SEND_EOT (handle->model != CALC_TI92 ? ti89_send_EOT : ti92_send_EOT)
+#define SEND_EOT(handle) (handle->model != CALC_TI92 ? ti89_send_EOT(handle) : ti92_send_EOT(handle))
 
-#define RECV_ACK (handle->model != CALC_TI92 ? ti89_recv_ACK : ti92_recv_ACK)
-#define RECV_VAR (handle->model != CALC_TI92 ? ti89_recv_VAR : ti92_recv_VAR)
-#define RECV_XDP (handle->model != CALC_TI92 ? ti89_recv_XDP : ti92_recv_XDP)
-#define RECV_CTS (handle->model != CALC_TI92 ? ti89_recv_CTS : ti92_recv_CTS)
-#define RECV_SKP (handle->model != CALC_TI92 ? ti89_recv_SKP : ti92_recv_SKP)
-#define RECV_CNT (handle->model != CALC_TI92 ? ti89_recv_CNT : ti92_recv_CNT)
-#define RECV_EOT (handle->model != CALC_TI92 ? ti89_recv_EOT : ti92_recv_EOT)
+#define RECV_ACK(handle, status) (handle->model != CALC_TI92 ? ti89_recv_ACK(handle, status) : ti92_recv_ACK(handle, status))
+#define RECV_VAR(handle, varsize, vartype, varname) (handle->model != CALC_TI92 ? ti89_recv_VAR(handle, varsize, vartype, varname) : ti92_recv_VAR(handle, varsize, vartype, varname))
+#define RECV_XDP(handle, length, data) (handle->model != CALC_TI92 ? ti89_recv_XDP(handle, length, data) : ti92_recv_XDP(handle, length, data))
+#define RECV_CTS(handle) (handle->model != CALC_TI92 ? ti89_recv_CTS(handle) : ti92_recv_CTS(handle))
+#define RECV_SKP(handle, rej_code) (handle->model != CALC_TI92 ? ti89_recv_SKP(handle, rej_code) : ti92_recv_SKP(handle, rej_code))
+#define RECV_CNT(handle) (handle->model != CALC_TI92 ? ti89_recv_CNT(handle) : ti92_recv_CNT(handle))
+#define RECV_EOT(handle) (handle->model != CALC_TI92 ? ti89_recv_EOT(handle) : ti92_recv_EOT(handle))
 
 // Screen coordinates of the TI-89 / TI-92+
 #define TI89_ROWS          128

@@ -592,7 +592,6 @@ static void torture_cmd68k(void)
 {
 // cmd68k.c
     PRINTF(ti89_send_VAR, INT, NULL, 0, 0, (void *)0x12345678);
-    PRINTF(ti89_send_VAR, INT, (void *)0x12345678, 0, 0, NULL);
     PRINTF(ti89_send_CTS, INT, NULL);
     PRINTF(ti89_send_XDP, INT, NULL, 0, (void *)0x12345678);
     PRINTF(ti89_send_SKP, INT, NULL, 0);
