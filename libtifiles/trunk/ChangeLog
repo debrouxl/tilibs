@@ -3,6 +3,16 @@ SubVersion: $Id$
 Log of changes (libtifiles):
 
 - xx/xx/201x, version 1.1.7: debrouxl
+	- add comments containing data field offsets in files, so that they're easier to look up next time.
+	- update file types.
+	- add version field to backup files.
+	- add initial support for 84+T model, fix several bugs in 82A support.
+	- quit using deprecated libticonv and libarchive functions; fix three potential nullptr derefs (on invalid input) pointed by Coverity.
+	- better handling of non-ASCII application names for 84+ family.
+	- in the torture tests, use __LINE__ instead of a counter, and remove some of the blank lines. Suggested by Benjamin Moody.
+	- leverage ticonv_varname_to_utf8_sn() to simplify a significant number of repeated code snippets in calc_*.c; use ticonv_varname_to_utf8_sn() instead of ticonv_varname_to_utf8_s().
+	- add and rewrite functions related to calc model categories and protocol support; replace a number of g_free() calls by wrapper of g_free() calls; add torture tests for the new functions.
+	- libtifiles: improve filetype support for the 82A, which has .82u extension for OS upgrades; all known TI-eZ80 FlashApps use the .8ek extension, so remove the two occurrences of .8pk; fix two 73 file extensions.
 	- inline our trivial logging functions, which enables checking arguments wrt. format (without putting format annotations, that is), fix several bugs uncovered by this change; remove all remaining occurrences of TRYC from libticables.
 	- add Travis CI integration.
 	- replace deprecated AC_PROG_LIBTOOL with LT_INIT.

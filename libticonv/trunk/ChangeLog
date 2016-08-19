@@ -3,6 +3,12 @@ SubVersion: $Id$
 Log of changes (libticonv):
 
 - xx/xx/201x, version 1.1.5: debrouxl
+	- in ticonv_varname_{to,from}_tifile, use CALC_TI84PC / CALC_TI84PC_USB instead of CALC_TI84P / CALC_TI84P_USB for CALC_TI84PC_USB, CALC_TI83PCE_USB and CALC_TI84PCE_USB. Suggested by Benjamin Moody, to pave the way for potential future color 84+ vs. monochrome 84+ changes.
+	- add initial support for 84+T model, fix several bugs in 82A support.
+	- add ticonv_varname_to_filename_sn(), ticonv_varname_to_tifile_sn(), ticonv_varname_from_tifile_sn(), and the corresponding torture tests; update documentation comments.
+	- in the torture tests, use __LINE__ instead of a counter, and remove some of the blank lines. Suggested by Benjamin Moody.
+	- add ticonv_varname_to_utf8_sn(), and the corresponding torture tests.
+	- add and rewrite functions related to calc model categories and protocol support; replace a number of g_free() calls by wrapper of g_free() calls; add torture tests for the new functions.
 	- add Travis CI integration.
 	- replace deprecated AC_PROG_LIBTOOL with LT_INIT.
 	- import several functions from libti* clients (tilp, titools). Most functions made and/or suggested by Benjamin Moody.

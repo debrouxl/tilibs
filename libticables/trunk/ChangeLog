@@ -3,6 +3,12 @@ SubVersion: $Id$
 Log of changes (libticables):
 
 - xx/xx/201x, version 1.3.5: debrouxl
+	- don't declare a struct serial_struct instance if the header defining its type is not available. Fixes a build error under Alpine Linux.
+	- add initial support for 84+T model, fix several bugs in 82A support.
+	- in the torture tests, use __LINE__ instead of a counter, and remove some of the blank lines. Suggested by Benjamin Moody.
+	- use ticables_cable_get_device_info to detect model.
+	- add API for retrieving device info from an open cable handle.
+	- add empty implementations of a TCP client and TCP server cable pair; in ticables_probing_finish(), free all indices allocated by ticables_probing_do().
 	- inline our trivial logging functions, which enables checking arguments wrt. format (without putting format annotations, that is), fix several bugs uncovered by this change; remove all remaining occurrences of TRYC from libticables.
 	- add Travis CI integration.
 	- replace AC_PROG_LIBTOOL with LT_INIT.

@@ -3,6 +3,45 @@ SubVersion: $Id$
 Log of changes (libticalcs):
 
 - xx/xx/201x, version 1.1.9: debrouxl
+	- factor out more code in cmd{z80,68k}.c, thanks to a new helper function.
+	- expose a bunch of tiz80_* and ti68k_* DBUS functions, which both raises flexibility and allows rewriting their callers as macros, factoring a bunch of (quasi-)duplicated code.
+	- add Nspire key definitions file, use a mixture of generic and Nspire-specific send key in test_ticalcs_2.
+	- widen key codes argument of ticalcs_calc_send_key() and CalcFncts.send_key() from 16 to 32 bits, so that ticalcs_calc_send_key() can be used for Nspire keypresses.
+	- synchronize send_var and send_var_ns implementations, fixing e.g. missing entry->action == ACT_SKIP checks or a missing pbar update; prevent nullptr derefs and OOB writes upon specially crafted FileContent instances, which might be passed directly to libticalcs, though libtifiles is not supposed to generate such invalid structs (and probably doesn't under normal conditions, given lack of bug reports).
+	- allocate a second 65542-byte buffer for DBUS in CalcHandle, and use it at several places. Fixes TI-68k/DBUS transfer issues reported by Oliver "Boscop" Hoog.
+	- add a no-probe mode to test_ticalcs_2, so that e.g. dissection is available without a connected calculator.
+	- fix a couple UMRs, factor out a bit of code related to sending TI-Z80 DBUS backups, print decimal size at more places.
+	- move more globals to _CalcHandle for thread safety / independence of cable instances, which requires a bunch of API changes for passing CalcHandle *. Additionally, make a number of API parameters unsigned and fix the induced warnings.
+	- export Nspire RLE-compressed screen uncompression as ticalcs_screen_nspire_rle_uncompress() and 84+CSE RLE-compressed screen uncompression as ticalcs_screen_84pcse_rle_uncompress().
+	- remove all occurrences of TRYF from calc_73.c, which completes, at long last, the TRYF removal work :)
+	- remove all occurrences of TRYF from calc_9x.c, fix leaks and memory errors.
+	- unify calc_89.c and calc_92.c to calc_9x.c.
+	- fix VarEntry memory leaks, some of them pointed by Coverity.
+	- fixes and improvements mainly in NSP code.
+	- replace {snprintf,strncpy} + explicit termination by usage of new ticalcs_{slprintf,strlcpy} macros, as I should have done earlier (suggested by Benjamin Moody); include tiny pause.h and macros.h from internal.h; don't include ticonv.h explicitly, ticalcs.h depends on it through tifiles.h.
+	- correct format of 84+ DUSB remote keycode packets.
+	- fix TI-73 and 83+ keycode definitions, and add new keycodes.
+	- unify calc_80.c, calc_83.c and calc_86.c to calc_8x.c. Remove all occurrences of TRYF from the merged file.
+	- unify calc_85.c and calc_86.c. Remove all occurrences of TRYF from the merged file.
+	- unify calc_82.c and calc_85.c, which are the closest calc_*.c files, as we knew. Remove all occurrences of TRYF from the merged file.
+	- in calc_*.c files for DBUS calculators, use macros for calls to cmd*.c files, so that it's easier to spot the differences, for later unification of (a subset of) the code. Squelch several occurrences of diff noise. Non-Functional Change.
+	- support sending backups to 84+ / 84+CSE / 82A / 84+T DUSB.
+	- support sending/receiving backup version number for 83+ DBUS.
+	- for Z80 DBUS, allow embedded NULs in variable names.
+	- fix integer conversions when parsing Z80 backup headers.
+	- expand the documentation of ticalcs_calc_isready. Suggested by Benjamin Moody.
+	- use correct length when receiving apps from 84+ DUSB.
+	- add initial support for 84+T model, fix several bugs in 82A support.
+	- in the torture tests, use __LINE__ instead of a counter, and remove some of the blank lines. Suggested by Benjamin Moody.
+	- in ticalcs_device_info_to_model(), use a saner default for unexpected variant for the TI-(e)Z80 USB cable, and constify the argument. Suggested by Benjamin Moody.
+	- leverage ticonv_varname_to_utf8_sn() to simplify a significant number of repeated code snippets in calc_*.c; use ticonv_varname_to_utf8_sn() instead of ticonv_varname_to_utf8_s().
+	- treat all unknown rejection codes as errors.
+	- handle version byte for DUSB transfers to 84+ series.
+	- handle version byte for DBUS transfers to 83+/84+/84+CSE.
+	- add 83PCE / 84+CE ROM dumping. Calculator-side dumper made by jacobly.
+	- add and rewrite functions related to calc model categories and protocol support; replace a number of g_free() calls by wrapper of g_free() calls; add torture tests for the new functions.
+	- split the bulk of dbus_recv() to dbus_recv_header() + dbus_recv_data(); export those and add torture tests for them; remove some long-dead code in dbus_pkt.c, remove dbus_recv_2(). Indirectly suggested by a discussion with SirCmpwn about the computer side of KnightOS's linking code; also a very old suggestion by Benjamin Moody.
+	- kick out more occurrences of TRYF, is_ready + send_key + execute + recv_screen edition; factor out some code common to get_dirlist() functions; shorten the "length" argument of ti{89,92}_recv_XDP(); fix some bugs pointed by Benjamin Moody.
 	- inline our trivial logging functions, which enables checking arguments wrt. format (without putting format annotations, that is), fix several bugs uncovered by this change; remove all remaining occurrences of TRYC from libticables.
 	- add FTS_NONSILENT in CalcFeatures; advertise it for the 82, 85, 89/92+/89T(DBUS)/V200 and 92.
 	- add Travis CI integration.
