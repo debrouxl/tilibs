@@ -44,7 +44,6 @@ void ti9x_content_free_backup(Ti9xBackup *content);
 void ti9x_content_free_flash(Ti9xFlash *content);
 
 // displaying
-int ti9x_content_display_regular(Ti9xRegular *content);
 int ti9x_content_display_backup(Ti9xBackup *content);
 int ti9x_content_display_flash(Ti9xFlash *content);
 

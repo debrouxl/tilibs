@@ -36,7 +36,6 @@ void tnsp_content_free_regular(FileContent *content);
 void tnsp_content_free_flash(FlashContent *content);
 
 // displaying
-int tnsp_content_display_regular(FileContent *content);
 int tnsp_content_display_flash(FlashContent *content);
 
 // reading

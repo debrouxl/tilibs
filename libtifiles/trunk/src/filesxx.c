@@ -20,7 +20,7 @@
  */
 
 /*
-  This unit contains a TI file independant API
+  This unit contains a TI file independent API
 */
 
 #include <glib.h>
@@ -35,6 +35,9 @@
 #include "files9x.h"
 #include "filesnsp.h"
 #include "logging.h"
+
+// Whether to print detailed information about FileContent, BackupContent, FlashContent instances throughout their lifecycle.
+//#define TRACE_CONTENT_INSTANCES
 
 /**
  * tifiles_content_create_regular:
@@ -59,6 +62,11 @@ TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 		content->comment[sizeof(content->comment) - 1] = 0;
 	}
 
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_content_create_regular: %p", content);
+	tifiles_file_display_regular(content);
+#endif
+
 	return content;
 }
 
@@ -67,11 +75,16 @@ TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
  *
  * Free the whole content of a #FileContent structure.
  *
- * Return value: none.
+ * Return value: 0.
  **/
 TIEXPORT2 int TICALL tifiles_content_delete_regular(FileContent *content)
 {
 	unsigned int i;
+
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_content_delete_regular: %p", content);
+	tifiles_file_display_regular(content);
+#endif
 
 	if (content != NULL)
 	{
@@ -97,6 +110,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_regular(FileContent *content)
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
+
 	return 0;
 }
 
@@ -135,6 +149,7 @@ TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
 			}
 			else
 			{
+				dup->num_entries = 0;
 				tifiles_content_delete_regular(dup);
 				dup = NULL;
 			}
@@ -144,6 +159,12 @@ TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
+
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_content_dup_regular: %p", dup);
+	tifiles_file_display_regular(dup);
+#endif
+
 	return dup;
 }
 
@@ -169,20 +190,26 @@ TIEXPORT2 int tifiles_file_read_regular(const char *filename, FileContent *conte
 
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
+	{
 		return ti8x_file_read_regular(filename, (Ti8xRegular *)content);
+	}
 	else 
 #endif
 #if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
+	{
 		return ti9x_file_read_regular(filename, (Ti9xRegular *)content);
+	}
 	else
 #endif
 	if (content->model == CALC_NSPIRE)
+	{
 		return tnsp_file_read_regular(filename, (FileContent *)content);
+	}
 	else
+	{
 		return ERR_BAD_CALC;
-
-	return 0;
+	}
 }
 
 /**
@@ -209,32 +236,42 @@ TIEXPORT2 int tifiles_file_write_regular(const char *filename, FileContent *cont
 
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
+	{
 		return ti8x_file_write_regular(filename, (Ti8xRegular *)content, real_fname);
+	}
 	else 
 #endif
 #if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
+	{
 		return ti9x_file_write_regular(filename, (Ti9xRegular *)content, real_fname);
+	}
 	else
 #endif
 	if (content->model == CALC_NSPIRE)
+	{
 		return tnsp_file_write_regular(filename, (FileContent *)content, real_fname);
+	}
 	else
+	{
 		return ERR_BAD_CALC;
-
-	return 0;
+	}
 }
 
 /**
  * tifiles_file_display_regular:
- * @content: the file content to show.
+ * @content: the file content to show, a FileContent pointer.
  *
- * Display file content information.
+ * Display file content information contained in a FileContent structure.
  *
  * Return value: an error code, 0 otherwise.
  **/
 TIEXPORT2 int TICALL tifiles_file_display_regular(FileContent *content)
 {
+	unsigned int i;
+	char trans[257];
+	int model_supports_folder = 1;
+
 	if (content == NULL)
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
@@ -243,18 +280,66 @@ TIEXPORT2 int TICALL tifiles_file_display_regular(FileContent *content)
 
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
-		return ti8x_content_display_regular(content);
+	{
+		tifiles_info("FileContent for TI-8x: %p", content);
+		model_supports_folder = 0;
+	}
 	else 
 #endif
 #if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
-		return ti9x_content_display_regular(content);
+	{
+		tifiles_info("FileContent for TI-9x: %p", content);
+	}
 	else
 #endif
 	if (content->model == CALC_NSPIRE)
-		return tnsp_content_display_regular(content);
+	{
+		tifiles_info("FileContent for TI-Nspire: %p", content);
+	}
 	else
+	{
 		return ERR_BAD_CALC;
+	}
+
+	tifiles_info("Model:             %02X (%u)", content->model, content->model);
+	tifiles_info("Signature:         %s", tifiles_calctype2signature(content->model));
+	tifiles_info("Comment:           %s", content->comment);
+	if (model_supports_folder)
+	{
+		tifiles_info("Default folder:    %s", content->default_folder);
+	}
+	tifiles_info("Number of entries: %u", content->num_entries);
+	tifiles_info("Entries:           %p", content->entries);
+
+	if (content->entries != NULL)
+	{
+		for (i = 0; i < content->num_entries; i++)
+		{
+			VarEntry * ve = content->entries[i];
+			if (ve != NULL)
+			{
+				tifiles_info("Entry #%u %p", i, ve);
+				if (model_supports_folder)
+				{
+					tifiles_info("  folder:      %s", ve->folder);
+				}
+				tifiles_info("  name:        %s", ticonv_varname_to_utf8_sn(content->model, ve->name, trans, sizeof(trans), ve->type));
+				tifiles_info("  type:        %02X (%s)", ve->type, tifiles_vartype2string(content->model, ve->type));
+				tifiles_info("  attr:        %s", tifiles_attribute_to_string(ve->attr));
+				tifiles_info("  version:     %02X (%u)", ve->version, ve->version);
+				tifiles_info("  length:      %04X (%u)", ve->size, ve->size);
+				tifiles_info("  data:        %p", ve->data);
+			}
+			else
+			{
+				tifiles_critical("%s: an entry in content is NULL", __FUNCTION__);
+			}
+		}
+	}
+
+	tifiles_info("Checksum:      %04X (%u)", content->checksum, content->checksum);
+	tifiles_info("Dest model:    %02X (%u)", content->model_dst, content->model_dst);
 
 	return 0;
 }
@@ -282,6 +367,11 @@ TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 		content->comment[sizeof(content->comment) - 1] = 0;
 	}
 
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_content_create_backup: %p", content);
+	tifiles_file_display_backup(content);
+#endif
+
 	return content;
 }
 
@@ -294,10 +384,17 @@ TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
  **/
 TIEXPORT2 int TICALL tifiles_content_delete_backup(BackupContent *content)
 {
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_content_delete_backup: %p", content);
+	tifiles_file_display_backup(content);
+#endif
+
 	if (content != NULL)
 	{
 		if (tifiles_calc_is_ti9x(content->model))
+		{
 			g_free(content->data_part);
+		}
 		else if (tifiles_calc_is_ti8x(content->model))
 		{
 			g_free(content->data_part1);
@@ -338,17 +435,19 @@ TIEXPORT2 int tifiles_file_read_backup(const char *filename, BackupContent *cont
 
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
+	{
 		return ti8x_file_read_backup(filename, content);
+	}
 	else
 #endif 
 #if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
+	{
 		return ti9x_file_read_backup(filename, content);
+	}
 	else
 #endif
 	return ERR_BAD_CALC;
-
-	return 0;
 }
 
 /**
@@ -370,17 +469,19 @@ TIEXPORT2 int tifiles_file_write_backup(const char *filename, BackupContent *con
 
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
+	{
 		return ti8x_file_write_backup(filename, content);
+	}
 	else
 #endif 
 #if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
+	{
 		return ti9x_file_write_backup(filename, content);
+	}
 	else
 #endif
 	return ERR_BAD_CALC;
-
-	return 0;
 }
 
 /**
@@ -401,17 +502,19 @@ TIEXPORT2 int TICALL tifiles_file_display_backup(BackupContent *content)
 
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
+	{
 		return ti8x_content_display_backup(content);
+	}
 	else 
 #endif
 #if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
+	{
 		return ti9x_content_display_backup(content);
+	}
 	else
 #endif
 	return ERR_BAD_CALC;
-
-	return 0;
 }
 
 /**
@@ -450,6 +553,11 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 		}
 	}
 
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_content_create_flash: %p", content);
+	tifiles_file_display_flash(content);
+#endif
+
 	return content;
 }
 
@@ -458,41 +566,44 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
  *
  * Free the whole content of a #FlashContent structure.
  *
- * Return value: none.
+ * Return value: always 0.
  **/
 TIEXPORT2 int TICALL tifiles_content_delete_flash(FlashContent *content)
 {
-	unsigned int i;
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_content_delete_flash: %p", content);
+	tifiles_file_display_flash(content);
+#endif
+
 	if (content != NULL)
 	{
 #if !defined(DISABLE_TI8X) && !defined(DISABLE_TI9X)
+		FlashContent *ptr;
+		unsigned int i;
+
+		g_free(content->data_part);
+
+		ptr = content->next;
+		while (ptr != NULL)
 		{
-			FlashContent *ptr;
+			FlashContent *next = ptr->next;
 
-			g_free(content->data_part);
+			g_free(ptr->data_part);
+			g_free(ptr);
 
-			ptr = content->next;
-			while (ptr != NULL) 
+			for (i = 0; i < content->num_pages; i++)
 			{
-				FlashContent *next = ptr->next;
-
-				g_free(ptr->data_part);
-				g_free(ptr);
-
-				for (i = 0; i < content->num_pages; i++)
-				{
-					g_free(content->pages[i]->data);
-					g_free(content->pages[i]);
-				}
-				g_free(content->pages);
-
-				ptr = next;
+				g_free(content->pages[i]->data);
+				g_free(content->pages[i]);
 			}
+			g_free(content->pages);
 
-			g_free(content);
+			ptr = next;
 		}
+
+		g_free(content);
 #else
-	return ERR_BAD_CALC;
+		return ERR_BAD_CALC;
 #endif
 	}
 	else
@@ -501,96 +612,6 @@ TIEXPORT2 int TICALL tifiles_content_delete_flash(FlashContent *content)
 	}
 
 	return 0;
-}
-
-/**
- * tifiles_file_read_flash:
- * @filename: name of FLASH file to open.
- * @content: where to store the file content.
- *
- * Load the FLASH file into a FlashContent structure.
- *
- * Structure content must be freed with #tifiles_content_delete_flash when
- * no longer used.
- *
- * Return value: an error code, 0 otherwise.
- **/
-TIEXPORT2 int tifiles_file_read_flash(const char *filename, FlashContent *content)
-{
-	if (filename == NULL || content == NULL)
-	{
-		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
-		return ERR_INVALID_FILE;
-	}
-
-#if !defined(DISABLE_TI8X)
-	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
-		return ti8x_file_read_flash(filename, content);
-	else 
-#endif
-#if !defined(DISABLE_TI9X)
-	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)) || tifiles_file_is_tib(filename))
-		return ti9x_file_read_flash(filename, content);
-	else
-#endif
-	if (content->model == CALC_NSPIRE)
-		return tnsp_file_read_flash(filename, content);
-	else
-		return ERR_BAD_CALC;
-
-	return 0;
-}
-
-/**
- * tifiles_file_write_flash2:
- * @filename: name of flash file where to write or NULL.
- * @content: the file content to write.
- * @real_fname: pointer address or NULL. Must be freed if needed when no longer needed.
- *
- * Write a FLASH content to a file. If filename is set to NULL, the function build a filename 
- * from appname and allocates resulting filename in %real_fname.
- * %filename and %real_fname can be NULL but not both !
- *
- * %real_fname must be freed when no longer used.
- *
- * Return value: an error code, 0 otherwise.
- **/
-TIEXPORT2 int tifiles_file_write_flash2(const char *filename, FlashContent *content, char **real_fname)
-{
-	if (content == NULL || (filename == NULL && real_fname == NULL))
-	{
-		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
-		return ERR_INVALID_FILE;
-	}
-
-#if !defined(DISABLE_TI8X)
-	if (tifiles_calc_is_ti8x(content->model))
-		return ti8x_file_write_flash(filename, content, real_fname);
-	else 
-#endif
-#if !defined(DISABLE_TI9X)
-	if (tifiles_calc_is_ti9x(content->model))
-		return ti9x_file_write_flash(filename, content, real_fname);
-	else
-#endif
-	return ERR_BAD_CALC;
-
-	return 0;
-}
-
-/**
- * tifiles_file_write_flash:
- * @filename: name of flash file where to write or NULL.
- * @content: the file content to write.
- *
- * Write a FLASH content to a file. If filename is set to NULL, the function build a filename 
- * from appname.
- *
- * Return value: an error code, 0 otherwise.
- **/
-TIEXPORT2 int tifiles_file_write_flash(const char *filename, FlashContent *content)
-{
-	return tifiles_file_write_flash2(filename, content, NULL);
 }
 
 /**
@@ -614,7 +635,7 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 			{
 				memcpy(q, p, sizeof(FlashContent));
 
-				// TI9x part
+				// TI-68k or TI-eZ80 part
 				if (tifiles_calc_is_ti9x(content->model) || ticonv_model_is_tiez80(content->model))
 				{
 					if (p->data_part)
@@ -624,7 +645,7 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 					}
 				}
 
-				// TI8x part
+				// TI-Z80 part
 				if (tifiles_calc_is_ti8x(content->model))
 				{
 					unsigned int i;
@@ -653,7 +674,110 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_content_dup_flash: %p", dup);
+	tifiles_file_display_flash(dup);
+#endif
+
 	return dup;
+}
+
+/**
+ * tifiles_file_read_flash:
+ * @filename: name of FLASH file to open.
+ * @content: where to store the file content.
+ *
+ * Load the FLASH file into a FlashContent structure.
+ *
+ * Structure content must be freed with #tifiles_content_delete_flash when
+ * no longer used.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT2 int tifiles_file_read_flash(const char *filename, FlashContent *content)
+{
+	if (filename == NULL || content == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
+#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
+	{
+		return ti8x_file_read_flash(filename, content);
+	}
+	else 
+#endif
+#if !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)) || tifiles_file_is_tib(filename))
+	{
+		return ti9x_file_read_flash(filename, content);
+	}
+	else
+#endif
+	if (content->model == CALC_NSPIRE)
+	{
+		return tnsp_file_read_flash(filename, content);
+	}
+	else
+	{
+		return ERR_BAD_CALC;
+	}
+}
+
+/**
+ * tifiles_file_write_flash2:
+ * @filename: name of flash file where to write or NULL.
+ * @content: the file content to write.
+ * @real_fname: pointer address or NULL. Must be freed if needed when no longer needed.
+ *
+ * Write a FLASH content to a file. If filename is set to NULL, the function build a filename 
+ * from appname and allocates resulting filename in %real_fname.
+ * %filename and %real_fname can be NULL but not both !
+ *
+ * %real_fname must be freed when no longer used.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT2 int tifiles_file_write_flash2(const char *filename, FlashContent *content, char **real_fname)
+{
+	if (content == NULL || (filename == NULL && real_fname == NULL))
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
+#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(content->model))
+	{
+		return ti8x_file_write_flash(filename, content, real_fname);
+	}
+	else 
+#endif
+#if !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(content->model))
+	{
+		return ti9x_file_write_flash(filename, content, real_fname);
+	}
+	else
+#endif
+	return ERR_BAD_CALC;
+}
+
+/**
+ * tifiles_file_write_flash:
+ * @filename: name of flash file where to write or NULL.
+ * @content: the file content to write.
+ *
+ * Write a FLASH content to a file. If filename is set to NULL, the function build a filename 
+ * from appname.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT2 int tifiles_file_write_flash(const char *filename, FlashContent *content)
+{
+	return tifiles_file_write_flash2(filename, content, NULL);
 }
 
 /**
@@ -674,17 +798,19 @@ TIEXPORT2 int TICALL tifiles_file_display_flash(FlashContent *content)
 
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
+	{
 		return ti8x_content_display_flash(content);
+	}
 	else 
 #endif
 #if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
+	{
 		return ti9x_content_display_flash(content);
+	}
 	else
 #endif
 	return ERR_BAD_CALC;
-
-	return 0;
 }
 
 /**
@@ -698,20 +824,24 @@ TIEXPORT2 int TICALL tifiles_file_display_flash(FlashContent *content)
 TIEXPORT2 int TICALL tifiles_file_display(const char *filename)
 {
 	if (tifiles_file_is_tigroup(filename))
+	{
 		return tifiles_file_display_tigroup(filename);
+	}
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
+	{
 		return ti8x_file_display(filename);
+	}
 	else
 #endif
 #if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
+	{
 		return ti9x_file_display(filename);
+	}
 	else
 #endif
 	return ERR_BAD_CALC;
-
-	return 0;
 }
 
 /*****************/
@@ -737,7 +867,7 @@ TIEXPORT2 int TICALL tifiles_file_display(const char *filename)
  * This function may be difficult to understand but it avoids to use trees (and
  * linked list) which will require an implementation.
  *
- * Return value: a 2-dimensions allocated integer array. Must be freed with g_free when
+ * Return value: a 2-dimensions allocated integer array. Must be freed with tifiles_free_table_of_entries when
  * no longer used.
  **/
 TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, unsigned int *nfolders)
@@ -753,32 +883,37 @@ TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, unsigned i
 		return NULL;
 	}
 
-	// determine how many folders we have
-	for (i = 0; i < content->num_entries; i++) 
+	if (content->entries != NULL)
 	{
-		VarEntry *entry = content->entries[i];
-
-		// scan for an existing folder entry
-		for (ptr = folder_list; *ptr != NULL; ptr++) 
+		// determine how many folders we have
+		for (i = 0; i < content->num_entries; i++)
 		{
-			if (!strcmp(*ptr, entry->folder)) 
+			VarEntry *entry = content->entries[i];
+
+			// scan for an existing folder entry
+			for (ptr = folder_list; *ptr != NULL; ptr++)
 			{
-				//printf("break: %s\n", entry->folder);
-				break;
+				if (!strcmp(*ptr, entry->folder))
+				{
+					//printf("break: %s\n", entry->folder);
+					break;
+				}
+			}
+			if (*ptr == NULL)
+			{		// add new folder entry
+				folder_list[num_folders] = (char *) g_malloc0(257);
+				//printf("%i: adding '%s'\n", num_folders, entry->folder);
+				strncpy(folder_list[num_folders], entry->folder, sizeof(folder_list[num_folders]) - 1);
+				folder_list[num_folders][sizeof(folder_list[num_folders]) - 1] = 0;
+				folder_list[num_folders + 1] = NULL;
+				num_folders++;
 			}
 		}
-		if (*ptr == NULL) 
-		{		// add new folder entry
-			folder_list[num_folders] = (char *) g_malloc0(257);
-			//printf("%i: adding '%s'\n", num_folders, entry->folder);
-			strncpy(folder_list[num_folders], entry->folder, sizeof(folder_list[num_folders]) - 1);
-			folder_list[num_folders][sizeof(folder_list[num_folders]) - 1] = 0;
-			folder_list[num_folders + 1] = NULL;
+		if (tifiles_calc_is_ti8x(content->model))
+		{
 			num_folders++;
 		}
 	}
-	if (tifiles_calc_is_ti8x(content->model))
-		num_folders++;
 	if (nfolders != NULL)
 	{
 		*nfolders = num_folders;
@@ -794,11 +929,11 @@ TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, unsigned i
 	{
 		int k;
 
-		for (i = 0, k = 0; i < content->num_entries; i++) 
+		for (i = 0, k = 0; i < content->num_entries; i++)
 		{
 			VarEntry *entry = content->entries[i];
 
-			if (!strcmp(folder_list[j], entry->folder)) 
+			if (!strcmp(folder_list[j], entry->folder))
 			{
 				table[j] = (int *) g_realloc(table[j], (k + 2) * sizeof(int));
 				table[j][k] = i;

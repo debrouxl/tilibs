@@ -45,6 +45,9 @@
 #include "error.h"
 #include "rwfile.h"
 
+// Whether to print detailed information about TigEntry, TigContent instances throughout their lifecycle.
+//#define TRACE_CONTENT_INSTANCES
+
 #define WRITEBUFFERSIZE (8192)
 
 /**
@@ -84,6 +87,10 @@ TIEXPORT2 TigEntry* TICALL tifiles_te_create(const char *filename, FileClass typ
 		tifiles_critical("%s: invalid filename", __FUNCTION__);
 	}
 
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_te_create: %p", entry);
+	tifiles_te_display(entry);
+#endif
 
 	return entry;
 }
@@ -94,10 +101,15 @@ TIEXPORT2 TigEntry* TICALL tifiles_te_create(const char *filename, FileClass typ
  *
  * Destroy a #TigEntry structure as well as fields.
  *
- * Return value: none.
+ * Return value: always 0.
  **/
 TIEXPORT2 int TICALL tifiles_te_delete(TigEntry* entry)
 {
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_te_delete: %p", entry);
+	tifiles_te_display(entry);
+#endif
+
 	if (entry != NULL)
 	{
 		g_free(entry->filename);
@@ -116,6 +128,41 @@ TIEXPORT2 int TICALL tifiles_te_delete(TigEntry* entry)
 	else
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
+	}
+
+	return 0;
+}
+
+/**
+ * tifiles_te_display:
+ * @entry: a #TigEntry structure pointer.
+ *
+ * Display a #TigEntry structure's contents.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT2 int TICALL tifiles_te_display(TigEntry* entry)
+{
+	if (entry == NULL)
+	{
+		tifiles_critical("%s(NULL)", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
+	tifiles_info("Filename:          %s", entry->filename);
+	tifiles_info("File class:        %04X (%u)", entry->type, entry->type);
+
+	if (entry->type == TIFILE_FLASH)
+	{
+		tifiles_file_display_flash(entry->content.flash);
+	}
+	else if (entry->type & TIFILE_REGULAR)
+	{
+		tifiles_file_display_regular(entry->content.regular);
+	}
+	else
+	{
+		tifiles_info("Data:              %p", entry->content.data);
 	}
 
 	return 0;
@@ -166,6 +213,10 @@ TIEXPORT2 TigEntry**	TICALL tifiles_te_resize_array(TigEntry** array, unsigned i
 TIEXPORT2 void			TICALL tifiles_te_delete_array(TigEntry** array)
 {
 	TigEntry** ptr;
+
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_te_delete_array: %p", array);
+#endif
 
 	if (array != NULL)
 	{
@@ -274,6 +325,12 @@ TIEXPORT2 int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return -1;
 	}
+
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_content_del_te: %p %p", content, te);
+	tifiles_file_display_tigcontent(content);
+	tifiles_te_display(te);
+#endif
 
 	// Search for entry
 	for (i = 0; i < content->n_vars && (te->type & TIFILE_REGULAR); i++)
@@ -462,6 +519,11 @@ TIEXPORT2 int TICALL tifiles_tigroup_del_file(TigEntry *entry, const char *filen
 		return -1;
 	}
 
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_tigroup_del_file: %p", entry);
+	tifiles_te_display(entry);
+#endif
+
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);
 	ret = tifiles_file_read_tigroup(filename, content);
 	if (!ret)
@@ -578,6 +640,11 @@ TIEXPORT2 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, Flash
 
 	*dst_content = content;
 
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_tigroup_contents: %p", content);
+	tifiles_file_display_tigcontent(content);
+#endif
+
 	return 0;
 }
 
@@ -605,6 +672,11 @@ TIEXPORT2 int TICALL tifiles_untigroup_content(TigContent *src_content, FileCont
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return -1;
 	}
+
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_untigroup_content: %p", src_content);
+	tifiles_file_display_tigcontent(src_content);
+#endif
 
 	// allocate an array of FileContent/FlashContent structures (NULL terminated)
 	dst1 = (FileContent **)g_malloc0((src->n_vars+1) * sizeof(FileContent *));
@@ -872,6 +944,11 @@ TIEXPORT2 TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, uns
 		content->app_entries = (TigEntry **)g_malloc0(sizeof(TigEntry *));
 	}
 
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_content_create_tigroup: %p", content);
+	tifiles_file_display_tigcontent(content);
+#endif
+
 	return content;
 }
 
@@ -885,6 +962,11 @@ TIEXPORT2 TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, uns
 TIEXPORT2 int TICALL tifiles_content_delete_tigroup(TigContent *content)
 {
 	unsigned int i;
+
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_content_delete_tigroup: %p", content);
+	tifiles_file_display_tigcontent(content);
+#endif
 
 	if (content != NULL)
 	{
@@ -1091,6 +1173,11 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 		g_free(fname);
 	}
 
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_file_read_tigroup: %p", content);
+	tifiles_file_display_tigcontent(content);
+#endif
+
 	// Close
 tfrt_exit:
 	archive_read_free(arc);
@@ -1210,6 +1297,11 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return -1;
 	}
+
+#ifdef TRACE_CONTENT_INSTANCES
+	tifiles_info("tifiles_file_write_tigroup: %p", content);
+	tifiles_file_display_tigcontent(content);
+#endif
 
 	// Open ZIP archive
 	tigf = g_fopen(filename, "wb");
@@ -1364,5 +1456,54 @@ TIEXPORT2 int TICALL tifiles_file_display_tigroup(const char *filename)
 
 	archive_read_free(arc);
 	fclose(tigf);
+	return 0;
+}
+
+/**
+ * tifiles_file_display_tigcontent:
+ * @content: the tigroup content to show, TigContent pointer.
+ *
+ * Display tigroup information contained in a TigContent structure.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT2 int TICALL tifiles_file_display_tigcontent(TigContent *content)
+{
+	unsigned int i;
+
+	if (content == NULL)
+	{
+		tifiles_critical("%s(NULL)", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
+	tifiles_info("Model:             %02X (%u)", content->model, content->model);
+	tifiles_info("Signature:         %s", tifiles_calctype2signature(content->model));
+	tifiles_info("model_dst:         %02X (%u)", content->model_dst, content->model_dst);
+	tifiles_info("Comment:           %s", content->comment);
+	tifiles_info("Compression level: %d", content->comp_level);
+
+	tifiles_info("Number of vars:    %u", content->n_vars);
+	tifiles_info("Var entries:       %p", content->var_entries);
+
+	if (content->var_entries != NULL)
+	{
+		for (i = 0; i < content->n_vars; i++)
+		{
+			tifiles_te_display(content->var_entries[i]);
+		}
+	}
+
+	tifiles_info("Number of apps:    %u", content->n_apps);
+	tifiles_info("Apps entries:      %p", content->app_entries);
+
+	if (content->app_entries != NULL)
+	{
+		for (i = 0; i < content->n_apps; i++)
+		{
+			tifiles_te_display(content->app_entries[i]);
+		}
+	}
+
 	return 0;
 }

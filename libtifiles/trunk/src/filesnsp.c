@@ -167,7 +167,7 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	f = g_fopen(filename, "rb");
 	if (f == NULL)
 	{
-		tifiles_info("Unable to open this file: %s\n", filename);
+		tifiles_info("Unable to open this file: %s", filename);
 		ret = ERR_FILE_OPEN;
 		goto tfrf2;
 	}
@@ -347,52 +347,6 @@ tfwr:  // release on exit
 /**************/
 
 /**
- * tnsp_content_display_regular:
- * @content: a FileContent structure.
- *
- * Display fields of a FileContent structure.
- *
- * Return value: an error code, 0 otherwise.
- **/
-int tnsp_content_display_regular(FileContent *content)
-{
-	unsigned int i;
-	char trans[257];
-
-	if (content == NULL)
-	{
-		tifiles_critical("%s(NULL)", __FUNCTION__);
-		return ERR_INVALID_FILE;
-	}
-
-	tifiles_info("Signature:         %s", tifiles_calctype2signature(content->model));
-	tifiles_info("Comment:           %s", content->comment);
-	tifiles_info("Default folder:    %s", content->default_folder);
-	tifiles_info("Number of entries: %u", content->num_entries);
-
-	for (i = 0; i < content->num_entries; i++) 
-	{
-		if (content->entries[i] != NULL)
-		{
-			tifiles_info("Entry #%u", i);
-			tifiles_info("  folder:    %s", content->entries[i]->folder);
-			tifiles_info("  name:      %s", ticonv_varname_to_utf8_sn(content->model, content->entries[i]->name, trans, sizeof(trans), content->entries[i]->type));
-			tifiles_info("  type:      %02X (%s)", content->entries[i]->type, tifiles_vartype2string(content->model, content->entries[i]->type));
-			tifiles_info("  attr:      %s", tifiles_attribute_to_string(content->entries[i]->attr));
-			tifiles_info("  length:    %04X (%u)", content->entries[i]->size, content->entries[i]->size);
-		}
-		else
-		{
-			tifiles_critical("%s: an entry in content is NULL", __FUNCTION__);
-		}
-	}
-
-	tifiles_info("Checksum:    %04X (%u) ", content->checksum, content->checksum);
-
-	return 0;
-}
-
-/**
  * tnsp_content_display_flash:
  * @content: a FlashContent structure.
  *
@@ -410,15 +364,22 @@ int tnsp_content_display_flash(FlashContent *content)
 		return ERR_INVALID_FILE;
 	}
 
-	tifiles_info("Signature:      %s", tifiles_calctype2signature(ptr->model));
-	tifiles_info("Revision:       %i.%i", ptr->revision_major, ptr->revision_minor);
-	tifiles_info("Flags:          %02X", ptr->flags);
-	tifiles_info("Object type:    %02X", ptr->object_type);
-	tifiles_info("Date:           %02X/%02X/%02X%02X", ptr->revision_day, ptr->revision_month, ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
-	tifiles_info("Name:           %s", ptr->name);
-	tifiles_info("Device type:    %s", ptr->device_type == DEVICE_TYPE_89 ? "ti89" : "ti92+");
-	tifiles_info("Data type:      OS data");
-	tifiles_info("Length:         %08X (%i)\n", ptr->data_length, ptr->data_length);
+	for (ptr = content; ptr != NULL; ptr = ptr->next)
+	{
+		tifiles_info("FlashContent for TI-Nspire: %p", ptr);
+		tifiles_info("Model:           %02X (%u)", ptr->model, ptr->model);
+		tifiles_info("Signature:       %s", tifiles_calctype2signature(ptr->model));
+		tifiles_info("model_dst:       %02X (%u)", ptr->model_dst, ptr->model_dst);
+		tifiles_info("Revision:        %u.%u", ptr->revision_major, ptr->revision_minor);
+		tifiles_info("Flags:           %02X", ptr->flags);
+		tifiles_info("Object type:     %02X", ptr->object_type);
+		tifiles_info("Date:            %02X/%02X/%02X%02X", ptr->revision_day, ptr->revision_month, ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
+		tifiles_info("Name:            %s", ptr->name);
+		tifiles_info("Data type:       OS data");
+		tifiles_info("Length:          %08X (%i)", ptr->data_length, ptr->data_length);
+		tifiles_info("Data part:       %p", ptr->data_part);
+		tifiles_info("Next:            %p", ptr->next);
+	}
 
 	return 0;
 }
@@ -453,7 +414,7 @@ int tnsp_file_display(const char *filename)
 		ret = tnsp_file_read_regular(filename, content1);
 		if (!ret)
 		{
-			tnsp_content_display_regular(content1);
+			tifiles_file_display_regular(content1);
 			tifiles_content_delete_regular(content1);
 		}
 	}

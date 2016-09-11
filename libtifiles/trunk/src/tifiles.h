@@ -105,12 +105,12 @@ typedef enum
 
 /**
  * VarEntry:
- * @folder: name of folder (TI9x only) or ""
+ * @folder: name of folder (TI-68k, Nspire) or ""
  * @name: name of variable (raw on-calc encoding)
  * @type: vartype ID
  * @attr: TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
  * @version: version compatibility level (TI83+/84+ only)
- * @size: size of data (uint16_t for TI8x)
+ * @size: size of data (uint16_t for TI-Z80, TI-eZ80)
  * @data: pure data
  * @action: used by ticalcs library (must be set to 0)
  *
@@ -133,7 +133,7 @@ typedef struct
 /**
  * FileContent:
  * @model: calculator model
- * @default_folder: name of the default folder (TI9x only)
+ * @default_folder: name of the default folder (TI-68k)
  * @comment: comment embedded in file (like "Single file received by TiLP")
  * @num_entries: number of variables stored after
  * @entries: a NULL-terminated array of #TiVarEntry structures
@@ -151,8 +151,8 @@ typedef struct
 {
 	CalcModel		model;
 
-	char			default_folder[FLDNAME_MAX];	// TI9x only
-	char			comment[43];					// Ti8x: 42 max, Ti9x: 40 max
+	char			default_folder[FLDNAME_MAX];	// TI-68k only
+	char			comment[43];					// TI-Z80, TI-eZ80: 42 max; TI-68k: 40 max; TI-Nspire: N/A
 
 	unsigned int	num_entries;
 	VarEntry**	entries;
@@ -174,64 +174,33 @@ typedef struct
 {
 	CalcModel model;
 
-	char		comment[43];	// 41 on TI9x
+	char		comment[43];	// 41 on TI-68k
 
 	char		rom_version[9];	// TI92 only
-	uint16_t	mem_address;	// TI8x only
+	uint16_t	mem_address;	// TI-Z80 only
 
 	uint8_t	type;
-	uint8_t version;			// TI8x only
+	uint8_t version;			// TI-Z80, TI-eZ80
 
-	uint32_t	data_length;	// TI9x only
+	uint32_t	data_length;	// TI-68k only
 	uint8_t*	data_part;
 
-	uint16_t	data_length1;	// TI8x only
+	uint16_t	data_length1;	// TI-Z80 only
 	uint8_t*	data_part1;
 
-	uint16_t	data_length2;	// TI8x only
+	uint16_t	data_length2;	// TI-Z80 only
 	uint8_t*	data_part2;
 
-	uint16_t	data_length3;	// TI8x only
+	uint16_t	data_length3;	// TI-Z80 only
 	uint8_t*	data_part3;
 
-	uint16_t	data_length4;	// TI86 only
+	uint16_t	data_length4;	// TI-86 only
 	uint8_t*	data_part4;
 
 	uint16_t	checksum;
 } BackupContent;
 
 #define FLASH_PAGE_SIZE	16384
-
-/**
- * FlashHeader:
- * @revision_major:
- * @revision_minor:
- * @flags:
- * @object_type:
- * @revision_day:
- * @revision_month:
- * @revision_year: 
- * @name: name of FLASH app or "basecode" for OS or '' for certificate
- * @device_type: a device ID (TI89: 0x88, TI92+:0x98, ...)
- * @data_type: var type ID (app, os, certificate, ...)
- * @data_length: length of data part
- *
- * A generic structure used to store the header before data of a FLASH file.
- **/
-typedef struct 
-{
-	uint8_t		revision_major;
-	uint8_t		revision_minor;
-	uint8_t		flags;
-	uint8_t		object_type;
-	uint8_t		revision_day;
-	uint8_t		revision_month;
-	uint16_t		revision_year;
-	char			name[VARNAME_MAX];
-	uint8_t		device_type;
-	uint8_t		data_type;
-	uint32_t		data_length;
-} FlashHeader;
 
 /**
  * FlashPage:
@@ -241,7 +210,7 @@ typedef struct
  * @size: length of pure data (up to 16384 bytes)
  * @data: pure FLASH data.
  *
- * A generic structure used to store the content of a TI8x memory page for FLASH.
+ * A generic structure used to store the content of a TI-Z80 memory page for FLASH.
  **/
 typedef struct 
 {
@@ -265,11 +234,11 @@ typedef struct
  * @name: name of FLASH app or OS
  * @device_type: a device ID
  * @data_type: a type ID
- * @hw_id: hardware ID (used on TI9x only, 0 otherwise)
+ * @hw_id: hardware ID (used on TI-68k only, 0 otherwise)
  * @data_length: length of pure data
- * @data_part: pure FLASH data (TI9x only) or license or certificate
- * @num_pages: number of FLASH pages (TI8x only)
- * @pages: NULL-terminated array of FLASH pages (TI8x only)
+ * @data_part: pure FLASH data (TI-68k, TI-eZ80) or license or certificate
+ * @num_pages: number of FLASH pages (TI-Z80 only)
+ * @pages: NULL-terminated array of FLASH pages (TI-Z80 only)
  * @next: pointer to next structure (linked list of contents)
  *
  * A generic structure used to store the content of a FLASH file (os or app).
@@ -294,11 +263,11 @@ struct _FlashContent
 	uint8_t		hw_id;
 	uint32_t		data_length;
 
-	uint8_t*		data_part;	// TI9x only
-	unsigned int			num_pages;	// TI8x only
-	FlashPage**	pages;		// TI8x only
+	uint8_t*		data_part;	// TI-68k and TI-eZ80 FlashApps.
+	unsigned int			num_pages;	// TI-Z80 only
+	FlashPage**	pages;		// TI-Z80 only
 
-	FlashContent*	next;		// TI9x only
+	FlashContent*	next;		// TI-68k only
 };
 
 typedef struct
@@ -498,7 +467,8 @@ extern "C" {
 
 	TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content);
 	TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content);
-	TIEXPORT2 int TICALL tifiles_file_display_tigroup(const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_display_tigroup(const char *filename); // Should have been e.g. tifiles_file_display_tigfile.
+	TIEXPORT2 int TICALL tifiles_file_display_tigcontent(TigContent *content); // Should have been tifiles_file_display_tigroup, for consistency.
 
 	// tigroup.c -> grouped.c
 	TIEXPORT2 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **src_contents2, TigContent **dst_content);
@@ -517,6 +487,7 @@ extern "C" {
 	// tigroup.c -> ve_fp.c
 	TIEXPORT2 TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type, CalcModel model);
 	TIEXPORT2 int		  TICALL tifiles_te_delete(TigEntry* entry);
+	TIEXPORT2 int		  TICALL tifiles_te_display(TigEntry* entry);
 
 	TIEXPORT2 TigEntry**	TICALL tifiles_te_create_array(unsigned int nelts);
 	TIEXPORT2 TigEntry**	TICALL tifiles_te_resize_array(TigEntry**, unsigned int nelts);

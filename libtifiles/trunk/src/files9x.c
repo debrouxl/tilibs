@@ -405,7 +405,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	f = g_fopen(filename, "rb");
 	if (f == NULL) 
 	{
-		tifiles_info("Unable to open this file: %s\n", filename);
+		tifiles_info("Unable to open this file: %s", filename);
 		ret = ERR_FILE_OPEN;
 		goto tfrf2;
 	}  
@@ -872,52 +872,6 @@ tfwf:	// release on exit
 /**************/
 
 /**
- * ti9x_content_display_regular:
- * @content: a Ti9xRegular structure.
- *
- * Display fields of a Ti9xRegular structure.
- *
- * Return value: an error code, 0 otherwise.
- **/
-int ti9x_content_display_regular(Ti9xRegular *content)
-{
-	unsigned int i;
-	char trans[18];
-
-	if (content == NULL)
-	{
-		tifiles_critical("%s(NULL)", __FUNCTION__);
-		return ERR_INVALID_FILE;
-	}
-
-	tifiles_info("Signature:         %s", tifiles_calctype2signature(content->model));
-	tifiles_info("Comment:           %s", content->comment);
-	tifiles_info("Default folder:    %s", content->default_folder);
-	tifiles_info("Number of entries: %u", content->num_entries);
-
-	for (i = 0; i < content->num_entries; i++)
-	{
-		if (content->entries[i] != NULL)
-		{
-			tifiles_info("Entry #%u", i);
-			tifiles_info("  folder:    %s", content->entries[i]->folder);
-			tifiles_info("  name:      %s", ticonv_varname_to_utf8_sn(content->model, content->entries[i]->name, trans, sizeof(trans), content->entries[i]->type));
-			tifiles_info("  type:      %02X (%s)", content->entries[i]->type, tifiles_vartype2string(content->model, content->entries[i]->type));
-			tifiles_info("  attr:      %s", tifiles_attribute_to_string(content->entries[i]->attr));
-			tifiles_info("  length:    %04X (%u)", content->entries[i]->size, content->entries[i]->size);
-		}
-		else
-		{
-			tifiles_critical("%s: an entry in content is NULL", __FUNCTION__);
-		}
-	}
-
-	tifiles_info("Checksum:    %04X (%u) ", content->checksum, content->checksum);
-
-	return 0;
-}
-
-/**
  * ti9x_content_display_backup:
  * @content: a Ti9xBackup structure.
  *
@@ -933,13 +887,17 @@ int ti9x_content_display_backup(Ti9xBackup *content)
 		return ERR_INVALID_FILE;
 	}
 
-	tifiles_info("signature:      %s", tifiles_calctype2signature(content->model));
-	tifiles_info("comment:        %s", content->comment);
+	tifiles_info("BackupContent for TI-9x: %p", content);
+	tifiles_info("Model:          %02X (%u)", content->model, content->model);
+	tifiles_info("Signature:      %s", tifiles_calctype2signature(content->model));
+	tifiles_info("Comment:        %s", content->comment);
 	tifiles_info("ROM version:    %s", content->rom_version);
-	tifiles_info("type:           %02X (%s)", content->type, tifiles_vartype2string(content->model, content->type));
-	tifiles_info("data length:    %08X (%i)", content->data_length, content->data_length);
+	tifiles_info("Type:           %02X (%s)", content->type, tifiles_vartype2string(content->model, content->type));
 
-	tifiles_info("checksum:       %04X (%i) ", content->checksum, content->checksum);
+	tifiles_info("data_length:    %08X (%u)", content->data_length, content->data_length);
+	tifiles_info("data_part:      %p", content->data_part);
+
+	tifiles_info("Checksum:       %04X (%u)", content->checksum, content->checksum);
 
 	return 0;
 }
@@ -956,35 +914,41 @@ int ti9x_content_display_flash(Ti9xFlash *content)
 {
 	Ti9xFlash *ptr;
 
-	for (ptr = content; ptr != NULL; ptr = ptr->next) 
+	for (ptr = content; ptr != NULL; ptr = ptr->next)
 	{
-		tifiles_info("Signature:      %s", tifiles_calctype2signature(ptr->model));
-		tifiles_info("Revision:       %i.%i", ptr->revision_major, ptr->revision_minor);
-		tifiles_info("Flags:          %02X", ptr->flags);
-		tifiles_info("Object type:    %02X", ptr->object_type);
-		tifiles_info("Date:           %02X/%02X/%02X%02X", ptr->revision_day, ptr->revision_month, ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
-		tifiles_info("Name:           %s", ptr->name);
-		tifiles_info("Device type:    %s", ptr->device_type == DEVICE_TYPE_89 ? "ti89" : "ti92+");
+		tifiles_info("FlashContent for TI-9x: %p", ptr);
+		tifiles_info("Model:           %02X (%u)", ptr->model, ptr->model);
+		tifiles_info("Signature:       %s", tifiles_calctype2signature(ptr->model));
+		tifiles_info("model_dst:       %02X (%u)", ptr->model_dst, ptr->model_dst);
+		tifiles_info("Revision:        %u.%u", ptr->revision_major, ptr->revision_minor);
+		tifiles_info("Flags:           %02X", ptr->flags);
+		tifiles_info("Object type:     %02X", ptr->object_type);
+		tifiles_info("Date:            %02X/%02X/%02X%02X", ptr->revision_day, ptr->revision_month, ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
+		tifiles_info("Name:            %s", ptr->name);
+		tifiles_info("Device type:     %s", ptr->device_type == DEVICE_TYPE_89 ? "ti89" : "ti92+");
 		switch (ptr->data_type) 
 		{
 			case 0x23:
-				tifiles_info("Data type:      OS data");
+				tifiles_info("Data type:       OS data");
 				break;
 			case 0x24:
-				tifiles_info("Data type:      APP data");
+				tifiles_info("Data type:       APP data");
 				break;
 			case 0x20:
 			case 0x25:
-				tifiles_info("Data type:      certificate");
+				tifiles_info("Data type:       certificate");
 				break;
 			case 0x3E:
-				tifiles_info("Data type:      license");
+				tifiles_info("Data type:       license");
 				break;
 			default:
-				tifiles_info("Unknown (send mail to tilp-users@lists.sf.net)");
+				tifiles_info("Data type:       Unknown (send mail to tilp-users@lists.sf.net)");
 				break;
 		}
-		tifiles_info("Length:         %08X (%i)\n", ptr->data_length, ptr->data_length);
+		tifiles_info("Hardware ID:     %02X (%u)", ptr->hw_id, ptr->hw_id);
+		tifiles_info("Length:          %08X (%u)", ptr->data_length, ptr->data_length);
+		tifiles_info("Data part:       %p", ptr->data_part);
+		tifiles_info("Next:            %p", ptr->next);
 	}
 
 	return 0;
@@ -1022,7 +986,7 @@ int ti9x_file_display(const char *filename)
 		ret = ti9x_file_read_regular(filename, content1);
 		if (!ret)
 		{
-			ti9x_content_display_regular(content1);
+			tifiles_file_display_regular(content1);
 			tifiles_content_delete_regular(content1);
 		}
 	} 

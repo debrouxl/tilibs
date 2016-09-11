@@ -144,7 +144,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 	f = g_fopen(filename, "rb");
 	if (f == NULL) 
 	{
-		tifiles_warning("Unable to open this file: %s\n", filename);
+		tifiles_warning("Unable to open this file: %s", filename);
 		ret = ERR_FILE_OPEN;
 		goto tfrr2;
 	}
@@ -1339,50 +1339,6 @@ tfwf:	// release on exit
 /**************/
 
 /**
- * ti8x_content_display_regular:
- * @content: a Ti8xRegular structure.
- *
- * Display fields of a Ti8xRegular structure.
- *
- * Return value: an error code, 0 otherwise.
- **/
-int ti8x_content_display_regular(Ti8xRegular *content)
-{
-	unsigned int i;
-	char trans[18];
-
-	if (content == NULL)
-	{
-		tifiles_critical("%s(NULL)", __FUNCTION__);
-		return ERR_INVALID_FILE;
-	}
-
-	tifiles_info("Signature:     %s", tifiles_calctype2signature(content->model));
-	tifiles_info("Comment:       %s", content->comment);
-	tifiles_info("# of entries:  %u", content->num_entries);
-
-	for (i = 0; i < content->num_entries; i++) 
-	{
-		if (content->entries[i] != NULL)
-		{
-			tifiles_info("Entry #%u", i);
-			tifiles_info("  name:        %s", ticonv_varname_to_utf8_sn(content->model, content->entries[i]->name, trans, sizeof(trans), content->entries[i]->type));
-			tifiles_info("  type:        %02X (%s)", content->entries[i]->type, tifiles_vartype2string(content->model, content->entries[i]->type));
-			tifiles_info("  attr:        %s", tifiles_attribute_to_string(content->entries[i]->attr));
-			tifiles_info("  length:      %04X (%u)", content->entries[i]->size, content->entries[i]->size);
-		}
-		else
-		{
-			tifiles_critical("%s: an entry in content is NULL", __FUNCTION__);
-		}
-	}
-
-	tifiles_info("Checksum:      %04X (%u) ", content->checksum, content->checksum);
-
-	return 0;
-}
-
-/**
  * ti8x_content_display_backup:
  * @content: a Ti8xBackup structure.
  *
@@ -1398,22 +1354,28 @@ int ti8x_content_display_backup(Ti8xBackup *content)
 		return ERR_INVALID_FILE;
 	}
 
+	tifiles_info("BackupContent for TI-8x: %p", content);
+	tifiles_info("Model:          %02X (%u)", content->model, content->model);
 	tifiles_info("Signature:      %s", tifiles_calctype2signature(content->model));
 	tifiles_info("Comment:        %s", content->comment);
 	tifiles_info("Type:           %02X (%s)", content->type, tifiles_vartype2string(content->model, content->type));
-	tifiles_info("Mem address:    %04X (%i)", content->mem_address, content->mem_address);
+	tifiles_info("Version:        %02X (%u)", content->version, content->version);
+	tifiles_info("Mem address:    %04X (%u)", content->mem_address, content->mem_address);
 
-	tifiles_info("\n");
-
-	tifiles_info("data_length1:   %04X (%i)", content->data_length1, content->data_length1);
-	tifiles_info("data_length2:   %04X (%i)", content->data_length2, content->data_length2);
-	tifiles_info("data_length3:   %04X (%i)", content->data_length3, content->data_length3);
+	tifiles_info("data_length1:   %04X (%u)", content->data_length1, content->data_length1);
+	tifiles_info("data_part1:     %p", content->data_part1);
+	tifiles_info("data_length2:   %04X (%u)", content->data_length2, content->data_length2);
+	tifiles_info("data_part2:     %p", content->data_part2);
+	tifiles_info("data_length3:   %04X (%u)", content->data_length3, content->data_length3);
+	tifiles_info("data_part3:     %p", content->data_part3);
 
 	if (content->model == CALC_TI86)
 	{
-		tifiles_info("data_length4:   %04X (%i)", content->data_length4, content->data_length4);
+		tifiles_info("data_length4:   %04X (%u)", content->data_length4, content->data_length4);
+		tifiles_info("data_part4:     %p", content->data_part4);
 	}
-	tifiles_info("Checksum:       %04X (%i) ", content->checksum, content->checksum);
+
+	tifiles_info("Checksum:       %04X (%u)", content->checksum, content->checksum);
 
 	return 0;
 }
@@ -1430,38 +1392,43 @@ int ti8x_content_display_flash(Ti8xFlash *content)
 {
 	Ti8xFlash *ptr;
 
-	for (ptr = content; ptr != NULL; ptr = ptr->next) 
+	for (ptr = content; ptr != NULL; ptr = ptr->next)
 	{
-		tifiles_info("Signature:       %s",
-		tifiles_calctype2signature(ptr->model));
-		tifiles_info("Revision:        %i.%i", ptr->revision_major, ptr->revision_minor);
+		tifiles_info("FlashContent for TI-8x: %p", ptr);
+		tifiles_info("Model:           %02X (%u)", ptr->model, ptr->model);
+		tifiles_info("Signature:       %s", tifiles_calctype2signature(ptr->model));
+		tifiles_info("model_dst:       %02X (%u)", ptr->model_dst, ptr->model_dst);
+		tifiles_info("Revision:        %u.%u", ptr->revision_major, ptr->revision_minor);
 		tifiles_info("Flags:           %02X", ptr->flags);
 		tifiles_info("Object type:     %02X", ptr->object_type);
-		tifiles_info("Date:            %02X/%02X/%02X%02X", ptr->revision_day, ptr->revision_month, ptr->revision_year&0xff, (ptr->revision_year&0xff00) >> 8);
+		tifiles_info("Date:            %02X/%02X/%02X%02X", ptr->revision_day, ptr->revision_month, ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
 		tifiles_info("Name:            %s", ptr->name);
 		tifiles_info("Device type:     %s", ptr->device_type == DEVICE_TYPE_83P ? "ti83+" : "ti73");
-		tifiles_info("Data type:       ");
 		switch (ptr->data_type)
 		{
 			case 0x23:
-				tifiles_info("OS data");
+				tifiles_info("Data type:       OS data");
 				break;
 			case 0x24:
-				tifiles_info("APP data");
+				tifiles_info("Data type:       APP data");
 				break;
 			case 0x20:
 			case 0x25:
-				tifiles_info("certificate");
+				tifiles_info("Data type:       certificate");
 				break;
 			case 0x3E:
-				tifiles_info("license");
+				tifiles_info("Data type:       license");
 				break;
 			default:
-				tifiles_info("Unknown (send mail to tilp-users@lists.sf.net)\n");
+				tifiles_info("Data type:       Unknown (send mail to tilp-users@lists.sf.net)");
 				break;
 		}
-		tifiles_info("Length:          %08X (%i)\n", ptr->data_length, ptr->data_length);
+		tifiles_info("Hardware ID:     %02X (%u)", ptr->hw_id, ptr->hw_id);
+		tifiles_info("Length:          %08X (%u)", ptr->data_length, ptr->data_length);
+		tifiles_info("Data:            %p", ptr->data_part);
 		tifiles_info("Number of pages: %i", ptr->num_pages);
+		tifiles_info("Pages:           %p", ptr->pages);
+		tifiles_info("Next:            %p", ptr->next);
 	}
 
 	return 0;
@@ -1498,7 +1465,7 @@ int ti8x_file_display(const char *filename)
 		ret = ti8x_file_read_regular(filename, content1);
 		if (!ret)
 		{
-			ti8x_content_display_regular(content1);
+			tifiles_file_display_regular(content1);
 			tifiles_content_delete_regular(content1);
 		}
 	} 
