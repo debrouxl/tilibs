@@ -502,7 +502,8 @@ extern "C" {
 
 	// ve_fp.c
 	TIEXPORT2 VarEntry*	TICALL tifiles_ve_create(void);
-	TIEXPORT2 VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size);
+	TIEXPORT2 VarEntry*	TICALL tifiles_ve_create_alloc_data(uint32_t size);
+	TIEXPORT2 VarEntry*	TICALL tifiles_ve_create_with_data2(uint32_t size, uint8_t * data);
 	TIEXPORT2 void		TICALL tifiles_ve_delete(VarEntry*);
 
 	TIEXPORT2 void*		TICALL tifiles_ve_alloc_data(size_t size);
@@ -516,7 +517,8 @@ extern "C" {
 	TIEXPORT2 void		TICALL tifiles_ve_delete_array(VarEntry**);
 
 	TIEXPORT2 FlashPage*	TICALL tifiles_fp_create(void);
-	TIEXPORT2 FlashPage*	TICALL tifiles_fp_create_with_data(uint32_t size);
+	TIEXPORT2 FlashPage*	TICALL tifiles_fp_create_alloc_data(uint32_t size);
+	TIEXPORT2 FlashPage*	TICALL tifiles_fp_create_with_data2(uint32_t size, uint8_t * data);
 	TIEXPORT2 void		TICALL tifiles_fp_delete(FlashPage*);
 
 	TIEXPORT2 void*		TICALL tifiles_fp_alloc_data(size_t size);
@@ -540,6 +542,9 @@ extern "C" {
 	/************************/
 	/* Deprecated functions */
 	/************************/
+
+	TILIBS_DEPRECATED TIEXPORT2 VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size);
+	TILIBS_DEPRECATED TIEXPORT2 FlashPage*	TICALL tifiles_fp_create_with_data(uint32_t size);
 
 #ifdef __cplusplus
 }

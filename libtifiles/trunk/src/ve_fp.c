@@ -44,6 +44,78 @@ TIEXPORT2 VarEntry* TICALL tifiles_ve_create(void)
 }
 
 /**
+ * tifiles_ve_create_alloc_data:
+ * @size: length of data.
+ *
+ * Allocate a new VarEntry structure and space for data.
+ *
+ * Return value: the entry or NULL if error.
+ **/
+TIEXPORT2 VarEntry* TICALL tifiles_ve_create_alloc_data(uint32_t size)
+{
+	VarEntry* ve = tifiles_ve_create();
+	if (ve != NULL)
+	{
+		ve->data = (uint8_t *)g_malloc0(size);
+	}
+
+	return ve;
+}
+
+/**
+ * tifiles_ve_create_with_data:
+ * @size: length of data.
+ *
+ * Deprecated version of tifiles_ve_create_alloc_data().
+ **/
+TIEXPORT2 VarEntry* TICALL tifiles_ve_create_with_data(uint32_t size)
+{
+	return tifiles_ve_create_alloc_data(size);
+}
+
+/**
+ * tifiles_ve_create_with_data2:
+ * @data: data.
+ * @size: length of data.
+ *
+ * Allocate a new VarEntry structure and set size + data. data should have been allocated by tifiles_ve_alloc_data().
+ *
+ * Return value: the entry or NULL if error.
+ **/
+TIEXPORT2 VarEntry* TICALL tifiles_ve_create_with_data2(uint32_t size, uint8_t * data)
+{
+	VarEntry* ve = tifiles_ve_create();
+	if (ve != NULL)
+	{
+		ve->data = data;
+		ve->size = size;
+	}
+
+	return ve;
+}
+
+/**
+ * tifiles_ve_delete:
+ * @ve: var entry.
+ *
+ * Free data buffer and the structure itself.
+ *
+ * Return value: none.
+ **/
+TIEXPORT2 void TICALL tifiles_ve_delete(VarEntry* ve)
+{
+	if (ve != NULL)
+	{
+		g_free(ve->data);
+		g_free(ve);
+	}
+	else
+	{
+		tifiles_critical("%s(NULL)", __FUNCTION__);
+	}
+}
+
+/**
  * tifiles_ve_alloc_data:
  * @size: length of data.
  *
@@ -90,25 +162,6 @@ TIEXPORT2 void TICALL tifiles_ve_free_data(void * data)
 }
 
 /**
- * tifiles_ve_create_with_data:
- * @size: length of data.
- *
- * Allocate a new VarEntry structure and space for data.
- *
- * Return value: the entry or NULL if error.
- **/
-TIEXPORT2 VarEntry* TICALL tifiles_ve_create_with_data(uint32_t size)
-{
-	VarEntry* ve = tifiles_ve_create();
-	if (ve != NULL)
-	{
-		ve->data = (uint8_t *)g_malloc0(size);
-	}
-
-	return ve;
-}
-
-/**
  * tifiles_ve_create_array:
  * @nelts: size of NULL-terminated array (number of VarEntry structures).
  *
@@ -140,27 +193,6 @@ TIEXPORT2 VarEntry** TICALL tifiles_ve_resize_array(VarEntry** array, unsigned i
 		ptr[nelts] = NULL;
 	}
 	return ptr;
-}
-
-/**
- * tifiles_ve_delete:
- * @ve: var entry.
- *
- * Free data buffer and the structure itself.
- *
- * Return value: none.
- **/
-TIEXPORT2 void TICALL tifiles_ve_delete(VarEntry* ve)
-{
-	if (ve != NULL)
-	{
-		g_free(ve->data);
-		g_free(ve);
-	}
-	else
-	{
-		tifiles_critical("%s(NULL)", __FUNCTION__);
-	}
 }
 
 /**
@@ -328,19 +360,51 @@ TIEXPORT2 void TICALL tifiles_fp_free_data(void * data)
 }
 
 /**
- * tifiles_fp_create_with_data:
+ * tifiles_fp_create_alloc_data:
  * @size: length of data.
  *
  * Allocate a new FlashPage structure and space for data.
  *
  * Return value: the entry or NULL if error.
  **/
-TIEXPORT2 FlashPage* TICALL tifiles_fp_create_with_data(uint32_t size)
+TIEXPORT2 FlashPage* TICALL tifiles_fp_create_alloc_data(uint32_t size)
 {
 	FlashPage* ve = tifiles_fp_create();
 	if (ve != NULL)
 	{
 		ve->data = (uint8_t *)g_malloc0(size);
+	}
+
+	return ve;
+}
+
+/**
+ * tifiles_fp_create_alloc_data:
+ * @size: length of data.
+ *
+ * Deprecated version of tifiles_ve_create_alloc_data().
+ **/
+TIEXPORT2 FlashPage* TICALL tifiles_fp_create_with_data(uint32_t size)
+{
+	return tifiles_fp_create_alloc_data(size);
+}
+
+/**
+ * tifiles_fp_create_with_data2:
+ * @data: data.
+ * @size: length of data.
+ *
+ * Allocate a new FlashPage structure and set size + data. data should have been allocated by tifiles_fp_alloc_data().
+ *
+ * Return value: the entry or NULL if error.
+ **/
+TIEXPORT2 FlashPage* TICALL tifiles_fp_create_with_data2(uint32_t size, uint8_t * data)
+{
+	FlashPage* ve = tifiles_fp_create();
+	if (ve != NULL)
+	{
+		ve->data = data;
+		ve->size = size;
 	}
 
 	return ve;

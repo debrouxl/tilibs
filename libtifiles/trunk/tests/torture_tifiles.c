@@ -290,7 +290,13 @@ int main(int argc, char **argv)
     ptr = tifiles_ve_create();
     PRINTF(, PTR, ptr);
     tifiles_ve_delete(ptr);
+    ptr = tifiles_ve_create_alloc_data(0);
+    PRINTF(, PTR, ptr);
+    tifiles_ve_delete(ptr);
     ptr = tifiles_ve_create_with_data(0);
+    PRINTF(, PTR, ptr);
+    tifiles_ve_delete(ptr);
+    ptr = tifiles_ve_create_with_data2(0, NULL);
     PRINTF(, PTR, ptr);
     tifiles_ve_delete(ptr);
     PRINTFVOID(tifiles_ve_delete, NULL);
@@ -302,11 +308,11 @@ int main(int argc, char **argv)
     tifiles_ve_free_data(ptr);
     PRINTFVOID(tifiles_ve_free_data, NULL);
     PRINTF(tifiles_ve_copy, PTR, NULL, NULL);
+
     PRINTF(tifiles_ve_dup, PTR, NULL);
     ptr = tifiles_ve_create_array(0);
     PRINTF(, PTR, ptr);
     tifiles_ve_delete_array(ptr);
-
     ptr = tifiles_ve_resize_array(NULL, 0);
     PRINTF(, PTR, ptr);
     tifiles_ve_delete_array(ptr);
@@ -314,13 +320,20 @@ int main(int argc, char **argv)
     ptr = tifiles_fp_create();
     PRINTF(, PTR, ptr);
     tifiles_fp_delete(ptr);
+    ptr = tifiles_fp_create_alloc_data(0);
+    PRINTF(, PTR, ptr);
+    tifiles_fp_delete(ptr);
     ptr = tifiles_fp_create_with_data(0);
+    PRINTF(, PTR, ptr);
+    tifiles_fp_delete(ptr);
+    ptr = tifiles_fp_create_with_data2(0, NULL);
     PRINTF(, PTR, ptr);
     tifiles_fp_delete(ptr);
     PRINTFVOID(tifiles_fp_delete, NULL);
     ptr = tifiles_fp_alloc_data(0);
     PRINTF(, PTR, ptr);
     tifiles_fp_free_data(ptr);
+
     ptr = tifiles_fp_realloc_data(NULL, 1);
     PRINTF(, PTR, ptr);
     tifiles_fp_free_data(ptr);
@@ -330,7 +343,6 @@ int main(int argc, char **argv)
     tifiles_fp_delete_array(ptr);
     ptr = tifiles_fp_resize_array(NULL, 0);
     PRINTF(, PTR, ptr);
-
     tifiles_fp_delete_array(ptr);
     PRINTFVOID(tifiles_fp_delete_array, NULL);
     ptr = tifiles_create_table_of_entries(NULL, NULL);
