@@ -83,17 +83,17 @@ TIEXPORT3 int TICALL ti89_recv_RTS(CalcHandle *handle, uint32_t * varsize, uint8
 
 
 /* TI-92, send functions */
-#define ti92_send_VAR(handle, varsize, vartype, varname) ti68k_send_VAR(handle, varsize, vartype, varname, PC_TI92)
-#define ti92_send_CTS(handle) ti68k_send_CTS(handle, PC_TI92)
-#define ti92_send_XDP(handle, length, data) ti68k_send_XDP(handle, length, data, PC_TI92)
+#define ti92_send_VAR(handle, varsize, vartype, varname) ti68k_send_VAR(handle, varsize, vartype, varname, DBUS_MID_PC_TI92)
+#define ti92_send_CTS(handle) ti68k_send_CTS(handle, DBUS_MID_PC_TI92)
+#define ti92_send_XDP(handle, length, data) ti68k_send_XDP(handle, length, data, DBUS_MID_PC_TI92)
 TIEXPORT3 int TICALL ti92_send_SKP(CalcHandle *handle, uint8_t rej_code);
-#define ti92_send_ACK(handle) ti68k_send_ACK(handle, PC_TI92)
-#define ti92_send_ERR(handle) ti68k_send_ERR(handle, PC_TI92)
-#define ti92_send_RDY(handle) ti68k_send_RDY(handle, PC_TI92)
-#define ti92_send_SCR(handle) ti68k_send_SCR(handle, PC_TI92)
-#define ti92_send_CNT(handle) ti68k_send_CNT(handle, PC_TI92)
-#define ti92_send_KEY(handle, scancode) ti68k_send_KEY(handle, scancode, PC_TI92)
-#define ti92_send_EOT(handle) ti68k_send_EOT(handle, PC_TI92)
+#define ti92_send_ACK(handle) ti68k_send_ACK(handle, DBUS_MID_PC_TI92)
+#define ti92_send_ERR(handle) ti68k_send_ERR(handle, DBUS_MID_PC_TI92)
+#define ti92_send_RDY(handle) ti68k_send_RDY(handle, DBUS_MID_PC_TI92)
+#define ti92_send_SCR(handle) ti68k_send_SCR(handle, DBUS_MID_PC_TI92)
+#define ti92_send_CNT(handle) ti68k_send_CNT(handle, DBUS_MID_PC_TI92)
+#define ti92_send_KEY(handle, scancode) ti68k_send_KEY(handle, scancode, DBUS_MID_PC_TI92)
+#define ti92_send_EOT(handle) ti68k_send_EOT(handle, DBUS_MID_PC_TI92)
 TIEXPORT3 int TICALL ti92_send_REQ(CalcHandle *handle, uint32_t varsize, uint8_t vartype, const char *varname);
 TIEXPORT3 int TICALL ti92_send_RTS(CalcHandle *handle, uint32_t varsize, uint8_t vartype, const char *varname);
 

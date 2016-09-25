@@ -48,53 +48,65 @@ typedef struct
 static const DUSBCmdParamInfo param_types[] =
 {
 	{ 0x0000, "" },
-	{ PID_PRODUCT_NUMBER, "Product number" },
-	{ PID_PRODUCT_NAME, "Product name" },
-	{ PID_MAIN_PART_ID, "Main part ID" },
-	{ PID_HW_VERSION, "Hardware version" },
-	{ PID_FULL_ID, "Full ID" },
-	{ PID_LANGUAGE_ID, "Language ID" },
-	{ PID_SUBLANG_ID, "Sub-language ID" },
-	{ PID_DEVICE_TYPE, "Device type" },
-	{ PID_BOOT_VERSION, "Boot version" },
-	{ PID_OS_MODE, "OS mode" },
-	{ PID_OS_VERSION, "OS version" },
-	{ PID_PHYS_RAM, "Physical RAM" },
-	{ PID_USER_RAM, "User RAM" },
-	{ PID_FREE_RAM, "Free RAM" },
-	{ PID_PHYS_FLASH, "Physical Flash" },
-	{ PID_USER_FLASH, "User Flash" },
-	{ PID_FREE_FLASH, "Free Flash" },
-	{ PID_USER_PAGES, "User pages" },
-	{ PID_FREE_PAGES, "Free pages" }, // 0x0013
-	{ PID_HAS_SCREEN, "Has screen" }, // 0x0019
-	{ PID_COLOR_AVAILABLE, "Color is available" }, // 0x001B
-	{ PID_BITS_PER_PIXEL, "Bits per pixel" }, // 0x001D
-	{ PID_LCD_WIDTH, "LCD width" },
-	{ PID_LCD_HEIGHT, "LCD height" }, // 0x001F
-	{ PID_SCREENSHOT, "Screenshot" }, // 0x0022
-	{ PID_CLASSIC_CLK_SUPPORT, "Classic clock supported" },
-	{ PID_CLK_ON, "Clock ON" },
-	{ PID_CLK_SEC_SINCE_1997, "Clock sec" }, // 0x0025
-	{ PID_CLK_DATE_FMT, "Clock date format" }, // 0x0027
-	{ PID_CLK_TIME_FMT, "Clock time format" }, // 0x0028
-	{ PID_BATTERY, "Battery level" }, // 0x002D
-	{ PID_USER_DATA_1, "User data area 1" }, // 0x0030
-	{ PID_FLASHAPPS, "FlashApps" }, // 0x0031
-	{ PID_USER_DATA_2, "User data area 2" }, // 0x0035
-	{ PID_MAIN_PART_ID_STRING, "Main part ID (as string)" }, // 0x0036
-	{ PID_HOMESCREEN, "Home screen" },
-	{ PID_BUSY, "Busy" },
-	{ PID_SCREEN_SPLIT, "Screen split mode" }, // 0x0039
-	// TODO update with new parameters.
-	{ PID_ANS, "Ans contents" }, // 0x0046
-	{ PID_OS_BUILD_NUMBER, "OS build number" }, // 0x0048
-	{ PID_BOOT_BUILD_NUMBER, "Boot build number" }, // 0x0049
-	{ PID_EXACT_MATH, "Exact math engine" }, // 0x004B
-	{ PID_BOOT_HASH, "Boot hash" }, // 0x004C
-	{ PID_OS_HASH, "OS hash" }, // 0x004D
-	{ PID_OS_VERSION_STRING, "OS version (as string)" }, // 0x0052
-	{ PID_BOOT_VERSION_STRING, "Boot version (as string)" }, // 0x0053
+	{ DUSB_PID_PRODUCT_NUMBER, "Product number" },
+	{ DUSB_PID_PRODUCT_NAME, "Product name" },
+	{ DUSB_PID_MAIN_PART_ID, "Main part ID" },
+	{ DUSB_PID_HW_VERSION, "Hardware version" },
+	{ DUSB_PID_FULL_ID, "Full ID" },
+	{ DUSB_PID_LANGUAGE_ID, "Language ID" },
+	{ DUSB_PID_SUBLANG_ID, "Sub-language ID" },
+	{ DUSB_PID_DEVICE_TYPE, "Device type" },
+	{ DUSB_PID_BOOT_VERSION, "Boot version" },
+	{ DUSB_PID_OS_MODE, "OS mode" },
+	{ DUSB_PID_OS_VERSION, "OS version" },
+	{ DUSB_PID_PHYS_RAM, "Physical RAM" },
+	{ DUSB_PID_USER_RAM, "User RAM" },
+	{ DUSB_PID_FREE_RAM, "Free RAM" },
+	{ DUSB_PID_PHYS_FLASH, "Physical Flash" },
+	{ DUSB_PID_USER_FLASH, "User Flash" },
+	{ DUSB_PID_FREE_FLASH, "Free Flash" },
+	{ DUSB_PID_USER_PAGES, "User pages" },
+	{ DUSB_PID_FREE_PAGES, "Free pages" }, // 0x0013
+	{ DUSB_PID_HAS_SCREEN, "Has screen" }, // 0x0019
+	{ DUSB_PID_COLOR_AVAILABLE, "Color is available" }, // 0x001B
+	{ DUSB_PID_BITS_PER_PIXEL, "Bits per pixel" }, // 0x001D
+	{ DUSB_PID_LCD_WIDTH, "LCD width" },
+	{ DUSB_PID_LCD_HEIGHT, "LCD height" }, // 0x001F
+	{ DUSB_PID_SCREENSHOT, "Screenshot" }, // 0x0022
+	{ DUSB_PID_CLASSIC_CLK_SUPPORT, "Classic clock supported" },
+	{ DUSB_PID_CLK_ON, "Clock ON" },
+	{ DUSB_PID_CLK_SEC_SINCE_1997, "Clock sec since 1997" }, // 0x0025
+	{ DUSB_PID_CLK_DATE_FMT, "Clock date format" }, // 0x0027
+	{ DUSB_PID_CLK_TIME_FMT, "Clock time format" }, // 0x0028
+	{ DUSB_PID_BATTERY, "Battery level" }, // 0x002D
+	{ DUSB_PID_USER_DATA_1, "User data area 1" }, // 0x0030
+	{ DUSB_PID_FLASHAPPS, "FlashApps" }, // 0x0031
+	{ DUSB_PID_USER_DATA_2, "User data area 2" }, // 0x0035
+	{ DUSB_PID_MAIN_PART_ID_STRING, "Main part ID (as string)" }, // 0x0036
+	{ DUSB_PID_HOMESCREEN, "Home screen" },
+	{ DUSB_PID_BUSY, "Busy" },
+	{ DUSB_PID_SCREEN_SPLIT, "Screen split mode" }, // 0x0039
+	{ DUSB_PID_NEW_CLK_SUPPORT, "New clock supported" },
+	{ DUSB_PID_CLK_SECONDS, "Clock seconds" },
+	{ DUSB_PID_CLK_MINUTES, "Clock minutes" },
+	{ DUSB_PID_CLK_HOURS, "Clock hours" },
+	{ DUSB_PID_CLK_DAY, "Clock day" },
+	{ DUSB_PID_CLK_MONTH, "Clock month" },
+	{ DUSB_PID_CLK_YEAR, "Clock year" }, // 0x0040
+	{ DUSB_PID_ANS, "Ans contents" }, // 0x0046
+	{ DUSB_PID_OS_BUILD_NUMBER, "OS build number" }, // 0x0048
+	{ DUSB_PID_BOOT_BUILD_NUMBER, "Boot build number" }, // 0x0049
+	{ DUSB_PID_EXACT_MATH, "Exact math engine" }, // 0x004B
+	{ DUSB_PID_BOOT_HASH, "Boot hash" }, // 0x004C
+	{ DUSB_PID_OS_HASH, "OS hash" }, // 0x004D
+	{ DUSB_PID_PTT_MODE_SET, "PTT mode set" }, // 0x004F
+	{ DUSB_PID_OS_VERSION_STRING, "OS version (as string)" }, // 0x0052
+	{ DUSB_PID_BOOT_VERSION_STRING, "Boot version (as string)" }, // 0x0053
+	{ DUSB_PID_PTT_MODE_STATE, "PTT mode state" }, // 0x0054
+	{ DUSB_PID_PTT_MODE_FEATURES, "PTT mode features" }, // 0x0055
+	{ DUSB_PID_STOPWATCH_START, "Stopwatch start" }, // 0x0059
+	{ DUSB_PID_STOPWATCH_VALUE1, "Stopwatch value 1" }, // 0x005B
+	{ DUSB_PID_STOPWATCH_VALUE2, "Stopwatch value 2" }, // 0x005C
 	{ -1, NULL}
 };
 
@@ -1210,7 +1222,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, u
 		}
 
 		if (   ((((uint16_t)pkt->data[0]) << 8) | pkt->data[1]) != 1
-		    || ((((uint16_t)pkt->data[2]) << 8) | pkt->data[3]) != PID_SCREENSHOT
+		    || ((((uint16_t)pkt->data[2]) << 8) | pkt->data[3]) != DUSB_PID_SCREENSHOT
 		    || pkt->data[4] != 0)
 		{
 			retval = ERR_INVALID_PACKET;
@@ -1758,7 +1770,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, 
 	{
 		pks += strlen(args);
 	}
-	if (action == EID_KEY)
+	if (action == DUSB_EID_KEY)
 	{
 		pks += 2;
 	}
@@ -1784,7 +1796,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, 
 	{
 		memcpy(pkt->data + j, args, strlen(args));
 	}
-	if (action == EID_KEY)
+	if (action == DUSB_EID_KEY)
 	{
 		// TI-89T: big-endian
 		// TI-84+, two-byte keycode: little-endian
@@ -1807,7 +1819,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, 
 	retval = dusb_send_data(handle, pkt);
 
 	dusb_vtl_pkt_del(handle, pkt);
-	if (action == EID_KEY)
+	if (action == DUSB_EID_KEY)
 	{
 		ticalcs_info("   action=%i, keycode=%04x", action, code);
 	}

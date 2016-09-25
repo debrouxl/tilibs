@@ -72,7 +72,7 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 		buf[3] = 0x00;
 
 		// The TI-80 does not use length
-		ret = ticables_cable_send(handle->cable, buf, (target == PC_TI80) ? 2 : 4);
+		ret = ticables_cable_send(handle->cable, buf, (target == DBUS_MID_PC_TI80) ? 2 : 4);
 	}
 	else 
 	{
@@ -182,7 +182,7 @@ TIEXPORT3 int TICALL dbus_recv_header(CalcHandle *handle, uint8_t* host, uint8_t
 		*cmd = buf[1];
 
 		// Any non-TI-80 packet has a length; TI-80 data packets also have a length
-		if (*host != TI80_PC || *cmd == CMD_XDP)
+		if (*host != DBUS_MID_TI80_PC || *cmd == DBUS_CMD_XDP)
 		{
 			ret = ticables_cable_recv(handle->cable, buf, 2);
 			if (!ret)
@@ -301,32 +301,32 @@ TIEXPORT3 int TICALL dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, 
 	ret = dbus_recv_header(handle, host, cmd, length);
 	if (!ret)
 	{
-		if (*cmd == CMD_ERR || *cmd == CMD_ERR2)
+		if (*cmd == DBUS_CMD_ERR || *cmd == DBUS_CMD_ERR2)
 		{
 			return ERR_CHECKSUM; // THIS RETURNS !
 		}
 
 		switch (*cmd)
 		{
-		case CMD_VAR:	// std packet ( data + checksum)
-		case CMD_XDP:
-		case CMD_SKP:
-		case CMD_SID:
-		case CMD_REQ:
-		case CMD_IND:
-		case CMD_RTS:
+		case DBUS_CMD_VAR:	// std packet ( data + checksum)
+		case DBUS_CMD_XDP:
+		case DBUS_CMD_SKP:
+		case DBUS_CMD_SID:
+		case DBUS_CMD_REQ:
+		case DBUS_CMD_IND:
+		case DBUS_CMD_RTS:
 			ret = dbus_recv_data(handle, length, data);
 			break;
-		case CMD_CTS:	// short packet (no data)
-		case CMD_ACK:
-		case CMD_ERR:
-		case CMD_ERR2:
-		case CMD_RDY:
-		case CMD_SCR:
-		case CMD_RID:
-		case CMD_KEY:
-		case CMD_EOT:
-		case CMD_CNT:
+		case DBUS_CMD_CTS:	// short packet (no data)
+		case DBUS_CMD_ACK:
+		case DBUS_CMD_ERR:
+		case DBUS_CMD_ERR2:
+		case DBUS_CMD_RDY:
+		case DBUS_CMD_SCR:
+		case DBUS_CMD_RID:
+		case DBUS_CMD_KEY:
+		case DBUS_CMD_EOT:
+		case DBUS_CMD_CNT:
 			break;
 		default:
 			return ERR_INVALID_CMD; // THIS RETURNS !

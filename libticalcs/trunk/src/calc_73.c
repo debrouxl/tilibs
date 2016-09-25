@@ -466,12 +466,12 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 		{
 			switch (rej_code)
 			{
-			case REJ_EXIT:
-			case REJ_SKIP:
+			case DBUS_REJ_EXIT:
+			case DBUS_REJ_SKIP:
 				return ERR_ABORT;
-			case REJ_MEMORY:
+			case DBUS_REJ_MEMORY:
 				return ERR_OUT_OF_MEMORY;
-			case REJ_VERSION:
+			case DBUS_REJ_VERSION:
 				return ERR_VAR_VERSION;
 			case 0:						// CTS
 				break;
@@ -678,15 +678,15 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 		switch (rej_code) 
 		{
-		case REJ_EXIT:
+		case DBUS_REJ_EXIT:
 			ret = ERR_ABORT;
 			break;
-		case REJ_SKIP:
+		case DBUS_REJ_SKIP:
 			continue;
-		case REJ_MEMORY:
+		case DBUS_REJ_MEMORY:
 			ret = ERR_OUT_OF_MEMORY;
 			break;
-		case REJ_VERSION:
+		case DBUS_REJ_VERSION:
 			ret = ERR_VAR_VERSION;
 			// Fall through.
 		case 0:					// CTS

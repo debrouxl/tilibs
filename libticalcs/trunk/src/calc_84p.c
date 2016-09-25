@@ -56,7 +56,7 @@
 static int		is_ready	(CalcHandle* handle)
 {
 	int ret;
-	static const DUSBModeSet mode = MODE_NORMAL;
+	static const DUSBModeSet mode = DUSB_MODE_NORMAL;
 
 	ret = dusb_cmd_s_mode_set(handle, mode);
 	if (!ret)
@@ -72,7 +72,7 @@ static int		send_key_noack	(CalcHandle* handle, uint32_t key)
 {
 	int ret;
 
-	ret = dusb_cmd_s_execute(handle, "", "", EID_KEY, "", (uint16_t)key);
+	ret = dusb_cmd_s_execute(handle, "", "", DUSB_EID_KEY, "", (uint16_t)key);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_delay_ack(handle);
@@ -101,9 +101,9 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
 
 	switch (ve->type)
 	{
-		case TI84p_ASM:  action = EID_ASM; break;
-		case TI84p_APPL: action = EID_APP; break;
-		default:         action = EID_PRGM; break;
+		case TI84p_ASM:  action = DUSB_EID_ASM; break;
+		case TI84p_APPL: action = DUSB_EID_APP; break;
+		default:         action = DUSB_EID_PRGM; break;
 	}
 
 	ret = dusb_cmd_s_execute(handle, ve->folder, ve->name, action, args, 0);
@@ -117,7 +117,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	static const uint16_t pid[] = { PID_SCREENSHOT };
+	static const uint16_t pid[] = { DUSB_PID_SCREENSHOT };
 	uint32_t size;
 	uint8_t *data;
 	int ret;
@@ -204,7 +204,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
-	static const uint16_t aids[] = { AID_VAR_SIZE, AID_VAR_TYPE, AID_ARCHIVED };
+	static const uint16_t aids[] = { DUSB_AID_VAR_SIZE, DUSB_AID_VAR_TYPE, DUSB_AID_ARCHIVED };
 	const int size = sizeof(aids) / sizeof(uint16_t);
 	int ret;
 	DUSBCalcAttr **attr;
@@ -309,7 +309,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
-	static const uint16_t pids[] = { PID_FREE_RAM, PID_FREE_FLASH };
+	static const uint16_t pids[] = { DUSB_PID_FREE_RAM, DUSB_PID_FREE_FLASH };
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	DUSBCalcParam **params;
 	int ret;
@@ -349,15 +349,15 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	unsigned int i;
 
 	attrs = dusb_ca_new_array(handle, nattrs);
-	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE, 4);
+	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI84p_BKUP;
 
-	attrs[1] = dusb_ca_new(handle, AID_VAR_VERSION, 4);
+	attrs[1] = dusb_ca_new(handle, DUSB_AID_VAR_VERSION, 4);
 	attrs[1]->data[0] = 0x00; attrs[1]->data[1] = 0x00;
 	attrs[1]->data[2] = 0x00; attrs[1]->data[3] = content->version;
 
-	attrs[2] = dusb_ca_new(handle, AID_BACKUP_HEADER, 8);
+	attrs[2] = dusb_ca_new(handle, DUSB_AID_BACKUP_HEADER, 8);
 	attrs[2]->data[0] = MSB(content->data_length1);
 	attrs[2]->data[1] = LSB(content->data_length1);
 	attrs[2]->data[2] = MSB(content->data_length2);
@@ -464,12 +464,12 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		update_label();
 
 		attrs = dusb_ca_new_array(handle, nattrs);
-		attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE, 4);
+		attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
 		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = entry->type;
-		attrs[1] = dusb_ca_new(handle, AID_ARCHIVED, 1);
+		attrs[1] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
 		attrs[1]->data[0] = entry->attr == ATTRB_ARCHIVED ? 1 : 0;
-		attrs[2] = dusb_ca_new(handle, AID_VAR_VERSION, 4);
+		attrs[2] = dusb_ca_new(handle, DUSB_AID_VAR_VERSION, 4);
 		attrs[2]->data[3] = entry->version;
 
 		size = entry->size;
@@ -517,7 +517,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
-	static const uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION, AID_VAR_SIZE };
+	static const uint16_t aids[] = { DUSB_AID_ARCHIVED, DUSB_AID_VAR_VERSION, DUSB_AID_VAR_SIZE };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
 	DUSBCalcAttr **attrs;
 	const int nattrs = 1;
@@ -530,7 +530,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	update_label();
 
 	attrs = dusb_ca_new_array(handle, nattrs);
-	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE2, 4);
+	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
@@ -665,10 +665,10 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	update_label();
 
 	attrs = dusb_ca_new_array(handle, nattrs);
-	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE, 4);
+	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ptr->data_type;
-	attrs[1] = dusb_ca_new(handle, AID_ARCHIVED, 1);
+	attrs[1] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
 	attrs[1]->data[0] = 0;
 
 	ret = dusb_cmd_s_rts(handle, "", ptr->name, size, nattrs, CA(attrs));
@@ -731,10 +731,10 @@ static int		send_flash_834pce	(CalcHandle* handle, FlashContent* content)
 	update_label();
 
 	attrs = dusb_ca_new_array(handle, nattrs);
-	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE, 4);
+	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0F;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ptr->data_type;
-	attrs[1] = dusb_ca_new(handle, AID_ARCHIVED, 1);
+	attrs[1] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
 	attrs[1]->data[0] = 1;
 
 	ret = dusb_cmd_s_rts(handle, "", ptr->name, size, nattrs, CA(attrs));
@@ -761,7 +761,7 @@ static int		send_flash_834pce	(CalcHandle* handle, FlashContent* content)
 
 static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
 {
-	static const uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION };
+	static const uint16_t aids[] = { DUSB_AID_ARCHIVED, DUSB_AID_VAR_VERSION };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
 	DUSBCalcAttr **attrs;
 	const int nattrs = 1;
@@ -778,7 +778,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	update_label();
 
 	attrs = dusb_ca_new_array(handle, nattrs);
-	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE2, 4);
+	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
@@ -847,7 +847,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
 {
-	static const uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION };
+	static const uint16_t aids[] = { DUSB_AID_ARCHIVED, DUSB_AID_VAR_VERSION };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
 	DUSBCalcAttr **attrs;
 	const int nattrs = 1;
@@ -860,7 +860,7 @@ static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarReq
 	update_label();
 
 	attrs = dusb_ca_new_array(handle, nattrs);
-	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE2, 4);
+	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0F;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
@@ -957,7 +957,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 	do
 	{
-		static const uint16_t pids[] = { PID_OS_MODE };
+		static const uint16_t pids[] = { DUSB_PID_OS_MODE };
 		const int size = sizeof(pids) / sizeof(uint16_t);
 		DUSBCalcParam **params;
 
@@ -1227,7 +1227,7 @@ end:
 
 static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 {
-	static const uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION };
+	static const uint16_t aids[] = { DUSB_AID_ARCHIVED, DUSB_AID_VAR_VERSION };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
 	DUSBCalcAttr **attrs;
 	const int nattrs = 1;
@@ -1240,7 +1240,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	update_label();
 
 	attrs = dusb_ca_new_array(handle, nattrs);
-	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE2, 4);
+	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI83p_IDLIST;
 
@@ -1351,7 +1351,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 
 			for (i = 0; !ret && i < iterations; i++)
 			{
-				ret = dusb_cmd_s_execute(handle, "", "", EID_KEY, "", 0x05);
+				ret = dusb_cmd_s_execute(handle, "", "", DUSB_EID_KEY, "", 0x05);
 				if (!ret)
 				{
 					FileContent *content;
@@ -1401,7 +1401,7 @@ end:
 		}
 		else
 		{
-			ret = dusb_cmd_s_execute(handle, "", "ROMDUMP", EID_PRGM, "", 0);
+			ret = dusb_cmd_s_execute(handle, "", "ROMDUMP", DUSB_EID_PRGM, "", 0);
 			if (!ret)
 			{
 				ret = dusb_cmd_r_data_ack(handle);
@@ -1458,7 +1458,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	// TODO add TI-eZ80 support based on the new attributes.
 
 	do {
-		param = dusb_cp_new(handle, PID_CLK_SEC_SINCE_1997, 4);
+		param = dusb_cp_new(handle, DUSB_PID_CLK_SEC_SINCE_1997, 4);
 		param->data[0] = MSB(MSW(calc_time));
 		param->data[1] = LSB(MSW(calc_time));
 		param->data[2] = MSB(LSW(calc_time));
@@ -1476,7 +1476,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 			break;
 		}
 
-		param = dusb_cp_new(handle, PID_CLK_DATE_FMT, 1);
+		param = dusb_cp_new(handle, DUSB_PID_CLK_DATE_FMT, 1);
 		param->data[0] = _clock->date_format == 3 ? 0 : _clock->date_format;
 		ret = dusb_cmd_s_param_set(handle, param);
 		dusb_cp_del(handle, param);
@@ -1491,7 +1491,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 			break;
 		}
 
-		param = dusb_cp_new(handle, PID_CLK_TIME_FMT, 1);
+		param = dusb_cp_new(handle, DUSB_PID_CLK_TIME_FMT, 1);
 		param->data[0] = _clock->time_format == 24 ? 1 : 0;
 		ret = dusb_cmd_s_param_set(handle, param);
 		dusb_cp_del(handle, param);
@@ -1505,7 +1505,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 		{
 			break;
 		}
-		param = dusb_cp_new(handle, PID_CLK_ON, 1);
+		param = dusb_cp_new(handle, DUSB_PID_CLK_ON, 1);
 		param->data[0] = _clock->state;
 		ret = dusb_cmd_s_param_set(handle, param);
 		dusb_cp_del(handle, param);
@@ -1522,7 +1522,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 
 static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 {
-	static const uint16_t pids[4] = { PID_CLK_SEC_SINCE_1997, PID_CLK_DATE_FMT, PID_CLK_TIME_FMT, PID_CLK_ON };
+	static const uint16_t pids[4] = { DUSB_PID_CLK_SEC_SINCE_1997, DUSB_PID_CLK_DATE_FMT, DUSB_PID_CLK_TIME_FMT, DUSB_PID_CLK_ON };
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	DUSBCalcParam **params;
 	uint32_t calc_time;
@@ -1620,7 +1620,7 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	int ret;
 
 	attrs = dusb_ca_new_array(handle, size);
-	attrs[0] = dusb_ca_new(handle, AID_VAR_TYPE2, 4);
+	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = oldname->type;
 
@@ -1641,12 +1641,12 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 	int ret;
 
 	srcattrs = dusb_ca_new_array(handle, 1);
-	srcattrs[0] = dusb_ca_new(handle, AID_VAR_TYPE2, 4);
+	srcattrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
 	srcattrs[0]->data[0] = 0xF0; srcattrs[0]->data[1] = 0x07;
 	srcattrs[0]->data[2] = 0x00; srcattrs[0]->data[3] = vr->type;
 
 	dstattrs = dusb_ca_new_array(handle, 1);
-	dstattrs[0] = dusb_ca_new(handle, AID_ARCHIVED, 1);
+	dstattrs[0] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
 	/* use 0xff here rather than 0x01 to work around an OS bug */
 	dstattrs[0]->data[0] = (attr == ATTRB_ARCHIVED ? 0xff : 0x00);
 
@@ -1664,13 +1664,13 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
 	static const uint16_t pids[] = {
-		PID_OS_MODE, PID_DEVICE_TYPE, PID_PRODUCT_NAME, PID_MAIN_PART_ID,
-		PID_HW_VERSION, PID_LANGUAGE_ID, PID_SUBLANG_ID,
-		PID_BOOT_BUILD_NUMBER, PID_BOOT_VERSION, PID_OS_BUILD_NUMBER, PID_OS_VERSION,
-		PID_PHYS_RAM, PID_USER_RAM, PID_FREE_RAM,
-		PID_PHYS_FLASH, PID_USER_FLASH, PID_FREE_FLASH,
-		PID_LCD_WIDTH, PID_LCD_HEIGHT, PID_BITS_PER_PIXEL, PID_COLOR_AVAILABLE,
-		PID_BATTERY, PID_EXACT_MATH, PID_CLASSIC_CLK_SUPPORT
+		DUSB_PID_OS_MODE, DUSB_PID_DEVICE_TYPE, DUSB_PID_PRODUCT_NAME, DUSB_PID_MAIN_PART_ID,
+		DUSB_PID_HW_VERSION, DUSB_PID_LANGUAGE_ID, DUSB_PID_SUBLANG_ID,
+		DUSB_PID_BOOT_BUILD_NUMBER, DUSB_PID_BOOT_VERSION, DUSB_PID_OS_BUILD_NUMBER, DUSB_PID_OS_VERSION,
+		DUSB_PID_PHYS_RAM, DUSB_PID_USER_RAM, DUSB_PID_FREE_RAM,
+		DUSB_PID_PHYS_FLASH, DUSB_PID_USER_FLASH, DUSB_PID_FREE_FLASH,
+		DUSB_PID_LCD_WIDTH, DUSB_PID_LCD_HEIGHT, DUSB_PID_BITS_PER_PIXEL, DUSB_PID_COLOR_AVAILABLE,
+		DUSB_PID_BATTERY, DUSB_PID_EXACT_MATH, DUSB_PID_CLASSIC_CLK_SUPPORT
 	};
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	DUSBCalcParam **params;

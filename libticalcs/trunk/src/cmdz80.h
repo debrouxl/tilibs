@@ -35,17 +35,17 @@ TIEXPORT3 uint8_t TICALL tiz80_handle_to_dbus_mid(CalcHandle * handle);
 
 static inline uint8_t tiz80_handle_to_dbus_mid_7383p(CalcHandle * handle)
 {
-	return (handle != NULL) ? ((handle->model == CALC_TI73) ? PC_TI73 : PC_TI83p) : 0;
+	return (handle != NULL) ? ((handle->model == CALC_TI73) ? DBUS_MID_PC_TI73 : DBUS_MID_PC_TI83p) : 0;
 }
 
 static inline uint8_t tiz80_handle_to_dbus_mid_8283(CalcHandle * handle)
 {
-	return (handle != NULL) ? ((handle->model == CALC_TI82) ? PC_TI82 : PC_TI83) : 0;
+	return (handle != NULL) ? ((handle->model == CALC_TI82) ? DBUS_MID_PC_TI82 : DBUS_MID_PC_TI83) : 0;
 }
 
 static inline uint8_t tiz80_handle_to_dbus_mid_8586(CalcHandle * handle)
 {
-	return (handle != NULL) ? ((handle->model == CALC_TI85) ? PC_TI85 : PC_TI86) : 0;
+	return (handle != NULL) ? ((handle->model == CALC_TI85) ? DBUS_MID_PC_TI85 : DBUS_MID_PC_TI86) : 0;
 }
 
 
@@ -118,7 +118,7 @@ TIEXPORT3 int TICALL ti82_send_VAR(CalcHandle *handle, uint16_t varsize, uint8_t
 #define ti82_send_ACK(handle) tiz80_send_ACK(handle, tiz80_handle_to_dbus_mid_8283(handle))
 #define ti82_send_ERR(handle) tiz80_send_ERR(handle, tiz80_handle_to_dbus_mid_8283(handle))
 #define ti82_send_SCR(handle) tiz80_send_SCR(handle, tiz80_handle_to_dbus_mid_8283(handle))
-#define ti82_send_KEY(handle, scancode) tiz80_send_KEY(handle, scancode, PC_TI83)
+#define ti82_send_KEY(handle, scancode) tiz80_send_KEY(handle, scancode, DBUS_MID_PC_TI83)
 #define ti82_send_EOT(handle) tiz80_send_EOT(handle, tiz80_handle_to_dbus_mid_8283(handle))
 TIEXPORT3 int TICALL ti82_send_REQ(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname);
 TIEXPORT3 int TICALL ti82_send_RTS(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname);

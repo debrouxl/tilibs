@@ -347,7 +347,7 @@ static void torture_nsp(void)
 static void torture_dusb(void)
 {
     void * ptr;
-    DUSBModeSet mode = MODE_STARTUP;
+    DUSBModeSet mode = DUSB_MODE_STARTUP;
 
 // dusb_rpkt.c
     PRINTF(dusb_rpkt_type2name, STR, 0);

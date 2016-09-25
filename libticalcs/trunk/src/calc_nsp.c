@@ -177,7 +177,7 @@ static int		is_ready	(CalcHandle* handle)
 
 		// Now use ECHO packet as ready check
 
-		ret = nsp_session_open(handle, SID_ECHO);
+		ret = nsp_session_open(handle, NSP_SID_ECHO);
 		if (!ret)
 		{
 			ret = nsp_cmd_s_echo(handle, sizeof(echostr), (uint8_t *)echostr);
@@ -234,7 +234,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		}
 
 		// Do screenshot
-		ret = nsp_session_open(handle, SID_SCREEN_RLE);
+		ret = nsp_session_open(handle, NSP_SID_SCREEN_RLE);
 		if (!ret)
 		{
 			ret = nsp_cmd_s_screen_rle(handle, 0);
@@ -467,7 +467,7 @@ static int get_dirlist (CalcHandle* handle, GNode** vars, GNode** apps)
 	}
 	g_node_append(*apps, root);
 
-	ret = nsp_session_open(handle, SID_FILE_MGMT);
+	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (!ret)
 	{
 		ret = nsp_cmd_s_dir_attributes(handle, "/");
@@ -479,7 +479,7 @@ static int get_dirlist (CalcHandle* handle, GNode** vars, GNode** apps)
 				ret = nsp_session_close(handle);
 				if (!ret)
 				{
-					ret = nsp_session_open(handle, SID_FILE_MGMT);
+					ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 					if (!ret)
 					{
 						ret = enumerate_folder(handle, vars, "/");
@@ -500,10 +500,10 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
 	int ret;
 
-	ret = nsp_session_open(handle, SID_DEV_INFOS);
+	ret = nsp_session_open(handle, NSP_SID_DEV_INFOS);
 	if (!ret)
 	{
-		ret = nsp_cmd_s_dev_infos(handle, CMD_DI_VERSION);
+		ret = nsp_cmd_s_dev_infos(handle, NSP_CMD_DI_VERSION);
 		if (!ret)
 		{
 			uint32_t size;
@@ -562,7 +562,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	//	return ERR_ABORT;
 	//}
 
-	ret = nsp_session_open(handle, SID_FILE_MGMT);
+	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (ret)
 	{
 		return ret;
@@ -598,7 +598,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	char *path;
 	int ret;
 
-	ret = nsp_session_open(handle, SID_FILE_MGMT);
+	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (ret)
 	{
 		return ret;
@@ -626,7 +626,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 				}
 				if (!ret)
 				{
-					ret = nsp_cmd_s_status(handle, ERR_OK);
+					ret = nsp_cmd_s_status(handle, NSP_ERR_OK);
 					if (!ret)
 					{
 						VarEntry *ve;
@@ -676,7 +676,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 	do
 	{
-		ret = nsp_session_open(handle, SID_OS_INSTALL);
+		ret = nsp_session_open(handle, NSP_SID_OS_INSTALL);
 		if (!ret)
 		{
 			uint8_t value;
@@ -734,10 +734,10 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 {
 	int ret;
 
-	ret = nsp_session_open(handle, SID_DEV_INFOS);
+	ret = nsp_session_open(handle, NSP_SID_DEV_INFOS);
 	if (!ret)
 	{
-		ret = nsp_cmd_s_dev_infos(handle, CMD_DI_VERSION);
+		ret = nsp_cmd_s_dev_infos(handle, NSP_CMD_DI_VERSION);
 		if (!ret)
 		{
 			uint32_t size;
@@ -777,7 +777,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 		return ERR_OPEN_FILE;
 	}
 
-	ret = nsp_session_open(handle, SID_FILE_MGMT);
+	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (!ret)
 	{
 		ret = nsp_cmd_s_get_file(handle, "../phoenix/install/TI-Nspire.tnc");
@@ -796,7 +796,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 					ret = nsp_cmd_r_file_contents(handle, &varsize, &data);
 					if (!ret)
 					{
-						ret = nsp_cmd_s_status(handle, ERR_OK);
+						ret = nsp_cmd_s_status(handle, NSP_ERR_OK);
 						if (!ret)
 						{
 							if (fwrite(data, varsize, 1, f) < 1)
@@ -824,7 +824,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	char *path;
 	int ret;
 
-	ret = nsp_session_open(handle, SID_FILE_MGMT);
+	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (ret)
 	{
 		return ret;
@@ -854,7 +854,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	char *path;
 	int ret;
 
-	ret = nsp_session_open(handle, SID_FILE_MGMT);
+	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (ret)
 	{
 		return ret;
@@ -882,7 +882,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
 	int ret;
 
-	ret = nsp_session_open(handle, SID_DEV_INFOS);
+	ret = nsp_session_open(handle, NSP_SID_DEV_INFOS);
 	if (ret)
 	{
 		return ret;
@@ -893,7 +893,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		uint32_t size;
 		uint8_t cmd, *data;
 
-		ret = nsp_cmd_s_dev_infos(handle, CMD_DI_MODEL);
+		ret = nsp_cmd_s_dev_infos(handle, NSP_CMD_DI_MODEL);
 		if (ret)
 		{
 			break;
@@ -909,7 +909,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 		g_free(data);
 
-		ret = nsp_cmd_s_dev_infos(handle, CMD_DI_VERSION);
+		ret = nsp_cmd_s_dev_infos(handle, NSP_CMD_DI_VERSION);
 		if (ret)
 		{
 			break;
@@ -1021,7 +1021,7 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	char *path1, *path2;
 	int ret;
 
-	ret = nsp_session_open(handle, SID_FILE_MGMT);
+	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (ret)
 	{
 		return ret;

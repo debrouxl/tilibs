@@ -29,61 +29,61 @@ extern "C" {
 #endif
 
 // Services IDs
-#define SID_NULL                0x4001
-#define SID_ECHO                0x4002
+#define NSP_SID_NULL                    0x4001
+#define NSP_SID_ECHO                    0x4002
 
-#define SID_DEV_INFOS           0x4020
-#define SID_SCREENSHOT          0x4021
-#define SID_SCREEN_RLE          0x4024
+#define NSP_SID_DEV_INFOS               0x4020
+#define NSP_SID_SCREENSHOT              0x4021
+#define NSP_SID_SCREEN_RLE              0x4024
 
-#define SID_KEYPRESSES          0x4042
+#define NSP_SID_KEYPRESSES              0x4042
 
-#define SID_LOGIN               0x4050
-#define SID_MESSAGES            0x4051
+#define NSP_SID_LOGIN                   0x4050
+#define NSP_SID_MESSAGES                0x4051
 
-#define SID_FILE_MGMT           0x4060
+#define NSP_SID_FILE_MGMT               0x4060
 
-#define SID_OS_INSTALL          0x4080
+#define NSP_SID_OS_INSTALL              0x4080
 
 // Errors
-#define ERR_OK					0x00
-#define ERR_DIR_UNKNOWN			0x0a
-#define ERR_DIRNAME_INVALID		0x0f
-#define ERR_LIST_FAILED			0x10
-#define ERR_NO_MORE_TO_LIST		0x11
-#define ERR_FILENAME_INVALID	0x14
-#define ERR_NO_FILE_EXTENSION	0x15
+#define NSP_ERR_OK                      0x00
+#define NSP_ERR_DIR_UNKNOWN             0x0a
+#define NSP_ERR_DIRNAME_INVALID         0x0f
+#define NSP_ERR_LIST_FAILED             0x10
+#define NSP_ERR_NO_MORE_TO_LIST         0x11
+#define NSP_ERR_FILENAME_INVALID        0x14
+#define NSP_ERR_NO_FILE_EXTENSION       0x15
 
 // Status command
-#define CMD_STATUS		0xff
+#define NSP_CMD_STATUS                  0xff
 
 // Device Information command
-#define CMD_DI_VERSION	0x01
-#define CMD_DI_MODEL	0x02
-#define CMD_DI_FEXT		0x03
+#define NSP_CMD_DI_VERSION              0x01
+#define NSP_CMD_DI_MODEL                0x02
+#define NSP_CMD_DI_FEXT                 0x03
 
 // File Management commands
-#define CMD_FM_PUT_FILE		0x03
-#define CMD_FM_OK			0x04
-#define CMD_FM_CONTENTS		0x05
-#define CMD_FM_PUT_FILE_EOT	0x06
-#define CMD_FM_GET_FILE		0x07
-#define CMD_FM_DEL_FILE		0x09
-#define CMD_FM_NEW_FOLDER	0x0a
-#define CMD_FM_DEL_FOLDER	0x0b
-#define CMD_FM_COPY_FILE	0x0c
-#define CMD_FM_DIRLIST_INIT	0x0d
-#define CMD_FM_DIRLIST_NEXT	0x0e
-#define CMD_FM_DIRLIST_DONE	0x0f
-#define CMD_FM_DIRLIST_ENT	0x10
-#define CMD_FM_ATTRIBUTES	0x20
-#define CMD_FM_RENAME_FILE	0x21
+#define NSP_CMD_FM_PUT_FILE             0x03
+#define NSP_CMD_FM_OK                   0x04
+#define NSP_CMD_FM_CONTENTS             0x05
+#define NSP_CMD_FM_PUT_FILE_EOT         0x06
+#define NSP_CMD_FM_GET_FILE             0x07
+#define NSP_CMD_FM_DEL_FILE             0x09
+#define NSP_CMD_FM_NEW_FOLDER           0x0a
+#define NSP_CMD_FM_DEL_FOLDER           0x0b
+#define NSP_CMD_FM_COPY_FILE            0x0c
+#define NSP_CMD_FM_DIRLIST_INIT         0x0d
+#define NSP_CMD_FM_DIRLIST_NEXT         0x0e
+#define NSP_CMD_FM_DIRLIST_DONE         0x0f
+#define NSP_CMD_FM_DIRLIST_ENT          0x10
+#define NSP_CMD_FM_ATTRIBUTES           0x20
+#define NSP_CMD_FM_RENAME_FILE          0x21
 
 // OS Installation commands
-#define CMD_OS_INSTALL		0x03
-#define CMD_OS_OK			0x04
-#define CMD_OS_CONTENTS		0x05
-#define CMD_OS_PROGRESS		0x06
+#define NSP_CMD_OS_INSTALL              0x03
+#define NSP_CMD_OS_OK                   0x04
+#define NSP_CMD_OS_CONTENTS             0x05
+#define NSP_CMD_OS_PROGRESS             0x06
 
 // Structures
 // ...
