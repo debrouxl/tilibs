@@ -3,6 +3,9 @@ SubVersion: $Id$
 Log of changes (libticalcs):
 
 - xx/xx/201x, version 1.1.9: debrouxl
+	- fixes for 84+(SE) DUSB and TI-eZ80 ROM dumping issues reported by Irrelium, Pie-jacke and Adriweb on IRC.
+	- use naming prefixes in dbus_pkt.h, dusb_cmd.h, nsp_cmd.h; fallout in other files.
+	- lots of new DUSB parameter IDs, DUSB-related code hardening, new entries in InfosMask / CalcInfos, new functions related to DUSB vpkts, DUSB CAs, DUSB CPs, NSP vpkts, and the corresponding torture tests.
 	- factor out more code in cmd{z80,68k}.c, thanks to a new helper function.
 	- expose a bunch of tiz80_* and ti68k_* DBUS functions, which both raises flexibility and allows rewriting their callers as macros, factoring a bunch of (quasi-)duplicated code.
 	- add Nspire key definitions file, use a mixture of generic and Nspire-specific send key in test_ticalcs_2.

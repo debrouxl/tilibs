@@ -1284,6 +1284,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 	ret = get_version(handle, &infos);
 	if (!ret)
 	{
+		PAUSE(100);
 		if (infos.model == CALC_TI84P_USB)
 		{
 			ret = rd_send(handle, "romdump.8Xp", romDumpSize84p, romDump84p);
@@ -1313,15 +1314,15 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	ret = get_version(handle, &infos);
 	if (!ret)
 	{
+		PAUSE(100);
 		if (infos.model == CALC_TI84PCE_USB || infos.model == CALC_TI83PCE_USB)
 		{
 			// The TI-eZ80 series does no longer provide direct remote program launch...
-			// Therefore, use a less sophisticated and more complicated way to queue keypresses, which works
-			// on the 84+ provided reverse endianness of key codes > 256 is used (FC9C).
+			// Therefore, use a less sophisticated and more complicated way to queue keypresses.
 			unsigned int i;
 			unsigned int iterations;
 			static const uint16_t keys[] = {
-				0x40, 0x09, 0x09, 0x9CFC, /* Quit, Clear, Clear, Asm( */
+				0x40, 0x09, 0x09, 0xFC9C, /* Quit, Clear, Clear, Asm( */
 				0xDA, 0xAB, 0xA8, 0xA6,   /* prgm, R, O, M */
 				0x9D, 0xAE, 0xA6, 0xA9,   /* D, U, M, P */
 				0x86                      /* ) */

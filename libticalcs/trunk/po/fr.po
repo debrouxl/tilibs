@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-09-25 22:25+0200\n"
+"POT-Creation-Date: 2016-10-02 21:38+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -44,15 +44,15 @@ msgstr "Nom FLASH:  \"%s\""
 msgid "FLASH size: %i bytes."
 msgstr "Taille FLASH: %i octets."
 
-#: src/calc_73.c:1278 src/calc_84p.c:1455 src/calc_9x.c:1448 src/calc_89t.c:844
+#: src/calc_73.c:1278 src/calc_84p.c:1456 src/calc_9x.c:1448 src/calc_89t.c:844
 msgid "Setting clock..."
 msgstr "Mise à jour de l'horloge..."
 
-#: src/calc_73.c:1324 src/calc_84p.c:1534 src/calc_9x.c:1492 src/calc_89t.c:923
+#: src/calc_73.c:1324 src/calc_84p.c:1535 src/calc_9x.c:1492 src/calc_89t.c:923
 msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
-#: src/calc_73.c:1400 src/calc_84p.c:1597 src/calc_8x.c:1255 src/calc_9x.c:1556
+#: src/calc_73.c:1400 src/calc_84p.c:1598 src/calc_8x.c:1255 src/calc_9x.c:1556
 #: src/calc_9x.c:1588 src/calc_89t.c:1000 src/calc_nsp.c:835
 #, c-format
 msgid "Deleting %s..."
@@ -94,37 +94,37 @@ msgstr "En-tête envoyé complètement"
 msgid "Receiving certificate"
 msgstr "Réception du certificat"
 
-#: src/calc_84p.c:1680 src/calc_89t.c:1189
+#: src/calc_84p.c:1681 src/calc_89t.c:1189
 msgid "Getting version..."
 msgstr "Récupération de la version..."
 
-#: src/calc_84p.c:1929 src/calc_84p.c:1938 src/calc_84p.c:1947
-#: src/calc_84p.c:1963 src/calc_84p.c:1971
+#: src/calc_84p.c:1930 src/calc_84p.c:1939 src/calc_84p.c:1948
+#: src/calc_84p.c:1964 src/calc_84p.c:1972
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr "Membre inconnu de la famille 84+ avec product_id=%d hw_version=%d"
 
-#: src/calc_84p.c:1988
+#: src/calc_84p.c:1989
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus via DirectLink"
 
-#: src/calc_84p.c:2059
+#: src/calc_84p.c:2060
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr "TI-84 Plus C Silver Edition via DirectLink"
 
-#: src/calc_84p.c:2130
+#: src/calc_84p.c:2131
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr "TI-83 Premium CE via DirectLink"
 
-#: src/calc_84p.c:2201
+#: src/calc_84p.c:2202
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr "TI-84 Plus CE via DirectLink"
 
-#: src/calc_84p.c:2272
+#: src/calc_84p.c:2273
 msgid "TI-82 Advanced thru DirectLink"
 msgstr "TI-82 Advanced via DirectLink"
 
-#: src/calc_84p.c:2343
+#: src/calc_84p.c:2344
 msgid "TI-84 Plus T thru DirectLink"
 msgstr "TI-84 Plus T via DirectLink"
 
