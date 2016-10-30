@@ -131,7 +131,7 @@ The template relies on a group called 'plugdev'. If it doesn't exist, you will
 have to create it or choose another group which matches better your system.
 
 You will have to add the user to the group 'plugdev' (by using one of the
-user/group management tools, or editing /etc/group to add your username after
-the ':'). For example, the line will become:
+user/group management tools, or editing /etc/group + /etc/gshadow to add your
+username after the ':'). For example, the line will become:
 
         plugdev:x:46:romain

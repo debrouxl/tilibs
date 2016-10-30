@@ -499,13 +499,19 @@ static int slv_reset(CableHandle *h)
 		if (ret != 0)
 		{
 			ticables_warning("libusb_device_reset (%s).\n", tigl_strerror(ret));
-			return ERR_LIBUSB_RESET;
+			/* On Mac OS X, reenumeration isn't automatic, so let's not return here. */
+#ifndef __MACOSX__
+			ret = ERR_LIBUSB_RESET;
+#else
+			ret = 0;
+#endif
 		}
-		else
+
+		if (!ret)
 		{
 			// lib-usb doc: after calling usb_reset, the device will need to re-enumerate
-			// and thusly, requires you to find the new device and open a new handle. The
-			// handle used to call usb_reset will no longer work.
+			// and therefore, requires you to find the new device and open a new handle.
+			// The handle used to call usb_reset will no longer work.
 #ifdef __WIN32__
 			Sleep(500);
 #else

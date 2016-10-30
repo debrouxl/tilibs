@@ -76,7 +76,7 @@ typedef enum
 typedef enum 
 {
 	PORT_0 = 0,
-	PORT_1, PORT_2, PORT_3, PORT_4,
+	PORT_1, PORT_2, PORT_3, PORT_4, PORT_MAX
 } CablePort;
 
 /**

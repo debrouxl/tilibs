@@ -570,43 +570,47 @@ static int slv_reset(CableHandle *h)
 #if !defined(__BSD__)
 	/* Reset both endpoints (send an URB_FUNCTION_RESET_PIPE) */
 	ret = tigl_reset(h);
-	if (ret)
+	if (!ret)
 	{
-		return ret;
-	}
-
-	/* Reset USB port (send an IOCTL_INTERNAL_USB_RESET_PORT) */
 #ifdef __WIN32__
-	/* Reset USB port (send an IOCTL_INTERNAL_USB_RESET_PORT) */
-	ret = usb_reset_ex(uHdl, USB_RESET_TYPE_RESET_PORT);
+		/* Reset USB port (send an IOCTL_INTERNAL_USB_RESET_PORT) */
+		ret = usb_reset_ex(uHdl, USB_RESET_TYPE_RESET_PORT);
 #else
-	ret = usb_reset(uHdl);
+		ret = usb_reset(uHdl);
 #endif
 
-	if (ret < 0) 
-	{
-		ticables_warning("usb_reset (%s).\n", usb_strerror());
-		return ERR_LIBUSB_RESET;
-	}
-	else
-	{
-		// lib-usb doc: after calling usb_reset, the device will need to re-enumerate 
-		// and thusly, requires you to find the new device and open a new handle. The 
-		// handle used to call usb_reset will no longer work.
-#ifdef __WIN32__
-		Sleep(500);
+		if (ret < 0)
+		{
+			ticables_warning("usb_reset (%s).\n", usb_strerror());
+			/* On Mac OS X, reenumeration isn't automatic, so let's not return here. */
+#ifndef __MACOSX__
+			ret = ERR_LIBUSB_RESET;
 #else
-		usleep(500000);
+			ret = 0;
 #endif
-		ret = slv_close(h);
+		}
+
 		if (!ret)
 		{
-			h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
-			ret = slv_open(h);
+			// lib-usb doc: after calling usb_reset, the device will need to re-enumerate
+			// and therefore, requires you to find the new device and open a new handle.
+			// The handle used to call usb_reset will no longer work.
+#ifdef __WIN32__
+			Sleep(500);
+#else
+			usleep(500000);
+#endif
+			ret = slv_close(h);
+			if (!ret)
+			{
+				h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
+				ret = slv_open(h);
+			}
 		}
-		return ret;
 	}
 #endif
+
+	return ret;
 }
 
 // convenient function which send one or more bytes
