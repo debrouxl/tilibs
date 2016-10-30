@@ -615,7 +615,7 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 				memcpy(q, p, sizeof(FlashContent));
 
 				// TI9x part
-				if (tifiles_calc_is_ti9x(content->model))
+				if (tifiles_calc_is_ti9x(content->model) || ticonv_model_is_tiez80(content->model))
 				{
 					if (p->data_part)
 					{

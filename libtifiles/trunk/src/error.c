@@ -23,7 +23,9 @@
 #include <string.h>
 #include <glib.h>
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include "tifiles.h"
 #include "gettext.h"
