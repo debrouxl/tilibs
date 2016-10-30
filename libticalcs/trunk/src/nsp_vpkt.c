@@ -81,7 +81,12 @@ TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id)
 
 // Creation/Destruction/Garbage Collecting of packets
 
-TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd)
+TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new(CalcHandle * handle)
+{
+	return nsp_vtl_pkt_new_ex(handle, 0, 0, 0, 0, 0, 0, NULL);
+}
+
+TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data)
 {
 	NSPVirtualPacket* vtl = NULL;
 
@@ -91,7 +96,7 @@ TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint3
 
 		vtl = g_malloc0(sizeof(NSPVirtualPacket)); // aborts the program if it fails.
 
-		nsp_vtl_pkt_fill(vtl, size, src_addr, src_port, dst_addr, dst_port, cmd, size ? g_malloc0(size + 1) : NULL); // aborts the program if it fails.
+		nsp_vtl_pkt_fill(vtl, size, src_addr, src_port, dst_addr, dst_port, cmd, data); // aborts the program if it fails.
 
 		vtl_pkt_list = g_list_append((GList *)(handle->priv.nsp_vtl_pkt_list), vtl);
 		handle->priv.nsp_vtl_pkt_list = (void *)vtl_pkt_list;
@@ -102,11 +107,6 @@ TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint3
 	}
 
 	return vtl;
-}
-
-TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new(CalcHandle * handle)
-{
-	return nsp_vtl_pkt_new_ex(handle, 0, 0, 0, 0, 0, 0);
 }
 
 TIEXPORT3 void TICALL nsp_vtl_pkt_fill(NSPVirtualPacket* vtl, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data)
@@ -148,6 +148,40 @@ TIEXPORT3 void TICALL nsp_vtl_pkt_del(CalcHandle *handle, NSPVirtualPacket* vtl)
 
 	g_free(vtl->data);
 	g_free(vtl);
+}
+
+TIEXPORT3 void * TICALL nsp_vtl_pkt_alloc_data(size_t size)
+{
+	return g_malloc0(size + 1);
+}
+
+TIEXPORT3 NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(NSPVirtualPacket* vtl, size_t size)
+{
+	if (vtl != NULL)
+	{
+		if (size + 1 > size)
+		{
+			uint8_t * data = g_realloc(vtl->data, size + 1);
+			if (size > vtl->size)
+			{
+				// The previous time, vtl->size + 1 bytes were allocated and initialized.
+				// This time, we've allocated size + 1 bytes, so we need to initialize size - vtl->size extra bytes.
+				memset(data + vtl->size + 1, 0x00, size - vtl->size);
+			}
+			vtl->data = data;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	return vtl;
+}
+
+TIEXPORT3 void TICALL nsp_vtl_pkt_free_data(void * data)
+{
+	return g_free(data);
 }
 
 // Session Management

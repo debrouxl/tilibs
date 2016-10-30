@@ -268,7 +268,10 @@ typedef enum
 	INFOS_CLOCK_SPEED    = (1 << 21),
 	INFOS_PRODUCT_ID     = (1 << 22),
 	INFOS_EXACT_MATH     = (1 << 23),
+	INFOS_CLOCK_SUPPORT  = (1 << 24),
+	INFOS_COLOR_SCREEN   = (1 << 25),
 
+	// INFOS_MORE_INFOS     = (1 << 30), /* Some day ? Reserved value for signaling more bits are available elsewhere */
 	INFOS_CALC_MODEL     = 0x80000000
 } InfosMask;
 
@@ -567,13 +570,13 @@ typedef struct
 	char		product_id[32];
 	uint32_t	product_number;		// obsolete, replaced by product_id
 	char		main_calc_id[32];	// obsolete, replaced by product_id
-	uint16_t	hw_version;			// hand-held dependent
+	uint16_t	hw_version;			// hand-held-dependent
 	uint8_t		language_id;
 	uint8_t		sub_lang_id;
-	uint16_t	device_type;		// hand-held dependent
-	char		boot_version[10];
-	char		boot2_version[10];
-	char		os_version[10];
+	uint16_t	device_type;		// hand-held-dependent
+	char		boot_version[16];
+	char		boot2_version[16];
+	char		os_version[16];
 	uint64_t	ram_phys;
 	uint64_t	ram_user;
 	uint64_t	ram_free;
@@ -584,9 +587,11 @@ typedef struct
 	uint16_t	lcd_height;
 	uint8_t		battery;			// 0 = low, 1 = good
 	uint8_t		run_level;			// 1 = boot, 2 = OS
-	uint16_t	bits_per_pixel;		// 1 or 4
+	uint16_t	bits_per_pixel;		// 1, 4 or 16
 	uint16_t	clock_speed;
 	uint8_t		exact_math;
+	uint8_t		clock_support;
+	uint8_t		color_screen;
 } CalcInfos;
 
 /**

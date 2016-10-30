@@ -124,7 +124,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	ret = dusb_cmd_s_param_request(handle, size, pid);
 	while (!ret)
 	{
-		ret = dusb_cmd_r_param_data(handle, 1, param);
+		ret = dusb_cmd_r_param_data(handle, size, param);
 		if (!ret)
 		{
 			if (!param[0]->ok || param[0]->size != TI89T_COLS * TI89T_ROWS / 8)
@@ -264,21 +264,35 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	int ret;
 
 	params = dusb_cp_new_array(handle, size);
-	ret = dusb_cmd_s_param_request(handle, size, pids);
-	if (!ret)
+	if (params != NULL)
 	{
-		ret = dusb_cmd_r_param_data(handle, size, params);
+		ret = dusb_cmd_s_param_request(handle, size, pids);
 		if (!ret)
 		{
-			*ram = (  (((uint32_t)(params[0]->data[4])) << 24)
-			        | (((uint32_t)(params[0]->data[5])) << 16)
-			        | (((uint32_t)(params[0]->data[6])) <<  8)
-			        | (((uint32_t)(params[0]->data[7]))      ));
-			*flash = (  (((uint32_t)(params[1]->data[4])) << 24)
-			          | (((uint32_t)(params[1]->data[5])) << 16)
-			          | (((uint32_t)(params[1]->data[6])) <<  8)
-			          | (((uint32_t)(params[1]->data[7]))      ));
+			ret = dusb_cmd_r_param_data(handle, size, params);
+			if (!ret)
+			{
+				if (params[0]->ok && params[0]->size == 8 && params[1]->ok && params[1]->size == 8)
+				{
+					*ram = (  (((uint32_t)(params[0]->data[4])) << 24)
+						| (((uint32_t)(params[0]->data[5])) << 16)
+						| (((uint32_t)(params[0]->data[6])) <<  8)
+						| (((uint32_t)(params[0]->data[7]))      ));
+					*flash = (  (((uint32_t)(params[1]->data[4])) << 24)
+						  | (((uint32_t)(params[1]->data[5])) << 16)
+						  | (((uint32_t)(params[1]->data[6])) <<  8)
+						  | (((uint32_t)(params[1]->data[7]))      ));
+				}
+				else
+				{
+					ret = ERR_INVALID_PACKET;
+				}
+			}
 		}
+	}
+	else
+	{
+		ret = ERR_MALLOC;
 	}
 	dusb_cp_del_array(handle, size, params);
 
@@ -714,33 +728,40 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 {
 	static const uint16_t pid[] = { PID_FULL_ID };
 	const int size = 1;
-	DUSBCalcParam **param;
+	DUSBCalcParam **params;
 	int ret;
 
 	ticalcs_strlcpy(update_->text, "ID-LIST", sizeof(update_->text));
 	update_label();
 
-	param = dusb_cp_new_array(handle, size);
-	ret = dusb_cmd_s_param_request(handle, size, pid);
-	if (!ret)
+	params = dusb_cp_new_array(handle, size);
+	if (params != NULL)
 	{
-		ret = dusb_cmd_r_param_data(handle, 1, param);
+		ret = dusb_cmd_s_param_request(handle, size, pid);
 		if (!ret)
 		{
-			if (!param[0]->ok)
+			ret = dusb_cmd_r_param_data(handle, size, params);
+			if (!ret)
 			{
-				ret = ERR_INVALID_PACKET;
-			}
-			else
-			{
-				memcpy(&id[0], &(param[0]->data[1]), 5);
-				memcpy(&id[5], &(param[0]->data[7]), 5);
-				memcpy(&id[10], &(param[0]->data[13]), 5);
-				id[14] = '\0';
+				if (params[0]->ok && params[0]->size == 18)
+				{
+					memcpy(&id[0], &(params[0]->data[1]), 5);
+					memcpy(&id[5], &(params[0]->data[7]), 5);
+					memcpy(&id[10], &(params[0]->data[13]), 5);
+					id[14] = '\0';
+				}
+				else
+				{
+					ret = ERR_INVALID_PACKET;
+				}
 			}
 		}
 	}
-	dusb_cp_del_array(handle, size, param);
+	else
+	{
+		ret = ERR_MALLOC;
+	}
+	dusb_cp_del_array(handle, size, params);
 
 	return ret;
 }
@@ -825,7 +846,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 
 	do
 	{
-		param = dusb_cp_new(handle, PID_CLK_SEC, 4);
+		param = dusb_cp_new(handle, PID_CLK_SEC_SINCE_1997, 4);
 		param->data[0] = MSB(MSW(calc_time));
 		param->data[1] = LSB(MSW(calc_time));
 		param->data[2] = MSB(LSW(calc_time));
@@ -890,7 +911,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 
 static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 {
-	static const uint16_t pids[4] = { PID_CLK_SEC, PID_CLK_DATE_FMT, PID_CLK_TIME_FMT, PID_CLK_ON };
+	static const uint16_t pids[5] = { PID_CLASSIC_CLK_SUPPORT, PID_CLK_SEC_SINCE_1997, PID_CLK_DATE_FMT, PID_CLK_TIME_FMT, PID_CLK_ON };
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	DUSBCalcParam **params;
 	uint32_t calc_time;
@@ -909,41 +930,55 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 		ret = dusb_cmd_r_param_data(handle, size, params);
 		if (!ret)
 		{
-			if (!params[0]->ok)
+			// It's not a fatal error if PID_CLASSIC_CLK_SUPPORT is not handled.
+			if (params[0]->ok && params[0]->size == 1)
 			{
-				ret = ERR_INVALID_PACKET;
+				if (!params[0]->data[0])
+				{
+					ret = ERR_UNSUPPORTED;
+				}
 			}
 			else
 			{
-				// and computes
-				calc_time = (((uint32_t)params[0]->data[0]) << 24) | (((uint32_t)params[0]->data[1]) << 16) | (((uint32_t)params[0]->data[2]) <<  8) | (params[0]->data[3] <<  0);
+				if (   params[1]->ok && params[0]->size == 4
+				    && params[2]->ok && params[1]->size == 1
+				    && params[3]->ok && params[2]->size == 1
+				    && params[4]->ok && params[3]->size == 1)
+				{
+					// and computes
+					calc_time = (((uint32_t)params[0]->data[0]) << 24) | (((uint32_t)params[0]->data[1]) << 16) | (((uint32_t)params[0]->data[2]) <<  8) | (params[0]->data[3] <<  0);
 
-				time(&now);	// retrieve current DST setting
-				memcpy(&ref, localtime(&now), sizeof(struct tm));;
-				ref.tm_year = 1997 - 1900;
-				ref.tm_mon = 0;
-				ref.tm_yday = 0;
-				ref.tm_mday = 1;
-				ref.tm_wday = 3;
-				ref.tm_hour = 0;
-				ref.tm_min = 0;
-				ref.tm_sec = 0;
-				//ref.tm_isdst = 1;
-				r = mktime(&ref);
+					time(&now);	// retrieve current DST setting
+					memcpy(&ref, localtime(&now), sizeof(struct tm));
+					ref.tm_year = 1997 - 1900;
+					ref.tm_mon = 0;
+					ref.tm_yday = 0;
+					ref.tm_mday = 1;
+					ref.tm_wday = 3;
+					ref.tm_hour = 0;
+					ref.tm_min = 0;
+					ref.tm_sec = 0;
+					//ref.tm_isdst = 1;
+					r = mktime(&ref);
 
-				c = r + calc_time;
-				cur = localtime(&c);
+					c = r + calc_time;
+					cur = localtime(&c);
 
-				_clock->year = cur->tm_year + 1900;
-				_clock->month = cur->tm_mon + 1;
-				_clock->day = cur->tm_mday;
-				_clock->hours = cur->tm_hour;
-				_clock->minutes = cur->tm_min;
-				_clock->seconds = cur->tm_sec;
+					_clock->year = cur->tm_year + 1900;
+					_clock->month = cur->tm_mon + 1;
+					_clock->day = cur->tm_mday;
+					_clock->hours = cur->tm_hour;
+					_clock->minutes = cur->tm_min;
+					_clock->seconds = cur->tm_sec;
 
-				_clock->date_format = params[1]->data[0] == 0 ? 3 : params[1]->data[0];
-				_clock->time_format = params[2]->data[0] ? 24 : 12;
-				_clock->state = params[3]->data[0];
+					_clock->date_format = params[1]->data[0] == 0 ? 3 : params[1]->data[0];
+					_clock->time_format = params[2]->data[0] ? 24 : 12;
+					_clock->state = params[3]->data[0];
+				}
+				else
+				{
+					ret = ERR_INVALID_PACKET;
+				}
 			}
 		}
 	}
@@ -1142,7 +1177,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		PID_LCD_WIDTH, PID_LCD_HEIGHT,
 	};
 	static const uint16_t pids2[] = {
-		 PID_BATTERY, PID_OS_MODE,
+		PID_BITS_PER_PIXEL, PID_BATTERY, PID_OS_MODE, PID_CLASSIC_CLK_SUPPORT
 	};	// Titanium can't manage more than 16 parameters at a time
 	const int size1 = sizeof(pids1) / sizeof(uint16_t);
 	const int size2 = sizeof(pids2) / sizeof(uint16_t);
@@ -1161,147 +1196,206 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	do
 	{
 		ret = dusb_cmd_s_param_request(handle, size1, pids1);
+		if (!ret)
+		{
+			ret = dusb_cmd_r_param_data(handle, size1, params1);
+			if (!ret)
+			{
+				ret = dusb_cmd_s_param_request(handle, size2, pids2);
+				if (!ret)
+				{
+					ret = dusb_cmd_r_param_data(handle, size2, params2);
+				}
+			}
+		}
+
 		if (ret)
 		{
 			break;
 		}
 
-		ret = dusb_cmd_r_param_data(handle, size1, params1);
-		if (ret)
+		if (params1[i]->ok)
 		{
-			break;
+			ticalcs_strlcpy(infos->product_name, (char *)params1[i]->data, sizeof(infos->product_name));
+			infos->mask |= INFOS_PRODUCT_NAME;
 		}
+		i++;
 
-		ret = dusb_cmd_s_param_request(handle, size2, pids2);
-		if (ret)
+		if (params1[i]->ok && params1[i]->size >= 18)
 		{
-			break;
+			strncpy(infos->main_calc_id, (char*)&(params1[i]->data[1]), 5);
+			strncpy(infos->main_calc_id+5, (char*)&(params1[i]->data[7]), 5);
+			strncpy(infos->main_calc_id+10, (char*)&(params1[i]->data[13]), 4);
+			infos->main_calc_id[14] = 0;
+			infos->mask |= INFOS_MAIN_CALC_ID;
+			ticalcs_strlcpy(infos->product_id, infos->main_calc_id, sizeof(infos->product_id));
+			infos->mask |= INFOS_PRODUCT_ID;
 		}
+		i++;
 
-		ret = dusb_cmd_r_param_data(handle, size2, params2);
-		if (ret)
+		if (params1[i]->ok && params1[i]->size == 2)
 		{
-			break;
+			infos->hw_version = ((((uint16_t)params1[i]->data[0]) << 8) | params1[i]->data[1]) + 1;
+			infos->mask |= INFOS_HW_VERSION; // hw version or model ?
 		}
-
-		ticalcs_strlcpy(infos->product_name, (char *)params1[i]->data, sizeof(infos->product_name));
-		infos->mask |= INFOS_PRODUCT_NAME;
 		i++;
 
-		strncpy(infos->main_calc_id, (char*)&(params1[i]->data[1]), 5);
-		strncpy(infos->main_calc_id+5, (char*)&(params1[i]->data[7]), 5);
-		strncpy(infos->main_calc_id+10, (char*)&(params1[i]->data[13]), 4);
-		infos->main_calc_id[14] = 0;
-		infos->mask |= INFOS_MAIN_CALC_ID;
-		ticalcs_strlcpy(infos->product_id, infos->main_calc_id, sizeof(infos->product_id));
-		infos->mask |= INFOS_PRODUCT_ID;
+		if (params1[i]->ok && params1[i]->size == 1)
+		{
+			infos->language_id = params1[i]->data[0];
+			infos->mask |= INFOS_LANG_ID;
+		}
 		i++;
 
-		infos->hw_version = ((((uint16_t)params1[i]->data[0]) << 8) | params1[i]->data[1]) + 1;
-		infos->mask |= INFOS_HW_VERSION; // hw version or model ?
+		if (params1[i]->ok && params1[i]->size == 1)
+		{
+			infos->sub_lang_id = params1[i]->data[0];
+			infos->mask |= INFOS_SUB_LANG_ID;
+		}
 		i++;
 
-		infos->language_id = params1[i]->data[0];
-		infos->mask |= INFOS_LANG_ID;
+		if (params1[i]->ok && params1[i]->size == 2)
+		{
+			infos->device_type = params1[i]->data[1];
+			infos->mask |= INFOS_DEVICE_TYPE;
+		}
 		i++;
 
-		infos->sub_lang_id = params1[i]->data[0];
-		infos->mask |= INFOS_SUB_LANG_ID;
+		if (params1[i]->ok && params1[i]->size == 4)
+		{
+			ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1u.%02ub%u", params1[i]->data[1], params1[i]->data[2], params1[i]->data[3]);
+			infos->mask |= INFOS_BOOT_VERSION;
+		}
 		i++;
 
-		infos->device_type = params1[i]->data[1];
-		infos->mask |= INFOS_DEVICE_TYPE;
+		if (params1[i]->ok && params1[i]->size == 3)
+		{
+			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1u.%02u", params1[i]->data[1], params1[i]->data[2]);
+			infos->mask |= INFOS_OS_VERSION;
+		}
 		i++;
 
-		ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1d.%02d", params1[i]->data[1], params1[i]->data[2]);
-		infos->mask |= INFOS_BOOT_VERSION;
+		if (params1[i]->ok && params1[i]->size == 8)
+		{
+			infos->ram_phys = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
+			                   | (((uint64_t)(params1[i]->data[ 1])) << 48)
+			                   | (((uint64_t)(params1[i]->data[ 2])) << 40)
+			                   | (((uint64_t)(params1[i]->data[ 3])) << 32)
+			                   | (((uint64_t)(params1[i]->data[ 4])) << 24)
+			                   | (((uint64_t)(params1[i]->data[ 5])) << 16)
+			                   | (((uint64_t)(params1[i]->data[ 6])) <<  8)
+			                   | (((uint64_t)(params1[i]->data[ 7]))      ));
+			infos->mask |= INFOS_RAM_PHYS;
+		}
+		i++;
+		if (params1[i]->ok && params1[i]->size == 8)
+		{
+			infos->ram_user = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
+			                   | (((uint64_t)(params1[i]->data[ 1])) << 48)
+			                   | (((uint64_t)(params1[i]->data[ 2])) << 40)
+			                   | (((uint64_t)(params1[i]->data[ 3])) << 32)
+			                   | (((uint64_t)(params1[i]->data[ 4])) << 24)
+			                   | (((uint64_t)(params1[i]->data[ 5])) << 16)
+			                   | (((uint64_t)(params1[i]->data[ 6])) <<  8)
+			                   | (((uint64_t)(params1[i]->data[ 7]))      ));
+			infos->mask |= INFOS_RAM_USER;
+		}
+		i++;
+		if (params1[i]->ok && params1[i]->size == 8)
+		{
+			infos->ram_free = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
+			                   | (((uint64_t)(params1[i]->data[ 1])) << 48)
+			                   | (((uint64_t)(params1[i]->data[ 2])) << 40)
+			                   | (((uint64_t)(params1[i]->data[ 3])) << 32)
+			                   | (((uint64_t)(params1[i]->data[ 4])) << 24)
+			                   | (((uint64_t)(params1[i]->data[ 5])) << 16)
+			                   | (((uint64_t)(params1[i]->data[ 6])) <<  8)
+			                   | (((uint64_t)(params1[i]->data[ 7]))      ));
+			infos->mask |= INFOS_RAM_FREE;
+		}
 		i++;
 
-		ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1d.%02d", params1[i]->data[1], params1[i]->data[2]);
-		infos->mask |= INFOS_OS_VERSION;
+		if (params1[i]->ok && params1[i]->size == 8)
+		{
+			infos->flash_phys = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
+			                     | (((uint64_t)(params1[i]->data[ 1])) << 48)
+			                     | (((uint64_t)(params1[i]->data[ 2])) << 40)
+			                     | (((uint64_t)(params1[i]->data[ 3])) << 32)
+			                     | (((uint64_t)(params1[i]->data[ 4])) << 24)
+			                     | (((uint64_t)(params1[i]->data[ 5])) << 16)
+			                     | (((uint64_t)(params1[i]->data[ 6])) <<  8)
+			                     | (((uint64_t)(params1[i]->data[ 7]))      ));
+			infos->mask |= INFOS_FLASH_PHYS;
+		}
+		i++;
+		if (params1[i]->ok && params1[i]->size == 8)
+		{
+			infos->flash_user = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
+			                     | (((uint64_t)(params1[i]->data[ 1])) << 48)
+			                     | (((uint64_t)(params1[i]->data[ 2])) << 40)
+			                     | (((uint64_t)(params1[i]->data[ 3])) << 32)
+			                     | (((uint64_t)(params1[i]->data[ 4])) << 24)
+			                     | (((uint64_t)(params1[i]->data[ 5])) << 16)
+			                     | (((uint64_t)(params1[i]->data[ 6])) <<  8)
+			                     | (((uint64_t)(params1[i]->data[ 7]))      ));
+			infos->mask |= INFOS_FLASH_USER;
+		}
+		i++;
+		if (params1[i]->ok && params1[i]->size == 8)
+		{
+			infos->flash_free = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
+			                     | (((uint64_t)(params1[i]->data[ 1])) << 48)
+			                     | (((uint64_t)(params1[i]->data[ 2])) << 40)
+			                     | (((uint64_t)(params1[i]->data[ 3])) << 32)
+			                     | (((uint64_t)(params1[i]->data[ 4])) << 24)
+			                     | (((uint64_t)(params1[i]->data[ 5])) << 16)
+			                     | (((uint64_t)(params1[i]->data[ 6])) <<  8)
+			                     | (((uint64_t)(params1[i]->data[ 7]))      ));
+			infos->mask |= INFOS_FLASH_FREE;
+		}
 		i++;
 
-		infos->ram_phys = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
-				   | (((uint64_t)(params1[i]->data[ 1])) << 48)
-				   | (((uint64_t)(params1[i]->data[ 2])) << 40)
-				   | (((uint64_t)(params1[i]->data[ 3])) << 32)
-				   | (((uint64_t)(params1[i]->data[ 4])) << 24)
-				   | (((uint64_t)(params1[i]->data[ 5])) << 16)
-				   | (((uint64_t)(params1[i]->data[ 6])) <<  8)
-				   | (((uint64_t)(params1[i]->data[ 7]))      ));
-		infos->mask |= INFOS_RAM_PHYS;
+		if (params1[i]->ok && params1[i]->size == 2)
+		{
+			infos->lcd_width = (  (((uint16_t)params1[i]->data[ 0]) <<  8)
+			                    | (((uint16_t)params1[i]->data[ 1])      ));
+			infos->mask |= INFOS_LCD_WIDTH;
+		}
 		i++;
-		infos->ram_user = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
-				   | (((uint64_t)(params1[i]->data[ 1])) << 48)
-				   | (((uint64_t)(params1[i]->data[ 2])) << 40)
-				   | (((uint64_t)(params1[i]->data[ 3])) << 32)
-				   | (((uint64_t)(params1[i]->data[ 4])) << 24)
-				   | (((uint64_t)(params1[i]->data[ 5])) << 16)
-				   | (((uint64_t)(params1[i]->data[ 6])) <<  8)
-				   | (((uint64_t)(params1[i]->data[ 7]))      ));
-		infos->mask |= INFOS_RAM_USER;
+		if (params1[i]->ok && params1[i]->size == 2)
+		{
+			infos->lcd_height = (  (((uint16_t)params1[i]->data[ 0]) <<  8)
+			                     | (((uint16_t)params1[i]->data[ 1])      ));
+			infos->mask |= INFOS_LCD_HEIGHT;
+		}
 		i++;
-		infos->ram_free = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
-				   | (((uint64_t)(params1[i]->data[ 1])) << 48)
-				   | (((uint64_t)(params1[i]->data[ 2])) << 40)
-				   | (((uint64_t)(params1[i]->data[ 3])) << 32)
-				   | (((uint64_t)(params1[i]->data[ 4])) << 24)
-				   | (((uint64_t)(params1[i]->data[ 5])) << 16)
-				   | (((uint64_t)(params1[i]->data[ 6])) <<  8)
-				   | (((uint64_t)(params1[i]->data[ 7]))      ));
-		infos->mask |= INFOS_RAM_FREE;
-		i++;
-
-		infos->flash_phys = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
-				     | (((uint64_t)(params1[i]->data[ 1])) << 48)
-				     | (((uint64_t)(params1[i]->data[ 2])) << 40)
-				     | (((uint64_t)(params1[i]->data[ 3])) << 32)
-				     | (((uint64_t)(params1[i]->data[ 4])) << 24)
-				     | (((uint64_t)(params1[i]->data[ 5])) << 16)
-				     | (((uint64_t)(params1[i]->data[ 6])) <<  8)
-				     | (((uint64_t)(params1[i]->data[ 7]))      ));
-		infos->mask |= INFOS_FLASH_PHYS;
-		i++;
-		infos->flash_user = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
-				     | (((uint64_t)(params1[i]->data[ 1])) << 48)
-				     | (((uint64_t)(params1[i]->data[ 2])) << 40)
-				     | (((uint64_t)(params1[i]->data[ 3])) << 32)
-				     | (((uint64_t)(params1[i]->data[ 4])) << 24)
-				     | (((uint64_t)(params1[i]->data[ 5])) << 16)
-				     | (((uint64_t)(params1[i]->data[ 6])) <<  8)
-				     | (((uint64_t)(params1[i]->data[ 7]))      ));
-		infos->mask |= INFOS_FLASH_USER;
-		i++;
-		infos->flash_free = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
-				     | (((uint64_t)(params1[i]->data[ 1])) << 48)
-				     | (((uint64_t)(params1[i]->data[ 2])) << 40)
-				     | (((uint64_t)(params1[i]->data[ 3])) << 32)
-				     | (((uint64_t)(params1[i]->data[ 4])) << 24)
-				     | (((uint64_t)(params1[i]->data[ 5])) << 16)
-				     | (((uint64_t)(params1[i]->data[ 6])) <<  8)
-				     | (((uint64_t)(params1[i]->data[ 7]))      ));
-		infos->mask |= INFOS_FLASH_FREE;
-		i++;
-
-		infos->lcd_width = (  (((uint16_t)params1[i]->data[ 0]) <<  8)
-				    | (((uint16_t)params1[i]->data[ 1])      ));
-		infos->mask |= INFOS_LCD_WIDTH;
-		i++;
-		infos->lcd_height = (  (((uint16_t)params1[i]->data[ 0]) <<  8)
-				     | (((uint16_t)params1[i]->data[ 1])      ));
-		infos->mask |= INFOS_LCD_HEIGHT;
-		i++;
-
-		infos->bits_per_pixel = 1;
-		infos->mask |= INFOS_BPP;
 
 		i = 0;
-		infos->battery = params2[i]->data[0];
-		infos->mask |= INFOS_BATTERY;
+		if (params2[i]->ok && params2[i]->size == 1)
+		{
+			infos->bits_per_pixel = params2[i]->data[0];
+			infos->mask |= INFOS_BPP;
+		}
+
+		if (params2[i]->ok && params2[i]->size == 1)
+		{
+			infos->battery = params2[i]->data[0];
+			infos->mask |= INFOS_BATTERY;
+		}
 		i++;
 
-		infos->run_level = params2[i]->data[0];
-		infos->mask |= INFOS_RUN_LEVEL;
+		if (params2[i]->ok && params2[i]->size == 1)
+		{
+			infos->run_level = params2[i]->data[0];
+			infos->mask |= INFOS_RUN_LEVEL;
+		}
+		i++;
+
+		if (params2[i]->ok && params2[i]->size == 1)
+		{
+			infos->clock_support = params2[i]->data[0];
+			infos->mask |= INFOS_CLOCK_SUPPORT;
+		}
 		i++;
 
 		infos->model = CALC_TI89T;

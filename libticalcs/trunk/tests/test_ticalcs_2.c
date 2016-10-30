@@ -100,6 +100,61 @@ static int read_varname(CalcHandle* h, VarRequest *vr, const char *prompt)
 	return 1;
 }
 
+static int build_raw_bytes_from_hex_string(char * buffer, uint32_t maxbuflen, unsigned char * data, uint32_t maxdatalen, uint32_t * length)
+{
+	uint32_t i;
+	uint8_t c = 0;
+	int odd = 0;
+	for (i = 0; i < maxbuflen; i++)
+	{
+		if (buffer[i] == 0)
+		{
+			if (odd)
+			{
+				printf("Odd number of nibbles in hex string, bailing out");
+			}
+			return odd;
+		}
+		else if (buffer[i] >= '0' && buffer[i] <= '9')
+		{
+			c |= buffer[i] - '0';
+		}
+		else if (buffer[i] >= 'a' && buffer[i] <= 'f')
+		{
+			c |= buffer[i] - 'a' + 10;
+		}
+		else if (buffer[i] >= 'A' && buffer[i] <= 'F')
+		{
+			c |= buffer[i] - 'A' + 10;
+		}
+		else
+		{
+			continue;
+		}
+		if (odd)
+		{
+			if (*length < maxdatalen)
+			{
+				*data++ = c;
+				odd = 0;
+				c = 0;
+			}
+			else
+			{
+				printf("Reached max length, bailing out");
+				return 0;
+			}
+			(*length)++;
+		}
+		else
+		{
+			odd++;
+			c <<= 4;
+		}
+	}
+	return 1;
+}
+
 static void print_lc_error(int errnum)
 {
 	char *msg;
@@ -109,6 +164,8 @@ static void print_lc_error(int errnum)
 
 	free(msg);
 }
+
+typedef int (*FNCT_MENU) (CalcHandle*);
 
 static int is_ready(CalcHandle* h)
 {
@@ -122,9 +179,17 @@ static int is_ready(CalcHandle* h)
 
 static int send_key(CalcHandle *h)
 {
-	const CalcKey *key = ticalcs_keys_92p('A');
+	int ret;
+	unsigned int key_value;
 
-	return ticalcs_calc_send_key(h, key->normal.value);
+	printf("Enter key value to be sent: ");
+	ret = scanf("%i", &key_value);
+	if (ret < 1)
+	{
+		return 0;
+	}
+
+	return ticalcs_calc_send_key(h, key_value);
 }
 
 static int execute(CalcHandle *h)
@@ -745,66 +810,14 @@ static int ti83pfamily_sid(CalcHandle *h)
 	return 0;
 }
 
-static int build_raw_bytes_from_hex_string(char * buffer, uint32_t maxbuflen, unsigned char * data, uint32_t maxdatalen, uint32_t * length)
-{
-	uint32_t i;
-	uint8_t c = 0;
-	int odd = 0;
-	for (i = 0; i < maxbuflen; i++)
-	{
-		if (buffer[i] == 0)
-		{
-			if (odd)
-			{
-				printf("Odd number of nibbles in hex string, bailing out");
-			}
-			return odd;
-		}
-		else if (buffer[i] >= '0' && buffer[i] <= '9')
-		{
-			c |= buffer[i] - '0';
-		}
-		else if (buffer[i] >= 'a' && buffer[i] <= 'f')
-		{
-			c |= buffer[i] - 'a' + 10;
-		}
-		else if (buffer[i] >= 'A' && buffer[i] <= 'F')
-		{
-			c |= buffer[i] - 'A' + 10;
-		}
-		else
-		{
-			continue;
-		}
-		if (odd)
-		{
-			if (*length < maxdatalen)
-			{
-				*data++ = c;
-				odd = 0;
-				c = 0;
-			}
-			else
-			{
-				return 0;
-			}
-			(*length)++;
-		}
-		else
-		{
-			odd++;
-			c <<= 4;
-		}
-	}
-	return 1;
-}
+#include "../src/dusb_cmd.h"
 
-static int dissect_dusb(CalcHandle *h)
+static int dusb_dissect_rpkt(CalcHandle *h)
 {
 	int ret;
 	uint8_t ep = 2; // Assume PC -> TI.
 	uint8_t first = 1; // Assume all packets are first packets.
-	char buffer[4 * sizeof(((DUSBRawPacket *)0)->data) + 3];
+	char buffer[65536 + 2];
 	uint8_t data[sizeof(((DUSBRawPacket *)0)->data)];
 	uint32_t length = 0;
 	int model;
@@ -818,7 +831,7 @@ static int dissect_dusb(CalcHandle *h)
 
 	buffer[0] = 0;
 	printf("Enter raw DUSB packet as hex string of up to 4 * max raw packet size (non-hex characters ignored; CTRL+D to end):\n");
-	ret = scanf("%4096[^\x04]", buffer);
+	ret = scanf("%65536[^\x04]", buffer);
 	if (ret < 1)
 	{
 		return 0;
@@ -844,7 +857,117 @@ static int dissect_dusb(CalcHandle *h)
 	return 0;
 }
 
-typedef int (*FNCT_MENU) (CalcHandle*);
+static int dusb_get_param_ids(CalcHandle * h)
+{
+	int ret;
+	char buffer[4096 + 2];
+	uint16_t data[1024];
+	uint32_t length = 0;
+
+	buffer[0] = 0;
+	printf("Enter hex string containing parameter IDs which will be requested to the calculator (non-hex characters ignored; CTRL+D to end):\n");
+	ret = scanf("%4096[^\x04]", buffer);
+	if (ret < 1)
+	{
+		return 0;
+	}
+
+	fputc('\n', stdout);
+	if (!build_raw_bytes_from_hex_string(buffer, sizeof(buffer) / sizeof(buffer[0]), (uint8_t *)data, sizeof(data), &length))
+	{
+		if ((length & 1) == 0)
+		{
+			DUSBCalcParam **params;
+
+			params = dusb_cp_new_array(h, length / 2);
+			ret = dusb_cmd_s_param_request(h, length / 2, data);
+			if (!ret)
+			{
+				ret = dusb_cmd_r_param_data(h, length / 2, params);
+				if (!ret)
+				{
+					unsigned int i;
+					for (i = 0; i < length / 2; i++)
+					{
+						printf("%04X\t%s\t%04X (%u)\n\t\t", params[i]->id, params[i]->ok ? "OK" : "NOK", params[i]->size, params[i]->size);
+						if (params[i]->ok && params[i]->size > 0 && params[i]->data != NULL)
+						{
+							uint16_t j;
+							uint8_t * ptr = params[i]->data;
+							for (j = 0; j < params[i]->size;)
+							{
+								printf("%02X ", *ptr++);
+								if (!(++j & 15))
+								{
+									printf("\n\t\t");
+								}
+							}
+							putchar('\n');
+						}
+					}
+				}
+			}
+			dusb_cp_del_array(h, length / 2, params);
+		}
+		else
+		{
+			printf("Odd number of bytes in hex string, bailing out");
+		}
+	}
+	else
+	{
+		printf("Failed to build raw data, not sent\n");
+	}
+
+	return 0;
+}
+
+static int dusb_set_param_id(CalcHandle * h)
+{
+	int ret;
+	char buffer[4096 + 2];
+	uint8_t * data;
+	uint32_t length = 0;
+	unsigned int param_id;
+
+	data = dusb_cp_alloc_data(2048);
+
+	printf("Enter DUSB parameter ID to be set (usually < 0x60): ");
+	ret = scanf("%i", &param_id);
+	if (ret < 1)
+	{
+		return 0;
+	}
+
+	buffer[0] = 0;
+	printf("Enter raw DUSB packet as hex string of up to 4 * max raw packet size (non-hex characters ignored; CTRL+D to end):\n");
+	ret = scanf("%4096[^\x04]", buffer);
+	if (ret < 1)
+	{
+		return 0;
+	}
+
+	fputc('\n', stdout);
+	if (!build_raw_bytes_from_hex_string(buffer, sizeof(buffer) / sizeof(buffer[0]), (uint8_t *)data, 2048, &length))
+	{
+		DUSBCalcParam *param;
+
+		param = dusb_cp_new_ex(h, param_id, length, data);
+		ret = dusb_cmd_s_param_set(h, param);
+		dusb_cp_del(h, param);
+
+		if (!ret)
+		{
+			ret = dusb_cmd_r_data_ack(h);
+		}
+	}
+	else
+	{
+		printf("Failed to build raw data, not sent\n");
+	}
+
+	return 0;
+}
 
 static struct
 {
@@ -888,7 +1011,9 @@ static struct
 	{ "83+-family-specific get standard calculator ID", ti83pfamily_gid },
 	{ "83+-family-specific retrieve some 32-byte memory area", ti83pfamily_rid },
 	{ "83+-family-specific set some 32-byte memory area", ti83pfamily_sid },
-	{ "Dissect DUSB packet", dissect_dusb }
+	{ "DUSB: dissect raw packet", dusb_dissect_rpkt },
+	{ "DUSB: get parameter IDs", dusb_get_param_ids },
+	{ "DUSB: set parameter ID", dusb_set_param_id }
 };
 
 int main(int argc, char **argv)

@@ -157,6 +157,7 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 		char lcd_width[20];
 		char lcd_height[20];
 		char bpp[11];
+		char color_screen[11];
 		char ram_phys[30];
 		char ram_user[30];
 		char ram_free[30];
@@ -201,6 +202,11 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 		if (infos->mask & INFOS_BPP)
 		{
 			sprintf(bpp, "%d pixels", infos->bits_per_pixel);
+		}
+		color_screen[0] = 0;
+		if (infos->mask & INFOS_COLOR_SCREEN)
+		{
+			sprintf(color_screen, "%d", infos->color_screen);
 		}
 
 		ram_phys[0] = 0; // The casts below aren't truncating in practice until one of the models grows more than 4 GB of RAM or Flash.
@@ -265,6 +271,8 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 			"%s\n"
 			"%s"
 			"%s\n"
+			"%s"
+			"%s\n"
 			"\n"
 			"%s"
 			"%s\n"
@@ -312,6 +320,8 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 			lcd_height,
 			(infos->mask & INFOS_BPP) ? _("Bits per pixel: ") : "",
 			bpp,
+			(infos->mask & INFOS_COLOR_SCREEN) ? _("Color screen: ") : "",
+			color_screen,
 
 			(infos->mask & INFOS_RAM_PHYS) ? _("Physical RAM: ") : "",
 			ram_phys,

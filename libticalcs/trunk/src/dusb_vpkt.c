@@ -92,7 +92,7 @@ TIEXPORT3 const char* TICALL dusb_vpkt_type2name(uint16_t id)
 
 // Creation/Destruction/Garbage Collecting of packets
 
-TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new(CalcHandle * handle, uint32_t size, uint16_t type)
+TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uint32_t size, uint16_t type, uint8_t * data)
 {
 	DUSBVirtualPacket* vtl = NULL;
 
@@ -104,7 +104,7 @@ TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new(CalcHandle * handle, uint32
 
 		vtl->size = size;
 		vtl->type = type;
-		vtl->data = g_malloc0(size + DUSB_DH_SIZE); // aborts the program if it fails.
+		vtl->data = data;
 
 		vtl_pkt_list = g_list_append((GList *)(handle->priv.dusb_vtl_pkt_list), vtl);
 		handle->priv.dusb_vtl_pkt_list = (void *)vtl_pkt_list;
@@ -115,6 +115,25 @@ TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new(CalcHandle * handle, uint32
 	}
 
 	return vtl;
+}
+
+TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new(CalcHandle * handle)
+{
+	return dusb_vtl_pkt_new_ex(handle, 0, 0, NULL);
+}
+
+TIEXPORT3 void TICALL dusb_vtl_pkt_fill(DUSBVirtualPacket* vtl, uint32_t size, uint16_t type, uint8_t * data)
+{
+	if (vtl != NULL)
+	{
+		vtl->size = size;
+		vtl->type = type;
+		vtl->data = data;
+	}
+	else
+	{
+		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
+	}
 }
 
 TIEXPORT3 void TICALL dusb_vtl_pkt_del(CalcHandle * handle, DUSBVirtualPacket* vtl)
@@ -138,6 +157,40 @@ TIEXPORT3 void TICALL dusb_vtl_pkt_del(CalcHandle * handle, DUSBVirtualPacket* v
 
 	g_free(vtl->data);
 	g_free(vtl);
+}
+
+TIEXPORT3 void * TICALL dusb_vtl_pkt_alloc_data(size_t size)
+{
+	return g_malloc0(size + DUSB_DH_SIZE);
+}
+
+TIEXPORT3 DUSBVirtualPacket * TICALL dusb_vtl_pkt_realloc_data(DUSBVirtualPacket* vtl, size_t size)
+{
+	if (vtl != NULL)
+	{
+		if (size + DUSB_DH_SIZE > size)
+		{
+			uint8_t * data = g_realloc(vtl->data, size + DUSB_DH_SIZE);
+			if (size > vtl->size)
+			{
+				// The previous time, vtl->size + DUSB_DH_SIZE bytes were allocated and initialized.
+				// This time, we've allocated size + DUSB_DH_SIZE bytes, so we need to initialize size - vtl->size extra bytes.
+				memset(data + vtl->size + DUSB_DH_SIZE, 0x00, size - vtl->size);
+			}
+			vtl->data = data;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	return vtl;
+}
+
+TIEXPORT3 void TICALL dusb_vtl_pkt_free_data(void * data)
+{
+	return g_free(data);
 }
 
 // Raw packets

@@ -23,7 +23,9 @@
 #include <string.h>
 #include <glib.h>
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include "ticalcs.h"
 #include "gettext.h"
@@ -351,25 +353,33 @@ TIEXPORT3 int TICALL ticalcs_error_get(int number, char **message)
 		break;
 	case ERR_CALC_ERROR2+12:
 		*message = g_strdup(
-		_("Msg: invalid parameter ID."));
+		_("Msg: wrong size for parameter."));
 		break;
 	case ERR_CALC_ERROR2+13:
 		*message = g_strdup(
-		_("Msg: wrong modify request?"));
+		_("Msg: invalid parameter ID."));
 		break;
 	case ERR_CALC_ERROR2+14:
 		*message = g_strdup(
-		_("Msg: remote control?"));
+		_("Msg: read-only parameter."));
 		break;
 	case ERR_CALC_ERROR2+15:
 		*message = g_strdup(
-		_("Msg: battery low."));
+		_("Msg: wrong modify request?"));
 		break;
 	case ERR_CALC_ERROR2+16:
 		*message = g_strdup(
-		_("Msg: FLASH application rejected (signature does not match)."));
+		_("Msg: remote control?"));
 		break;
 	case ERR_CALC_ERROR2+17:
+		*message = g_strdup(
+		_("Msg: battery low."));
+		break;
+	case ERR_CALC_ERROR2+18:
+		*message = g_strdup(
+		_("Msg: FLASH application rejected (signature does not match)."));
+		break;
+	case ERR_CALC_ERROR2+19:
 		*message = g_strdup(
 		_("Msg: hand-held is busy (set your calculator to HOME screen)."));
 		break;
