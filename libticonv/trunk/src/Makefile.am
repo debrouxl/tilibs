@@ -15,10 +15,13 @@ libticonv_la_CPPFLAGS = -I$(top_srcdir)/intl \
 libticonv_la_LIBADD = @GLIB_LIBS@
 libticonv_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticonv_la_SOURCES = \
-	ticonv.c charset.c tokens.c filename.c
+	ticonv.c charset.c tokens.c filename.c type2str.c
 
 if USE_ICONV
   libticonv_la_SOURCES += iconv.c
+if OS_WIN32
+    libticonv_la_LIBADD += -liconv
+endif
 endif
 
 if OS_WIN32

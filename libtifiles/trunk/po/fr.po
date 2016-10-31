@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles2 1.1.6\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-02-22 08:03+0100\n"
+"POT-Creation-Date: 2016-10-30 17:35+0100\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -17,93 +17,93 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/error.c:56
+#: src/error.c:58
 msgid "Msg: unable to allocate memory (malloc)."
 msgstr "Msg : impossible d'allouer de la mémoire (malloc)."
 
-#: src/error.c:58
+#: src/error.c:60
 msgid "Cause: memory too low ?"
 msgstr "Cause : pas assez de mémoire ?"
 
-#: src/error.c:64
+#: src/error.c:66
 msgid "Msg: unable to open file."
 msgstr "Msg : impossible d'ouvrir le fichier."
 
-#: src/error.c:66 src/error.c:74
+#: src/error.c:68 src/error.c:76
 msgid "Cause: either the file does not exist, either there is no room."
 msgstr ""
 "Cause : le fichier n'existe pas, ou il n'y a pas assez de place sur le "
 "disque."
 
-#: src/error.c:72
+#: src/error.c:74
 msgid "Msg: unable to close file."
 msgstr "Msg : impossible de fermer le fichier."
 
-#: src/error.c:80
+#: src/error.c:82
 msgid "Msg: the size of a group file cannot exceed 64 KB."
 msgstr "Msg : la taille d'un groupe ne peut pas dépasser 64 Ko."
 
-#: src/error.c:82
+#: src/error.c:84
 msgid "Cause: too many variables/data."
 msgstr "Cause : trop de variables/données."
 
-#: src/error.c:88
+#: src/error.c:90
 msgid "Msg: unknown calculator type."
 msgstr "Msg : type de calculatrice inconnu."
 
-#: src/error.c:90
+#: src/error.c:92
 msgid "Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."
 msgstr ""
 "Cause : il s'agit probablement d'un bogue, signalez-le à tilp-users@lists.sf."
 "net."
 
-#: src/error.c:97
+#: src/error.c:99
 msgid "Msg: invalid file."
 msgstr "Msg : fichier non valide."
 
-#: src/error.c:99
+#: src/error.c:101
 msgid "Cause: it's probably not a TI formatted file."
 msgstr "Cause : il ne s'agit probablement pas d'un fichier TI."
 
-#: src/error.c:105
+#: src/error.c:107
 msgid "Msg: checksum error."
 msgstr "Msg : erreur de somme de contrôle (checksum)."
 
-#: src/error.c:107
+#: src/error.c:109
 msgid "Cause: the file has an incorrect checksum and may be corrupted."
 msgstr ""
 "Cause : le fichier a une somme de contrôle incorrecte et est peut être "
 "corrompu."
 
-#: src/error.c:113
+#: src/error.c:115
 msgid "Msg: (Un)Zip error."
 msgstr "Msg : erreur ZIP/UNZIP."
 
-#: src/error.c:115
+#: src/error.c:117
 msgid "Cause: unknown..."
 msgstr "Cause : inconnue..."
 
-#: src/error.c:121
+#: src/error.c:123
 msgid "Msg: unsupported function."
 msgstr "Msg : fonction non supportée"
 
-#: src/error.c:123
+#: src/error.c:125
 msgid "Cause: the function you attempted to use is not available."
 msgstr "Cause : la fonction n'est pas disponible."
 
-#: src/error.c:129
+#: src/error.c:131
 msgid "Msg: I/O file error."
 msgstr "Msg : erreur d'E/S."
 
-#: src/error.c:131
+#: src/error.c:133
 msgid "Cause: file is corrupted or invalid."
 msgstr "Cause : le fichier est corrompu ou invalide"
 
-#: src/error.c:137
+#: src/error.c:139
 msgid "Msg: invalid parameter."
 msgstr "Msg : paramètre invalide."
 
-#: src/error.c:139
+#: src/error.c:141
 msgid ""
 "Cause: the program which uses this library is buggy. Fire-up the developer!"
 msgstr ""
@@ -132,55 +132,55 @@ msgstr "Groupe"
 msgid "tifiles library version %s"
 msgstr "librairie tifiles version %s"
 
-#: src/type2str.c:224 src/type2str.c:244
+#: src/type2str.c:66 src/type2str.c:86
 msgid "none     "
 msgstr "aucun    "
 
-#: src/type2str.c:225 src/type2str.c:246
+#: src/type2str.c:67 src/type2str.c:88
 msgid "locked   "
 msgstr "verrouil."
 
-#: src/type2str.c:226 src/type2str.c:248
+#: src/type2str.c:68 src/type2str.c:90
 msgid "archived "
 msgstr "archivé  "
 
-#: src/type2str.c:227 src/type2str.c:250
+#: src/type2str.c:69 src/type2str.c:92
 msgid "protected"
 msgstr "protégé  "
 
-#: src/type2str.c:269 src/type2str.c:293
+#: src/type2str.c:111 src/type2str.c:135
 msgid "single"
 msgstr "simple"
 
-#: src/type2str.c:270 src/type2str.c:295
+#: src/type2str.c:112 src/type2str.c:137
 msgid "group"
 msgstr "groupe"
 
-#: src/type2str.c:271 src/type2str.c:297
+#: src/type2str.c:113 src/type2str.c:139
 msgid "regular"
 msgstr "normal"
 
-#: src/type2str.c:272 src/type2str.c:299
+#: src/type2str.c:114 src/type2str.c:141
 msgid "backup"
 msgstr "sauvegarde"
 
-#: src/type2str.c:273 src/type2str.c:307
+#: src/type2str.c:115 src/type2str.c:149
 msgid "tigroup"
 msgstr "groupe"
 
-#: src/type2str.c:274 src/type2str.c:301
+#: src/type2str.c:116 src/type2str.c:143
 msgid "os"
 msgstr "os"
 
-#: src/type2str.c:275 src/type2str.c:303
+#: src/type2str.c:117 src/type2str.c:145
 msgid "application"
 msgstr "application"
 
-#: src/type2str.c:276 src/type2str.c:305
+#: src/type2str.c:118 src/type2str.c:147
 msgid "flash"
 msgstr "flash"
 
-#: src/type2str.c:277
+#: src/type2str.c:119
 msgid "unknown"
 msgstr "inconnu"
 

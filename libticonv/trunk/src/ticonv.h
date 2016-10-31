@@ -170,6 +170,10 @@ extern "C" {
 	TIEXPORT4 char* TICALL ticonv_varname_from_tifile  (CalcModel model, const char *src, unsigned char type);
 	// The free function corresponding to ticonv_varname_from_tifile() is ticonv_ti_free().
 
+	// type2str.c
+	TIEXPORT4 const char* TICALL ticonv_model_to_string(CalcModel type);
+	TIEXPORT4 CalcModel   TICALL ticonv_string_to_model(const char *str);
+
 	// charset.c
 	extern TIEXPORT4 const unsigned long TICALL ti73_charset[256];
 	extern TIEXPORT4 const unsigned long TICALL ti80_charset[256];

@@ -37,53 +37,6 @@
 #include "ticonv.h"
 #include "charset.h"
 
-/* This is a version of tifiles_string_to_model without the "USB" variants
-   which don't make much sense for charset use. And we can't use tifiles
-   functions here anyway (otherwise we'd have a circular dependency). */
-static CalcModel ticonv_string_to_model(const char *str)
-{
-	if(!g_ascii_strcasecmp(str, "TI73") || !g_ascii_strcasecmp(str, "73"))
-		return CALC_TI73;
-	else if(!g_ascii_strcasecmp(str, "TI80") || !g_ascii_strcasecmp(str, "80"))
-		return CALC_TI80;
-	else if(!g_ascii_strcasecmp(str, "TI82") || !g_ascii_strcasecmp(str, "82"))
-		return CALC_TI82;
-	else if(!g_ascii_strcasecmp(str, "TI83") || !g_ascii_strcasecmp(str, "83"))
-		return CALC_TI83;
-	else if(   !g_ascii_strncasecmp(str, "TI83+", 5)
-		|| !g_ascii_strncasecmp(str, "TI83p", 5)
-		|| !g_ascii_strncasecmp(str, "83+", 3)
-		|| !g_ascii_strncasecmp(str, "83p", 3)
-	       )
-		return CALC_TI83P;
-	else if(   !g_ascii_strncasecmp(str, "TI84+", 5)
-		|| !g_ascii_strncasecmp(str, "TI84p", 5)
-		|| !g_ascii_strncasecmp(str, "84+", 3)
-		|| !g_ascii_strncasecmp(str, "84p", 3)
-	       )
-		return CALC_TI84P;
-	else if(!g_ascii_strcasecmp(str, "TI85") || !g_ascii_strcasecmp(str, "85"))
-		return CALC_TI85;
-	else if(!g_ascii_strcasecmp(str, "TI86") || !g_ascii_strcasecmp(str, "86"))
-		return CALC_TI86;
-	else if(!g_ascii_strcasecmp(str, "TI89") || !g_ascii_strcasecmp(str, "89"))
-		return CALC_TI89;
-	else if(!g_ascii_strcasecmp(str, "TI89t") || !g_ascii_strcasecmp(str, "89t"))
-		return CALC_TI89T;
-	else if(!g_ascii_strcasecmp(str, "TI92") || !g_ascii_strcasecmp(str, "92"))
-		return CALC_TI92;
-	else if(   !g_ascii_strncasecmp(str, "TI92+", 5)
-		|| !g_ascii_strncasecmp(str, "TI92p", 5)
-		|| !g_ascii_strncasecmp(str, "92+", 3)
-		|| !g_ascii_strncasecmp(str, "92p", 3)
-	       )
-		return CALC_TI92P;
-	else if(!g_ascii_strcasecmp(str, "V200") || !g_ascii_strcasecmp(str, "V200"))
-		return CALC_V200;
-		
-	return CALC_NONE;
-}
-
 /* Allocate descriptor for code conversion from codeset FROMCODE to
    codeset TOCODE.  */
 TIEXPORT4 ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const char *fromcode)
@@ -91,7 +44,7 @@ TIEXPORT4 ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const cha
   ticonv_iconv_t cd;
   cd.src_calc=ticonv_string_to_model(fromcode);
   cd.dest_calc=ticonv_string_to_model(tocode);
-  cd.iconv_desc=iconv_open(cd.src_calc?"UTF-16":fromcode,cd.dest_calc?"UTF-16":tocode);
+  cd.iconv_desc=iconv_open(cd.src_calc || fromcode == NULL ? "UTF-16" : fromcode, cd.dest_calc || tocode == NULL ? "UTF-16" : tocode);
   cd.lookahead=0;
   cd.lossy_count=0;
   return cd;
@@ -106,14 +59,17 @@ TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf
                              size_t *__restrict outbytesleft)
 {
   size_t result;
-  if (!inbuf || !inbuf) {
+  if (!inbytesleft || !outbytesleft) {
+    return 0;
+  }
+  if (!inbuf || !*inbuf) {
     if (!outbuf || !*outbuf || cd.dest_calc) {
       result=iconv(cd.iconv_desc,NULL,NULL,NULL,NULL)+cd.lossy_count;
       cd.lookahead=0;
       cd.lossy_count=0;
       return result;
     } else {
-      return iconv(cd.iconv_desc,NULL,NULL,outbuf,outbytesleft)+cd.lossy_count;
+      result=iconv(cd.iconv_desc,NULL,NULL,outbuf,outbytesleft)+cd.lossy_count;
       cd.lookahead=0;
       cd.lossy_count=0;
       return result;

@@ -11,7 +11,7 @@ script:
   - mkdir prefix
   - cd libticonv/trunk
   - mkdir m4; autoreconf -ivf
-  - ./configure --prefix=`pwd`/../../prefix
+  - ./configure --prefix=`pwd`/../../prefix --enable-iconv
   - make -j4 check
   - make -j4 install
   - cd ../../libtifiles/trunk
