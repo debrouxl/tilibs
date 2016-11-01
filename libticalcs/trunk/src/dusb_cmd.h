@@ -207,7 +207,7 @@ typedef struct
 // Type to string
 TIEXPORT3 const char* TICALL dusb_cmd_param_type2name(uint16_t id);
 
-// Helpers
+// Helpers for calc params and attrs.
 TIEXPORT3 DUSBCalcParam*  TICALL dusb_cp_new(CalcHandle * handle, uint16_t id, uint16_t size);
 TIEXPORT3 DUSBCalcParam*  TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data);
 TIEXPORT3 void            TICALL dusb_cp_fill(DUSBCalcParam * cp, uint16_t id, uint16_t size, uint8_t * data);
@@ -272,6 +272,9 @@ TIEXPORT3 int TICALL dusb_cmd_s_eot(CalcHandle *handle);
 TIEXPORT3 int TICALL dusb_cmd_r_eot(CalcHandle *handle);
 
 TIEXPORT3 int TICALL dusb_cmd_s_error(CalcHandle *handle, uint16_t code);
+
+// Higher-level helpers for command wrappers
+TIEXPORT3 int TICALL dusb_cmd_s_param_set_r_data_ack(CalcHandle *handle, uint16_t id, uint16_t size, const uint8_t * data);
 
 #ifdef __cplusplus
 }

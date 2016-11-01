@@ -497,6 +497,8 @@ static void torture_dusb(void)
 
     PRINTF(dusb_cmd_r_eot, INT, NULL);
     PRINTF(dusb_cmd_s_error, INT, NULL, 0);
+
+    PRINTF(dusb_cmd_s_param_set_r_data_ack, INT, NULL, 0, 0, (void *)0x12345678);
 }
 
 static void torture_cmdz80(void)

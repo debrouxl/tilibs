@@ -1998,3 +1998,32 @@ TIEXPORT3 int TICALL dusb_cmd_s_error(CalcHandle *handle, uint16_t code)
 
 	return retval;
 }
+
+/////////////----------------
+
+TIEXPORT3 int TICALL dusb_cmd_s_param_set_r_data_ack(CalcHandle *handle, uint16_t id, uint16_t size, const uint8_t * data)
+{
+	DUSBCalcParam *param;
+	int retval = 0;
+
+	VALIDATE_HANDLE(handle);
+
+	if (size > 0 && NULL == data)
+	{
+		return ERR_INVALID_PARAMETER;
+	}
+
+	param = dusb_cp_new(handle, id, size);
+	if (NULL != data)
+	{
+		memcpy(param->data, data, size);
+	}
+	retval = dusb_cmd_s_param_set(handle, param);
+	dusb_cp_del(handle, param);
+	if (!retval)
+	{
+		retval = dusb_cmd_r_data_ack(handle);
+	}
+
+	return retval;
+}

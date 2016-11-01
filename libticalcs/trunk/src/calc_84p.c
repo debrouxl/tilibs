@@ -1422,120 +1422,14 @@ end:
 
 static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 {
-	DUSBCalcParam *param;
-	uint32_t calc_time;
-	struct tm ref, cur;
-	time_t r, c, now;
-	int ret;
-
-	time(&now);
-	memcpy(&ref, localtime(&now), sizeof(struct tm));
-
-	ref.tm_year = 1997 - 1900;
-	ref.tm_mon = 0;
-	ref.tm_yday = 0;
-	ref.tm_mday = 1;
-	ref.tm_wday = 3;
-	ref.tm_hour = 0;
-	ref.tm_min = 0;
-	ref.tm_sec = 0;
-	//ref.tm_isdst = 1;
-	r = mktime(&ref);
-
-	cur.tm_year = _clock->year - 1900;
-	cur.tm_mon = _clock->month - 1;
-	cur.tm_mday = _clock->day;
-	cur.tm_hour = _clock->hours;
-	cur.tm_min = _clock->minutes;
-	cur.tm_sec = _clock->seconds;
-	cur.tm_isdst = 1;
-	c = mktime(&cur);
-
-	calc_time = (uint32_t)difftime(c, r);
-
-	ticalcs_strlcpy(update_->text, _("Setting clock..."), sizeof(update_->text));
-	update_label();
-
-	// TODO add TI-eZ80 support based on the new attributes.
-
-	do {
-		param = dusb_cp_new(handle, DUSB_PID_CLK_SEC_SINCE_1997, 4);
-		param->data[0] = MSB(MSW(calc_time));
-		param->data[1] = LSB(MSW(calc_time));
-		param->data[2] = MSB(LSW(calc_time));
-		param->data[3] = LSB(LSW(calc_time));
-		ret = dusb_cmd_s_param_set(handle, param);
-		dusb_cp_del(handle, param);
-		if (ret)
-		{
-			break;
-		}
-
-		ret = dusb_cmd_r_data_ack(handle);
-		if (ret)
-		{
-			break;
-		}
-
-		param = dusb_cp_new(handle, DUSB_PID_CLK_DATE_FMT, 1);
-		param->data[0] = _clock->date_format == 3 ? 0 : _clock->date_format;
-		ret = dusb_cmd_s_param_set(handle, param);
-		dusb_cp_del(handle, param);
-		if (ret)
-		{
-			break;
-		}
-
-		ret = dusb_cmd_r_data_ack(handle);
-		if (ret)
-		{
-			break;
-		}
-
-		param = dusb_cp_new(handle, DUSB_PID_CLK_TIME_FMT, 1);
-		param->data[0] = _clock->time_format == 24 ? 1 : 0;
-		ret = dusb_cmd_s_param_set(handle, param);
-		dusb_cp_del(handle, param);
-		if (ret)
-		{
-			break;
-		}
-
-		ret = dusb_cmd_r_data_ack(handle);
-		if (ret)
-		{
-			break;
-		}
-		param = dusb_cp_new(handle, DUSB_PID_CLK_ON, 1);
-		param->data[0] = _clock->state;
-		ret = dusb_cmd_s_param_set(handle, param);
-		dusb_cp_del(handle, param);
-		if (ret)
-		{
-			break;
-		}
-
-		ret = dusb_cmd_r_data_ack(handle);
-	} while (0);
-
-	return ret;
-}
-
-static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
-{
-	static const uint16_t pids[4] = { DUSB_PID_CLK_SEC_SINCE_1997, DUSB_PID_CLK_DATE_FMT, DUSB_PID_CLK_TIME_FMT, DUSB_PID_CLK_ON };
+	static const uint16_t pids[2] = { DUSB_PID_CLASSIC_CLK_SUPPORT, DUSB_PID_NEW_CLK_SUPPORT };
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	DUSBCalcParam **params;
-	uint32_t calc_time;
-	struct tm ref, *cur;
-	time_t r, c, now;
 	int ret;
 
 	// get raw clock
 	ticalcs_strlcpy(update_->text, _("Getting clock..."), sizeof(update_->text));
 	update_label();
-
-	// TODO add TI-eZ80 support based on the new attributes.
 
 	params = dusb_cp_new_array(handle, size);
 	ret = dusb_cmd_s_param_request(handle, size, pids);
@@ -1544,17 +1438,24 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 		ret = dusb_cmd_r_param_data(handle, size, params);
 		if (!ret)
 		{
-			if (!params[0]->ok)
+			int classic_clock = !!params[0]->ok && !!!params[1]->ok;
+			int new_clock = !!!params[0]->ok && !!params[1]->ok;
+			if (!classic_clock && !new_clock)
 			{
-				ret = ERR_INVALID_PACKET;
+				ticalcs_warning(_("Could not determine clock type: %u %u"), params[0]->ok, params[1]->ok);
 			}
-			else
+			else if (classic_clock)
 			{
-				// and computes
-				calc_time = (((uint32_t)params[0]->data[0]) << 24) | (((uint32_t)params[0]->data[1]) << 16) | (((uint32_t)params[0]->data[2]) <<  8) | (params[0]->data[3] <<  0);
+				uint32_t calc_time;
+				struct tm ref, cur;
+				time_t r, c, now;
+				uint8_t data[4];
 
-				time(&now);	// retrieve current DST setting
-				memcpy(&ref, localtime(&now), sizeof(struct tm));;
+				ticalcs_info(_("Will set classic clock"));
+
+				time(&now);
+				memcpy(&ref, localtime(&now), sizeof(struct tm));
+
 				ref.tm_year = 1997 - 1900;
 				ref.tm_mon = 0;
 				ref.tm_yday = 0;
@@ -1566,19 +1467,205 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 				//ref.tm_isdst = 1;
 				r = mktime(&ref);
 
-				c = r + calc_time;
-				cur = localtime(&c);
+				cur.tm_year = _clock->year - 1900;
+				cur.tm_mon = _clock->month - 1;
+				cur.tm_mday = _clock->day;
+				cur.tm_hour = _clock->hours;
+				cur.tm_min = _clock->minutes;
+				cur.tm_sec = _clock->seconds;
+				cur.tm_isdst = 1;
+				c = mktime(&cur);
 
-				_clock->year = cur->tm_year + 1900;
-				_clock->month = cur->tm_mon + 1;
-				_clock->day = cur->tm_mday;
-				_clock->hours = cur->tm_hour;
-				_clock->minutes = cur->tm_min;
-				_clock->seconds = cur->tm_sec;
+				calc_time = (uint32_t)difftime(c, r);
 
-				_clock->date_format = params[1]->data[0] == 0 ? 3 : params[1]->data[0];
-				_clock->time_format = params[2]->data[0] ? 24 : 12;
-				_clock->state = params[3]->data[0];
+				ticalcs_strlcpy(update_->text, _("Setting clock..."), sizeof(update_->text));
+				update_label();
+
+				data[0] = MSB(MSW(calc_time));
+				data[1] = LSB(MSW(calc_time));
+				data[2] = MSB(LSW(calc_time));
+				data[3] = LSB(LSW(calc_time));
+				ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_SEC_SINCE_1997, 4, data);
+				if (!ret)
+				{
+					data[0] = _clock->date_format == 3 ? 0 : _clock->date_format;
+					ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_DATE_FMT, 1, data);
+					if (!ret)
+					{
+						data[0] = _clock->time_format == 24 ? 1 : 0;
+						ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_TIME_FMT, 1, data);
+						if (!ret)
+						{
+							data[0] = _clock->state;
+							ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_ON, 1, data);
+						}
+					}
+				}
+			}
+			else if (new_clock)
+			{
+				uint8_t data[4];
+
+				ticalcs_info(_("Will set new clock"));
+
+				ticalcs_strlcpy(update_->text, _("Setting clock..."), sizeof(update_->text));
+				update_label();
+
+				data[0] = _clock->date_format == 3 ? 0 : _clock->date_format;
+				ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_DATE_FMT, 1, data);
+				if (!ret)
+				{
+					data[0] = _clock->time_format == 24 ? 0x81 : 0x80;
+					ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_TIME_FMT, 1, data);
+					if (!ret)
+					{
+						data[0] = (uint8_t)(_clock->year >> 8);
+						data[1] = _clock->year & 0xFF;
+						ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_YEAR, 2, data);
+						if (!ret)
+						{
+							data[0] = _clock->month;
+							ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_MONTH, 1, data);
+							if (!ret)
+							{
+								data[0] = _clock->day;
+								ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_DAY, 1, data);
+								if (!ret)
+								{
+									data[0] = _clock->hours;
+									ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_HOURS, 1, data);
+									if (!ret)
+									{
+										data[0] = _clock->minutes;
+										ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_MINUTES, 1, data);
+										if (!ret)
+										{
+											data[0] = _clock->seconds;
+											ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_SECONDS, 1, data);
+											if (!ret)
+											{
+												data[0] = _clock->state;
+												ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_ON, 1, data);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				ret = ERR_INVALID_PACKET;
+			}
+		}
+	}
+	dusb_cp_del_array(handle, size, params);
+
+	return ret;
+}
+
+static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
+{
+	static const uint16_t pids[12] = {
+		DUSB_PID_CLASSIC_CLK_SUPPORT, DUSB_PID_NEW_CLK_SUPPORT,
+		DUSB_PID_CLK_ON, DUSB_PID_CLK_SEC_SINCE_1997, DUSB_PID_CLK_DATE_FMT, DUSB_PID_CLK_TIME_FMT,
+		DUSB_PID_CLK_SECONDS, DUSB_PID_CLK_MINUTES, DUSB_PID_CLK_HOURS, DUSB_PID_CLK_DAY, DUSB_PID_CLK_MONTH, DUSB_PID_CLK_YEAR
+	};
+	const int size = sizeof(pids) / sizeof(uint16_t);
+	DUSBCalcParam **params;
+	int ret;
+
+	// get raw clock
+	ticalcs_strlcpy(update_->text, _("Getting clock..."), sizeof(update_->text));
+	update_label();
+
+	params = dusb_cp_new_array(handle, size);
+	ret = dusb_cmd_s_param_request(handle, size, pids);
+	if (!ret)
+	{
+		ret = dusb_cmd_r_param_data(handle, size, params);
+		if (!ret)
+		{
+			int classic_clock = !!params[0]->ok && !!!params[1]->ok;
+			int new_clock = !!!params[0]->ok && !!params[1]->ok;
+			if (!classic_clock && !new_clock)
+			{
+				ticalcs_warning(_("Could not determine clock type: %u %u"), params[0]->ok, params[1]->ok);
+			}
+			else if (classic_clock)
+			{
+				if (params[2]->ok && params[3]->ok && params[4]->ok && params[5]->ok)
+				{
+					struct tm ref, *cur;
+					time_t r, c, now;
+					uint8_t * data = params[3]->data;
+					uint32_t calc_time = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (data[3] << 0);
+
+					ticalcs_info(_("Found valid classic clock"));
+
+					time(&now);	// retrieve current DST setting
+					memcpy(&ref, localtime(&now), sizeof(struct tm));
+					ref.tm_year = 1997 - 1900;
+					ref.tm_mon = 0;
+					ref.tm_yday = 0;
+					ref.tm_mday = 1;
+					ref.tm_wday = 3;
+					ref.tm_hour = 0;
+					ref.tm_min = 0;
+					ref.tm_sec = 0;
+					//ref.tm_isdst = 1;
+					r = mktime(&ref);
+
+					c = r + calc_time;
+					cur = localtime(&c);
+
+					_clock->year = cur->tm_year + 1900;
+					_clock->month = cur->tm_mon + 1;
+					_clock->day = cur->tm_mday;
+					_clock->hours = cur->tm_hour;
+					_clock->minutes = cur->tm_min;
+					_clock->seconds = cur->tm_sec;
+
+					_clock->date_format = params[4]->data[0] == 0 ? 3 : params[4]->data[0];
+					_clock->time_format = params[5]->data[0] ? 24 : 12;
+					_clock->state = params[2]->data[0];
+				}
+				else
+				{
+					ticalcs_warning(_("Found classic clock but failed to retrieve its parameters: %u %u %u %u"),
+					                params[2]->ok, params[3]->ok, params[4]->ok, params[5]->ok);
+				}
+			}
+			else if (new_clock)
+			{
+				if (params[6]->ok && params[7]->ok && params[8]->ok && params[9]->ok && params[10]->ok && params[11]->ok)
+				{
+					uint8_t * data = params[11]->data;
+
+					ticalcs_info(_("Found valid new clock"));
+
+					_clock->year = (((uint16_t)data[0]) << 8) | (data[1] << 0);
+					_clock->month = params[10]->data[0];
+					_clock->day = params[9]->data[0];
+					_clock->hours = params[8]->data[0];
+					_clock->minutes = params[7]->data[0];
+					_clock->seconds = params[6]->data[0];
+
+					_clock->date_format = params[4]->data[0] == 0 ? 3 : params[4]->data[0];
+					_clock->time_format = params[5]->data[0] == 0x80 ? 12 : 24;
+					_clock->state = params[2]->data[0];
+				}
+				else
+				{
+					ticalcs_warning(_("Found new clock but failed to retrieve its parameters: %u %u %u %u %u %u"),
+					                params[6]->ok, params[7]->ok, params[8]->ok, params[9]->ok, params[10]->ok, params[11]->ok);
+				}
+			}
+			else
+			{
+				ret = ERR_INVALID_PACKET;
 			}
 		}
 	}
