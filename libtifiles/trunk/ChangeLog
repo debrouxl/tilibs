@@ -2,7 +2,8 @@ SubVersion: $Id$
 
 Log of changes (libtifiles):
 
-- xx/xx/201x, version 1.1.7: debrouxl
+- 01/11/2016, version 1.1.7: debrouxl
+	- move tifiles_{model_to_string,string_to_model} to libticonv, add torture tests, forward from libtifiles.
 	- round out the sets of tifiles_ve_create* and tifiles_fp_create* functions, deprecate a couple ones.
 	- harden the code; add new "display" family functions and improve / update existing ones; factor out some code; remove unused FlashHeader struct. Changes made while investigating the crash fixed by the previous commit.
 	- fix tifiles_content_dup_flash() to dup FlashContent.data_part for the TI-eZ80 series. Fixes a crash in TILP reported by JustRamon and the same crash in GFM noticed by Lionel while investigating.

@@ -2,7 +2,8 @@ SubVersion: $Id$
 
 Log of changes (libticonv):
 
-- xx/xx/201x, version 1.1.5: debrouxl
+- 01/11/2016, version 1.1.5: debrouxl
+	- avoid three nullptr derefs in libticonv iconv interface noticed by code inspection and one instance of unreachable code after return; add said interface to torture test (yielding two additional nullptr deref fixes...); move tifiles_{model_to_string,string_to_model} to libticonv, add torture tests.
 	- in ticonv_varname_{to,from}_tifile, use CALC_TI84PC / CALC_TI84PC_USB instead of CALC_TI84P / CALC_TI84P_USB for CALC_TI84PC_USB, CALC_TI83PCE_USB and CALC_TI84PCE_USB. Suggested by Benjamin Moody, to pave the way for potential future color 84+ vs. monochrome 84+ changes.
 	- add initial support for 84+T model, fix several bugs in 82A support.
 	- add ticonv_varname_to_filename_sn(), ticonv_varname_to_tifile_sn(), ticonv_varname_from_tifile_sn(), and the corresponding torture tests; update documentation comments.
