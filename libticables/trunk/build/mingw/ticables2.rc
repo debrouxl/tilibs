@@ -6,8 +6,8 @@
 #include "winver.h"
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,3,5,0
- PRODUCTVERSION 1,3,5,0
+ FILEVERSION 1,3,6,0
+ PRODUCTVERSION 1,3,6,0
  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
 #ifdef _DEBUG
  FILEFLAGS (VS_FF_PRERELEASE | VS_FF_DEBUG)
@@ -25,15 +25,15 @@ BEGIN
             VALUE "Comments", "This lib is placed under GPL license. The license can be found on www.gnu.org\0"
             VALUE "CompanyName", "The TiLP Team\0"
             VALUE "FileDescription", "TI cables library\0"
-            VALUE "FileVersion", "1.3.5\0"
+            VALUE "FileVersion", "1.3.6\0"
             VALUE "InternalName", "libticables2\0"
-            VALUE "LegalCopyright", "Copyright \xA9 1999-2013, Romain Li\xE9vin, Julien Blache and contributors\0"
+            VALUE "LegalCopyright", "Copyright \xA9 1999-2016, Romain Li\xE9vin, Julien Blache and contributors\0"
             VALUE "LegalTrademarks", "The TiLP Team\0"
-            VALUE "OriginalFilename", "libticables2-7.dll\0"
+            VALUE "OriginalFilename", "libticables2-8.dll\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "TI cables library\0"
-            VALUE "ProductVersion", "1.3.5\0"
-            VALUE "SpecialBuild", "Windows 2000/XP/Vista/7 version\0"
+            VALUE "ProductVersion", "1.3.6\0"
+            VALUE "SpecialBuild", "Windows Vista/7/8/8.1/10 version\0"
         END
     END
     BLOCK "VarFileInfo"

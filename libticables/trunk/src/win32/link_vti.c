@@ -100,7 +100,7 @@ static int vti_open(CableHandle *h)
 	Handle = GetModuleHandle("libticables2.dll");
 	if (!Handle)
 	{
-		Handle = GetModuleHandle("libticables2-7.dll");
+		Handle = GetModuleHandle("libticables2-8.dll");
 	}
 
 	if (!Handle)

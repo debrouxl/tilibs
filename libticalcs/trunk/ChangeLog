@@ -2,6 +2,8 @@ SubVersion: $Id$
 
 Log of changes (libticalcs):
 
+- xx/xx/201x, version 1.1.10: debrouxl
+
 - 01/11/2016, version 1.1.9: debrouxl
 	- comment out ID-List capability for the 83PCE and 84+CE. Reported by Adriweb, testing by Lionel unsurprisingly confirmed the issue.
 	- add clock support for the TI-eZ80 series; add and use dusb_cmd_s_param_set_r_data_ack() to factor some code, add torture test for it.

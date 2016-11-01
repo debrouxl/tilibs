@@ -209,7 +209,7 @@ TIEXPORT3 int TICALL ticalcs_library_init(void)
 	HANDLE hDll;
 	int i;
 
-	hDll = GetModuleHandle("libticalcs2-12.dll");
+	hDll = GetModuleHandle("libticalcs2-13.dll");
 	GetModuleFileName(hDll, locale_dir, sizeof(locale_dir) - 21);
 
 	for (i = strlen(locale_dir); i >= 0; i--)

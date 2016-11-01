@@ -2,6 +2,8 @@ SubVersion: $Id$
 
 Log of changes (libticables):
 
+- xx/xx/201x, version 1.3.6: debrouxl
+
 - 01/11/2016, version 1.3.5: debrouxl
 	- on MacOS X, force reenumeration upon device reset, because it isn't automatic, which breaks e.g. communication with the Nspire. Reported by STV and Adrien Bertrand.
 	- don't declare a struct serial_struct instance if the header defining its type is not available. Fixes a build error under Alpine Linux.

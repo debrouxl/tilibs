@@ -41,7 +41,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define libticables2_VERSION "1.3.5"
+# define libticables2_VERSION "1.3.6"
 #else
 # define libticables2_VERSION VERSION
 #endif

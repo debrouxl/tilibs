@@ -2,10 +2,10 @@ dnl Process this file with autoconf to produce a configure script.
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libticalcs2, 1.1.9, [tilp-users@lists.sourceforge.net])
+AC_INIT(libticalcs2, 1.1.10, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="1.1.9"
+VERSION="1.1.10"
 AC_SUBST(VERSION)
 
 dnl Library version.
@@ -15,7 +15,7 @@ dnl  * If you added things to the api, increment 'current',
 dnl    reset 'revision' and increment 'age'.
 dnl  * If you changed/removed things from the api, increment 'current',
 dnl    reset 'revision' and reset 'age'.
-m4_define(LT_CURRENT, 12)
+m4_define(LT_CURRENT, 13)
 m4_define(LT_REVISION, 3)
 m4_define(LT_AGE, 0)
 LT_LIBVERSION="LT_CURRENT():LT_REVISION():LT_AGE()"

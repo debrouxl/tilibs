@@ -2,10 +2,10 @@ dnl Process this file with autoconf to produce a configure script.
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libticonv, 1.1.5, [tilp-users@lists.sourceforge.net])
+AC_INIT(libticonv, 1.1.6, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="1.1.5"
+VERSION="1.1.6"
 AC_SUBST(VERSION)
 
 dnl Library version.
@@ -15,7 +15,7 @@ dnl  * If you added things to the api, increment 'current',
 dnl    reset 'revision' and increment 'age'.
 dnl  * If you changed/removed things from the api, increment 'current',
 dnl    reset 'revision' and reset 'age'.
-m4_define(LT_CURRENT, 8)
+m4_define(LT_CURRENT, 9)
 m4_define(LT_REVISION, 4)
 m4_define(LT_AGE, 0)
 LT_LIBVERSION="LT_CURRENT():LT_REVISION():LT_AGE()"
