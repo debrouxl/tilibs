@@ -425,44 +425,31 @@ typedef struct
  **/
 typedef struct
 {
-	char*		name;
-	uint16_t	value;
+	const char* name;
+	uint32_t value;
 } KeyPair;
 
 /**
  * CalcKey:
  * @key_name: name of key
+ * @normal: information for key when pressed without modifiers
+ * @shift: information for key when pressed with SHIFT modifier (TI-68k series)
+ * @second: information for key when pressed with 2nd modifier (TI-Z80 & TI-68k series)
+ * @diamond: information for key when pressed with DIAMOND modifier (TI-68k series)
+ * @alpha: information for key when pressed with ALPHA modifier (TI-Z80 & TI-68k series)
  *
  * A structure which contains a TI scancode with key modifiers.
- * FIXME: use KeyPair structure to pack infos !
  **/
 typedef struct 
 {
-	char*	key_name;	// Name of key
+	const char* key_name;
 
-	KeyPair	normal;		// normal key
-	KeyPair	shift;		// SHIFT key (TI9x)
-	KeyPair	second;		// 2ND key (all)
-	KeyPair diamond;	// CTRL key (TI92)
-	KeyPair alpha;		// ALPHA key (83+,89)
-
+	KeyPair normal;
+	KeyPair shift;
+	KeyPair second;
+	KeyPair diamond;
+	KeyPair alpha;
 } CalcKey;
-
-typedef struct
-{
-	const char	*key_name;
-
-	const char	*normal_name;
-	uint16_t	normal_value;
-	const char	*shift_name;
-	uint16_t	shift_value;
-	const char	*second_name;
-	uint16_t	second_value;
-	const char	*diamond_name;
-	uint16_t	diamond_value;
-	const char	*alpha_name;
-	uint16_t	alpha_value;
-} OldCalcKeys_;
 
 /**
  * CalcClock:
