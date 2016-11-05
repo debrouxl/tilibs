@@ -22,7 +22,7 @@
 #ifndef __TIFILES_DEFSV2__
 #define __TIFILES_DEFSV2__
 
-#include "stdints2.h"
+#include <stdint.h>
 
 #define V200_MAXTYPES 48
 

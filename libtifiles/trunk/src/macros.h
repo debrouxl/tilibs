@@ -22,7 +22,7 @@
 #ifndef __TIFILES_MACROS__
 #define __TIFILES_MACROS__
 
-#include "stdints2.h"
+#include <stdint.h>
 
 // extract a word from a longword
 # define LSW(l) (uint16_t) ((l) & 0x0000FFFF)

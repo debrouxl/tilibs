@@ -22,7 +22,7 @@
 #ifndef __TIFILES_DEFS_NSP__
 #define __TIFILES_DEFS_NSP__
 
-#include "stdints2.h"
+#include <stdint.h>
 
 #define NSP_MAXTYPES 2
 

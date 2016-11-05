@@ -29,7 +29,7 @@
 #include <ticonv.h>
 
 #include "export2.h"
-#include "stdints2.h"
+#include <stdint.h>
 #include "typesxx.h"
 
 	/***********************/

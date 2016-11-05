@@ -41,7 +41,7 @@
 #endif
 
 #include "export4.h"
-#include "stdints4.h"
+#include <stdint.h>
 
 	/***********************/
 	/* Types & Definitions */

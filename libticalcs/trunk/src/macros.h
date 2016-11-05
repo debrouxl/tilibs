@@ -22,7 +22,7 @@
 #ifndef __TICALCS_MACROS__
 #define __TICALCS_MACROS__
 
-#include "stdints3.h"
+#include <stdint.h>
 
 // extract a word from a longword
 # define LSW(l) (uint16_t) ((l) & 0x0000FFFF)

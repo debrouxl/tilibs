@@ -26,7 +26,7 @@
 #include <glib/gstdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "stdints2.h"
+#include <stdint.h>
 #include <sys/stat.h>
 
 #include "tifiles.h"

@@ -27,7 +27,7 @@
 #endif
 
 #include <stdio.h>
-#include "stdints1.h"
+#include <stdint.h>
 
 #include "ticables.h"
 #include "gettext.h"

@@ -29,7 +29,7 @@
 #endif
 
 #include <stdio.h>
-#include "stdints1.h"
+#include <stdint.h>
 #include <unistd.h>
 #include <termios.h>
 #include <sys/ioctl.h>

@@ -8,7 +8,7 @@ SUBDIRS = tf2hex romdump_8x romdump_84p_usb romdump_834pce_usb romdump_9x romdum
 lib_LTLIBRARIES = libticalcs2.la
 libticalcsincludedir = $(includedir)/tilp2
 libticalcsinclude_HEADERS = \
-	ticalcs.h export3.h stdints3.h \
+	ticalcs.h export3.h \
 	keys73.h keys83.h keys83p.h keys86.h keys89.h keys92p.h \
 	dbus_pkt.h dusb_rpkt.h dusb_vpkt.h dusb_cmd.h nsp_vpkt.h nsp_cmd.h \
 	cmdz80.h cmd68k.h

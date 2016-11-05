@@ -26,7 +26,7 @@
 # include <config.h>
 #endif
 
-#include "stdints1.h"
+#include <stdint.h>
 #include "export1.h"
 #include "timeout.h"
 
