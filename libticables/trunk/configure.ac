@@ -156,8 +156,7 @@ case "$host" in
   x86_64-apple-darwin*)  ARCH="-D__MACOSX__" ;;
   ia64-*-linux-*)        ARCH="-D__LINUX__" ;;
   m68k-*-linux-*)        ARCH="-D__M68K__ -D__LINUX__" ;;
-  mips-*-linux-*)        ARCH="-D__MIPS__ -D__LINUX__" ;;
-  mipsel-*-linux-*)      ARCH="-D__MIPS__ -D__LINUX__" ;;
+  mips*-*-linux-*)       ARCH="-D__MIPS__ -D__LINUX__" ;;
   powerpc-*-linux-*)     ARCH="-D__PPC__  -D__LINUX__" ;;
   powerpc64-*-linux-*)   ARCH="-D__PPC__  -D__LINUX__" ;;
   powerpc64le-*-linux-*) ARCH="-D__PPC__  -D__LINUX__" ;;
