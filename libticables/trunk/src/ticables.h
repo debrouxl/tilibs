@@ -76,7 +76,7 @@ typedef enum
 typedef enum 
 {
 	PORT_0 = 0,
-	PORT_1, PORT_2, PORT_3, PORT_4, PORT_MAX
+	PORT_1, PORT_FIRST = PORT_1, PORT_2, PORT_3, PORT_4, PORT_MAX
 } CablePort;
 
 /**
@@ -338,9 +338,10 @@ typedef struct
 	// ticables.c
 	TIEXPORT1 const char * TICALL ticables_version_get(void);
 	TIEXPORT1 uint32_t TICALL ticables_supported_cables(void);
+	TIEXPORT1 uint32_t TICALL ticables_max_ports(void);
 
 	TIEXPORT1 CableHandle * TICALL ticables_handle_new(CableModel model, CablePort port);
-	TIEXPORT1 int        TICALL ticables_handle_del(CableHandle *handle);
+	TIEXPORT1 int           TICALL ticables_handle_del(CableHandle *handle);
 
 	TIEXPORT1 unsigned int TICALL ticables_options_set_timeout(CableHandle *handle, unsigned int timeout);
 	TIEXPORT1 unsigned int TICALL ticables_options_set_delay(CableHandle *handle, unsigned int delay);
@@ -412,6 +413,7 @@ typedef struct
 	TIEXPORT1 int TICALL ticables_probing_do(int ***result, unsigned int timeout, ProbingMethod method);
 	TIEXPORT1 int TICALL ticables_probing_finish(int ***result);
 	TIEXPORT1 void TICALL ticables_probing_show(int **array);
+	TIEXPORT1 int TICALL ticables_probing_found(int *array);
 
 	TIEXPORT1 int TICALL ticables_is_usb_enabled(void);
 

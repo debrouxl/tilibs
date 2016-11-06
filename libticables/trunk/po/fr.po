@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.3.6\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-11-01 18:41+0100\n"
+"POT-Creation-Date: 2016-11-06 12:06+0100\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@list.sf.net>\n"
@@ -418,11 +418,11 @@ msgstr "Câble factice"
 msgid "Dummy link used when no cable is set"
 msgstr "Câble factice utilisé quand aucun câble n'est défini"
 
-#: src/link_nul.c:135
+#: src/link_nul.c:136
 msgid "Dummy link for TiEmu"
 msgstr "Câble factice pour TiEmu"
 
-#: src/link_nul.c:136
+#: src/link_nul.c:137
 msgid "Internal Link Port cable for TiEmu (internal use)"
 msgstr "Port de transfert interne pour TiEmu (à usage interne)"
 
@@ -643,12 +643,7 @@ msgstr "Virtual TI"
 msgid "Virtual link for VTi"
 msgstr "Câble virtuel pour VTi"
 
-#: src/probe.c:52
-#, c-format
-msgid " %i: %i %i %i %i"
-msgstr " %i: %i %i %i %i"
-
-#: src/probe.c:93
+#: src/probe.c:114
 msgid "Link cable probing:"
 msgstr "Recherche de câble de connexion:"
 
@@ -657,36 +652,36 @@ msgstr "Recherche de câble de connexion:"
 msgid "ticables library version %s"
 msgstr "librairie ticables version %s"
 
-#: src/ticables.c:538
+#: src/ticables.c:550
 msgid "Link cable handle details:"
 msgstr "Détails sur le descripteur du câble de connexion:"
 
-#: src/ticables.c:539
+#: src/ticables.c:551
 #, c-format
 msgid "  model   : %s"
 msgstr "  modèle  : %s"
 
-#: src/ticables.c:540
+#: src/ticables.c:552
 #, c-format
 msgid "  port    : %s"
 msgstr "  port    : %s"
 
-#: src/ticables.c:541
+#: src/ticables.c:553
 #, c-format
 msgid "  timeout : %2.1fs"
 msgstr "  timeout  : %2.1fs"
 
-#: src/ticables.c:542
+#: src/ticables.c:554
 #, c-format
 msgid "  delay   : %i us"
 msgstr "  délai   : %i us"
 
-#: src/ticables.c:545
+#: src/ticables.c:557
 #, c-format
 msgid "  device  : %s"
 msgstr "  périph  : %s"
 
-#: src/ticables.c:546
+#: src/ticables.c:558
 #, c-format
 msgid "  address : 0x%03x"
 msgstr "  adresse : 0x%03x"
@@ -704,6 +699,9 @@ msgstr "Avez-vous renommé la librairie ?!"
 #, c-format
 msgid "Opened %s"
 msgstr "Ouvert %s"
+
+#~ msgid " %i: %i %i %i %i"
+#~ msgstr " %i: %i %i %i %i"
 
 #~ msgid "Check for tiusb usability:"
 #~ msgstr "Vérification de l'utilisabilité de tiusb:"

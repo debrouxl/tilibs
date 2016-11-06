@@ -249,9 +249,21 @@ TIEXPORT1 const char *TICALL ticables_version_get(void)
  * Return value: an integer containing a binary OR of (1 << CABLE_*) values,
  * where CABLE_* values are defined in enum CableModel.
  **/
-TIEXPORT1 uint32_t TICALL ticables_supported_cables (void)
+TIEXPORT1 uint32_t TICALL ticables_supported_cables(void)
 {
 	return supported_cables;
+}
+
+/**
+ * ticables_max_ports:
+ *
+ * This function returns the maximum number of ports supported for any given cable.
+ *
+ * Return value: the PORT_MAX value against which the library was built.
+ **/
+TIEXPORT1 uint32_t TICALL ticables_max_ports(void)
+{
+	return PORT_MAX;
 }
 
 static int default_pre_send_hook(CableHandle * handle, uint8_t * data, uint32_t len)

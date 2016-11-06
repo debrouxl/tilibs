@@ -38,6 +38,27 @@
 #include "bsd/detect.h"
 #include "macos/detect.h"
 
+TIEXPORT1 int TICALL ticables_probing_found(int *array)
+{
+	if (array != NULL)
+	{
+		int i;
+		for (i = PORT_FIRST; i < PORT_MAX; i++)
+		{
+			if (array[i])
+			{
+				return i;
+			}
+		}
+	}
+	else
+	{
+		ticables_critical("%s(NULL)", __FUNCTION__);
+	}
+
+	return 0;
+}
+
 TIEXPORT1 void TICALL ticables_probing_show(int **array)
 {
 	if (array != NULL)
@@ -49,7 +70,7 @@ TIEXPORT1 void TICALL ticables_probing_show(int **array)
 			int * arraymodel = array[model];
 			if (arraymodel != NULL)
 			{
-				ticables_info(_(" %i: %i %i %i %i"), model, array[model][1], array[model][2], array[model][3], array[model][4]);
+				ticables_info(" %i: %i %i %i %i", model, array[model][PORT_1], array[model][PORT_2], array[model][PORT_3], array[model][PORT_4]);
 			}
 			else
 			{
@@ -69,9 +90,9 @@ TIEXPORT1 void TICALL ticables_probing_show(int **array)
  * @timeout: timeout to set during probing
  * @method: defines which link cables you want to search for.
  *
- * Returns cables which have been detected. All cables should be closed before !
- * The array is like a matrix which contains 5 columns (PORT_0 to PORT_4) and 
- * 7 lines (CABLE_GRY to CABLE_USB).
+ * Returns cables which have been detected. All cables should be closed before calling this function !
+ * The array defines a matrix of PORT_MAX columns and CABLE_MAX + 1 rows; the rows corresponding to
+ * cables which cannot be probed are allocated but empty.
  * The array must be freed by #ticables_probing_finish when no longer used.
  *
  * Return value: 0 if successful, ERR_NO_CABLE if no cables found.
@@ -100,7 +121,7 @@ TIEXPORT1 int TICALL ticables_probing_do(int ***result, unsigned int timeout, Pr
 
 	for (model = CABLE_NUL; model <= CABLE_MAX; model++)
 	{
-		array[model] = (int *)calloc(5, sizeof(int));
+		array[model] = (int *)calloc(PORT_MAX, sizeof(int));
 		if (array[model] == NULL)
 		{
 			for (model = CABLE_NUL; model <= CABLE_MAX; model++)
@@ -149,7 +170,7 @@ TIEXPORT1 int TICALL ticables_probing_do(int ***result, unsigned int timeout, Pr
 	{
 		for (model = CABLE_GRY; model <= CABLE_PAR; model++)
 		{
-			for (port = PORT_1; port <= PORT_4; port++)
+			for (port = PORT_1; port < PORT_MAX; port++)
 			{
 				CableHandle* handle;
 				int err, ret;
