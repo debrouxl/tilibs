@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Making programs against the TiCables library</title>
+  <style type="TEXT/CSS">
+<!--
+BODY {FONT-FAMILY: Verdana,Arial,Helvetica,Sans-Serif; BACKGROUND-COLOR: #FFFFFF; FONT-SIZE: 10pt}
+TD {FONT-SIZE: 10pt}
+H1 {FONT-SIZE: 18pt}
+H3 {FONT-SIZE: 13pt}
+PRE {FONT-FAMILY: Courier New; FONT-SIZE: 9pt}
+CODE {FONT-FAMILY: Courier New; FONT-SIZE: 9pt}
+-->
+  </style>
+</head>
+<body alink="#ff0000" bgcolor="#ffffff" text="#000000" vlink="#0000ff">
+<h1> How to make a program against the tiopers library </h1>
+<hr>
+<pre>&nbsp;<em>&nbsp;</em></pre>
+You will find in the <i>test</i> folder of the library source archive
+a test/example program which uses this library.<br>
+Below is a light version (most error management has been removed and
+update functions are set to void) of this program to make it clearer:<br>
+<br>
+<pre>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;glib.h&gt;
+#include &lt;ticables.h&gt;
+#include &lt;tifiles.h&gt;
+#include &lt;ticalcs.h&gt;
+#include &lt;tiopers.h&gt;
+      
+static void print_lc_error(int errnum)
+{
+  char *msg;
+
+  ticables_error_get(errnum, &amp;msg);
+  fprintf(stderr, "Link cable error (code %i)...\n&lt;&lt;%s&gt;&gt;\n", errnum, msg);
+
+  g_free(msg);
+}
+
+int main(int argc, char **argv)
+{
+  CableHandle* cable;
+  CalcHandle* calc;
+  int err;
+
+  // init libs
+  ticables_library_init();
+  ticalcs_library_init();
+  tiopers_library_init();
+
+  // set cable
+  cable = ticables_handle_new(CABLE_BLK, PORT_2);
+  if(cable == NULL)
+    return -1;
+
+  // set calc
+  calc = ticalcs_handle_new(CALC_TI83);
+  if(calc == NULL)
+    return -1;
+
+  // attach cable to calc (and open cable)
+  err = ticalcs_cable_attach(calc, cable);
+
+  err = ticalcs_calc_isready(h);
+  if(err)
+     print_lc_error(err);
+  printf("Hand-held is %sready !\n", err ? "not " : "");
+
+  // detach cable (made by handle_del, too)
+  err = ticalcs_cable_detach(calc);
+
+  // remove calc &amp; cable
+  ticalcs_handle_del(calc);
+  ticables_handle_del(cable);
+
+  return 0;
+}</pre>
+That's all !<br><br>
+<strong>NOTE</strong>: for this example to work, you probably have to add compiler options related to the include path and library path, e.g.
+<pre>gcc -I/usr/include/tilp2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -Os -g -Wall -W &lt;...&gt;.c -o &lt;...&gt; -lglib-2.0 -lticables2 -ltifiles2 -lticalcs2 -ltiopers</pre>
+or better
+<pre>gcc -Os -g -Wall -W `pkg-config --cflags --libs tiopers` tiopers.c -o tiopers</pre>
+<h3><a href="index.html">Return to the main index</a> </h3>
+</body>
+</html>

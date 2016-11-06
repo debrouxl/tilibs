@@ -1,0 +1,6 @@
+# List of source files containing translatable strings.
+
+src/error.c
+src/logging.c
+src/tiopers.c
+

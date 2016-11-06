@@ -1,0 +1,82 @@
+ _______  _____  ____   _____   ______  _____    _____ 
+|__   __||_   _|/ __ \ |  __ \ |  ____||  __ \  / ____|
+   | |     | | | |  | || |__) || |__   | |__) || (___  
+   | |     | | | |  | ||  ___/ |  __|  |  _  /  \___ \ 
+   | |    _| |_| |__| || |     | |____ | | \ \  ____) |
+   |_|   |_____|\____/ |_|     |______||_|  \_\|_____/ 
+
+This library is part of the TILP framework by Romain Liévin et al.
+
+See the AUTHORS file for more detailed authorship information.
+
+-------------------------------------------------------------------------------
+Requirements
+-------------------------------------------------------------------------------
+
+OS:
+  - any *nix with a reasonably modern C compiler (a current GCC will definitely
+    work)
+  or
+  - Microsoft Windows, MSVC or MSYS+MinGW required for compiling from source
+
+Libraries:
+  - GLib 2 (required)
+  - libticonv (required)
+  - libtifiles2 (required)
+  - libticables2 (required)
+  - libticalcs2 (required)
+
+Tools for building from source:
+  - make (required)
+  - tfdocgen (optional, required to build API docs)
+
+-------------------------------------------------------------------------------
+Compilation
+-------------------------------------------------------------------------------
+
+Untar the libtiopers archive, change directory to the libtiopers directory.
+
+Type "./configure" (add --prefix option to install to a non-default location).
+
+Type "make" and then "make install". "make install" requires root privileges
+to install to the default, system-wide location.
+
+-------------------------------------------------------------------------------
+Availability
+-------------------------------------------------------------------------------
+
+  http://lpg.ticalc.org/prj_tilp
+
+-------------------------------------------------------------------------------
+Copyright
+-------------------------------------------------------------------------------
+
+Copyright (C) 1999-2013 the TiLP team <tilp-users@lists.sf.net>
+See AUTHORS for detailed authorship information.
+
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+(A special exception applies when linking the library into TilEm, see the
+COPYING file for details.)
+
+This library is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this library (in the COPYING file); if not, see <http://www.gnu.org/licenses/>.
+
+-------------------------------------------------------------------------------
+
+Texas Instruments and TI are trademarks of Texas Instruments Incorporated.
+For more informations: <http://education.ti.com/educationportal/sites/US/nonProductSingle/global_trademarks.html>
+This document has been written independently of Texas Instruments.
+
+Please report any bugs, questions, etc. on the SourceForge infrastructure
+(http://sourceforge.net/tilp). Please indicate your platform, your calculator
+type and ROM version.
+
+The TiLP team <tilp-users@lists.sf.net>
