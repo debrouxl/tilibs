@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.3.6\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-11-01 18:41+0100\n"
+"POT-Creation-Date: 2016-11-06 12:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -368,11 +368,11 @@ msgstr ""
 msgid "Dummy link used when no cable is set"
 msgstr ""
 
-#: src/link_nul.c:135
+#: src/link_nul.c:136
 msgid "Dummy link for TiEmu"
 msgstr ""
 
-#: src/link_nul.c:136
+#: src/link_nul.c:137
 msgid "Internal Link Port cable for TiEmu (internal use)"
 msgstr ""
 
@@ -582,12 +582,7 @@ msgstr ""
 msgid "Virtual link for VTi"
 msgstr ""
 
-#: src/probe.c:52
-#, c-format
-msgid " %i: %i %i %i %i"
-msgstr ""
-
-#: src/probe.c:93
+#: src/probe.c:114
 msgid "Link cable probing:"
 msgstr ""
 
@@ -596,36 +591,36 @@ msgstr ""
 msgid "ticables library version %s"
 msgstr ""
 
-#: src/ticables.c:538
+#: src/ticables.c:550
 msgid "Link cable handle details:"
 msgstr ""
 
-#: src/ticables.c:539
+#: src/ticables.c:551
 #, c-format
 msgid "  model   : %s"
 msgstr ""
 
-#: src/ticables.c:540
+#: src/ticables.c:552
 #, c-format
 msgid "  port    : %s"
 msgstr ""
 
-#: src/ticables.c:541
+#: src/ticables.c:553
 #, c-format
 msgid "  timeout : %2.1fs"
 msgstr ""
 
-#: src/ticables.c:542
+#: src/ticables.c:554
 #, c-format
 msgid "  delay   : %i us"
 msgstr ""
 
-#: src/ticables.c:545
+#: src/ticables.c:557
 #, c-format
 msgid "  device  : %s"
 msgstr ""
 
-#: src/ticables.c:546
+#: src/ticables.c:558
 #, c-format
 msgid "  address : 0x%03x"
 msgstr ""
