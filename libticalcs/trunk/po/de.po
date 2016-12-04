@@ -3,7 +3,7 @@
 # Thomas Corvazier, 2002 Jesse Palmer, 2003-2007 Kevin Kofler, 2003-2006
 # Lauris Kaplinski, 2003 Sylvain Garsault,2006 Tyler Cassidy.
 # Chris Leick <c.leick@vollbio.de>, 2010.
-# Andreas B. Mundt <andi@debian.org>, 2013.
+# Andreas B. Mundt <andi@debian.org>, 2013, 2016.
 # This file is distributed under the same license as the libticalcs2 package.
 #
 msgid ""
@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
 "POT-Creation-Date: 2016-11-01 18:41+0100\n"
-"PO-Revision-Date: 2011-12-13 19:16+0100\n"
+"PO-Revision-Date: 2016-11-18 19:30+0300\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
 "Language: de\n"
@@ -22,61 +22,61 @@ msgstr ""
 
 #: src/calc_00.c:213
 msgid "Dummy hand-held"
-msgstr ""
+msgstr "Dummy Hand-Held"
 
 #: src/calc_00.c:214
 msgid "Dummy hand-held used when no calc is set"
-msgstr ""
+msgstr "Dummy Hand-Held verwendet, wenn kein calc gesetzt ist"
 
 #: src/calc_73.c:393 src/calc_84p.c:301 src/calc_8x.c:402
 #, c-format
 msgid "Parsing %s"
-msgstr ""
+msgstr "Lese und analysiere %s"
 
 #: src/calc_73.c:854
 msgid "Battery low, stopping flash app transfer"
-msgstr ""
+msgstr "Batteriespannung niedrig, breche den Transfer der Applikation ab"
 
 #: src/calc_73.c:859 src/calc_73.c:1502 src/calc_9x.c:1163 src/calc_89t.c:506
 #, c-format
 msgid "FLASH name: \"%s\""
-msgstr ""
+msgstr "FLASH Name: \"%s\""
 
 #: src/calc_73.c:860 src/calc_73.c:1503 src/calc_9x.c:1164 src/calc_89t.c:507
 #, c-format
 msgid "FLASH size: %i bytes."
-msgstr ""
+msgstr "FLASH Größe: %i Bytes."
 
 #: src/calc_73.c:1278 src/calc_84p.c:1481 src/calc_84p.c:1511
 #: src/calc_9x.c:1448 src/calc_89t.c:844
 msgid "Setting clock..."
-msgstr ""
+msgstr "Stelle Zeit..."
 
 #: src/calc_73.c:1324 src/calc_84p.c:1431 src/calc_84p.c:1581
 #: src/calc_9x.c:1492 src/calc_89t.c:923
 msgid "Getting clock..."
-msgstr ""
+msgstr "Hole Zeit..."
 
 #: src/calc_73.c:1400 src/calc_84p.c:1685 src/calc_8x.c:1255 src/calc_9x.c:1556
 #: src/calc_9x.c:1588 src/calc_89t.c:1000 src/calc_nsp.c:835
 #, c-format
 msgid "Deleting %s..."
-msgstr ""
+msgstr "Lösche %s..."
 
 #: src/calc_73.c:1474 src/calc_9x.c:1715 src/calc_9x.c:1748
 #, c-format
 msgid "  OS: %s"
-msgstr ""
+msgstr "  OS: %s"
 
 #: src/calc_73.c:1475 src/calc_9x.c:1716
 #, c-format
 msgid "  BIOS: %s"
-msgstr ""
+msgstr "  BIOS: %s"
 
 #: src/calc_73.c:1476
 #, c-format
 msgid "  HW: %i"
-msgstr ""
+msgstr "  HW: %i"
 
 #: src/calc_73.c:1477 src/calc_9x.c:1717 src/calc_9x.c:1749
 #, c-format
@@ -93,381 +93,395 @@ msgstr "niedrig"
 
 #: src/calc_73.c:1549 src/calc_9x.c:1230
 msgid "Header sent completely."
-msgstr ""
+msgstr "Header komplett gesendet."
 
 #: src/calc_73.c:1562
 msgid "Receiving certificate"
-msgstr ""
+msgstr "Erhalte Zertifikat"
 
 #: src/calc_84p.c:1445 src/calc_84p.c:1595
 #, c-format
 msgid "Could not determine clock type: %u %u"
-msgstr ""
+msgstr "Konnte Uhrentyp nicht ermitteln: %u %u"
 
 #: src/calc_84p.c:1454
 msgid "Will set classic clock"
-msgstr ""
+msgstr "Verwendet klassische Uhr"
 
 #: src/calc_84p.c:1509
 msgid "Will set new clock"
-msgstr ""
+msgstr "Verwende neue Uhr"
 
 #: src/calc_84p.c:1606
 msgid "Found valid classic clock"
-msgstr ""
+msgstr "Gültige klassische Uhr gefunden"
 
 #: src/calc_84p.c:1637
 #, c-format
 msgid "Found classic clock but failed to retrieve its parameters: %u %u %u %u"
 msgstr ""
+"Klassische Uhr gefunden, aber abrufen der Parameter fehlgeschlagen: %u %u %u "
+"%u"
 
 #: src/calc_84p.c:1647
 msgid "Found valid new clock"
-msgstr ""
+msgstr "Gültige neue Uhr gefunden"
 
 #: src/calc_84p.c:1662
 #, c-format
 msgid ""
 "Found new clock but failed to retrieve its parameters: %u %u %u %u %u %u"
 msgstr ""
+"Klassische Uhr gefunden, aber abrufen der Parameter fehlgeschlagen: %u %u %u "
+"%u %u %u"
 
 #: src/calc_84p.c:1768 src/calc_89t.c:1189
 msgid "Getting version..."
-msgstr ""
+msgstr "Hole Versionsnummer..."
 
 #: src/calc_84p.c:2017 src/calc_84p.c:2026 src/calc_84p.c:2035
 #: src/calc_84p.c:2051 src/calc_84p.c:2059
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
-msgstr ""
+msgstr "Unbekanntes 84+ Familienmitglied mit product_id=%d hw_version=%d"
 
 #: src/calc_84p.c:2076
 msgid "TI-84 Plus thru DirectLink"
-msgstr ""
+msgstr "TI-84 Plus mittels DirectLink"
 
 #: src/calc_84p.c:2147
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
-msgstr ""
+msgstr "TI-84 Plus C Silver Edition mittels DirectLink"
 
 #: src/calc_84p.c:2218
 msgid "TI-83 Premium CE thru DirectLink"
-msgstr ""
+msgstr "TI-83 Premium CE mittels DirectLink"
 
 #: src/calc_84p.c:2289
 msgid "TI-84 Plus CE thru DirectLink"
-msgstr ""
+msgstr "TI-84 Plus CE mittels DirectLink"
 
 #: src/calc_84p.c:2360
 msgid "TI-82 Advanced thru DirectLink"
-msgstr ""
+msgstr "TI-82 Advanced mittels DirectLink"
 
 #: src/calc_84p.c:2431
 msgid "TI-84 Plus T thru DirectLink"
-msgstr ""
+msgstr "TI-84 Plus T mittels DirectLink"
 
 #: src/calc_8x.c:493 src/calc_8x.c:804
 msgid "Waiting for user's action..."
-msgstr ""
+msgstr "Warte auf Aktion des Anwenders..."
 
 #: src/calc_8x.c:638
 msgid "Waiting for backup..."
-msgstr ""
+msgstr "Warte auf Backup..."
 
 #: src/calc_8x.c:1076
 msgid "Waiting for var(s)..."
-msgstr ""
+msgstr "Warte auf var(s)..."
 
 #: src/calc_9x.c:353 src/calc_9x.c:441 src/calc_9x.c:580
 #, c-format
 msgid "Name: %8s | Type: %8s | Attr: %i  | Size: %08X"
-msgstr ""
+msgstr "Name: %8s | Typ: %8s  | Attr: %i  | Größe: %08X"
 
 #: src/calc_9x.c:386
 #, c-format
 msgid "Directory listing in %8s..."
-msgstr ""
+msgstr "Verzeichnisliste in %8s..."
 
 #: src/calc_9x.c:449 src/calc_9x.c:604 src/calc_89t.c:249
 #, c-format
 msgid "Parsing %s/%s"
-msgstr ""
+msgstr "Lese und analysiere %s/%s"
 
 #: src/calc_9x.c:699
 #, c-format
 msgid "Block #%2i"
-msgstr ""
+msgstr "Block #%2i"
 
 #: src/calc_9x.c:1618 src/calc_89t.c:1096 src/calc_nsp.c:865
 #, c-format
 msgid "Creating %s..."
-msgstr ""
+msgstr "Erzeuge %s..."
 
 #: src/calc_9x.c:2010
 msgid "V200 Personal Learning Tool"
-msgstr ""
+msgstr "V200 Persönliches Lernwerkzeug"
 
 #: src/calc_89t.c:1031 src/calc_nsp.c:1034
 #, c-format
 msgid "Renaming %s to %s..."
-msgstr ""
+msgstr "Benenne %s in %s um..."
 
 #: src/calc_89t.c:1059
 #, c-format
 msgid "Changing attributes of %s..."
-msgstr ""
+msgstr "Ändere die Attribute von %s..."
 
 #: src/calc_89t.c:1416
 msgid "TI-89 Titanium thru DirectLink"
-msgstr ""
+msgstr "TI-89 Titanium mittels DirectLink"
 
 #: src/calc_nsp.c:232
 #, c-format
 msgid "Unknown calculator model with %d bpp\n"
-msgstr ""
+msgstr "Unbekanntes Rechnermodel mit %d bpp\n"
 
 #: src/calc_nsp.c:388
 #, c-format
 msgid "Name: %s | Type: %8s | Attr: %i  | Size: %08X"
-msgstr ""
+msgstr "Name: %s | Typ: %8s  | Attr: %i  | Größe: %08X"
 
 #: src/calc_nsp.c:421
 #, c-format
 msgid "Not enumerating documents in %s because it's not a folder\n"
-msgstr ""
+msgstr "Nummeriere die Dokumente in %s nicht, weil es kein Verzeichnis ist\n"
 
 #: src/calc_nsp.c:437
 #, c-format
 msgid "Directory listing in <%s>...\n"
-msgstr ""
+msgstr "Verzeichnisliste in <%s>...\n"
 
 #: src/calc_nsp.c:1057
 msgid "Nspire thru DirectLink"
-msgstr ""
+msgstr "Nspire mittels DirectLink"
 
 #: src/calc_xx.c:91
 msgid "Checking hand-held status:"
-msgstr ""
+msgstr "Prüfe Hand-Held Status:"
 
 #: src/calc_xx.c:125
 #, c-format
 msgid "Sending key %08x:"
-msgstr ""
+msgstr "Sende Schlüssel %08x:"
 
 #: src/calc_xx.c:162
 #, c-format
 msgid "Executing %s/%s with %s:"
-msgstr ""
+msgstr "Führe %s/%s mit %s aus:"
 
 #: src/calc_xx.c:199
 msgid "Requesting screenshot:"
-msgstr ""
+msgstr "Fordere Screenshot an:"
 
 #: src/calc_xx.c:297
 msgid "Requesting folder & vars & apps listing:"
-msgstr ""
+msgstr "Fordere Verzeichnis- & Variablen- & Apps-Liste an:"
 
 #: src/calc_xx.c:351
 msgid "Requesting RAM & FLASH free"
-msgstr ""
+msgstr "Fordere freies RAM & FLASH"
 
 #: src/calc_xx.c:386
 msgid "Sending backup:"
-msgstr ""
+msgstr "Sende Backup:"
 
 #: src/calc_xx.c:421
 msgid "Requesting backup:"
-msgstr ""
+msgstr "Fordere Backup an:"
 
 #: src/calc_xx.c:458
 msgid "Sending one or more variables:"
-msgstr ""
+msgstr "Sende eine oder mehrere Variablen:"
 
 #: src/calc_xx.c:496
 #, c-format
 msgid "Requesting variable '%s':"
-msgstr ""
+msgstr "Fordere Variable '%s' an:"
 
 #: src/calc_xx.c:533
 msgid "Sending variable (non-silent mode):"
-msgstr ""
+msgstr "Sende Variable (non-silent modus):"
 
 #: src/calc_xx.c:571
 msgid "Receiving variable (non-silent mode):"
-msgstr ""
+msgstr "Erhalte Variable (non-silent modus):"
 
 #: src/calc_xx.c:606
 msgid "Sending FLASH application:"
-msgstr ""
+msgstr "Sende FLASH Applikation:"
 
 #: src/calc_xx.c:643
 msgid "Requesting receiving of FLASH application:"
-msgstr ""
+msgstr "Fordere den Erhalt der FLASH Applikation an:"
 
 #: src/calc_xx.c:678
 msgid "Sending FLASH os:"
-msgstr ""
+msgstr "Sende FLASH os:"
 
 #: src/calc_xx.c:713
 msgid "Requesting ID-LIST:"
-msgstr ""
+msgstr "Fordere ID-LIST:"
 
 #: src/calc_xx.c:746
 msgid "Sending ROM dumper:"
-msgstr ""
+msgstr "Sende ROM dumper:"
 
 #: src/calc_xx.c:782
 msgid "Dumping ROM:"
-msgstr ""
+msgstr "Dumping ROM:"
 
 #: src/calc_xx.c:817
 msgid "Setting clock:"
-msgstr ""
+msgstr "Stelle Uhr:"
 
 #: src/calc_xx.c:852
 msgid "Getting clock:"
-msgstr ""
+msgstr "Hole Uhr:"
 
 #: src/calc_xx.c:887
 #, c-format
 msgid "Deleting variable '%s':"
-msgstr ""
+msgstr "Lösche Variable '%s':"
 
 #: src/calc_xx.c:922
 #, c-format
 msgid "Creating folder '%s':"
-msgstr ""
+msgstr "Erzeuge Verzeichnis '%s':"
 
 #: src/calc_xx.c:957
 msgid "Requesting version info:"
-msgstr ""
+msgstr "Fordere Versionsinformation an:"
 
 #: src/calc_xx.c:992
 msgid "Sending certificate:"
-msgstr ""
+msgstr "Sende Zertifikat:"
 
 #: src/calc_xx.c:1027
 msgid "Requesting receiving of certificate:"
-msgstr ""
+msgstr "Fordere den Empfang des Zertifikats an:"
 
 #: src/calc_xx.c:1066
 #, c-format
 msgid "Renaming variable '%s/%s' to '%s/%s':"
-msgstr ""
+msgstr "Benenne die Variable '%s/%s' in '%s/%s' um:"
 
 #: src/calc_xx.c:1070
 #, c-format
 msgid "Renaming variable '%s' to '%s':"
-msgstr ""
+msgstr "Benenne die Variable '%s' in '%s' um:"
 
 #: src/calc_xx.c:1108
 #, c-format
 msgid "Setting variable '%s' to %s:"
-msgstr ""
+msgstr "Setze Variable '%s' auf %s:"
 
 #: src/calc_xx.c:1145
 msgid "Sending fake (all vars) backup:"
-msgstr ""
+msgstr "Sende fake (all vars) Backup:"
 
 #: src/calc_xx.c:1180
 msgid "Requesting fake (all vars) backup:"
-msgstr ""
+msgstr "Fordere fake (all vars) Backup an:"
 
 #: src/dirlist.c:194
 #, c-format
 msgid "| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"
-msgstr ""
+msgstr "| B. Name          | T. Name  |Attr|Typ | Größe    | Ordner   |\n"
 
 #: src/dirlist.c:204
 #, c-format
 msgid "| No variables     |\n"
-msgstr ""
+msgstr "| Keine Variablen  |\n"
 
 #: src/dirlist.c:208
 #, c-format
 msgid "| No applications  |\n"
-msgstr ""
+msgstr "| Kein Programm    |\n"
 
 #: src/dirlist.c:212
 #, c-format
 msgid "+------------------+----------+----+----+----------+----------+"
-msgstr ""
+msgstr "+------------------+----------+----+----+----------+----------+"
 
 #: src/error.c:72
 msgid "Msg: transfer aborted."
-msgstr ""
+msgstr "Msg: Transfer abgebrochen."
 
 #: src/error.c:74
 msgid "Cause: the user!"
-msgstr ""
+msgstr "Grund: Der Anwender!"
 
 #: src/error.c:80
 msgid "Msg: calculator is not ready."
-msgstr ""
+msgstr "Msg: Rechner nicht bereit."
 
 #: src/error.c:82
 msgid ""
 "Cause: the calculator is busy (Var-Link menu, Window, ...). Press HOME..."
 msgstr ""
+"Grund: Der Rechner ist beschäftigt (Var-Link menu, Window, ...). Drücke "
+"HOME..."
 
 #: src/error.c:88
 msgid "Msg: checksum error."
-msgstr ""
+msgstr "Msg: Checksummen Fehler."
 
 #: src/error.c:90
 msgid "Cause: a transmission error. Try again."
-msgstr ""
+msgstr "Grund: Ein Übertragungsfehler. Versuchen sie es erneut."
 
 #: src/error.c:96
 msgid "Msg: invalid host ID."
-msgstr ""
+msgstr "Msg: Unerlaubte Host ID."
 
 #: src/error.c:98
 msgid ""
 "Cause: received an unexpected Machine ID from calculator, probably due to a "
 "transmission error."
 msgstr ""
+"Grund: Unerwartete Machinen-ID vom Rechner erhalten, wahrscheinlich aufgrund "
+"eines Übertragungsfehlers."
 
 #: src/error.c:104
 msgid "Msg: invalid target ID."
-msgstr ""
+msgstr "Msg: Ungültige Target Id."
 
 #: src/error.c:106
 msgid ""
 "Cause: received an unexpected Target ID from calculator, probably due to a "
 "transmission error."
 msgstr ""
+"Grund: Unerwartete Target-ID vom Rechner erhalten, wahrscheinlich aufgrund "
+"eines Übertragungsfehlers."
 
 #: src/error.c:112
 msgid "Msg: invalid command ID."
-msgstr ""
+msgstr "Msg: Ungültige Kommando ID."
 
 #: src/error.c:114
 msgid ""
 "Cause: received an unexpected Command ID from calculator, probably due to a "
 "transmission error."
 msgstr ""
+"Grund: Unerwartete Kommando-ID vom Rechner erhalten, wahrscheinlich aufgrund "
+"eines Übertragungsfehlers."
 
 #: src/error.c:120
 msgid "Msg: not really an error, should not appear!"
-msgstr ""
+msgstr "Msg: Nicht wirklich ein Fehler, sollte nicht passieren!"
 
 #: src/error.c:122
 msgid "Cause: a bug. Drop us an email!"
-msgstr ""
+msgstr "Grund: Ein Programmierfehler. Sende uns eine Email!"
 
 #: src/error.c:128
 msgid "Msg: program or variable is incompatible with this OS version."
-msgstr ""
+msgstr "Msg: Programm oder Variable ist inkompatibel mit dieser OS Version."
 
 #: src/error.c:130
 msgid ""
 "Cause: this variable type may not be supported by the target calculator, or "
 "you may need to upgrade your calculator OS."
 msgstr ""
+"Grund: Dieser Variablen-Typ wird möglicherweise nicht vom Ziel-Rechner "
+"unterstützt oder ein Upgrade des Rechner-OS ist erforderlich."
 
 #: src/error.c:136
 msgid "Msg: contents has been refused."
-msgstr ""
+msgstr "Msg: Inhalte wurden abgelehnt."
 
 #: src/error.c:138
 msgid ""
@@ -475,364 +489,384 @@ msgid ""
 "target calculator. The calculator may be out of memory. The certificate may "
 "be invalid or already installed."
 msgstr ""
+"Grund: Sie haben versucht, eine auf dem Ziel-Rechner gesperrte/archivierte "
+"Variable zu senden. Der Rechner hat möglicherweise keinen freien Speicher "
+"mehr. Das Zertifikat ist möglicherweise ungültig oder bereits installiert."
 
 #: src/error.c:144
 msgid "Invalid CTS packet."
-msgstr ""
+msgstr "Ungültiges CTS Paket."
 
 #: src/error.c:146 src/error.c:162
 msgid "Cause: a transmission error."
-msgstr ""
+msgstr "Grund: Ein Übertragungsfehler."
 
 #: src/error.c:152
 msgid "NACK received."
-msgstr ""
+msgstr "NACK erhalten."
 
 #: src/error.c:154
 msgid "Cause: the command has been refused."
-msgstr ""
+msgstr "Grund: Das Kommando wurde abgelehnt."
 
 #: src/error.c:160
 msgid "Invalid packet."
-msgstr ""
+msgstr "Ungültiges Paket."
 
 #: src/error.c:171
 msgid "The cable cannot be used."
-msgstr ""
+msgstr "Die Verbindung kann nicht verwendet werden."
 
 #: src/error.c:173
 msgid ""
 "Cause: the cable has not been initialized due to a previous/current error."
 msgstr ""
+"Grund: Die Verbindung wurde aufgrund eines früheren oder aktuellen Fehlers "
+"nicht initialisiert."
 
 #: src/error.c:186
 msgid "Msg: this function does not exist for this calculator."
-msgstr ""
+msgstr "Msg: Diese Funktion existiert für diesen Rechner nicht."
 
 #: src/error.c:188
 msgid ""
 "Cause: the operation you attempted is not supported by your calculator model."
 msgstr ""
+"Grund: Die angeforderte Operation wird bei diesem Rechnermodell nicht "
+"unterstützt."
 
 #: src/error.c:194
 msgid "Msg: calculator out of memory."
-msgstr ""
+msgstr "Msg: Rechner hat keinen freien Speicher mehr."
 
 #: src/error.c:196
 msgid ""
 "Cause: the calculator does not have memory enough for doing the operation."
 msgstr ""
+"Grund: Der Rechner verfügt nicht über ausreichend freien Speicher, um\n"
+"die Operation auszuführen."
 
 #: src/error.c:202
 msgid "Msg: unable to open (reading) the file."
-msgstr ""
+msgstr "Msg: Datei kann nicht zum lesen geöffnet werden."
 
 #: src/error.c:204 src/error.c:212
 msgid "Cause: disk space or permissions."
-msgstr ""
+msgstr "Grund: Festplattenplatz oder Zugriffsrechte."
 
 #: src/error.c:210
 msgid "Msg: unable to open (writing) the file."
-msgstr ""
+msgstr "Msg: Datei kann nicht geschrieben werden."
 
 #: src/error.c:218
 msgid "A transfer is in progress. You cannot start a new one."
 msgstr ""
+"Ein Transfer läuft bereits. Ein neuer Transfer kann nicht gestartet werden."
 
 #: src/error.c:220
 msgid "Cause: this should not happen. Probably a bug: drop us an email!"
 msgstr ""
+"Grund: Dies sollte nicht passieren. Wahrscheinlich ein\n"
+"Programmierfehler: Senden sie uns eine Email!"
 
 #: src/error.c:229
 msgid "The requested var does not exist."
-msgstr ""
+msgstr "Die angeforderte Variable existiert nicht."
 
 #: src/error.c:231
 msgid ""
 "Cause: you attempted to download a variable which does not exist on the "
 "calculator any longer. Maybe you have manually deleted it ?"
 msgstr ""
+"Grund: Sie versuchten eine Variable vom Rechner zu laden, die dort nicht "
+"mehr existiert. Möglicherweise haben sie sie manuell gelöscht?"
 
 #: src/error.c:237
 msgid "There is nothing to backup."
-msgstr ""
+msgstr "Es gibt nichts für ein Backup."
 
 #: src/error.c:239
 msgid "Cause: 0 variables stored onto your calculator."
-msgstr ""
+msgstr "Grund: Auf dem Rechner sind keine Variablen gespeichert."
 
 #: src/error.c:245
 msgid "Invalid ticalcs handle."
-msgstr ""
+msgstr "Ungültiges ticalcs handle."
 
 #: src/error.c:247
 msgid "Cause: bad cable or calc model."
-msgstr ""
+msgstr "Grund: Schlechtes Kabel oder Rechnermodell."
 
 #: src/error.c:253
 msgid "Invalid parameter."
-msgstr ""
+msgstr "Ungültiger Parameter."
 
 #: src/error.c:255
 msgid ""
 "Cause: if you see this in normal usage, a bug: drop us an email ! Otherwise, "
 "check the arguments you're passing to the function."
 msgstr ""
+"Grund: Wenn sie diese Nachricht im normalen Gebrauch sehen, handelt es sich "
+"um einen Programmierfehler: Senden sie uns eine Email! Andernfalls: "
+"Überprüfen sie die Argumente, die der Funktion übergeben werden."
 
 #: src/error.c:261
 msgid "Unknown screenshot format."
-msgstr ""
+msgstr "Unbekanntes Screenshot Format."
 
 #: src/error.c:263
 msgid "Cause: a transmission error, or unsupported calculator version."
 msgstr ""
+"Grund: Ein Übertragungsfehler, oder nicht unterstützte Rechner Version."
 
 #: src/error.c:269
 msgid "Msg: hand-held returned an error."
-msgstr ""
+msgstr "Msg: Hand-Held gab einen Fehler zurück."
 
 #: src/error.c:271 src/error.c:307 src/error.c:391
 msgid "Cause: hand-held returned an uncaught error. Please report log."
 msgstr ""
+"Grund: Hand-Held gab einen nicht abgefangenen Fehler zurück. Bitte melde Log."
 
 #: src/error.c:276
 msgid "Msg: cannot delete application."
-msgstr ""
+msgstr "Msg: Kann Applikation nicht löschen."
 
 #: src/error.c:280
 msgid "Msg: invalid variable name."
-msgstr ""
+msgstr "Msg: Ungültiger Variablenname."
 
 #: src/error.c:284
 msgid "Msg: cannot overwrite variable (locked/archived)."
-msgstr ""
+msgstr "Msg: Kann Variable nicht überschreiben (gesperrt/archiviert)."
 
 #: src/error.c:288
 msgid "Msg: cannot delete variable (locked/archived)."
-msgstr ""
+msgstr "Msg: Kann Variable nicht löschen (gesperrt/archiviert)."
 
 #: src/error.c:292
 msgid "Msg: FLASH application rejected (bad target model)."
-msgstr ""
+msgstr "Msg: FLASH Applikation abgelehnt (falsches Ziel-Modell)."
 
 #: src/error.c:296
 msgid "Msg: malformed RTS packet (AMS version conflict)."
-msgstr ""
+msgstr "Msg: Fehlerhaftes RTS Paket (AMS Versionskonflikt)."
 
 #: src/error.c:300 src/error.c:380
 msgid "Msg: FLASH application rejected (signature does not match)."
-msgstr ""
+msgstr "Msg: FLASH Applikation abgelehnt (Signatur passt nicht)."
 
 #: src/error.c:305 src/error.c:389
 msgid "Msg: hand-held returned an error (not caught)."
-msgstr ""
+msgstr "Msg: Hand-Held gab einen Fehler zurück (nicht abgefangen)."
 
 #: src/error.c:312
 msgid "Msg: invalid argument or name."
-msgstr ""
+msgstr "Msg: Argument oder Name ungültiges."
 
 #: src/error.c:316
 msgid "Msg: cannot delete var/app from archive."
-msgstr ""
+msgstr "Msg: Kann var/app nicht aus dem Archiv löschen."
 
 #: src/error.c:320
 msgid "Msg: transmission error."
-msgstr ""
+msgstr "Msg: Transmissionsfehler."
 
 #: src/error.c:324
 msgid "Msg: using basic mode while being in boot mode."
-msgstr ""
+msgstr "Msg: Verwende Basic Mode während Boot Modus."
 
 #: src/error.c:328 src/error.c:396
 msgid "Msg: out of memory."
-msgstr ""
+msgstr "Msg: Kein Speicher mehr verfügbar."
 
 #: src/error.c:332 src/error.c:336
 msgid "Msg: invalid name."
-msgstr ""
+msgstr "Msg: Ungültiger Name."
 
 #: src/error.c:340
 msgid "Msg: busy?"
-msgstr ""
+msgstr "Msg: Beschäftigt?"
 
 #: src/error.c:344
 msgid "Msg: can't overwrite, variable is locked."
-msgstr ""
+msgstr "Msg: Kann nicht überschreiben, Variable ist gesperrt."
 
 #: src/error.c:348
 msgid "Msg: mode token too small."
-msgstr ""
+msgstr "Msg: Mode Token zu klein."
 
 #: src/error.c:352
 msgid "Msg: mode token too large."
-msgstr ""
+msgstr "Msg: Mode Token zu groß."
 
 #: src/error.c:356
 msgid "Msg: wrong size for parameter."
-msgstr ""
+msgstr "Msg: Falsche Parameter-Größe."
 
 #: src/error.c:360
 msgid "Msg: invalid parameter ID."
-msgstr ""
+msgstr "Msg: Ungültige Parameter-ID."
 
 #: src/error.c:364
 msgid "Msg: read-only parameter."
-msgstr ""
+msgstr "Msg: read-only Parameter."
 
 #: src/error.c:368
 msgid "Msg: wrong modify request?"
-msgstr ""
+msgstr "Msg: Falsche Änderungsanforderung?"
 
 #: src/error.c:372
 msgid "Msg: remote control?"
-msgstr ""
+msgstr "Msg: Remote Control?"
 
 #: src/error.c:376
 msgid "Msg: battery low."
-msgstr ""
+msgstr "Msg: Batteriespannung niedrig."
 
 #: src/error.c:384
 msgid "Msg: hand-held is busy (set your calculator to HOME screen)."
 msgstr ""
+"Msg: Hand-Held ist beschäftigt (setze den Rechner auf die HOME-Screen)."
 
 #: src/error.c:400
 msgid "Msg: OS installation failed. File is corrupted/wrong."
-msgstr ""
+msgstr "Msg: OS Installation fehlgeschlagen. Datei ist fehlerhaft/falsch."
 
 #: src/error.c:405
 msgid "Msg: packet too large."
-msgstr ""
+msgstr "Msg: Paket zu groß."
 
 #: src/error.c:409
 msgid "Msg: the variable or directory does not exist."
-msgstr ""
+msgstr "Msg: Die Variable oder das Verzeichnis existiert nicht."
 
 #: src/error.c:413
 msgid "Msg: the directory name is invalid."
-msgstr ""
+msgstr "Msg: Der Verzeichnisname ist ungültig."
 
 #: src/error.c:417
 msgid "Msg: not currently listing a directory."
-msgstr ""
+msgstr "Msg: Zeige derzeit kein Verzeichnis an."
 
 #: src/error.c:421
 msgid "Msg: no more files to list."
-msgstr ""
+msgstr "Msg: Keine weiteren Dateien anzuzeigen."
 
 #: src/error.c:425
 msgid "Msg: the directory name already exists."
-msgstr ""
+msgstr "Msg: Der Verzeichnisname existiert bereits."
 
 #: src/error.c:430
 msgid "Msg: the destination (folder or file) path is too long."
-msgstr ""
+msgstr "Msg: Der Ziel-Pfad (Verzeichnis oder Datei) ist zu lang."
 
 #: src/error.c:434
 msgid "Msg: the file name is invalid."
-msgstr ""
+msgstr "Msg: Der Dateiname ist ungültig."
 
 #: src/error.c:438
 msgid "Msg: no file extension."
-msgstr ""
+msgstr "Msg: Keine Dateinamen-Erweiterung."
 
 #: src/error.c:442
 msgid "Msg: forbidden characters in folder name."
-msgstr ""
+msgstr "Msg: Unerlaubte Zeichen im Verzeichnisnamen."
 
 #: src/error.c:452
 msgid "Msg: OS upgrade type not recognized."
-msgstr ""
+msgstr "Msg: OS Upgrade-Typ nicht erkannt."
 
 #: src/error.c:456
 msgid "Msg: anti-downgrade protection refuses this OS version."
-msgstr ""
+msgstr "Msg: Anti-Downgrade Protektion verhindert diese OS-Version."
 
 #: src/probe.c:91
 msgid "Probing calculator...\n"
-msgstr ""
+msgstr "Teste Rechner...\n"
 
 #: src/probe.c:95
 msgid "Check for TI86... "
-msgstr ""
+msgstr "Prüfe auf TI86... "
 
 #: src/probe.c:119
 msgid "Check for TI85... "
-msgstr ""
+msgstr "Prüfe auf TI85... "
 
 #: src/probe.c:143
 msgid "Check for TI73... "
-msgstr ""
+msgstr "Prüfe auf TI73... "
 
 #: src/probe.c:167
 msgid "Check for TI83... "
-msgstr ""
+msgstr "Prüfe auf TI83... "
 
 #: src/probe.c:191
 msgid "Check for TI82... "
-msgstr ""
+msgstr "Prüfe auf TI82... "
 
 #: src/probe.c:217
 msgid "Check for TI80... "
-msgstr ""
+msgstr "Prüfe auf TI80... "
 
 #: src/probe.c:273
 msgid "Check for TIXX... "
-msgstr ""
+msgstr "Prüfe auf TIXX... "
 
 #: src/probe.c:311
 msgid "Check for TI92... "
-msgstr ""
+msgstr "Prüfe auf TI92... "
 
 #: src/probe.c:355
 msgid "Check for TI9X... "
-msgstr ""
+msgstr "Prüfe auf TI9X... "
 
 #: src/probe.c:370
 msgid "Check for TI8X... "
-msgstr ""
+msgstr "Prüfe auf TI8X... "
 
 #: src/probe.c:385
 #, c-format
 msgid "Calculator type: %s"
-msgstr ""
+msgstr "Rechner Typ: %s"
 
 #: src/ticalcs.c:238
 #, c-format
 msgid "ticalcs library version %s"
-msgstr ""
+msgstr "ticalcs Library Version %s"
 
 #: src/ticalcs.c:396
 msgid "Link calc handle details:"
-msgstr ""
+msgstr "Verbindungs-Details:"
 
 #: src/ticalcs.c:397
 #, c-format
 msgid "  model   : %s"
-msgstr ""
+msgstr "  Modell  : %s"
 
 #: src/type2str.c:62 src/type2str.c:72 src/type2str.c:94 src/type2str.c:104
 msgid "full"
-msgstr ""
+msgstr "voll"
 
 #: src/type2str.c:63 src/type2str.c:76
 msgid "clipped"
-msgstr ""
+msgstr "abgeschnitten"
 
 #: src/type2str.c:64 src/type2str.c:96 src/type2str.c:128
 msgid "unknown"
-msgstr ""
+msgstr "unbekannt"
 
 #: src/type2str.c:95 src/type2str.c:108
 msgid "local"
-msgstr ""
+msgstr "lokal"
 
 #: src/type2str.c:126 src/type2str.c:136
 msgid "free"
-msgstr ""
+msgstr "frei"
 
 #: src/type2str.c:127 src/type2str.c:140
 msgid "used"
-msgstr ""
+msgstr "benutzt"
 
 #: src/type2str.c:293
 msgid "Product Name: "
@@ -848,7 +882,7 @@ msgstr "Sprach-ID: "
 
 #: src/type2str.c:300
 msgid "Device Type: "
-msgstr ""
+msgstr "Geräte-Typ: "
 
 #: src/type2str.c:302
 msgid "Hardware Version: "
@@ -864,43 +898,43 @@ msgstr "Boot2-Version: "
 
 #: src/type2str.c:308
 msgid "OS Version: "
-msgstr "BS-Version: "
+msgstr "OS-Version: "
 
 #: src/type2str.c:310
 msgid "Run level: "
-msgstr ""
+msgstr "Run level: "
 
 #: src/type2str.c:312
 msgid "Clock speed: "
-msgstr ""
+msgstr "Taktfrequenz: "
 
 #: src/type2str.c:314
 msgid "Exact math engine: "
-msgstr ""
+msgstr "Genauer Math-Engine: "
 
 #: src/type2str.c:315
 msgid "Yes"
-msgstr ""
+msgstr "Ja"
 
 #: src/type2str.c:315
 msgid "No"
-msgstr ""
+msgstr "Nein"
 
 #: src/type2str.c:317
 msgid "LCD width: "
-msgstr ""
+msgstr "LCD Breite: "
 
 #: src/type2str.c:319
 msgid "LCD height: "
-msgstr ""
+msgstr "LCD Höhe: "
 
 #: src/type2str.c:321
 msgid "Bits per pixel: "
-msgstr ""
+msgstr "Bits pro Pixel: "
 
 #: src/type2str.c:323
 msgid "Color screen: "
-msgstr ""
+msgstr "Farb-Screen: "
 
 #: src/type2str.c:326
 msgid "Physical RAM: "
