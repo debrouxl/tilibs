@@ -298,9 +298,9 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			}
 
 			utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-			ticalcs_slprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
+			ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Parsing %s"), utf8);
 			ticonv_utf8_free(utf8);
-			update_label();
+			ticalcs_update_label(handle);
 		}
 	}
 
@@ -460,8 +460,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			continue;
 		}
 
-		ticonv_varname_to_utf8_sn(handle->model, entry->name, update_->text, sizeof(update_->text), entry->type);
-		update_label();
+		ticonv_varname_to_utf8_sn(handle->model, entry->name, handle->updat->text, sizeof(handle->updat->text), entry->type);
+		ticalcs_update_label(handle);
 
 		attrs = dusb_ca_new_array(handle, nattrs);
 		attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
@@ -505,9 +505,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			break;
 		}
 
-		update_->cnt2 = i + 1;
-		update_->max2 = content->num_entries;
-		update_->pbar();
+		handle->updat->cnt2 = i + 1;
+		handle->updat->max2 = content->num_entries;
+		ticalcs_update_pbar(handle);
 
 		PAUSE(50);	// needed
 	}
@@ -526,8 +526,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	VarEntry *ve;
 	int ret;
 
-	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
+	ticalcs_update_label(handle);
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
@@ -641,28 +641,28 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		return ERR_MALLOC;
 	}
 
-	update_->cnt2 = 0;
-	update_->max2 = ptr->num_pages;
+	handle->updat->cnt2 = 0;
+	handle->updat->max2 = ptr->num_pages;
 
 	for (i = 0; i < ptr->num_pages; i++) 
 	{
 		FlashPage *fp = ptr->pages[i];
 		memcpy(data + i*FLASH_PAGE_SIZE, fp->data, FLASH_PAGE_SIZE);
 
-		update_->cnt2 = i;
-		update_->pbar();
+		handle->updat->cnt2 = i;
+		ticalcs_update_pbar(handle);
 	}
 	{
 		FlashPage *fp = ptr->pages[--i];
 		memset(data + i*FLASH_PAGE_SIZE + fp->size, 0x00, FLASH_PAGE_SIZE - fp->size); 
 
-		update_->cnt2 = i;
-		update_->pbar();
+		handle->updat->cnt2 = i;
+		ticalcs_update_pbar(handle);
 	}
 
 	// send
-	ticonv_varname_to_utf8_sn(handle->model, ptr->name, update_->text, sizeof(update_->text), ptr->data_type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, ptr->name, handle->updat->text, sizeof(handle->updat->text), ptr->data_type);
+	ticalcs_update_label(handle);
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
@@ -723,12 +723,12 @@ static int		send_flash_834pce	(CalcHandle* handle, FlashContent* content)
 	size = ptr->data_length;
 	data = ptr->data_part;
 
-	update_->cnt2 = 0;
-	update_->max2 = 0;
+	handle->updat->cnt2 = 0;
+	handle->updat->max2 = 0;
 
 	// send
-	ticonv_varname_to_utf8_sn(handle->model, ptr->name, update_->text, sizeof(update_->text), ptr->data_type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, ptr->name, handle->updat->text, sizeof(handle->updat->text), ptr->data_type);
+	ticalcs_update_label(handle);
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
@@ -774,8 +774,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	int r, q;
 	int ret;
 
-	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
+	ticalcs_update_label(handle);
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
@@ -804,8 +804,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 				content->num_pages = q + 1;
 				content->pages = tifiles_fp_create_array(content->num_pages);
 
-				update_->cnt2 = 0;
-				update_->max2 = q;
+				handle->updat->cnt2 = 0;
+				handle->updat->max2 = q;
 
 				for (page = 0; page < q; page++)
 				{
@@ -818,8 +818,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 					fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 					memcpy(fp->data, data + FLASH_PAGE_SIZE*page, FLASH_PAGE_SIZE);
 
-					update_->cnt2 = page;
-					update_->pbar();
+					handle->updat->cnt2 = page;
+					ticalcs_update_pbar(handle);
 				}
 				{
 					FlashPage *fp = content->pages[page] = tifiles_fp_create();
@@ -831,8 +831,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 					fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 					memcpy(fp->data, data + FLASH_PAGE_SIZE*page, r);
 
-					update_->cnt2 = page;
-					update_->pbar();
+					handle->updat->cnt2 = page;
+					ticalcs_update_pbar(handle);
 				}
 				content->num_pages = page+1;
 
@@ -856,8 +856,8 @@ static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarReq
 	uint32_t data_length;
 	int ret;
 
-	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
+	ticalcs_update_label(handle);
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
@@ -1027,8 +1027,8 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		}
 
 		// send OS data
-		update_->cnt2 = 0;
-		update_->max2 = ptr->num_pages;
+		handle->updat->cnt2 = 0;
+		handle->updat->max2 = ptr->num_pages;
 
 		for (i = 0; i < ptr->num_pages; i++)
 		{
@@ -1081,8 +1081,8 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 				}
 			}
 
-			update_->cnt2 = i;
-			update_->pbar();
+			handle->updat->cnt2 = i;
+			ticalcs_update_pbar(handle);
 		}
 
 		ret = dusb_cmd_s_eot(handle);
@@ -1178,8 +1178,8 @@ static int		send_os_834pce    (CalcHandle* handle, FlashContent* content)
 		q = ptr->data_length / (pkt_size - 4);
 		r = ptr->data_length % (pkt_size - 4);
 
-		update_->cnt2 = 0;
-		update_->max2 = q;
+		handle->updat->cnt2 = 0;
+		handle->updat->max2 = q;
 
 		for (i = 0; i < q; i++)
 		{
@@ -1194,8 +1194,8 @@ static int		send_os_834pce    (CalcHandle* handle, FlashContent* content)
 				goto end;
 			}
 
-			update_->cnt2 = i;
-			update_->pbar();
+			handle->updat->cnt2 = i;
+			ticalcs_update_pbar(handle);
 		}
 
 		ret = dusb_cmd_s_os_data_834pce(handle, memory_offset + q*(pkt_size - 4), r, ptr->data_part + i*(pkt_size - 4));
@@ -1209,8 +1209,8 @@ static int		send_os_834pce    (CalcHandle* handle, FlashContent* content)
 			break;
 		}
 
-		update_->cnt2 = i;
-		update_->pbar();
+		handle->updat->cnt2 = i;
+		ticalcs_update_pbar(handle);
 
 		ret = dusb_cmd_s_eot(handle);
 		if (ret)
@@ -1236,8 +1236,8 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	uint32_t i, varsize;
 	int ret;
 
-	ticalcs_strlcpy(update_->text, "ID-LIST", sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, "ID-LIST", sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
@@ -1428,8 +1428,8 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	int ret;
 
 	// get raw clock
-	ticalcs_strlcpy(update_->text, _("Getting clock..."), sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, _("Getting clock..."), sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	params = dusb_cp_new_array(handle, size);
 	ret = dusb_cmd_s_param_request(handle, size, pids);
@@ -1478,8 +1478,8 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 
 				calc_time = (uint32_t)difftime(c, r);
 
-				ticalcs_strlcpy(update_->text, _("Setting clock..."), sizeof(update_->text));
-				update_label();
+				ticalcs_strlcpy(handle->updat->text, _("Setting clock..."), sizeof(handle->updat->text));
+				ticalcs_update_label(handle);
 
 				data[0] = MSB(MSW(calc_time));
 				data[1] = LSB(MSW(calc_time));
@@ -1508,8 +1508,8 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 
 				ticalcs_info(_("Will set new clock"));
 
-				ticalcs_strlcpy(update_->text, _("Setting clock..."), sizeof(update_->text));
-				update_label();
+				ticalcs_strlcpy(handle->updat->text, _("Setting clock..."), sizeof(handle->updat->text));
+				ticalcs_update_label(handle);
 
 				data[0] = _clock->date_format == 3 ? 0 : _clock->date_format;
 				ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_DATE_FMT, 1, data);
@@ -1578,8 +1578,8 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	int ret;
 
 	// get raw clock
-	ticalcs_strlcpy(update_->text, _("Getting clock..."), sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, _("Getting clock..."), sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	params = dusb_cp_new_array(handle, size);
 	ret = dusb_cmd_s_param_request(handle, size, pids);
@@ -1682,9 +1682,9 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	int ret;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
-	update_label();
+	ticalcs_update_label(handle);
 
 	attr = dusb_ca_new_array(handle, size);
 	attr[0] = dusb_ca_new(handle, 0x0011, 4);
@@ -1765,8 +1765,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	int i = 0;
 	int ret;
 
-	ticalcs_strlcpy(update_->text, _("Getting version..."), sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, _("Getting version..."), sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	memset(infos, 0, sizeof(CalcInfos));
 	params = dusb_cp_new_array(handle, size);

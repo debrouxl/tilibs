@@ -295,7 +295,7 @@ TIEXPORT3 uint32_t TICALL ticalcs_supported_calcs (void)
  * @model: a hand-held model
  *
  * Create a new handle associated with the given cable on the given port.
- * Must be freed with ticables_handle_del when no longer needed.
+ * Must be freed with ticalcs_handle_del when no longer needed.
  * Note: the handle is a pointer on an opaque structure and should not be modified.
  *
  * Return value: NULL if error, an handle otherwise.
@@ -350,7 +350,7 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
  * ticalcs_handle_del:
  * @handle: the handle
  *
- * Release the cable and free the associated resources.
+ * Release the handle and free the associated resources.
  * If cable has not been detached with #ticalcs_cable_detach,
  * it will be detached.
  *
@@ -400,6 +400,25 @@ TIEXPORT3 int TICALL ticalcs_handle_show(CalcHandle* handle)
 }
 
 /**
+ * ticalcs_get_model:
+ * @handle: the handle
+ *
+ * Return the handle's calculator model.
+ *
+ * Return value: an integer containing the calc handle's calculator model.
+ **/
+TIEXPORT3 CalcModel TICALL ticalcs_get_model(CalcHandle *handle)
+{
+	if (!ticalcs_validate_handle(handle))
+	{
+		ticalcs_critical("%s: handle is invalid", __FUNCTION__);
+		return CALC_NONE;
+	}
+
+	return handle->model;
+}
+
+/**
  * ticalcs_cable_attach:
  * @handle: the handle
  * @cable: a cable to use
@@ -429,7 +448,6 @@ TIEXPORT3 int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable
 /**
  * ticalcs_cable_detach:
  * @handle: the handle
- * @cable: a cable to use
  *
  * Close and detach the cable associated with the hand-held.
  *
@@ -454,6 +472,24 @@ TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle* handle)
 }
 
 /**
+ * ticalcs_cable_get:
+ * @handle: the handle
+ *
+ * Returns the cable associated with the hand-held.
+ *
+ * Return value: the cable handle or NULL.
+ **/
+TIEXPORT3 CableHandle* TICALL ticalcs_cable_get(CalcHandle *handle)
+{
+	if (ticalcs_validate_handle(handle))
+	{
+		return handle->cable;
+	}
+
+	return NULL;
+}
+
+/**
  * ticalcs_update_set:
  * @handle: the handle
  * @update: the callbacks to use
@@ -465,10 +501,28 @@ TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle* handle)
 TIEXPORT3 int TICALL ticalcs_update_set(CalcHandle* handle, CalcUpdate* upd)
 {
 	VALIDATE_HANDLE(handle);
+	VALIDATE_CALCUPDATE(upd);
 
 	handle->updat = upd;
 	return 0;
+}
 
+/**
+ * ticalcs_update_get:
+ * @handle: the handle
+ *
+ * Get the update callbacks used for the given handle.
+ *
+ * Return value: the update struct pointer or NULL.
+ **/
+TIEXPORT3 CalcUpdate* TICALL ticalcs_update_get(CalcHandle *handle)
+{
+	if (ticalcs_validate_handle(handle))
+	{
+		return handle->updat;
+	}
+
+	return NULL;
 }
 
 /**

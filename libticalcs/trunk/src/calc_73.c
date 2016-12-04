@@ -234,9 +234,9 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 									break;
 								}
 
-								update_->max1 = TI84PC_COLS * TI84PC_ROWS * 2;
-								update_->cnt1 = size;
-								update_->pbar();
+								handle->updat->max1 = TI84PC_COLS * TI84PC_ROWS * 2;
+								handle->updat->cnt1 = size;
+								ticalcs_update_pbar(handle);
 							}
 							else
 							{
@@ -390,9 +390,9 @@ error:
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-		ticalcs_slprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
+		ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Parsing %s"), utf8);
 		ticonv_utf8_free(utf8);
-		update_label();
+		ticalcs_update_label(handle);
 	}
 
 	return ret;
@@ -479,9 +479,9 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 				return ERR_VAR_REJECTED;
 			}
 
-			update_->cnt2 = 0;
-			update_->max2 = 3;
-			update_->pbar();
+			handle->updat->cnt2 = 0;
+			handle->updat->max2 = 3;
+			ticalcs_update_pbar(handle);
 
 			ret = SEND_XDP(handle, content->data_length1, content->data_part1);
 			if (!ret)
@@ -492,8 +492,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 			{
 				break;
 			}
-			update_->cnt2++;
-			update_->pbar();
+			handle->updat->cnt2++;
+			ticalcs_update_pbar(handle);
 
 			ret = SEND_XDP(handle, content->data_length2, content->data_part2);
 			if (!ret)
@@ -504,8 +504,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 			{
 				break;
 			}
-			update_->cnt2++;
-			update_->pbar();
+			handle->updat->cnt2++;
+			ticalcs_update_pbar(handle);
 
 			ret = SEND_XDP(handle, content->data_length3, content->data_part3);
 			if (!ret)
@@ -516,8 +516,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 			{
 				break;
 			}
-			update_->cnt2++;
-			update_->pbar();
+			handle->updat->cnt2++;
+			ticalcs_update_pbar(handle);
 
 			ret = SEND_ACK(handle);
 		}
@@ -572,9 +572,9 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 			break;
 		}
 
-		update_->cnt2 = 0;
-		update_->max2 = 3;
-		update_->pbar();
+		handle->updat->cnt2 = 0;
+		handle->updat->max2 = 3;
+		ticalcs_update_pbar(handle);
 
 		content->data_part1 = tifiles_ve_alloc_data(65536);
 		ret = RECV_XDP(handle, &content->data_length1, content->data_part1);
@@ -586,8 +586,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		{
 			break;
 		}
-		update_->cnt2++;
-		update_->pbar();
+		handle->updat->cnt2++;
+		ticalcs_update_pbar(handle);
 
 		content->data_part2 = tifiles_ve_alloc_data(65536);
 		ret = RECV_XDP(handle, &content->data_length2, content->data_part2);
@@ -599,8 +599,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		{
 			break;
 		}
-		update_->cnt2++;
-		update_->pbar();
+		handle->updat->cnt2++;
+		ticalcs_update_pbar(handle);
 
 		content->data_part3 = tifiles_ve_alloc_data(65536);
 		ret = RECV_XDP(handle, &content->data_length3, content->data_part3);
@@ -612,8 +612,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		{
 			break;
 		}
-		update_->cnt2++;
-		update_->pbar();
+		handle->updat->cnt2++;
+		ticalcs_update_pbar(handle);
 
 		content->data_part4 = NULL;
 	} while(0);
@@ -628,8 +628,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	uint8_t rej_code;
 	uint16_t status;
 
-	update_->cnt2 = 0;
-	update_->max2 = content->num_entries;
+	handle->updat->cnt2 = 0;
+	handle->updat->max2 = content->num_entries;
 
 	for (i = 0; !ret && i < content->num_entries; i++)
 	{
@@ -701,8 +701,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			break;
 		}
 
-		ticonv_varname_to_utf8_sn(handle->model, entry->name, update_->text, sizeof(update_->text), entry->type);
-		update_label();
+		ticonv_varname_to_utf8_sn(handle->model, entry->name, handle->updat->text, sizeof(handle->updat->text), entry->type);
+		ticalcs_update_label(handle);
 
 		ret = SEND_XDP(handle, size, entry->data);
 		if (!ret)
@@ -715,9 +715,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 				{
 					ticalcs_info("Sent variable #%u", i);
 
-					update_->cnt2 = i+1;
-					update_->max2 = content->num_entries;
-					update_->pbar();
+					handle->updat->cnt2 = i+1;
+					handle->updat->max2 = content->num_entries;
+					ticalcs_update_pbar(handle);
 				}
 			}
 		}
@@ -740,8 +740,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
+	ticalcs_update_label(handle);
 
 	do
 	{
@@ -859,11 +859,11 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
 	ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
 
-	ticonv_varname_to_utf8_sn(handle->model, ptr->name, update_->text, sizeof(update_->text), ptr->data_type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, ptr->name, handle->updat->text, sizeof(handle->updat->text), ptr->data_type);
+	ticalcs_update_label(handle);
 
-	update_->cnt2 = 0;
-	update_->max2 = ptr->data_length;
+	handle->updat->cnt2 = 0;
+	handle->updat->max2 = ptr->data_length;
 
 	for (i = 0; !ret && i < ptr->num_pages; i++)
 	{
@@ -908,8 +908,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 						ret = RECV_ACK(handle, NULL);
 						if (!ret)
 						{
-							update_->cnt2 += size;
-							update_->pbar();
+							handle->updat->cnt2 += size;
+							ticalcs_update_pbar(handle);
 						}
 					}
 				}
@@ -961,8 +961,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	int offset;
 	uint8_t buffer[FLASH_PAGE_SIZE + 4];
 
-	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
+	ticalcs_update_label(handle);
 
 	content->model = handle->model;
 	ticalcs_strlcpy(content->name, vr->name, sizeof(content->name));
@@ -984,8 +984,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		return ret;
 	}
 
-	update_->cnt2 = 0;
-	update_->max2 = vr->size;
+	handle->updat->cnt2 = 0;
+	handle->updat->max2 = vr->size;
 
 	for (size = 0, first_block = 1, offset = 0; !ret;)
 	{
@@ -1057,15 +1057,15 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 			if (buffer[0] == 0x80 && buffer[1] == 0x0f)
 			{
 				uint32_t len = ((uint32_t)(buffer[2])) << 24 | ((uint32_t)(buffer[3])) << 16 | ((uint32_t)(buffer[4])) << 8 | (uint32_t)(buffer[5]);
-				update_->max2 = len + 75;
+				handle->updat->max2 = len + 75;
 			}
 		}
 
 		size += data_length;
 		offset += data_length;
 
-		update_->cnt2 = size;
-		update_->pbar();
+		handle->updat->cnt2 = size;
+		ticalcs_update_pbar(handle);
 	}
 
 	fp->addr = data_addr & 0x4000;
@@ -1093,8 +1093,8 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	uint8_t data[16];
 	int i;
 
-	ticalcs_strlcpy(update_->text, "ID-LIST", sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, "ID-LIST", sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	ret = SEND_REQ(handle, 0x0000, TI73_IDLIST, "\0\0\0\0\0\0\0", 0x00, 0x00);
 	if (!ret)
@@ -1275,8 +1275,8 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	buffer[7] = _clock->time_format;
 	buffer[8] = 0xff;
 
-	ticalcs_strlcpy(update_->text, _("Setting clock..."), sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, _("Setting clock..."), sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	ret = SEND_RTS(handle, 13, TI73_CLK, "\0x08\0\0\0\0\0\0\0", 0x00, 0x00);
 	if (!ret)
@@ -1321,8 +1321,8 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	struct tm ref, *cur;
 	time_t r, c, now;
 
-	ticalcs_strlcpy(update_->text, _("Getting clock..."), sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, _("Getting clock..."), sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	ret = SEND_REQ(handle, 0x0000, TI73_CLK, "\0x08\0\0\0\0\0\0\0", 0x00, 0x00);
 	if (!ret)
@@ -1397,9 +1397,9 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	char *utf8;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
-	update_label();
+	ticalcs_update_label(handle);
 
 	ret = SEND_DEL(handle, (uint16_t)vr->size, vr->type, vr->name, vr->attr);
 	if (!ret)
@@ -1503,7 +1503,7 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
 
 		nblocks = ptr->data_length / size;
-		update_->max2 = nblocks;
+		handle->updat->max2 = nblocks;
 
 		ret = SEND_VAR2(handle, size, ptr->data_type, 0x04, 0x4000, 0x00);
 		if (!ret)
@@ -1535,8 +1535,8 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 						ret = SEND_ACK(handle);
 						if (!ret)
 						{
-							update_->cnt2 = i;
-							update_->pbar();
+							handle->updat->cnt2 = i;
+							ticalcs_update_pbar(handle);
 						}
 					}
 				}
@@ -1559,8 +1559,8 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	int i;
 	uint8_t buf[256];
 
-	ticalcs_strlcpy(update_->text, _("Receiving certificate"), sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, _("Receiving certificate"), sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	content->model = handle->model;
 	content->name[0] = 0;
@@ -1599,8 +1599,8 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 								{
 									content->data_length += block_size;
 
-									update_->cnt2 += block_size;
-									update_->pbar();
+									handle->updat->cnt2 += block_size;
+									ticalcs_update_pbar(handle);
 								}
 							}
 						}

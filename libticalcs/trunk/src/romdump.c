@@ -132,8 +132,8 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 
 		q = *len / handle->priv.progress_blk_size;
 		r = *len % handle->priv.progress_blk_size;
-		handle->updat->max1 = *len;
 		handle->updat->cnt1 = 0;
+		handle->updat->max1 = *len;
 
 		// recv full chunks
 		for(i = 0; i < q; i++)
@@ -147,9 +147,9 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 			handle->updat->cnt1 += handle->priv.progress_blk_size;
 			if (*len > handle->priv.progress_min_size)
 			{
-				handle->updat->pbar();
+				ticalcs_update_pbar(handle);
 			}
-			//if (handle->updat->cancel) 
+			//if (ticalcs_update_canceled(handle))
 			//	return ERR_ABORT;
 		}
 
@@ -161,12 +161,12 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 				goto exit;
 			}
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
-			handle->updat->cnt1 += 1;
+			handle->updat->cnt1++;
 			if (*len > handle->priv.progress_min_size)
 			{
-				handle->updat->pbar();
+				ticalcs_update_pbar(handle);
 			}
-			if (handle->updat->cancel)
+			if (ticalcs_update_canceled(handle))
 			{
 				ret = ERR_ABORT;
 				goto exit;
@@ -312,8 +312,8 @@ int rd_dump(CalcHandle* handle, const char *filename)
 		return ERR_OPEN_FILE;
 	}
 
-	ticalcs_strlcpy(update_->text, "Receiving data...", sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, "Receiving data...", sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	// check if ready
 	for(i = 0; i < 3; i++)
@@ -405,9 +405,9 @@ int rd_dump(CalcHandle* handle, const char *filename)
 		}
 		addr += length;
 
-		update_->cnt2 = addr;
-		update_->max2 = size;
-		update_->pbar();
+		handle->updat->cnt2 = addr;
+		handle->updat->max2 = size;
+		ticalcs_update_pbar(handle);
 	}
 
 	ticalcs_info("Saved %i blocks on %i blocks\n", handle->priv.romdump_sav_blk, handle->priv.romdump_sav_blk + handle->priv.romdump_std_blk);

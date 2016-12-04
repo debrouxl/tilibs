@@ -446,10 +446,10 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 				u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name, -1);
 				u2 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-				ticalcs_slprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"), u1, u2);
+				ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Parsing %s/%s"), u1, u2);
 				ticonv_utf8_free(u2);
 				ticonv_utf8_free(u1);
-				update_label();
+				ticalcs_update_label(handle);
 
 				if (ve->type == TI89_APPL)
 				{
@@ -601,9 +601,9 @@ static int		get_dirlist_92	(CalcHandle* handle, GNode** vars, GNode** apps)
 		if (ve != NULL && folder != NULL)
 		{
 			utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-			ticalcs_slprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"), ((VarEntry *) (folder->data))->name, utf8);
+			ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Parsing %s/%s"), ((VarEntry *) (folder->data))->name, utf8);
 			ticonv_utf8_free(utf8);
-			update_->label();
+			ticalcs_update_label(handle);
 		}
 	}
 
@@ -629,7 +629,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 		ret = RECV_ACK(handle, NULL);
 		if (!ret)
 		{
-			update_->cnt2 = 0;
+			handle->updat->cnt2 = 0;
 			nblocks = content->data_length / 1024;
 			handle->updat->max2 = nblocks;
 
@@ -660,7 +660,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 				}
 
 				handle->updat->cnt2 = i;
-				update_pbar();
+				ticalcs_update_pbar(handle);
 			}
 
 			if (!ret)
@@ -696,8 +696,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 			{
 				int ret2;
 
-				ticalcs_slprintf(update_->text, sizeof(update_->text), _("Block #%2i"), block);
-				update_label();
+				ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Block #%2i"), block);
+				ticalcs_update_label(handle);
 
 				ret = RECV_VAR(handle, &block_size, &content->type, content->rom_version);
 				ret2 = SEND_ACK(handle);
@@ -748,8 +748,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	unsigned int i;
 	uint16_t status;
 
-	update_->cnt2 = 0;
-	update_->max2 = content->num_entries;
+	handle->updat->cnt2 = 0;
+	handle->updat->max2 = content->num_entries;
 
 	for (i = 0; !ret && i < content->num_entries; i++)
 	{
@@ -784,8 +784,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 		}
 
-		ticonv_varname_to_utf8_sn(handle->model, varname, update_->text, sizeof(update_->text), vartype);
-		update_label();
+		ticonv_varname_to_utf8_sn(handle->model, varname, handle->updat->text, sizeof(handle->updat->text), vartype);
+		ticalcs_update_label(handle);
 
 		switch (entry->attr) 
 		{
@@ -832,9 +832,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 									if (!ret)
 									{
 										ticalcs_info("Sent variable #%u", i);
-										update_->cnt2 = i+1;
-										update_->max2 = content->num_entries;
-										update_->pbar();
+										handle->updat->cnt2 = i+1;
+										handle->updat->max2 = content->num_entries;
+										ticalcs_update_pbar(handle);
 									}
 								}
 							}
@@ -861,8 +861,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	memcpy(ve, vr, sizeof(VarEntry));
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
-	ticonv_varname_to_utf8_sn(handle->model, varname, update_->text, sizeof(update_->text), vr->type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, varname, handle->updat->text, sizeof(handle->updat->text), vr->type);
+	ticalcs_update_label(handle);
 
 	ret = SEND_REQ(handle, 0, vr->type, varname);
 	if (!ret)
@@ -958,8 +958,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	unsigned int i;
 	uint16_t status;
 
-	update_->cnt2 = 0;
-	update_->max2 = content->num_entries;
+	handle->updat->cnt2 = 0;
+	handle->updat->max2 = content->num_entries;
 
 	for (i = 0; !ret && i < content->num_entries; i++)
 	{
@@ -995,8 +995,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 		}
 
-		ticonv_varname_to_utf8_sn(handle->model, varname, update_->text, sizeof(update_->text), vartype);
-		update_label();
+		ticonv_varname_to_utf8_sn(handle->model, varname, handle->updat->text, sizeof(handle->updat->text), vartype);
+		ticalcs_update_label(handle);
 
 		size = entry->size;
 		if (size >= 65536U)
@@ -1038,9 +1038,9 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 										if (mode & MODE_BACKUP || handle->model == CALC_TI92)
 										{
-											update_->cnt2 = i+1;
-											update_->max2 = content->num_entries;
-											update_->pbar();
+											handle->updat->cnt2 = i+1;
+											handle->updat->max2 = content->num_entries;
+											ticalcs_update_pbar(handle);
 										}
 									}
 								}
@@ -1103,8 +1103,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			ticalcs_strlcpy(ve->name, tipath, sizeof(ve->name));
 		}
 
-		ticonv_varname_to_utf8_sn(handle->model, ve->name, update_->text, sizeof(update_->text), ve->type);
-		update_label();
+		ticonv_varname_to_utf8_sn(handle->model, ve->name, handle->updat->text, sizeof(handle->updat->text), ve->type);
+		ticalcs_update_label(handle);
 
 		ret = SEND_CTS(handle);
 		if (!ret)
@@ -1163,8 +1163,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
 		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
 
-		ticonv_varname_to_utf8_sn(handle->model, ptr->name, update_->text, sizeof(update_->text), ptr->data_type);
-		update_label();
+		ticonv_varname_to_utf8_sn(handle->model, ptr->name, handle->updat->text, sizeof(handle->updat->text), ptr->data_type);
+		ticalcs_update_label(handle);
 
 		if (ptr->data_type == TI89_AMS)
 		{
@@ -1185,7 +1185,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		if (!ret)
 		{
 			nblocks = ptr->data_length / 65536;
-			update_->max2 = nblocks+1;
+			handle->updat->max2 = nblocks+1;
 
 			for (i = 0; !ret && i <= nblocks; i++)
 			{
@@ -1215,8 +1215,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 										ret = SEND_EOT(handle);
 									}
 
-									update_->cnt2 = i;
-									update_->pbar();
+									handle->updat->cnt2 = i;
+									ticalcs_update_pbar(handle);
 								}
 							}
 						}
@@ -1239,8 +1239,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 {
 	int ret;
 	int i;
-	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
+	ticalcs_update_label(handle);
 
 	content->model = handle->model;
 	content->data_part = (uint8_t *)tifiles_ve_alloc_data(4 * 1024 * 1024);	// 4MB max
@@ -1264,8 +1264,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 			if (!ret)
 			{
 
-				update_->cnt2 = 0;
-				update_->max2 = vr->size;
+				handle->updat->cnt2 = 0;
+				handle->updat->max2 = vr->size;
 
 				for (i = 0, content->data_length = 0; !ret; i++) 
 				{
@@ -1298,8 +1298,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 											break;
 										}
 
-										update_->cnt2 += block_size;
-										update_->pbar();
+										handle->updat->cnt2 += block_size;
+										ticalcs_update_pbar(handle);
 									}
 								}
 							}
@@ -1326,8 +1326,8 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 	uint8_t vartype;
 	char varname[9];
 
-	ticalcs_strlcpy(update_->text, "ID-LIST", sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, "ID-LIST", sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	ret = SEND_REQ(handle, 0x0000, TI89_IDLIST, "\0\0\0\0\0\0\0");
 	if (!ret)
@@ -1445,8 +1445,8 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	buffer[14] = _clock->time_format;
 	buffer[15] = 0xff;
 
-	ticalcs_strlcpy(update_->text, _("Setting clock..."), sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, _("Setting clock..."), sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	ret = SEND_RTS(handle, 0x10, TI89_CLK, "Clock");
 	if (!ret)
@@ -1489,8 +1489,8 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	uint8_t vartype;
 	char varname[9];
 
-	ticalcs_strlcpy(update_->text, _("Getting clock..."), sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, _("Getting clock..."), sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	ret = SEND_REQ(handle, 0x0000, TI89_CLK, "Clock");
 	if (!ret)
@@ -1553,9 +1553,9 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
-	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
-	update_label();
+	ticalcs_update_label(handle);
 
 	ret = SEND_DEL(handle, vr->size, vr->type, varname);
 	if (!ret)
@@ -1585,9 +1585,9 @@ static int		del_var_92		(CalcHandle* handle, VarRequest* vr)
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
-	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
-	update_label();
+	ticalcs_update_label(handle);
 
 	for (i = 0; !ret && i < sizeof(keys) / sizeof(keys[0]); i++)
 	{
@@ -1615,9 +1615,9 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, "a1234567");
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
-	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Creating %s..."), utf8);
 	ticonv_utf8_free(utf8);
-	update_label();
+	ticalcs_update_label(handle);
 
 	// send empty expression
 	ret = SEND_RTS(handle, 0x10, 0x00, varname);
