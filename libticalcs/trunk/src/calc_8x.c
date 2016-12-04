@@ -399,9 +399,9 @@ error:
 				}
 
 				utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-				ticalcs_slprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
+				ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Parsing %s"), utf8);
 				ticonv_utf8_free(utf8);
-				update_label();
+				ticalcs_update_label(handle);
 			}
 		}
 	}
@@ -490,15 +490,14 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 		}
 		else
 		{
-			ticalcs_strlcpy(update_->text, _("Waiting for user's action..."), sizeof(update_->text));
-			update_label();
+			ticalcs_strlcpy(handle->updat->text, _("Waiting for user's action..."), sizeof(handle->updat->text));
+			ticalcs_update_label(handle);
 
 			do
 			{
 				// wait for user's action
-				update_refresh();
-
-				if (update_->cancel)
+				ticalcs_update_refresh(handle);
+				if (ticalcs_update_canceled(handle))
 				{
 					ret = ERR_ABORT;
 					break;
@@ -539,12 +538,12 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 			break;
 		}
 
-		update_->text[0] = 0;
-		update_label();
+		handle->updat->text[0] = 0;
+		ticalcs_update_label(handle);
 
-		update_->cnt2 = 0;
-		update_->max2 = (handle->model != CALC_TI86) ? 3 : 4;
-		update_->pbar();
+		handle->updat->cnt2 = 0;
+		handle->updat->max2 = (handle->model != CALC_TI86) ? 3 : 4;
+		ticalcs_update_pbar(handle);
 
 		ret = SEND_XDP(handle, content->data_length1, content->data_part1);
 		if (!ret)
@@ -555,8 +554,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 		{
 			break;
 		}
-		update_->cnt2++;
-		update_->pbar();
+		handle->updat->cnt2++;
+		ticalcs_update_pbar(handle);
 
 		ret = SEND_XDP(handle, content->data_length2, content->data_part2);
 		if (!ret)
@@ -567,8 +566,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 		{
 			break;
 		}
-		update_->cnt2++;
-		update_->pbar();
+		handle->updat->cnt2++;
+		ticalcs_update_pbar(handle);
 
 		if (content->data_length3)
 		{
@@ -582,8 +581,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 				break;
 			}
 		}
-		update_->cnt2++;
-		update_->pbar();
+		handle->updat->cnt2++;
+		ticalcs_update_pbar(handle);
 
 		if (handle->model == CALC_TI86)
 		{
@@ -596,8 +595,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 			{
 				break;
 			}
-			update_->cnt2++;
-			update_->pbar();
+			handle->updat->cnt2++;
+			ticalcs_update_pbar(handle);
 		}
 
 		if (handle->model == CALC_TI83)
@@ -635,8 +634,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	}
 	else
 	{
-		ticalcs_strlcpy(update_->text, _("Waiting for backup..."), sizeof(update_->text));
-		update_label();
+		ticalcs_strlcpy(handle->updat->text, _("Waiting for backup..."), sizeof(handle->updat->text));
+		ticalcs_update_label(handle);
 	}
 
 	varname[0] = 0;
@@ -671,12 +670,12 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 			break;
 		}
 
-		update_->text[0] = 0;
-		update_label();
+		handle->updat->text[0] = 0;
+		ticalcs_update_label(handle);
 
-		update_->cnt2 = 0;
-		update_->max2 = (handle->model != CALC_TI86) ? 3 : 4;
-		update_->pbar();
+		handle->updat->cnt2 = 0;
+		handle->updat->max2 = (handle->model != CALC_TI86) ? 3 : 4;
+		ticalcs_update_pbar(handle);
 
 		content->data_part1 = tifiles_ve_alloc_data(65536);
 		ret = RECV_XDP(handle, &content->data_length1, content->data_part1);
@@ -688,8 +687,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		{
 			break;
 		}
-		update_->cnt2++;
-		update_->pbar();
+		handle->updat->cnt2++;
+		ticalcs_update_pbar(handle);
 
 		content->data_part2 = tifiles_ve_alloc_data(65536);
 		ret = RECV_XDP(handle, &content->data_length2, content->data_part2);
@@ -701,8 +700,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		{
 			break;
 		}
-		update_->cnt2++;
-		update_->pbar();
+		handle->updat->cnt2++;
+		ticalcs_update_pbar(handle);
 
 		if (content->data_length3)
 		{
@@ -721,8 +720,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		{
 			content->data_part3 = NULL;
 		}
-		update_->cnt2++;
-		update_->pbar();
+		handle->updat->cnt2++;
+		ticalcs_update_pbar(handle);
 
 		if (handle->model != CALC_TI86)
 		{
@@ -740,8 +739,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 			{
 				break;
 			}
-			update_->cnt2++;
-			update_->pbar();
+			handle->updat->cnt2++;
+			ticalcs_update_pbar(handle);
 		}
 	} while(0);
 
@@ -761,8 +760,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		return -1;
 	}
 
-	update_->cnt2 = 0;
-	update_->max2 = content->num_entries;
+	handle->updat->cnt2 = 0;
+	handle->updat->max2 = content->num_entries;
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
@@ -801,14 +800,14 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			break;
 		}
 
-		ticalcs_strlcpy(update_->text, _("Waiting for user's action..."), sizeof(update_->text));
-		update_label();
+		ticalcs_strlcpy(handle->updat->text, _("Waiting for user's action..."), sizeof(handle->updat->text));
+		ticalcs_update_label(handle);
 
 		do
 		{
 			// wait for user's action
-			update_refresh();
-			if (update_->cancel)
+			ticalcs_update_refresh(handle);
+			if (ticalcs_update_canceled(handle))
 			{
 				ret = ERR_ABORT;
 				break;
@@ -854,8 +853,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			break;
 		}
 
-		ticonv_varname_to_utf8_sn(handle->model, entry->name, update_->text, sizeof(update_->text), entry->type);
-		update_label();
+		ticonv_varname_to_utf8_sn(handle->model, entry->name, handle->updat->text, sizeof(handle->updat->text), entry->type);
+		ticalcs_update_label(handle);
 
 		ret = SEND_XDP(handle, size, entry->data);
 		if (!ret)
@@ -869,9 +868,9 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 		ticalcs_info("Sent variable #%u", i);
 
-		update_->cnt2 = i+1;
-		update_->max2 = content->num_entries;
-		update_->pbar();
+		handle->updat->cnt2 = i+1;
+		handle->updat->max2 = content->num_entries;
+		ticalcs_update_pbar(handle);
 	}
 
 	if (mode & MODE_SEND_EXEC_ASM)
@@ -910,8 +909,8 @@ static int		send_var_8386	(CalcHandle* handle, CalcMode mode, FileContent* conte
 	uint8_t rej_code;
 	uint16_t status;
 
-	update_->cnt2 = 0;
-	update_->max2 = content->num_entries;
+	handle->updat->cnt2 = 0;
+	handle->updat->max2 = content->num_entries;
 
 	for (i = 0; !ret && i < content->num_entries; i++)
 	{
@@ -980,8 +979,8 @@ static int		send_var_8386	(CalcHandle* handle, CalcMode mode, FileContent* conte
 			break;
 		}
 
-		ticonv_varname_to_utf8_sn(handle->model, entry->name, update_->text, sizeof(update_->text), entry->type);
-		update_label();
+		ticonv_varname_to_utf8_sn(handle->model, entry->name, handle->updat->text, sizeof(handle->updat->text), entry->type);
+		ticalcs_update_label(handle);
 
 		ret = SEND_XDP(handle, size, entry->data);
 		if (!ret)
@@ -994,9 +993,9 @@ static int		send_var_8386	(CalcHandle* handle, CalcMode mode, FileContent* conte
 				{
 					ticalcs_info("Sent variable #%u", i);
 
-					update_->cnt2 = i+1;
-					update_->max2 = content->num_entries;
-					update_->pbar();
+					handle->updat->cnt2 = i+1;
+					handle->updat->max2 = content->num_entries;
+					ticalcs_update_pbar(handle);
 				}
 			}
 		}
@@ -1019,8 +1018,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
+	ticalcs_update_label(handle);
 
 	do
 	{
@@ -1073,8 +1072,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	int ret = 0;
 	uint16_t ve_size;
 
-	ticalcs_strlcpy(update_->text, _("Waiting for var(s)..."), sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, _("Waiting for var(s)..."), sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	content->model = handle->model;
 	content->num_entries = 0;
@@ -1086,8 +1085,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 		do
 		{
-			update_refresh();
-			if (update_->cancel)
+			ticalcs_update_refresh(handle);
+			if (ticalcs_update_canceled(handle))
 			{
 				ret = ERR_ABORT;
 				goto error;
@@ -1120,8 +1119,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			ret = RECV_ACK(handle, NULL);
 			if (!ret)
 			{
-				ticonv_varname_to_utf8_sn(handle->model, ve->name, update_->text, sizeof(update_->text), ve->type);
-				update_label();
+				ticonv_varname_to_utf8_sn(handle->model, ve->name, handle->updat->text, sizeof(handle->updat->text), ve->type);
+				ticalcs_update_label(handle);
 
 				ve->data = tifiles_ve_alloc_data(ve->size);
 				ret = RECV_XDP(handle, &ve_size, ve->data);
@@ -1252,9 +1251,9 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	char *utf8;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
-	update_label();
+	ticalcs_update_label(handle);
 
 	// Input keys by remote control
 	for (i = 0; !ret && i < sizeof(keys) / sizeof(keys[0]); i++)

@@ -67,9 +67,9 @@ int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content)
 		return ERR_NO_VARS;
 	}
 
-	update_->cnt2 = update_->cnt3 = 0;
-	update_->max2 = update_->max3 = nvars;
-	update_->pbar();
+	handle->updat->cnt2 = handle->updat->cnt3 = 0;
+	handle->updat->max2 = handle->updat->max3 = nvars;
+	ticalcs_update_pbar(handle);
 
 	// Check whether the last folder is empty
 	b = g_node_n_children(g_node_nth_child(vars, g_node_n_children(vars) - 1));
@@ -91,8 +91,8 @@ int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content)
 			GNode *node = g_node_nth_child(parent, j);
 			VarEntry *ve = (VarEntry *) (node->data);
 
-			update_->cnt2 = update_->cnt3 = ++ivars;
-			update_->pbar();
+			handle->updat->cnt2 = handle->updat->cnt3 = ++ivars;
+			ticalcs_update_pbar(handle);
 
 			// we need to group files !
 			ret = handle->calc->is_ready(handle);
@@ -181,9 +181,9 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 		napps = content->n_apps;
 	}
 
-	update_->cnt3 = 0;
-	update_->max3 = nvars + napps;
-	update_->pbar();
+	handle->updat->cnt3 = 0;
+	handle->updat->max3 = nvars + napps;
+	ticalcs_update_pbar(handle);
 
 	if ((handle->model == CALC_TI89 || handle->model == CALC_TI92P ||
 		handle->model == CALC_TI89T || handle->model == CALC_V200) && (mode & TIG_BACKUP))
@@ -221,8 +221,8 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 			{
 				TigEntry *te = *ptr;
 
-				update_->cnt3++;
-				update_->pbar();
+				handle->updat->cnt3++;
+				ticalcs_update_pbar(handle);
 
 				if ((te->content.regular->entries[0]->attr == ATTRB_ARCHIVED) && !(mode & TIG_ARCHIVE))
 				{
@@ -254,8 +254,8 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 						TigEntry *te = *ptr;
 						VarEntry ve;
 
-						update_->cnt3++;
-						update_->pbar();
+						handle->updat->cnt3++;
+						ticalcs_update_pbar(handle);
 
 						// can't overwrite apps so check before sending app
 						memset(&ve, 0, sizeof(VarEntry));
@@ -307,8 +307,8 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 	}
 	VALIDATE_CALCFNCTS(handle->calc);
 
-	update_->cnt3 = 0;
-	update_->pbar();
+	handle->updat->cnt3 = 0;
+	ticalcs_update_pbar(handle);
 
 	// Do a directory list and check for something to backup
 	ret = handle->calc->get_dirlist(handle, &vars, &apps);
@@ -326,9 +326,9 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 		napps = ticalcs_dirlist_ve_count(apps);
 	}
 
-	update_->cnt3 = 0;
-	update_->max3 = nvars + napps;
-	update_->pbar();
+	handle->updat->cnt3 = 0;
+	handle->updat->max3 = nvars + napps;
+	ticalcs_update_pbar(handle);
 
 	if (!nvars && !napps)
 	{
@@ -363,8 +363,8 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 				}
 				PAUSE(100);
 
-				update_->cnt3++;
-				update_->pbar();
+				handle->updat->cnt3++;
+				ticalcs_update_pbar(handle);
 
 				if (((mode & TIG_ARCHIVE) && (ve->attr == ATTRB_ARCHIVED)) ||
 				    ((mode & TIG_RAM) && ve->attr != ATTRB_ARCHIVED))
@@ -428,8 +428,8 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 					goto end;
 				}
 
-				update_->cnt3++;
-				update_->pbar();
+				handle->updat->cnt3++;
+				ticalcs_update_pbar(handle);
 
 				basename = ticonv_varname_to_filename(handle->model, ve->name, ve->type);
 				filename = g_strconcat(basename, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);

@@ -246,10 +246,10 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	*/
 			u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name, -1);
 			u2 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-			ticalcs_slprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"), u1, u2);
+			ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Parsing %s/%s"), u1, u2);
 			ticonv_utf8_free(u2);
 			ticonv_utf8_free(u1);
-			update_label();
+			ticalcs_update_label(handle);
 		}
 	}
 
@@ -304,8 +304,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	unsigned int i;
 	int ret = 0;
 
-	update_->cnt2 = 0;
-	update_->max2 = content->num_entries;
+	handle->updat->cnt2 = 0;
+	handle->updat->max2 = content->num_entries;
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
@@ -337,8 +337,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			ticalcs_strlcpy(varname, entry->name, sizeof(varname));
 		}
 
-		ticonv_varname_to_utf8_sn(handle->model, varname, update_->text, sizeof(update_->text), entry->type);
-		update_label();
+		ticonv_varname_to_utf8_sn(handle->model, varname, handle->updat->text, sizeof(handle->updat->text), entry->type);
+		ticalcs_update_label(handle);
 
 		attrs = dusb_ca_new_array(handle, nattrs);
 		attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
@@ -423,9 +423,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			break;
 		}
 
-		update_->cnt2 = i + 1;
-		update_->max2 = content->num_entries;
-		update_->pbar();
+		handle->updat->cnt2 = i + 1;
+		handle->updat->max2 = content->num_entries;
+		ticalcs_update_pbar(handle);
 
 		PAUSE(50);	// needed
 	}
@@ -444,8 +444,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	VarEntry *ve;
 	int ret;
 
-	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
+	ticalcs_update_label(handle);
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
@@ -506,8 +506,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
 		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
 
-		ticonv_varname_to_utf8_sn(handle->model, ptr->name, update_->text, sizeof(update_->text), ptr->data_type);
-		update_label();
+		ticonv_varname_to_utf8_sn(handle->model, ptr->name, handle->updat->text, sizeof(handle->updat->text), ptr->data_type);
+		ticalcs_update_label(handle);
 
 		attrs = dusb_ca_new_array(handle, nattrs);
 		attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
@@ -562,8 +562,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	uint32_t data_length;
 	int ret;
 
-	ticonv_varname_to_utf8_sn(handle->model, vr->name, update_->text, sizeof(update_->text), vr->type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
+	ticalcs_update_label(handle);
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
@@ -677,8 +677,8 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		q = ptr->data_length / 0x2000;
 		r = ptr->data_length % 0x2000;
 
-		update_->cnt2 = 0;
-		update_->max2 = q;
+		handle->updat->cnt2 = 0;
+		handle->updat->max2 = q;
 
 		for (i = 0; i < q; i++)
 		{
@@ -693,8 +693,8 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 				goto end;
 			}
 
-			update_->cnt2 = i;
-			update_->pbar();
+			handle->updat->cnt2 = i;
+			ticalcs_update_pbar(handle);
 		}
 
 		ret = dusb_cmd_s_os_data_89(handle, r, ptr->data_part + i*0x2000);
@@ -708,8 +708,8 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 			break;
 		}
 
-		update_->cnt2 = i;
-		update_->pbar();
+		handle->updat->cnt2 = i;
+		ticalcs_update_pbar(handle);
 
 		ret = dusb_cmd_s_eot(handle);
 		if (ret)
@@ -731,8 +731,8 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	DUSBCalcParam **params;
 	int ret;
 
-	ticalcs_strlcpy(update_->text, "ID-LIST", sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, "ID-LIST", sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	params = dusb_cp_new_array(handle, size);
 	if (params != NULL)
@@ -841,8 +841,8 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 
 	calc_time = (uint32_t)difftime(c, r);
 
-	ticalcs_strlcpy(update_->text, _("Setting clock..."), sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, _("Setting clock..."), sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	do
 	{
@@ -920,8 +920,8 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	int ret;
 
 	// get raw clock
-	ticalcs_strlcpy(update_->text, _("Getting clock..."), sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, _("Getting clock..."), sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	params = dusb_cp_new_array(handle, size);
 	ret = dusb_cmd_s_param_request(handle, size, pids);
@@ -997,9 +997,9 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
-	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
-	update_label();
+	ticalcs_update_label(handle);
 
 	attr = dusb_ca_new_array(handle, size);
 	attr[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
@@ -1028,10 +1028,10 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	tifiles_build_fullname(handle->model, varname2, newname->folder, newname->name);
 	utf81 = ticonv_varname_to_utf8(handle->model, varname1, oldname->type);
 	utf82 = ticonv_varname_to_utf8(handle->model, varname2, newname->type);
-	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Renaming %s to %s..."), utf81, utf82);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Renaming %s to %s..."), utf81, utf82);
 	ticonv_utf8_free(utf82);
 	ticonv_utf8_free(utf81);
-	update_label();
+	ticalcs_update_label(handle);
 
 	attrs = dusb_ca_new_array(handle, size);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
@@ -1056,9 +1056,9 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 	char *utf8;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
-	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Changing attributes of %s..."), utf8);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Changing attributes of %s..."), utf8);
 	ticonv_utf8_free(utf8);
-	update_label();
+	ticalcs_update_label(handle);
 
 	srcattrs = dusb_ca_new_array(handle, 1);
 	srcattrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
@@ -1093,9 +1093,9 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	int ret;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
-	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Creating %s..."), utf8);
 	ticonv_utf8_free(utf8);
-	update_label();
+	ticalcs_update_label(handle);
 
 	// send empty expression in specified folder
 	attrs = dusb_ca_new_array(handle, nattrs);
@@ -1186,8 +1186,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	int i = 0;
 	int ret = 0;
 
-	ticalcs_strlcpy(update_->text, _("Getting version..."), sizeof(update_->text));
-	update_label();
+	ticalcs_strlcpy(handle->updat->text, _("Getting version..."), sizeof(handle->updat->text));
+	ticalcs_update_label(handle);
 
 	memset(infos, 0, sizeof(CalcInfos));
 	params1 = dusb_cp_new_array(handle, size1);

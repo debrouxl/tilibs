@@ -51,7 +51,7 @@ typedef enum
 	ERR_VOID_FUNCTION,		// This function does not exist for the calc
 	ERR_OUT_OF_MEMORY,		// Calc reply out of *memory
 	ERR_OPEN_FILE,
-	ERR_SAVE_FILE,			// Can not open (writing) file
+	ERR_SAVE_FILE,			// Can't open file for writing
 	ERR_PENDING_TRANSFER,	// A transfer is in progress
 
 	ERR_FATAL_ERROR,		// Fatal error (alloc, file, ...)

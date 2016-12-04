@@ -496,7 +496,7 @@ typedef struct
  * @start: init internal vars
  * @stop: release internal vars
  * @refresh: pass control to GUI for refresh
- * @pbar: refresh pprogress bar
+ * @pbar: refresh progress bar
  * @label: refresh label
  *
  * Refresh/progress functions
@@ -530,14 +530,6 @@ typedef struct
 
 typedef struct _CalcFncts	CalcFncts;
 typedef struct _CalcHandle	CalcHandle;
-
-// convenient wrappers: will be removed later !
-#define update_				(handle->updat)
-#define update_start()		handle->updat->start()
-#define update_pbar()       handle->updat->pbar()
-#define update_label()      handle->updat->label()
-#define update_refresh()    handle->updat->refresh()
-#define update_stop()       handle->updat->stop()
 
 typedef VarEntry	VarRequest;	// alias
 
@@ -701,7 +693,7 @@ struct _CalcHandle
 	CalcUpdate*	updat;
 
 	void*		unused1;
-	void*		buffer; // used as data buffer
+	void*		buffer;
 	void*		buffer2;
 
 	int			open;
@@ -738,12 +730,11 @@ struct _CalcHandle
  **/
 typedef struct 
 {
-	CableModel	cable_model;
-	CablePort	cable_port;
-	int			cable_timeout;
-	int			cable_delay;
-
-	CalcModel	calc_model;
+	CableModel cable_model;
+	CablePort  cable_port;
+	int        cable_timeout;
+	int        cable_delay;
+	CalcModel  calc_model;
 } DeviceOptions;
 
 // namespace scheme: library_class_function like ticalcs_fext_get
@@ -767,10 +758,14 @@ typedef struct
 	TIEXPORT3 int         TICALL ticalcs_handle_del(CalcHandle *handle);
 	TIEXPORT3 int         TICALL ticalcs_handle_show(CalcHandle *handle);
 
+	TIEXPORT3 CalcModel   TICALL ticalcs_get_model(CalcHandle *handle);
+
 	TIEXPORT3 int TICALL ticalcs_cable_attach(CalcHandle *handle, CableHandle*);
 	TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle *handle);
+	TIEXPORT3 CableHandle* TICALL ticalcs_cable_get(CalcHandle *handle);
 
 	TIEXPORT3 int TICALL ticalcs_update_set(CalcHandle *handle, CalcUpdate*);
+	TIEXPORT3 CalcUpdate* TICALL ticalcs_update_get(CalcHandle *handle);
 
 	TIEXPORT3 int TICALL ticalcs_model_supports_dbus(CalcModel model);
 	TIEXPORT3 int TICALL ticalcs_model_supports_dusb(CalcModel model);

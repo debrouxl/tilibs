@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-11-01 18:41+0100\n"
+"POT-Creation-Date: 2016-11-06 13:33+0100\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -54,7 +54,7 @@ msgstr "Mise à jour de l'horloge..."
 msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
-#: src/calc_73.c:1400 src/calc_84p.c:1685 src/calc_8x.c:1255 src/calc_9x.c:1556
+#: src/calc_73.c:1400 src/calc_84p.c:1685 src/calc_8x.c:1254 src/calc_9x.c:1556
 #: src/calc_9x.c:1588 src/calc_89t.c:1000 src/calc_nsp.c:835
 #, c-format
 msgid "Deleting %s..."
@@ -166,15 +166,15 @@ msgstr "TI-82 Advanced via DirectLink"
 msgid "TI-84 Plus T thru DirectLink"
 msgstr "TI-84 Plus T via DirectLink"
 
-#: src/calc_8x.c:493 src/calc_8x.c:804
+#: src/calc_8x.c:493 src/calc_8x.c:803
 msgid "Waiting for user's action..."
 msgstr "Attente d'une action de la part de l'utilisateur..."
 
-#: src/calc_8x.c:638
+#: src/calc_8x.c:637
 msgid "Waiting for backup..."
 msgstr "En attente pour sauvegarder..."
 
-#: src/calc_8x.c:1076
+#: src/calc_8x.c:1075
 msgid "Waiting for var(s)..."
 msgstr "Attente de variable(s)..."
 

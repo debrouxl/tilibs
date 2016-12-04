@@ -540,9 +540,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	int ret;
 	VarEntry * entry;
 
-	update_->cnt2 = 0;
-	update_->max2 = 1;
-	update_->pbar();
+	handle->updat->cnt2 = 0;
+	handle->updat->max2 = 1;
+	ticalcs_update_pbar(handle);
 
 	entry = content->entries[0];
 
@@ -570,8 +570,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 	path = build_path(handle->model, entry);
 
-	ticonv_varname_to_utf8_sn(handle->model, path, update_->text, sizeof(update_->text), entry->type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, path, handle->updat->text, sizeof(handle->updat->text), entry->type);
+	ticalcs_update_label(handle);
 
 	ret = nsp_cmd_s_put_file(handle, path, entry->size);
 	g_free(path);
@@ -605,8 +605,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	}
 
 	path = build_path(handle->model, vr);
-	ticonv_varname_to_utf8_sn(handle->model, path, update_->text, sizeof(update_->text), vr->type);
-	update_label();
+	ticonv_varname_to_utf8_sn(handle->model, path, handle->updat->text, sizeof(handle->updat->text), vr->type);
+	ticalcs_update_label(handle);
 
 	ret = nsp_cmd_s_get_file(handle, path);
 	g_free(path);
@@ -707,9 +707,9 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 				}
 			}
 
-			update_->cnt2 = 0;
-			update_->max2 = 100;
-			update_->pbar();
+			handle->updat->cnt2 = 0;
+			handle->updat->max2 = 100;
+			ticalcs_update_pbar(handle);
 
 			do
 			{
@@ -719,8 +719,8 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 					break;
 				}
 
-				update_->cnt2 = value;
-				update_->pbar();
+				handle->updat->cnt2 = value;
+				ticalcs_update_pbar(handle);
 			} while (value < 100);
 
 			DO_CLOSE_SESSION(handle);
@@ -832,9 +832,9 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	path = build_path(handle->model, vr);
 	utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
-	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
-	update_label();
+	ticalcs_update_label(handle);
 
 	ret = nsp_cmd_s_del_file(handle, path);
 	g_free(path);
@@ -862,9 +862,9 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 	path = g_strconcat("/", vr->folder, NULL);
 	utf8 = ticonv_varname_to_utf8(handle->model, path, -1);
-	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Creating %s..."), utf8);
 	ticonv_utf8_free(utf8);
-	update_label();
+	ticalcs_update_label(handle);
 
 	ret = nsp_cmd_s_new_folder(handle, path);
 	g_free(path);
@@ -1031,10 +1031,10 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	path2 = build_path(handle->model, newname);
 	utf81 = ticonv_varname_to_utf8(handle->model, path1, oldname->type);
 	utf82 = ticonv_varname_to_utf8(handle->model, path2, newname->type);
-	ticalcs_slprintf(update_->text, sizeof(update_->text), _("Renaming %s to %s..."), utf81, utf82);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Renaming %s to %s..."), utf81, utf82);
 	ticonv_utf8_free(utf82);
 	ticonv_utf8_free(utf81);
-	update_label();
+	ticalcs_update_label(handle);
 
 	ret = nsp_cmd_s_rename_file(handle, path1, path2);
 	g_free(path2);

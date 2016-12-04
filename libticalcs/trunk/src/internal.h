@@ -110,6 +110,15 @@
 			return ERR_INVALID_PARAMETER; \
 		} \
 	} while(0);
+#define VALIDATE_CALCUPDATE(upd) \
+	do \
+	{ \
+		if (!ticalcs_validate_calcupdate(upd)) \
+		{ \
+			ticalcs_critical("%s: " #upd " is NULL", __FUNCTION__); \
+			return ERR_INVALID_PARAMETER; \
+		} \
+	} while(0);
 #define VALIDATE_SCREENWIDTH(width) \
 	do \
 	{ \
@@ -194,6 +203,11 @@ static inline int ticalcs_validate_varrequest(VarRequest * var)
 	return var != NULL;
 }
 
+static inline int ticalcs_validate_calcupdate(CalcUpdate * upd)
+{
+	return upd != NULL && upd->start != NULL && upd->stop != NULL && upd->refresh != NULL && upd->label != NULL && upd->pbar != NULL;
+}
+
 static inline void * ticalcs_alloc_screen(size_t len)
 {
 	return g_malloc(len);
@@ -253,6 +267,14 @@ static inline GNode * dirlist_create_append_node(void * data, GNode ** tree)
 #define ticalcs_strlcpy(dst, src, size) \
 	strncpy(dst, src, size - 1); \
 	dst[size - 1] = 0;
+
+#define ticalcs_update_start(handle)     handle->updat->start()
+#define ticalcs_update_stop(handle)      handle->updat->stop()
+#define ticalcs_update_refresh(handle)   handle->updat->refresh()
+#define ticalcs_update_pbar(handle)      handle->updat->pbar()
+#define ticalcs_update_label(handle)     handle->updat->label()
+
+#define ticalcs_update_canceled(handle)  (handle->updat->cancel)
 
 // backup.c
 int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content);
