@@ -43,21 +43,26 @@ TIEXPORT4 ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const cha
 {
   ticonv_iconv_t cd;
   cd.src_calc=ticonv_string_to_model(fromcode);
-  cd.dest_calc=ticonv_string_to_model(tocode);
+#if 1
   cd.iconv_desc=iconv_open(cd.src_calc || fromcode == NULL ? "UTF-16" : fromcode, cd.dest_calc || tocode == NULL ? "UTF-16" : tocode);
-  cd.lookahead=0;
+#endif
+  cd.dest_calc=ticonv_string_to_model(tocode);
   cd.lossy_count=0;
+  cd.lookahead_result=0;
+  cd.lookahead_errno=0;
+  cd.lookahead=0;
   return cd;
 }
 
 /* Convert at most *INBYTESLEFT bytes from *INBUF according to the
    code conversion algorithm specified by CD and place up to
    *OUTBYTESLEFT bytes in buffer at *OUTBUF.  */
-TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
-                             size_t *__restrict inbytesleft,
-                             char **__restrict outbuf,
-                             size_t *__restrict outbytesleft)
+TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
+                                      size_t * restrict inbytesleft,
+                                      char ** restrict outbuf,
+                                      size_t * restrict outbytesleft)
 {
+#if 1
   size_t result;
   if (!inbytesleft || !outbytesleft) {
     return 0;
@@ -237,10 +242,17 @@ TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf
     ticonv_utf16_free(temp);
     return result;
   }
+#else
+  return 0;
+#endif
 }
 
 /* Free resources allocated for descriptor CD for code conversion.  */
 TIEXPORT4 int TICALL ticonv_iconv_close (ticonv_iconv_t cd)
 {
+#if 1
   return iconv_close(cd.iconv_desc);
+#else
+  return 0;
+#endif
 }

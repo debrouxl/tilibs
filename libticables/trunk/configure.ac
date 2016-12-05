@@ -127,6 +127,7 @@ AC_CHECK_HEADERS([stdint.h termios.h linux/parport.h linux/ppdev.h linux/serial.
 AC_TYPE_UID_T
 AC_TYPE_MODE_T
 AC_C_CONST
+AC_C_RESTRICT
 AC_HEADER_TIME
 
 # Checks for library functions.

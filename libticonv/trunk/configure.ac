@@ -69,6 +69,7 @@ AC_CHECK_HEADERS([inttypes.h stdint.h stdlib.h string.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
+AC_C_RESTRICT
 AC_TYPE_SIZE_T
 AC_STRUCT_TM
 
@@ -152,14 +153,6 @@ case $host_os in
 	fi
 	;;
 esac
-
-#iconv emulation interface
-AC_ARG_ENABLE(iconv,
-  AC_HELP_STRING([--enable-iconv], [enable iconv interface]),
-  [cab_cv_enable_iconv=$enableval], [])
-AC_CACHE_CHECK([whether to enable experimental iconv interface],
-  [cab_cv_enable_iconv], [cab_cv_enable_iconv=no])
-AM_CONDITIONAL(USE_ICONV, test x$cab_cv_enable_iconv = xyes)
 
 # Output.
 AC_OUTPUT

@@ -89,6 +89,7 @@ AC_CHECK_HEADERS([stdlib.h string.h time.h unistd.h])
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_BIGENDIAN
 AC_C_CONST
+AC_C_RESTRICT
 
 # Checks for library functions.
 AC_PROG_GCC_TRADITIONAL

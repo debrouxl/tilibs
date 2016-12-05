@@ -26,8 +26,6 @@
 #  include <config.h>
 #endif
 
-#define TICONV_ICONV_INTERFACE
-
 // Need size_t declaration.
 #ifdef __cplusplus
 #include <cstddef>
@@ -36,9 +34,7 @@
 #endif
 
 // Need iconv_t declaration.
-#if defined(TICONV_ICONV_INTERFACE)
 #include <iconv.h>
-#endif
 
 #include "export4.h"
 #include <stdint.h>
@@ -70,7 +66,6 @@ typedef enum
 	CALC_TI84PC, CALC_TI84PC_USB, CALC_TI83PCE_USB, CALC_TI84PCE_USB, CALC_TI82A_USB, CALC_TI84PT_USB, CALC_MAX
 } CalcModel;
 
-#if defined(TICONV_ICONV_INTERFACE)
 /**
  * ticonv_iconv_t:
  * @src_calc:
@@ -82,7 +77,6 @@ typedef enum
  * @lookahead:
  *
  * A structure which is an identifier for conversion method from one codeset to another. 
- * Exported if ICONV_INTERFACE is enabled.
  *
  **/
 typedef struct
@@ -95,7 +89,6 @@ typedef struct
 	int lookahead_errno;
 	unsigned short lookahead;
 } ticonv_iconv_t;
-#endif
 
 /* Functions */
 
@@ -197,20 +190,18 @@ extern "C" {
 	TIEXPORT4 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src);
 	TIEXPORT4 void  TICALL ticonv_zfe_free(char *src);
 
-	// iconv.c: exported if ICONV_INTERFACE has been enabled from configure.
-#if defined(TICONV_ICONV_INTERFACE)
+	// iconv.c
 	/* Allocate descriptor for code conversion from codeset FROMCODE to codeset TOCODE.  */
 	TIEXPORT4 ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const char *fromcode);
 	/* Convert at most *INBYTESLEFT bytes from *INBUF according to the
 	   code conversion algorithm specified by CD and place up to
 	   *OUTBYTESLEFT bytes in buffer at *OUTBUF.  */
-	TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
-	                                      size_t *__restrict inbytesleft,
-	                                      char **__restrict outbuf,
-	                                      size_t *__restrict outbytesleft);
+	TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
+	                                      size_t * restrict inbytesleft,
+	                                      char ** restrict outbuf,
+	                                      size_t * restrict outbytesleft);
 	/* Free resources allocated for descriptor CD for code conversion.  */
 	TIEXPORT4 int TICALL ticonv_iconv_close (ticonv_iconv_t cd);
-#endif
 
 	/************************/
 	/* Deprecated functions */
