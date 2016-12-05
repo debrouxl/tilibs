@@ -35,7 +35,7 @@
 #define MAX_FORMAT_89	8
 #define MAX_FORMAT_84	3
 
-static const char *TI_CLOCK_89[] = 
+static const char *TI_CLOCK_89[] =
 {
 	"",
 	"MM/DD/YY",
@@ -49,7 +49,7 @@ static const char *TI_CLOCK_89[] =
 	""
 };
 
-static const char *TI_CLOCK_84[] = 
+static const char *TI_CLOCK_84[] =
 {
 	"",
 	"M/D/Y",
@@ -132,7 +132,7 @@ TIEXPORT3 int TICALL ticalcs_clock_date2format(CalcModel model, const char *form
 
 	if (tifiles_calc_is_ti9x(model))
 	{
-		for (i = 1; i <= MAX_FORMAT_89; i++) 
+		for (i = 1; i <= MAX_FORMAT_89; i++)
 		{
 			if (!strcasecmp(TI_CLOCK_89[i], format))
 			{
@@ -146,7 +146,7 @@ TIEXPORT3 int TICALL ticalcs_clock_date2format(CalcModel model, const char *form
 	}
 	else if (tifiles_calc_is_ti8x(model))
 	{
-		for (i = 1; i <= MAX_FORMAT_84; i++) 
+		for (i = 1; i <= MAX_FORMAT_84; i++)
 		{
 			if (!strcasecmp(TI_CLOCK_84[i], format))
 			{
@@ -175,7 +175,7 @@ TIEXPORT3 int TICALL ticalcs_clock_show(CalcModel model, CalcClock* s)
 {
 	if (s != NULL)
 	{
-		ticalcs_info("Date: %02i/%02i/%02i", s->day, s->month, s->year);
+		ticalcs_info("Date: %04i/%02i/%02i", s->year, s->month, s->day);
 		ticalcs_info("Time: %02i/%02i/%02i", s->hours, s->minutes, s->seconds);
 		ticalcs_info("Time format: %02i", s->time_format);
 		ticalcs_info("Date format: %s", ticalcs_clock_format2date(model, s->date_format));

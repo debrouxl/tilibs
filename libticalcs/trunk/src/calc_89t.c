@@ -238,8 +238,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				}
 			}
 	/*
-			ticalcs_info(_("Name: %8s | Type: %8s | Attr: %i  | Size: %08X"), 
-				ve->name, 
+			ticalcs_info(_("Name: %8s | Type: %8s | Attr: %i  | Size: %08X"),
+				ve->name,
 				tifiles_vartype2string(handle->model, ve->type),
 				ve->attr,
 				ve->size);
@@ -307,7 +307,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	handle->updat->cnt2 = 0;
 	handle->updat->max2 = content->num_entries;
 
-	for (i = 0; i < content->num_entries; i++) 
+	for (i = 0; i < content->num_entries; i++)
 	{
 		DUSBCalcAttr **attrs;
 		const int nattrs = 4;
@@ -814,6 +814,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	uint32_t calc_time;
 	struct tm ref, cur;
 	time_t r, c, now;
+	uint8_t data[4];
 	int ret;
 
 	time(&now);
@@ -844,79 +845,35 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	ticalcs_strlcpy(handle->updat->text, _("Setting clock..."), sizeof(handle->updat->text));
 	ticalcs_update_label(handle);
 
-	do
+	data[0] = MSB(MSW(calc_time));
+	data[1] = LSB(MSW(calc_time));
+	data[2] = MSB(LSW(calc_time));
+	data[3] = LSB(LSW(calc_time));
+	ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_SEC_SINCE_1997, 4, data);
+	if (!ret)
 	{
-		param = dusb_cp_new(handle, DUSB_PID_CLK_SEC_SINCE_1997, 4);
-		param->data[0] = MSB(MSW(calc_time));
-		param->data[1] = LSB(MSW(calc_time));
-		param->data[2] = MSB(LSW(calc_time));
-		param->data[3] = LSB(LSW(calc_time));
-		ret = dusb_cmd_s_param_set(handle, param);
-		dusb_cp_del(handle, param);
-		if (ret)
+		data[0] = _clock->date_format == 3 ? 0 : _clock->date_format;
+		ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_DATE_FMT, 1, data);
+		if (!ret)
 		{
-			break;
+			data[0] = _clock->time_format == 24 ? 1 : 0;
+			ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_TIME_FMT, 1, data);
+			if (!ret)
+			{
+				data[0] = _clock->state;
+				ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_ON, 1, data);
+			}
 		}
-
-		ret = dusb_cmd_r_data_ack(handle);
-		if (ret)
-		{
-			break;
-		}
-
-		param = dusb_cp_new(handle, DUSB_PID_CLK_DATE_FMT, 1);
-		param->data[0] = _clock->date_format == 3 ? 0 : _clock->date_format;
-		ret = dusb_cmd_s_param_set(handle, param);
-		dusb_cp_del(handle, param);
-		if (ret)
-		{
-			break;
-		}
-
-		ret = dusb_cmd_r_data_ack(handle);
-		if (ret)
-		{
-			break;
-		}
-
-		param = dusb_cp_new(handle, DUSB_PID_CLK_TIME_FMT, 1);
-		param->data[0] = _clock->time_format == 24 ? 1 : 0;
-		ret = dusb_cmd_s_param_set(handle, param);
-		dusb_cp_del(handle, param);
-		if (ret)
-		{
-			break;
-		}
-
-		ret = dusb_cmd_r_data_ack(handle);
-		if (ret)
-		{
-			break;
-		}
-
-		param = dusb_cp_new(handle, DUSB_PID_CLK_ON, 1);
-		param->data[0] = _clock->state;
-		ret = dusb_cmd_s_param_set(handle, param);
-		dusb_cp_del(handle, param);
-		if (ret)
-		{
-			break;
-		}
-
-		ret = dusb_cmd_r_data_ack(handle);
-	} while (0);
+	}
 
 	return ret;
 }
 
 static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 {
-	static const uint16_t pids[5] = { DUSB_PID_CLASSIC_CLK_SUPPORT, DUSB_PID_CLK_SEC_SINCE_1997, DUSB_PID_CLK_DATE_FMT, DUSB_PID_CLK_TIME_FMT, DUSB_PID_CLK_ON };
+	static const uint16_t pids[5] = { DUSB_PID_CLASSIC_CLK_SUPPORT, DUSB_PID_CLK_ON, DUSB_PID_CLK_SEC_SINCE_1997, DUSB_PID_CLK_DATE_FMT, DUSB_PID_CLK_TIME_FMT };
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	DUSBCalcParam **params;
-	uint32_t calc_time;
-	struct tm ref, *cur;
-	time_t r, c, now;
 	int ret;
 
 	// get raw clock
@@ -930,54 +887,58 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 		ret = dusb_cmd_r_param_data(handle, size, params);
 		if (!ret)
 		{
-			// It's not a fatal error if DUSB_PID_CLASSIC_CLK_SUPPORT is not handled.
 			if (params[0]->ok && params[0]->size == 1)
 			{
 				if (!params[0]->data[0])
 				{
 					ret = ERR_UNSUPPORTED;
 				}
-			}
-			else
-			{
-				if (   params[1]->ok && params[0]->size == 4
-				    && params[2]->ok && params[1]->size == 1
-				    && params[3]->ok && params[2]->size == 1
-				    && params[4]->ok && params[3]->size == 1)
-				{
-					// and computes
-					calc_time = (((uint32_t)params[0]->data[0]) << 24) | (((uint32_t)params[0]->data[1]) << 16) | (((uint32_t)params[0]->data[2]) <<  8) | (params[0]->data[3] <<  0);
-
-					time(&now);	// retrieve current DST setting
-					memcpy(&ref, localtime(&now), sizeof(struct tm));
-					ref.tm_year = 1997 - 1900;
-					ref.tm_mon = 0;
-					ref.tm_yday = 0;
-					ref.tm_mday = 1;
-					ref.tm_wday = 3;
-					ref.tm_hour = 0;
-					ref.tm_min = 0;
-					ref.tm_sec = 0;
-					//ref.tm_isdst = 1;
-					r = mktime(&ref);
-
-					c = r + calc_time;
-					cur = localtime(&c);
-
-					_clock->year = cur->tm_year + 1900;
-					_clock->month = cur->tm_mon + 1;
-					_clock->day = cur->tm_mday;
-					_clock->hours = cur->tm_hour;
-					_clock->minutes = cur->tm_min;
-					_clock->seconds = cur->tm_sec;
-
-					_clock->date_format = params[1]->data[0] == 0 ? 3 : params[1]->data[0];
-					_clock->time_format = params[2]->data[0] ? 24 : 12;
-					_clock->state = params[3]->data[0];
-				}
 				else
 				{
-					ret = ERR_INVALID_PACKET;
+					if (   params[1]->ok && params[1]->size == 1
+					    && params[2]->ok && params[2]->size == 4
+					    && params[3]->ok && params[3]->size == 1
+					    && params[4]->ok && params[4]->size == 1)
+					{
+						struct tm ref, *cur;
+						time_t r, c, now;
+						uint8_t * data = params[2]->data;
+						uint32_t calc_time = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (data[3] <<  0);
+
+						ticalcs_info(_("Found valid classic clock"));
+
+						time(&now);	// retrieve current DST setting
+						memcpy(&ref, localtime(&now), sizeof(struct tm));
+						ref.tm_year = 1997 - 1900;
+						ref.tm_mon = 0;
+						ref.tm_yday = 0;
+						ref.tm_mday = 1;
+						ref.tm_wday = 3;
+						ref.tm_hour = 0;
+						ref.tm_min = 0;
+						ref.tm_sec = 0;
+						//ref.tm_isdst = 1;
+						r = mktime(&ref);
+
+						c = r + calc_time;
+						cur = localtime(&c);
+
+						_clock->year = cur->tm_year + 1900;
+						_clock->month = cur->tm_mon + 1;
+						_clock->day = cur->tm_mday;
+						_clock->hours = cur->tm_hour;
+						_clock->minutes = cur->tm_min;
+						_clock->seconds = cur->tm_sec;
+
+						_clock->date_format = params[3]->data[0] == 0 ? 3 : params[3]->data[0];
+						_clock->time_format = params[4]->data[0] ? 24 : 12;
+						_clock->state = params[1]->data[0];
+					}
+					else
+					{
+						ticalcs_warning(_("Found classic clock but failed to retrieve its parameters: %u %u %u %u"),
+								params[1]->ok, params[2]->ok, params[3]->ok, params[4]->ok);
+					}
 				}
 			}
 		}
@@ -1171,9 +1132,9 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	static const uint16_t pids1[] = {
 		DUSB_PID_PRODUCT_NAME, DUSB_PID_MAIN_PART_ID,
 		DUSB_PID_HW_VERSION, DUSB_PID_LANGUAGE_ID, DUSB_PID_SUBLANG_ID, DUSB_PID_DEVICE_TYPE,
-		DUSB_PID_BOOT_VERSION, DUSB_PID_OS_VERSION, 
+		DUSB_PID_BOOT_VERSION, DUSB_PID_OS_VERSION,
 		DUSB_PID_PHYS_RAM, DUSB_PID_USER_RAM, DUSB_PID_FREE_RAM,
-		DUSB_PID_PHYS_FLASH, DUSB_PID_FREE_FLASH, DUSB_PID_FREE_FLASH,
+		DUSB_PID_PHYS_FLASH, DUSB_PID_USER_FLASH, DUSB_PID_FREE_FLASH,
 		DUSB_PID_LCD_WIDTH, DUSB_PID_LCD_HEIGHT,
 	};
 	static const uint16_t pids2[] = {
@@ -1268,7 +1229,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		}
 		i++;
 
-		if (params1[i]->ok && params1[i]->size == 3)
+		if (params1[i]->ok && params1[i]->size == 4)
 		{
 			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1u.%02u", params1[i]->data[1], params1[i]->data[2]);
 			infos->mask |= INFOS_OS_VERSION;
@@ -1376,6 +1337,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->bits_per_pixel = params2[i]->data[0];
 			infos->mask |= INFOS_BPP;
 		}
+		i++;
 
 		if (params2[i]->ok && params2[i]->size == 1)
 		{
@@ -1408,7 +1370,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	return ret;
 }
 
-const CalcFncts calc_89t_usb = 
+const CalcFncts calc_89t_usb =
 {
 	CALC_TI89T_USB,
 	"Titanium",

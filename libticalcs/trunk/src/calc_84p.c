@@ -441,7 +441,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	unsigned int i;
 	int ret = 0;
 
-	for (i = 0; i < content->num_entries; i++) 
+	for (i = 0; i < content->num_entries; i++)
 	{
 		DUSBCalcAttr **attrs;
 		const int nattrs = 3;
@@ -625,7 +625,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 #if 0
 	ticalcs_debug("#pages: %i", ptr->num_pages);
 	ticalcs_debug("type: %02x", ptr->data_type);
-	for (i = 0; i < ptr->num_pages; i++) 
+	for (i = 0; i < ptr->num_pages; i++)
 	{
 		FlashPage *fp = ptr->pages[i];
 
@@ -644,7 +644,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	handle->updat->cnt2 = 0;
 	handle->updat->max2 = ptr->num_pages;
 
-	for (i = 0; i < ptr->num_pages; i++) 
+	for (i = 0; i < ptr->num_pages; i++)
 	{
 		FlashPage *fp = ptr->pages[i];
 		memcpy(data + i*FLASH_PAGE_SIZE, fp->data, FLASH_PAGE_SIZE);
@@ -654,7 +654,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	}
 	{
 		FlashPage *fp = ptr->pages[--i];
-		memset(data + i*FLASH_PAGE_SIZE + fp->size, 0x00, FLASH_PAGE_SIZE - fp->size); 
+		memset(data + i*FLASH_PAGE_SIZE + fp->size, 0x00, FLASH_PAGE_SIZE - fp->size);
 
 		handle->updat->cnt2 = i;
 		ticalcs_update_pbar(handle);
@@ -927,7 +927,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 #if 0
 	ticalcs_debug("#pages: %i", ptr->num_pages);
 	ticalcs_debug("type: %02x", ptr->data_type);
-	for (i = 0; i < ptr->num_pages; i++) 
+	for (i = 0; i < ptr->num_pages; i++)
 	{
 		FlashPage *fp = ptr->pages[i];
 
@@ -1067,7 +1067,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 				for (j = 0; j < fp->size; j += 256)
 				{
 					ret = dusb_cmd_s_os_data(handle,
-						(uint16_t)(fp->addr + j), (uint8_t)fp->page, fp->flag, 
+						(uint16_t)(fp->addr + j), (uint8_t)fp->page, fp->flag,
 						pkt_size-4, fp->data + j);
 					if (ret)
 					{
@@ -1536,7 +1536,10 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 			}
 			else if (classic_clock)
 			{
-				if (params[2]->ok && params[3]->ok && params[4]->ok && params[5]->ok)
+				if (   params[2]->ok && params[2]->size == 1
+				    && params[3]->ok && params[3]->size == 4
+				    && params[4]->ok && params[4]->size == 1
+				    && params[5]->ok && params[5]->size == 1)
 				{
 					struct tm ref, *cur;
 					time_t r, c, now;
@@ -1580,7 +1583,15 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 			}
 			else if (new_clock)
 			{
-				if (params[6]->ok && params[7]->ok && params[8]->ok && params[9]->ok && params[10]->ok && params[11]->ok)
+				if (   params[2]->ok && params[2]->size == 1
+				    && params[4]->ok && params[4]->size == 1
+				    && params[5]->ok && params[5]->size == 1
+				    && params[6]->ok && params[6]->size == 1
+				    && params[7]->ok && params[7]->size == 1
+				    && params[8]->ok && params[8]->size == 1
+				    && params[9]->ok && params[9]->size == 1
+				    && params[10]->ok && params[10]->size == 1
+				    && params[11]->ok && params[11]->size == 2)
 				{
 					uint8_t * data = params[11]->data;
 
