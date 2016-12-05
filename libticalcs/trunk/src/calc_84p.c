@@ -1596,7 +1596,10 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 			}
 			else if (classic_clock)
 			{
-				if (params[2]->ok && params[3]->ok && params[4]->ok && params[5]->ok)
+				if (   params[2]->ok && params[2]->size == 1
+				    && params[3]->ok && params[3]->size == 4
+				    && params[4]->ok && params[4]->size == 1
+				    && params[5]->ok && params[5]->size == 1)
 				{
 					struct tm ref, *cur;
 					time_t r, c, now;
@@ -1640,7 +1643,15 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 			}
 			else if (new_clock)
 			{
-				if (params[6]->ok && params[7]->ok && params[8]->ok && params[9]->ok && params[10]->ok && params[11]->ok)
+				if (   params[2]->ok && params[2]->size == 1
+				    && params[4]->ok && params[4]->size == 1
+				    && params[5]->ok && params[5]->size == 1
+				    && params[6]->ok && params[6]->size == 1
+				    && params[7]->ok && params[7]->size == 1
+				    && params[8]->ok && params[8]->size == 1
+				    && params[9]->ok && params[9]->size == 1
+				    && params[10]->ok && params[10]->size == 1
+				    && params[11]->ok && params[11]->size == 2)
 				{
 					uint8_t * data = params[11]->data;
 

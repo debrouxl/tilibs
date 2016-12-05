@@ -911,12 +911,9 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 
 static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 {
-	static const uint16_t pids[5] = { DUSB_PID_CLASSIC_CLK_SUPPORT, DUSB_PID_CLK_SEC_SINCE_1997, DUSB_PID_CLK_DATE_FMT, DUSB_PID_CLK_TIME_FMT, DUSB_PID_CLK_ON };
+	static const uint16_t pids[5] = { DUSB_PID_CLASSIC_CLK_SUPPORT, DUSB_PID_CLK_ON, DUSB_PID_CLK_SEC_SINCE_1997, DUSB_PID_CLK_DATE_FMT, DUSB_PID_CLK_TIME_FMT };
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	DUSBCalcParam **params;
-	uint32_t calc_time;
-	struct tm ref, *cur;
-	time_t r, c, now;
 	int ret;
 
 	// get raw clock
@@ -940,13 +937,17 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 			}
 			else
 			{
-				if (   params[1]->ok && params[0]->size == 4
-				    && params[2]->ok && params[1]->size == 1
-				    && params[3]->ok && params[2]->size == 1
-				    && params[4]->ok && params[3]->size == 1)
+				if (   params[1]->ok && params[1]->size == 1
+				    && params[2]->ok && params[2]->size == 4
+				    && params[3]->ok && params[3]->size == 1
+				    && params[4]->ok && params[4]->size == 1)
 				{
-					// and computes
-					calc_time = (((uint32_t)params[0]->data[0]) << 24) | (((uint32_t)params[0]->data[1]) << 16) | (((uint32_t)params[0]->data[2]) <<  8) | (params[0]->data[3] <<  0);
+					struct tm ref, *cur;
+					time_t r, c, now;
+					uint8_t * data = params[2]->data;
+					uint32_t calc_time = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (data[3] <<  0);
+
+					ticalcs_info(_("Found valid classic clock"));
 
 					time(&now);	// retrieve current DST setting
 					memcpy(&ref, localtime(&now), sizeof(struct tm));
@@ -971,13 +972,14 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 					_clock->minutes = cur->tm_min;
 					_clock->seconds = cur->tm_sec;
 
-					_clock->date_format = params[1]->data[0] == 0 ? 3 : params[1]->data[0];
-					_clock->time_format = params[2]->data[0] ? 24 : 12;
-					_clock->state = params[3]->data[0];
+					_clock->date_format = params[3]->data[0] == 0 ? 3 : params[3]->data[0];
+					_clock->time_format = params[4]->data[0] ? 24 : 12;
+					_clock->state = params[1]->data[0];
 				}
 				else
 				{
-					ret = ERR_INVALID_PACKET;
+					ticalcs_warning(_("Found classic clock but failed to retrieve its parameters: %u %u %u %u"),
+					                params[1]->ok, params[2]->ok, params[3]->ok, params[4]->ok);
 				}
 			}
 		}
