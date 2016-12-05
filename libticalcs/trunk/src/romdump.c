@@ -65,7 +65,7 @@ static int send_pkt(CalcHandle* handle, uint16_t cmd, uint16_t len, uint8_t* dat
 	// data
 	if (data)
 	{
-		memcpy(buf+4, data, len);
+		memmove(buf+4, data, len);
 	}
 
 	// checksum
@@ -186,7 +186,7 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 
 		if (data)
 		{
-			memcpy(data, buf+4, *len);
+			memmove(data, buf+4, *len);
 		}
 	}
 
