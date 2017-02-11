@@ -1320,20 +1320,12 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 			// The TI-eZ80 series does no longer provide direct remote program launch...
 			// Therefore, use a less sophisticated and more complicated way to queue keypresses.
 			unsigned int i;
-			unsigned int iterations;
 			static const uint16_t keys[] = {
 				0x40, 0x09, 0x09, 0xFC9C, /* Quit, Clear, Clear, Asm( */
 				0xDA, 0xAB, 0xA8, 0xA6,   /* prgm, R, O, M */
 				0x9D, 0xAE, 0xA6, 0xA9,   /* D, U, M, P */
-				0x86                      /* ) */
+				0x86, 0x05                /* ), Enter */
 			};
-			FILE *f;
-
-			f = fopen(filename, "wb");
-			if (f == NULL)
-			{
-				return ERR_OPEN_FILE;
-			}
 
 			// Launch program by remote control
 			PAUSE(200);
@@ -1342,63 +1334,10 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 				ret = send_key(handle, (uint32_t)(keys[i]));
 				if (ret)
 				{
-					goto end;
+					break;
 				}
 				PAUSE(100);
 			}
-
-			// Keep synchronized with the ROM dumper's source code, here and below. For now, it dumps 16 KB at a time.
-			iterations = (uint32_t)(infos.flash_phys / 0x4000);
-
-			for (i = 0; !ret && i < iterations; i++)
-			{
-				ret = dusb_cmd_s_execute(handle, "", "", DUSB_EID_KEY, "", 0x05);
-				if (!ret)
-				{
-					FileContent *content;
-					VarEntry ve;
-
-					ret = dusb_cmd_r_delay_ack(handle);
-					PAUSE(400);
-					ticables_cable_reset(handle->cable);
-
-					memset(&ve, 0, sizeof(VarEntry));
-					ticalcs_strlcpy(ve.name, "ROMDATA", sizeof(ve.name));
-					ve.type = 0x06; // PPRGM / ASM.
-
-					content = tifiles_content_create_regular(handle->model);
-					if (content == NULL)
-					{
-						ret = ERR_MALLOC;
-						break;
-					}
-
-					ret = is_ready(handle);
-					if (!ret)
-					{
-						ret = recv_var(handle, 0 /* MODE_NORMAL */, content, &ve);
-						PAUSE(200);
-						if (!ret)
-						{
-							if (content->num_entries == 1 && content->entries && content->entries[0] && content->entries[0]->size == 16386)
-							{
-								// Skip the two leading bytes.
-								if (fwrite(content->entries[0]->data + 2, content->entries[0]->size - 2, 1, f) < 1)
-								{
-									ret = ERR_SAVE_FILE;
-								}
-							}
-							else
-							{
-								ret = ERR_INVALID_PACKET;
-							}
-						}
-					}
-				}
-			}
-end:
-			fclose(f);
-
 		}
 		else
 		{
@@ -1406,14 +1345,15 @@ end:
 			if (!ret)
 			{
 				ret = dusb_cmd_r_data_ack(handle);
-				if (!ret)
-				{
-					PAUSE(3000);
-
-					// Get dump
-					ret = rd_dump(handle, filename);
-				}
 			}
+		}
+
+		if (!ret)
+		{
+			PAUSE(3000);
+
+			// Get dump
+			ret = rd_dump(handle, filename);
 		}
 	}
 

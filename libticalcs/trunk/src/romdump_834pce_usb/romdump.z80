@@ -2,58 +2,483 @@
 ;;;
 ;;; TI-84+CE / TI-83PCE USB ROM Dumper
 ;;;
-;;; Copyright (c) 2015 Jacob Young
+;;; Copyright (c) 2017 Jacob Young
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
 ;;; the Free Software Foundation; either version 2 of the License, or
 ;;; (at your option) any later version.
-;;; 
+;;;
 ;;; This program is distributed in the hope that it will be useful,
 ;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;;; GNU General Public License for more details.
-;;; 
+;;;
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with this program; if not, write to the Free Software Foundation,
 ;;; Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-userMem         = 0D1A881h
-ProtProgObj     = 6
-_Mov9ToOP1      = 0020320h
-_ChkFindSym     = 002050Ch
-_DelVarArc      = 0021434h
-_CreateProtProg = 0021334h
-_GetKey         = 0020D8Ch
-kEnter          = 005h
+ProtProgObj      = 6
+_Mov9ToOP1       = 0020320h
+_ChkFindSym      = 002050Ch
+_DelVarArc       = 0021434h
+_CreateProtProg  = 0021334h
+_GetKey          = 0020D8Ch
+kEnter           = 005h
+
+LlBrack          = 0C1h
+_DispHL_s        = 00207BCh
+_PutS            = 00207C0h
+_NewLine         = 00207F0h
+_ClrLCDFull      = 0020808h
+_HomeUp          = 0020828h
+_DispHL          = 0021EE0h
+ramStart         = 0D00000h
+buffer           = 0D03200h
+userMem          = 0D1A881h
+mpUsbRange       = 0E20000h
+mpIntRawStatus   = 0F00000h
+mpIntAck         = 0F00008h
+
+; Faraday USB 2.0 OTG Controller
+caplength        = 0000h
+hciversion       = 0002h
+hcsparams        = 0004h
+hccparams        = 0008h
+usbcmd           = 0010h
+usbsts           = 0014h
+usbintr          = 0018h
+frindex          = 001Ch
+periodiclistbase = 0024h
+asynclistaddr    = 0028h
+portsc           = 0030h
+miscr            = 0040h
+otgcsr           = 0080h
+otgisr           = 0084h
+otgier           = 0088h
+isr              = 00C0h
+imr              = 00C4h
+dev_ctrl         = 0100h
+dev_addr         = 0104h
+dev_test         = 0108h
+sof_fnr          = 010Ch
+sof_mtr          = 0110h
+phy_tmsr         = 0114h
+cxfifo           = 0120h
+idle             = 0124h
+gimr             = 0130h
+gimr0            = 0134h
+gimr1            = 0138h
+gimr2            = 013Ch
+gisr             = 0140h
+gisr0            = 0144h
+gisr1            = 0148h
+gisr2            = 014Ch
+rxzlp            = 0150h
+txzlp            = 0154h
+isoeasr          = 0158h
+iep              = 0160h
+iep1             = 0160h
+iep2             = 0164h
+iep3             = 0168h
+iep4             = 016Ch
+iep5             = 0170h
+iep6             = 0174h
+iep7             = 0178h
+iep8             = 017Ch
+oep              = 0180h
+oep1             = 0180h
+oep2             = 0184h
+oep3             = 0188h
+oep4             = 018Ch
+oep5             = 0190h
+oep6             = 0194h
+oep7             = 0198h
+oep8             = 019Ch
+epmap            = 01A0h
+epmap1           = 01A0h
+epmap2           = 01A1h
+epmap3           = 01A2h
+epmap4           = 01A3h
+epmap5           = 01A4h
+epmap6           = 01A5h
+epmap7           = 01A6h
+epmap8           = 01A7h
+fifomap          = 01A8h
+fifomap0         = 01A8h
+fifomap1         = 01A9h
+fifomap2         = 01AAh
+fifomap3         = 01ABh
+fifocfg          = 01ACh
+fifocfg0         = 01ACh
+fifocfg1         = 01ADh
+fifocfg2         = 01AEh
+fifocfg3         = 01AFh
+fifocsr          = 01B0h
+fifocsr0         = 01B0h
+fifocsr1         = 01B4h
+fifocsr2         = 01B8h
+fifocsr3         = 01BCh
+dma_fifo         = 01C0h
+dma_ctrl         = 01C8h
+dma_addr         = 01CCh
+ep0_data         = 01D0h
+
+base             = rxzlp
 
         .db     0EFh, 07Bh
         .org    userMem
 
-        ld      hl, data
-        call    _Mov9ToOP1
-        call    _ChkFindSym
-        call    nc, _DelVarArc
-        ld      hl, $4000
-        push    hl
-        call    _CreateProtProg
-        pop     bc
-        inc     de
-        inc     de
-        ld      hl, 0
-start = $ - 3
-        ldir
-        push    hl
-        ld      hl, prog
-        call    _Mov9ToOP1
-        call    _ChkFindSym
-        pop     bc
-        ret     c
-        ld      hl, 2 + start - (userMem - 2)
-        add     hl, de
-        ld      (hl), bc
-        ret
-prog:   .db     ProtProgObj, "ROMDUMP", 0
-data:   .db     ProtProgObj, "ROMDATA", 0
+	di
+	call	_ClrLCDFull
+	call	_HomeUp
+	call	dispStr
+	.db	"Press ", LlBrack, "on] to abort.", 0
+	ld	(savesp), sp
+	ld	ix, mpUsbRange + base
+	ld	de, ack
+	ld	hl, ackSize
+	push	de
+ackSend:
+	call	dmaSend
+	jr	nz, ackSend
+	pop	de
+	ld	l, 7
+ackRecv:
+	call	dmaRecv
+	jr	nz, ackRecv
+cmdLoop:
+	call	pktRecv
+	ld	a, d
+	or	a, a
+	jr	nz, maybeIsReady
+	ld	a, e
+	sub	2
+	jp	z, cmdExit
+	dec	a
+	jr	z, cmdReqSize
+	sub	2
+	call	nz, abort
+cmdReqBlk:
+	ld	a, l
+	xor	a, 4
+	or	a, h
+	call	nz, abort
+	ld	hl, buffer + 4
+	ld	de, (hl)
+	ex	de, hl
+	ld	bc, $8000
+	push	bc
+	ldir
+	pop	de
+	ld	a, 6
+	call	pktSend
+	jr	cmdLoop
+cmdReqSize:
+	ld	a, l
+	or	a, h
+	call	nz, abort
+	ld	de, $400000 >> 8
+	ld	hl, buffer + 5
+	ld	(hl), de
+	dec	hl
+	ld	(hl), e
+	ld	d, e
+	ld	e, l
+	call	pktSend
+	jr	cmdLoop
+maybeIsReady:
+	cp	a, $AA
+	call	nz, abort
+	cpl
+	cp	a, e
+	call	nz, abort
+handleIsReady:
+	ld	a, l
+	or	a, h
+	call	nz, abort
+	inc	a
+	call	pktSendEmpty
+	jr	cmdLoop
+
+dispStr:
+	pop	hl
+	call	_PutS
+	push	hl
+	jp	_NewLine
+
+; === Packet Receive ===
+; Receives an entire virtual packet.
+; Output:
+;  de = type
+;  hl = size
+pktRecv:
+	ld	de, buffer
+	ld	hl, 4
+pktRecvHead:
+	call	dmaRecv
+	jr	nz, pktRecvHead
+	push	hl
+	ld.sis	hl, (buffer + 2 - ramStart)
+	ld	c, e
+pktRecvData:
+	call	nz, dmaRecv
+	ex	(sp), hl
+	call	checkSum
+	ex	(sp), hl
+	ld	a, h
+	or	a, l
+	jr	nz, pktRecvData
+	push	de
+	ld	l, 2
+pktRecvChk:
+	call	dmaRecv
+	jr	nz, pktRecvChk
+	pop	hl
+	ld	hl, (hl)
+	pop	de
+	or	a, a
+	sbc.s	hl, de
+	ld.sis	de, (buffer - ramStart)
+	ld.sis	hl, (buffer + 2 - ramStart)
+	ret	z
+	call	dispStr
+	.db	"Checksum error!", 0
+	call	abort
+
+cmdExit:
+	ld	a, l
+	or	a, h
+	call	nz, abort
+	ld	a, 2
+;	jr	pktSendEmpty
+
+; === Packet Send ===
+; Sends an entire virtual packet.
+; Input:
+;  a = cmd
+;  ude = size
+pktSendEmpty:
+	ld	de, 0
+pktSend:
+#if 0
+	push	de
+	pop	bc
+	ld	(buffer), a
+	xor	a, a
+	ld	(buffer + 1), a
+	ld.sis	(buffer + 2 - ramStart), bc
+	ld	d, a
+	ld	hl, buffer
+	inc	bc
+	inc	bc
+	inc	bc
+	inc	bc
+	push	bc
+	push	hl
+pktSendSum:
+	add	a, (hl)
+	jr	nc, _
+	inc	d
+_:	cpi
+	jp	pe, pktSendSum
+	ld	(hl), a
+	inc	hl
+	ld	(hl), d
+	pop	de
+	pop	hl
+	inc	hl
+	inc	hl
+pktSendLoop:
+	call	dmaSend
+	jr	nz, pktSendLoop
+	ret
+#else
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, buffer + 3
+	ld	(hl), d
+	dec	hl
+	ld	(hl), e
+	dec	hl
+	ld	(hl), 0
+	dec	hl
+	ld	(hl), a
+	ex	de, hl
+	inc	hl
+	inc	hl
+	inc	hl
+	inc	hl
+pktSendData:
+	call	dmaSend
+	ex	(sp), hl
+	call	checkSum
+	ex	(sp), hl
+	ld	a, h
+	or	a, l
+	jr	nz, pktSendData
+	pop	bc
+	ex	de, hl
+	ld	(hl), bc
+	ex	de, hl
+	ld	l, 2
+pktSendChk:
+	call	dmaSend
+	ret	z
+	jr	dmaSend
+#endif
+
+checkSum:
+	push	de
+	ld	a, c
+checkSumLoop:
+	ex	de, hl
+	dec	hl
+	ld	c, (hl)
+	ex	de, hl
+	add	hl, bc
+	dec	a
+	jr	nz, checkSumLoop
+	pop	de
+	ret
+
+; === DMA Recv ===
+; Receives up to uhl bytes from fifo0.
+; Input:
+;  ude = address of data to receive
+;  uhl = total bytes to receive
+;  uix = mpUsbRange + base
+; Output:
+;  ubc = bytes received
+;  ude = address after data received
+;  uhl = remaining bytes to receive
+;  uix = mpUsbRange + base
+dmaRecv:
+	ld	(ix + dma_ctrl - base), 0
+dmaRecvWait:
+	call	check
+	bit	0, (ix + gisr1 - base)
+	jr	z, dmaRecvWait
+	ld	bc, (ix + fifocsr0 - base)
+	jr	dmaXfer
+
+; === DMA Send ===
+; Sends up to uhl bytes to fifo0.
+; Input:
+;  ude = address of data to send
+;  uhl = total bytes to send
+;  uix = mpUsbRange + base
+; Output:
+;  ubc = bytes sent
+;  ude = address after data sent
+;  uhl = remaining bytes to send
+;  uix = mpUsbRange + base
+dmaSend:
+	ld	bc, 64
+	ld	(ix + dma_ctrl - base), 2
+dmaSendWait:
+	call	check
+	bit	0, (ix + gisr1 + 2 - base)
+	jr	z, dmaSendWait
+;	jr	dmaXfer
+
+; === DMA Transfer ===
+; Transfers min(ubc, uhl) bytes with fifo0.
+; Input:
+;  ubc = max bytes to transfer
+;  ude = address of data to transfer
+;  uhl = total bytes to transfer
+;  uix = mpUsbRange + base
+;  dma_ctrl = send << 1
+; Output:
+;  cf = true
+;  zf = no more bytes to transfer
+;  ubc = bytes transferred
+;  ude = address after data transferred
+;  uhl = remaining bytes to transfer
+;  uix = mpUsbRange + base
+dmaXfer:
+	or	a, a
+	sbc	hl, bc
+	jr	c, dmaXferLast
+	ld	(ix + dma_fifo - base), 1 << 0
+	ld	(ix + dma_ctrl + 1 - base), bc
+	ld	(ix + dma_addr - base), de
+	set	0, (ix + dma_ctrl - base)
+	ex	de, hl
+	add	hl, bc
+	ex	de, hl
+dmaXferWait:
+	call	check
+	ld	a, (ix + gisr2 + 1 - base)
+	rrca
+	call	c, abort
+	ld	a, (ix + gisr2 - base)
+	rlca
+	jr	nc, dmaXferWait
+	ld	(ix + dma_fifo - base), 0
+	ret
+dmaXferLast:
+	or	a, a
+	adc	hl, bc
+	ret	z
+;	ld	b, h
+	ld	c, l
+	jr	dmaXfer
+
+; === Check For Abort ===
+; Aborts if the on key has been pressed.
+; Output:
+;  cf = false
+;  a = ?
+check:	bit	0, (ix + gisr2 - base)
+	jr	nz, abort
+	ld	a, (mpIntRawStatus)
+	rrca
+	ret	nc
+	call	waitOnRelease
+abort:	xor	a, a
+	ld	(mpUsbRange + dma_fifo), a
+	ld	hl, mpUsbRange + usbcmd
+	set	1, (hl)
+	call	dispStr
+	.db	"Unknown USB Error.", 0
+	pop	hl
+	call	_DispHL
+	call	_NewLine
+	ld	hl, (mpUsbRange + usbintr)
+	call	_DispHL
+	call	_NewLine
+	ld	hl, (mpUsbRange + otgisr)
+	call	_DispHL
+	call	_NewLine
+	ld	hl, (mpUsbRange + gisr0)
+	call	_DispHL
+	call	_NewLine
+	ld	hl, (mpUsbRange + gisr1)
+	call	_DispHL
+	call	_NewLine
+	ld	hl, (mpUsbRange + gisr2)
+	call	_DispHL
+	call	_NewLine
+exit:	ld	sp, 0
+savesp = $ - 3
+	ret
+
+; === Wait For On Release ===
+; Returns when the on key has been released.
+waitOnRelease:
+	ld	hl, 1 << 8 | mpIntRawStatus
+waitOnReleaseLoop:
+	ld	l, mpIntAck & 0FFh
+	ld	(hl), h
+	ld	l, mpIntRawStatus & 0FFh
+	bit	0, (hl)
+	jr	nz, waitOnReleaseLoop
+	ret
+
+ack:	.db	0, 0, 0, 7, 4, 0, 0, 0, 1, 0AAh, 0, 1
+ackSize = $ - ack
