@@ -22,20 +22,10 @@
 
 #ifndef DUSB_DUMPER
 #define VERSION		"1.02"			// Version
-
 #define TIMEOUT		20			// 1s ~ 20 ticks
-
-#define SEND_LINK_DATA(d, l, t) LIO_SendData(d, l)
-#define RECV_LINK_DATA(d, l, t) LIO_RecvData(d, l, t)
-#define CLOSE_LINK() // OSLinkClose()
 #else
 #define VERSION		"1.02 USB"			// Version
-
 #define TIMEOUT		2000				// in ms
-
-#define SEND_LINK_DATA(d, l, t) USB_SendData(d, l, t)
-#define RECV_LINK_DATA(d, l, t) USB_RecvData(d, l, t)
-#define CLOSE_LINK() USBLinkClose();
 #endif
 
 /* CMD | LEN | DATA | CHK */
