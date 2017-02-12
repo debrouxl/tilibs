@@ -2,7 +2,7 @@
 
 AM_CFLAGS = -Wall -W
 
-SUBDIRS = tf2hex romdump_8x romdump_84p_usb romdump_834pce_usb romdump_9x romdump_89t_usb
+SUBDIRS = tf2hex romdump_8x romdump_84p_usb romdump_834pce_usb romdump_9x
 
 # libraries and files to compile and install
 lib_LTLIBRARIES = libticalcs2.la
@@ -104,8 +104,8 @@ BUILT_SOURCES += rom89.h rom89t.h rom92f2.h
 rom89.h: romdump_9x/romdump.89z $(tf2hex)
 	$(tf2hex) romdump_9x/romdump.89z $(srcdir)/rom89.h 89
 
-rom89t.h: romdump_89t_usb/romdump.89z $(tf2hex)
-	$(tf2hex) romdump_89t_usb/romdump.89z $(srcdir)/rom89t.h 89t
+rom89t.h: romdump_9x/romdumpu.89z $(tf2hex)
+	$(tf2hex) romdump_9x/romdumpu.89z $(srcdir)/rom89t.h 89t
 
 rom92f2.h: romdump_9x/romdump.92p $(tf2hex)
 	$(tf2hex) romdump_9x/romdump.92p $(srcdir)/rom92f2.h 92
@@ -116,7 +116,7 @@ romdump_9x/romdump.89z:
 romdump_9x/romdump.92p: romdump_9x/romdump.89z
 	cd romdump_9x && $(MAKE)
 
-romdump_89t_usb/romdump.89z:
-	cd romdump_89t_usb && $(MAKE)
+romdump_9x/romdumpu.89z:
+	cd romdump_9x && $(MAKE)
 
 endif

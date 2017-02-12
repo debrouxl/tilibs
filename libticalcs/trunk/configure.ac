@@ -40,7 +40,6 @@ AC_CONFIG_FILES([
   src/romdump_8x/Makefile
   src/romdump_84p_usb/Makefile
   src/romdump_9x/Makefile
-  src/romdump_89t_usb/Makefile
   src/romdump_834pce_usb/Makefile
   tests/Makefile
   ticalcs2.pc

@@ -26,15 +26,11 @@
 */
 
 #ifdef FARGO
-
 #include "fargodef.h"
-
 #else
-
 #include <tigcclib.h>         // Include All Header Files
-
+#include "dusb.h"
 #define ROM_size ((uint32_t)(0x200000 << (V200 || ((uint32_t)ROM_base == 0x800000))))
-
 #endif
 
 #include "romdump.h"
@@ -67,11 +63,11 @@ static int SendPacket(uint8_t* buf, uint16_t cmd, uint16_t len, uint8_t* data)
 	buf[2] = LSB(len);
 	buf[3] = MSB(len);
 
-	ret = LIO_SendData(buf, 4);
+	ret = SEND_LINK_DATA(buf, 4, TIMEOUT);
 	if(ret) return ret;
 
 	// data
-	ret = LIO_SendData(data, len);
+	ret = SEND_LINK_DATA(data, len, TIMEOUT);
 	if(ret) return ret;
 
 	// checksum
@@ -80,7 +76,7 @@ static int SendPacket(uint8_t* buf, uint16_t cmd, uint16_t len, uint8_t* data)
 	buf[1] = MSB(sum);
 
 	// send
-	ret = LIO_SendData(buf, 2);
+	ret = SEND_LINK_DATA(buf, 2, TIMEOUT);
 	if(ret) return ret;
 
 	return 0;
@@ -96,7 +92,7 @@ static int RecvPacket(uint8_t* buf, uint16_t* cmd, uint16_t* len, uint8_t* data)
 	*len = 0;
 
 	// any packet has always at least 4 bytes (cmd, len)
-	ret = LIO_RecvData(buf, 4, TIMEOUT);
+	ret = RECV_LINK_DATA(buf, 4, TIMEOUT);
 	if(ret) return ret;
 
 	*cmd = (buf[1] << 8) | buf[0];
@@ -106,12 +102,12 @@ static int RecvPacket(uint8_t* buf, uint16_t* cmd, uint16_t* len, uint8_t* data)
 	// data part
 	if(data)
 	{
-		ret = LIO_RecvData(data, *len, TIMEOUT);
+		ret = RECV_LINK_DATA(data, *len, TIMEOUT);
 		if(ret) return ret;
 	}
 
 	// checksum
-	ret = LIO_RecvData(buf+*len, 2, TIMEOUT);
+	ret = RECV_LINK_DATA(buf+*len, 2, TIMEOUT);
 	if(ret) return ret;
 
 	sum = (buf[*len+1] << 8) | buf[*len+0];
@@ -170,7 +166,7 @@ static inline int Send_ERR(uint8_t* buf)
 
 // --- Dumper Layer
 
-static int Dump(uint8_t* buf)
+static inline int Dump(uint8_t* buf)
 {
 	int exit = 0;
 	int ret;
@@ -241,7 +237,7 @@ static int Dump(uint8_t* buf)
 		}
 	}
 
-	//OSLinkClose();
+	CLOSE_LINK();
 	return 0;
 }
 
@@ -250,7 +246,7 @@ static int Dump(uint8_t* buf)
 
 void _main(void)
 {
-	char str[30];  
+	char str[30];
 	uint8_t buf[BLK_SIZE + 3*2];
 
 #ifdef FARGO
