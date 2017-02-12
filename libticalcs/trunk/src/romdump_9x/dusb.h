@@ -18,7 +18,6 @@
 
 #define XR_stringPtr_addr (_rom_call_addr(293))
 #define push_offset_array_addr (_rom_call_addr(3c4))
-#define IsSupportedAMS300 IsSupportedUSBAMS /* deprecated */
 #define IsSupportedUSBAMS() (IsSupportedUSBAMS30x()||IsSupportedUSBAMS31x())
 #define IsSupportedUSBAMS30x() (*(long long*)(XR_stringPtr_addr-116)==0x76021003261f4e75ll)
 #define IsSupportedUSBAMS31x() (*(long long*)(push_offset_array_addr-1112)==0x76021003261f4e75ll)
@@ -31,7 +30,7 @@
 #define DetectUSB (*(short(**)(void))(DetectLinkInterface+4))
 #define USBCheckReceived (*(void(**)(void))(DetectReceiveInterface+16))
 #define USBCheckStatus (*(short(**)(void))(DetectReceiveInterface+22))
-#define USB_SendData ((short (*)(const void *, size_t, long))(USBCheckStatus-494))
-#define USB_RecvData ((short (*)(void *, size_t, long))(USBCheckStatus-246))
+#define USB_SendData ((short(* __attribute__((__stkparm__)))(const void *, size_t, unsigned long))(USBCheckStatus-494))
+#define USB_RecvData ((short(* __attribute__((__stkparm__)))(void *, size_t, unsigned long))(USBCheckStatus-246))
 #define USBLinkClose ((short(*)(void))(USBCheckStatus-266))
 #define USBLinkReset (*(void(**)(void))(DetectLinkInterface+36))
