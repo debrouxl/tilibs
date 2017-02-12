@@ -1,7 +1,7 @@
 EXTRA_DIST = *.c *.h usb.txt
 CLEANFILES = *.89z *.9xz *.v2z *.92p
 
-TIGCCFLAGS = -Os -ffunction-sections -fdata-sections -Wall -W -Wwrite-strings  -WA,-g,-t --optimize-nops --optimize-returns --optimize-branches --optimize-moves --optimize-tests --optimize-calcs --remove-unused --cut-ranges --reorder-sections --merge-constants --omit-bss-init
+TIGCCFLAGS = -Os -ffunction-sections -fdata-sections -Wall -W -Wwrite-strings  -WA,-g,-t --optimize-nops --optimize-returns --optimize-branches --optimize-moves --optimize-tests --optimize-calcs --remove-unused --cut-ranges --reorder-sections --merge-constants --omit-bss-init -fomit-frame-pointer
 
 if BUILD_68K_ROM_DUMPERS
 all: romdump.89z romdump.92p romdumpu.89z

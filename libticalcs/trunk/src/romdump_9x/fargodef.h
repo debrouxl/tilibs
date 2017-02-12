@@ -19,8 +19,6 @@
 #define NULL ((void *) 0) 
 
 // The LIO functions in the TI-92 ROM are not exported by Fargo.
-unsigned short (*LIO_SendData) (const void *src, unsigned long size); 
-unsigned short (*LIO_RecvData) (void *dest, unsigned long size, unsigned long WaitDelay); 
 
 #define __kb_globals tios__001b
 extern void __kb_globals;
