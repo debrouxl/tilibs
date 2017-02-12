@@ -35,11 +35,18 @@
 
 #include "romdump.h"
 
+register short __attribute__((__stkparm__)) (*SendData) (const void *src, unsigned long size
+#ifdef DUSB_DUMPER
+, unsigned long WaitDelay
+#endif
+) asm("%a3");
+register short __attribute__((__stkparm__)) (*RecvData) (void *dest, unsigned long size, unsigned long WaitDelay) asm("%a4");
+
 // --- Packet Layer
 
 #define BLK_SIZE (4096)
 
-static uint16_t CheckSum(uint8_t* data, uint16_t len)
+static inline __attribute__((always_inline)) uint16_t CheckSum(uint8_t* data, uint16_t len)
 {
 	uint16_t i;
 	uint16_t sum = 0;
@@ -63,11 +70,19 @@ static int SendPacket(uint8_t* buf, uint16_t cmd, uint16_t len, uint8_t* data)
 	buf[2] = LSB(len);
 	buf[3] = MSB(len);
 
-	ret = SEND_LINK_DATA(buf, 4, TIMEOUT);
+	ret = SendData(buf, 4
+#ifdef DUSB_DUMPER
+	, TIMEOUT
+#endif
+	);
 	if(ret) return ret;
 
 	// data
-	ret = SEND_LINK_DATA(data, len, TIMEOUT);
+	ret = SendData(data, len
+#ifdef DUSB_DUMPER
+	, TIMEOUT
+#endif
+	);
 	if(ret) return ret;
 
 	// checksum
@@ -76,7 +91,11 @@ static int SendPacket(uint8_t* buf, uint16_t cmd, uint16_t len, uint8_t* data)
 	buf[1] = MSB(sum);
 
 	// send
-	ret = SEND_LINK_DATA(buf, 2, TIMEOUT);
+	ret = SendData(buf, 2
+#ifdef DUSB_DUMPER
+	, TIMEOUT
+#endif
+	);
 	if(ret) return ret;
 
 	return 0;
@@ -92,7 +111,7 @@ static int RecvPacket(uint8_t* buf, uint16_t* cmd, uint16_t* len, uint8_t* data)
 	*len = 0;
 
 	// any packet has always at least 4 bytes (cmd, len)
-	ret = RECV_LINK_DATA(buf, 4, TIMEOUT);
+	ret = RecvData(buf, 4, TIMEOUT);
 	if(ret) return ret;
 
 	*cmd = (buf[1] << 8) | buf[0];
@@ -102,12 +121,12 @@ static int RecvPacket(uint8_t* buf, uint16_t* cmd, uint16_t* len, uint8_t* data)
 	// data part
 	if(data)
 	{
-		ret = RECV_LINK_DATA(data, *len, TIMEOUT);
+		ret = RecvData(data, *len, TIMEOUT);
 		if(ret) return ret;
 	}
 
 	// checksum
-	ret = RECV_LINK_DATA(buf+*len, 2, TIMEOUT);
+	ret = RecvData(buf+*len, 2, TIMEOUT);
 	if(ret) return ret;
 
 	sum = (buf[*len+1] << 8) | buf[*len+0];
@@ -175,6 +194,26 @@ static inline int Dump(uint8_t* buf)
 	char str[30];
 	unsigned int i;
 	uint8_t* ptr;
+#ifdef DUSB_DUMPER
+	short (*  __attribute__((__stkparm__)) LinkClose)(void);
+#endif
+
+#ifdef FARGO
+	// Ugly hack to find LIO_SendData and LIO_RecvData...
+	SendData=(void*)ERD_dialog;
+	while (*(void**)SendData!=OSLinkTxQueueInquire) SendData+=2;
+	RecvData=(void*)SendData;
+	SendData-=28;
+	while (*(void**)RecvData!=OSReadLinkBlock) RecvData+=2;
+	RecvData-=150;
+#elif defined(DUSB_DUMPER)
+	SendData=USB_SendData;
+	RecvData=USB_RecvData;
+	LinkClose=USBLinkClose;
+#else
+	SendData=LIO_SendData;
+	RecvData=LIO_RecvData;
+#endif
 
 	while(!exit)
 	{
@@ -237,7 +276,9 @@ static inline int Dump(uint8_t* buf)
 		}
 	}
 
-	CLOSE_LINK();
+#ifdef DUSB_DUMPER
+	LinkClose();
+#endif
 	return 0;
 }
 
@@ -248,16 +289,6 @@ void _main(void)
 {
 	char str[30];
 	uint8_t buf[BLK_SIZE + 3*2];
-
-#ifdef FARGO
-	// Ugly hack to find LIO_SendData and LIO_RecvData...
-	LIO_SendData=(void*)ERD_dialog;
-	while (*(void**)LIO_SendData!=OSLinkTxQueueInquire) LIO_SendData+=2;
-	LIO_RecvData=(void*)LIO_SendData;
-	LIO_SendData-=28;
-	while (*(void**)LIO_RecvData!=OSReadLinkBlock) LIO_RecvData+=2;
-	LIO_RecvData-=150;
-#endif
 
 	ClrScr ();
 	FontSetSys (F_8x10);
