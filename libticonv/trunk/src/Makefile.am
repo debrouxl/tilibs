@@ -23,3 +23,7 @@ if OS_WIN32
   libticonv_la_LDFLAGS += -Wl,../build/mingw/ticonv-rc.o -Wl,--output-def,libticonv.def
   EXTRA_DIST = libticonv.def
 endif
+
+if OS_MAC
+  libticonv_la_LIBADD += -liconv
+endif

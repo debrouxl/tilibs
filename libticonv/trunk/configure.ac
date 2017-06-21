@@ -87,6 +87,15 @@ case "$host" in
 esac
 CFLAGS="$CFLAGS $ARCH"
 
+build_mac=''
+case "${host_os}" in
+    darwin*)
+        build_mac='yes'
+        ;;
+esac
+
+AM_CONDITIONAL(OS_MAC, test "$build_mac")
+
 # Ensure MSVC-compatible struct packing convention is used when
 # compiling for Win32 with gcc.
 # What flag to depends on gcc version: gcc3 uses "-mms-bitfields", while
