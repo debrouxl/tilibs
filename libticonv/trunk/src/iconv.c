@@ -31,6 +31,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <glib.h>
+#if defined(__MACOSX__)
+#  define LIBICONV_PLUG
+#endif
 #include <iconv.h>
 #include <errno.h>
 
