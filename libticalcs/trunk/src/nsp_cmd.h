@@ -43,7 +43,11 @@ extern "C" {
 
 #define NSP_SID_FILE_MGMT               0x4060
 
+#define NSP_SID_TIROBOT                 0x4070
+
 #define NSP_SID_OS_INSTALL              0x4080
+
+#define NSP_SID_REMOTE_MGMT             0x4090
 
 // Errors
 #define NSP_ERR_OK                      0x00
