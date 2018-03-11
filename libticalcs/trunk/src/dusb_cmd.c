@@ -138,7 +138,7 @@ TIEXPORT3 DUSBCalcParam* TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id,
 
 	if (ticalcs_validate_handle(handle))
 	{
-		GList * cpca_list;
+		//GList * cpca_list;
 
 		cp = g_malloc0(sizeof(DUSBCalcParam)); // aborts the program if it fails.
 
@@ -146,8 +146,8 @@ TIEXPORT3 DUSBCalcParam* TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id,
 		cp->size = size;
 		cp->data = data;
 
-		cpca_list = g_list_append((GList *)(handle->priv.dusb_cpca_list), cp);
-		handle->priv.dusb_cpca_list = (void *)cpca_list;
+		//cpca_list = g_list_append((GList *)(handle->priv.dusb_cpca_list), cp);
+		//handle->priv.dusb_cpca_list = (void *)cpca_list;
 	}
 	else
 	{
@@ -174,7 +174,7 @@ TIEXPORT3 void TICALL dusb_cp_fill(DUSBCalcParam * cp, uint16_t id, uint16_t siz
 
 TIEXPORT3 void TICALL dusb_cp_del(CalcHandle * handle, DUSBCalcParam* cp)
 {
-	GList *cpca_list;
+	//GList *cpca_list;
 
 	if (!ticalcs_validate_handle(handle))
 	{
@@ -188,8 +188,8 @@ TIEXPORT3 void TICALL dusb_cp_del(CalcHandle * handle, DUSBCalcParam* cp)
 		return;
 	}
 
-	cpca_list = g_list_remove((GList *)(handle->priv.dusb_cpca_list), cp);
-	handle->priv.dusb_cpca_list = (void *)cpca_list;
+	//cpca_list = g_list_remove((GList *)(handle->priv.dusb_cpca_list), cp);
+	//handle->priv.dusb_cpca_list = (void *)cpca_list;
 
 	g_free(cp->data);
 	g_free(cp);
@@ -272,7 +272,7 @@ TIEXPORT3 DUSBCalcAttr* TICALL dusb_ca_new_ex(CalcHandle * handle, uint16_t id, 
 
 	if (ticalcs_validate_handle(handle))
 	{
-		GList * cpca_list;
+		//GList * cpca_list;
 
 		ca = g_malloc0(sizeof(DUSBCalcAttr)); // aborts the program if it fails.
 
@@ -280,8 +280,8 @@ TIEXPORT3 DUSBCalcAttr* TICALL dusb_ca_new_ex(CalcHandle * handle, uint16_t id, 
 		ca->size = size;
 		ca->data = data;
 
-		cpca_list = g_list_append((GList *)(handle->priv.dusb_cpca_list), ca);
-		handle->priv.dusb_cpca_list = (void *)cpca_list;
+		//cpca_list = g_list_append((GList *)(handle->priv.dusb_cpca_list), ca);
+		//handle->priv.dusb_cpca_list = (void *)cpca_list;
 	}
 	else
 	{
@@ -308,7 +308,7 @@ TIEXPORT3 void TICALL dusb_ca_fill(DUSBCalcAttr * ca, uint16_t id, uint16_t size
 
 TIEXPORT3 void TICALL dusb_ca_del(CalcHandle * handle, DUSBCalcAttr* ca)
 {
-	GList *cpca_list;
+	//GList *cpca_list;
 
 	if (!ticalcs_validate_handle(handle))
 	{
@@ -322,8 +322,8 @@ TIEXPORT3 void TICALL dusb_ca_del(CalcHandle * handle, DUSBCalcAttr* ca)
 		return;
 	}
 
-	cpca_list = g_list_remove((GList *)(handle->priv.dusb_cpca_list), ca);
-	handle->priv.dusb_cpca_list = (void *)cpca_list;
+	//cpca_list = g_list_remove((GList *)(handle->priv.dusb_cpca_list), ca);
+	//handle->priv.dusb_cpca_list = (void *)cpca_list;
 
 	g_free(ca->data);
 	g_free(ca);
@@ -425,7 +425,7 @@ static void byteswap(uint8_t *data, uint32_t len)
 /////////////----------------
 
 static const uint16_t usb_errors[] = {
-	0x0004, 0x0006, 0x0008, 0x0009, 0x000c, 0x000d, 0x000e, 
+	0x0004, 0x0006, 0x0008, 0x0009, 0x000c, 0x000d, 0x000e,
 	0x0011, 0x0012, 0x001c, 0x001d, 0x0021, 0x0022, 0x0023,
 	0x0027, 0x0029, 0x002b, 0x002e, 0x0034
 };

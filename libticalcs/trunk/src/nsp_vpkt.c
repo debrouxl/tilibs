@@ -46,7 +46,7 @@
 
 // Type to string
 
-static const NSPServiceName sid_types[] = 
+static const NSPServiceName sid_types[] =
 {
 	{ 0x00FE, "Reception Acknowledgment" },
 	{ 0x00FF, "Reception Ack" },
@@ -92,14 +92,14 @@ TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint3
 
 	if (ticalcs_validate_handle(handle))
 	{
-		GList * vtl_pkt_list;
+		//GList * vtl_pkt_list;
 
 		vtl = g_malloc0(sizeof(NSPVirtualPacket)); // aborts the program if it fails.
 
 		nsp_vtl_pkt_fill(vtl, size, src_addr, src_port, dst_addr, dst_port, cmd, data); // aborts the program if it fails.
 
-		vtl_pkt_list = g_list_append((GList *)(handle->priv.nsp_vtl_pkt_list), vtl);
-		handle->priv.nsp_vtl_pkt_list = (void *)vtl_pkt_list;
+		//vtl_pkt_list = g_list_append((GList *)(handle->priv.nsp_vtl_pkt_list), vtl);
+		//handle->priv.nsp_vtl_pkt_list = (void *)vtl_pkt_list;
 	}
 	else
 	{
@@ -129,7 +129,7 @@ TIEXPORT3 void TICALL nsp_vtl_pkt_fill(NSPVirtualPacket* vtl, uint32_t size, uin
 
 TIEXPORT3 void TICALL nsp_vtl_pkt_del(CalcHandle *handle, NSPVirtualPacket* vtl)
 {
-	GList *vtl_pkt_list;
+	//GList *vtl_pkt_list;
 
 	if (!ticalcs_validate_handle(handle))
 	{
@@ -143,8 +143,8 @@ TIEXPORT3 void TICALL nsp_vtl_pkt_del(CalcHandle *handle, NSPVirtualPacket* vtl)
 		return;
 	}
 
-	vtl_pkt_list = g_list_remove((GList *)(handle->priv.nsp_vtl_pkt_list), vtl);
-	handle->priv.nsp_vtl_pkt_list = (void *)vtl_pkt_list;
+	//vtl_pkt_list = g_list_remove((GList *)(handle->priv.nsp_vtl_pkt_list), vtl);
+	//handle->priv.nsp_vtl_pkt_list = (void *)vtl_pkt_list;
 
 	g_free(vtl->data);
 	g_free(vtl);

@@ -98,7 +98,7 @@ TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uin
 
 	if (ticalcs_validate_handle(handle))
 	{
-		GList * vtl_pkt_list;
+		//GList * vtl_pkt_list;
 
 		vtl = g_malloc0(sizeof(DUSBVirtualPacket)); // aborts the program if it fails.
 
@@ -106,8 +106,8 @@ TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uin
 		vtl->type = type;
 		vtl->data = data;
 
-		vtl_pkt_list = g_list_append((GList *)(handle->priv.dusb_vtl_pkt_list), vtl);
-		handle->priv.dusb_vtl_pkt_list = (void *)vtl_pkt_list;
+		//vtl_pkt_list = g_list_append((GList *)(handle->priv.dusb_vtl_pkt_list), vtl);
+		//handle->priv.dusb_vtl_pkt_list = (void *)vtl_pkt_list;
 	}
 	else
 	{
@@ -138,7 +138,7 @@ TIEXPORT3 void TICALL dusb_vtl_pkt_fill(DUSBVirtualPacket* vtl, uint32_t size, u
 
 TIEXPORT3 void TICALL dusb_vtl_pkt_del(CalcHandle * handle, DUSBVirtualPacket* vtl)
 {
-	GList *vtl_pkt_list;
+	//GList *vtl_pkt_list;
 
 	if (!ticalcs_validate_handle(handle))
 	{
@@ -152,8 +152,8 @@ TIEXPORT3 void TICALL dusb_vtl_pkt_del(CalcHandle * handle, DUSBVirtualPacket* v
 		return;
 	}
 
-	vtl_pkt_list = g_list_remove((GList *)(handle->priv.dusb_vtl_pkt_list), vtl);
-	handle->priv.dusb_vtl_pkt_list = (void *)vtl_pkt_list;
+	//vtl_pkt_list = g_list_remove((GList *)(handle->priv.dusb_vtl_pkt_list), vtl);
+	//handle->priv.dusb_vtl_pkt_list = (void *)vtl_pkt_list;
 
 	g_free(vtl->data);
 	g_free(vtl);
@@ -735,7 +735,7 @@ TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacke
 			}
 			vtl->size = raw.size - DUSB_DH_SIZE;
 #if (VPKT_DBG == 2)
-			ticalcs_info("  TI->PC: %s\n\t\t(size = %08x, type = %s)", 
+			ticalcs_info("  TI->PC: %s\n\t\t(size = %08x, type = %s)",
 				raw.type == DUSB_RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation",
 				*declared_size, dusb_vpkt_type2name(vtl->type));
 #elif (VPKT_DBG == 1)

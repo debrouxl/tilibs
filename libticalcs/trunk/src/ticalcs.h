@@ -66,9 +66,9 @@ extern "C" {
  *
  * An enumeration which contains the following calculator types:
  **/
-typedef enum 
+typedef enum
 {
-	SCREEN_FULL, 
+	SCREEN_FULL,
 	SCREEN_CLIPPED
 } CalcScreenFormat;
 
@@ -90,9 +90,9 @@ typedef enum
  *
  * An enumeration which contains the path type:
  **/
-typedef enum 
+typedef enum
 {
-	PATH_FULL, 
+	PATH_FULL,
 	PATH_LOCAL
 } CalcPathType;
 
@@ -101,9 +101,9 @@ typedef enum
  *
  * An enumeration which contains the different memory sizes:
  **/
-typedef enum 
+typedef enum
 {
-	MEMORY_NONE = 0, 
+	MEMORY_NONE = 0,
 	MEMORY_FREE = (1<<0),
 	MEMORY_USED = (1<<1),
 } CalcMemType;
@@ -114,7 +114,7 @@ typedef enum
  *
  * An enumeration which contains different mask modes:
  **/
-typedef enum 
+typedef enum
 {
 	MODE_NORMAL = 0,
 
@@ -134,7 +134,7 @@ typedef enum
  *
  * An enumeration which contains the following ROM dump sizes:
  **/
-typedef enum 
+typedef enum
 {
 	ROMSIZE_AUTO  = 0,
 	ROMSIZE_48KB  = 48,     /* TI-80 */
@@ -151,10 +151,10 @@ typedef enum
  *
  * An enumeration which contains the shell to use with ROM dumping:
  **/
-typedef enum 
+typedef enum
 {
-	SHELL_NONE = 4, 
-	SHELL_USGARD, 
+	SHELL_NONE = 4,
+	SHELL_USGARD,
 	SHELL_ZSHELL
 } CalcShellType;
 
@@ -195,7 +195,7 @@ typedef enum
  *
  * An enumeration which contains the different supported operations:
  **/
-typedef enum 
+typedef enum
 {
 	FTS_NONE = 0,
 
@@ -231,7 +231,7 @@ typedef enum
  *
  * An enumeration which contains the action taken on a variable
  **/
-typedef enum 
+typedef enum
 {
 	ACT_NONE = 0,
 	ACT_RENAME, ACT_OVER, ACT_SKIP,
@@ -242,7 +242,7 @@ typedef enum
  *
  * An enumeration which contains the different flags supported by CalcInfos:
  **/
-typedef enum 
+typedef enum
 {
 	INFOS_PRODUCT_NUMBER = (1 << 0), /* obsolete (never used) */
 	INFOS_PRODUCT_NAME   = (1 << 1),
@@ -280,7 +280,7 @@ typedef enum
  *
  * Index of function in the #CalcFncts structure:
  **/
-typedef enum 
+typedef enum
 {
 	FNCT_IS_READY=0,
 	FNCT_SEND_KEY,
@@ -321,7 +321,7 @@ typedef enum
  *
  * An enumeration which contains the data to save in tigroup:
  **/
-typedef enum 
+typedef enum
 {
 	TIG_NONE    = 0,
 	TIG_RAM     = (1 << 0),
@@ -384,7 +384,7 @@ typedef struct
  *
  * A structure used for storing screen size.
  **/
-typedef struct 
+typedef struct
 {
 	int		format;
 
@@ -440,7 +440,7 @@ typedef struct
  *
  * A structure which contains a TI scancode with key modifiers.
  **/
-typedef struct 
+typedef struct
 {
 	const char* key_name;
 
@@ -464,7 +464,7 @@ typedef struct
  *
  * A structure used for clock management.
  **/
-typedef struct 
+typedef struct
 {
 	uint16_t	year;
 	uint8_t	month;
@@ -503,7 +503,7 @@ typedef struct
  * This structure allows to implement a kind of callbacks mechanism (which
  * allow libCalcs to interact with user without being dependant of a GUI).
  **/
-typedef struct 
+typedef struct
 {
 	char	text[256];
 	int		cancel;
@@ -540,7 +540,7 @@ typedef VarEntry	VarRequest;	// alias
  *
  * A structure used to pass arguments.
  **/
-typedef struct 
+typedef struct
 {
 	CalcModel	model;
 	InfosMask	mask;
@@ -708,9 +708,9 @@ struct _CalcHandle
 		unsigned int progress_min_size; // don't refresh if packet is smaller than some amount.
 		unsigned int romdump_std_blk; // number of full-size blocks
 		unsigned int romdump_sav_blk; // number of compressed blocks
-		void * dusb_vtl_pkt_list;
-		void * dusb_cpca_list;
-		void * nsp_vtl_pkt_list;
+		//void * dusb_vtl_pkt_list;
+		//void * dusb_cpca_list;
+		//void * nsp_vtl_pkt_list;
 		uint8_t nsp_seq_pc;
 		uint8_t nsp_seq;
 		uint16_t nsp_src_port;
@@ -728,7 +728,7 @@ struct _CalcHandle
  *
  * A convenient structure free of use by the user.
  **/
-typedef struct 
+typedef struct
 {
 	CableModel cable_model;
 	CablePort  cable_port;
