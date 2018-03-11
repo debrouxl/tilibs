@@ -41,6 +41,8 @@
 #include "../src/cmdz80.h"
 #include "../src/dusb_rpkt.h"
 #include "../src/keysnsp.h"
+#include "../src/nsp_rpkt.h"
+#include "../src/error.h"
 
 #undef VERSION
 #define VERSION "Test program"
@@ -857,6 +859,50 @@ static int dusb_dissect_rpkt(CalcHandle *h)
 	return 0;
 }
 
+static int nsp_dissect_rpkt(CalcHandle *h)
+{
+	int ret;
+	uint8_t ep = 2; // Assume PC -> TI.
+	char buffer[65536 + 2];
+	uint8_t data[sizeof(((NSPRawPacket *)0)->data)];
+	uint32_t length = 0;
+	int model;
+
+	printf("Enter calc model (usually 15): ");
+	ret = scanf("%d", &model);
+	if (ret < 1)
+	{
+		return 0;
+	}
+
+	buffer[0] = 0;
+	printf("Enter raw NSP packet as hex string of up to 4 * max raw packet size (non-hex characters ignored; CTRL+D to end):\n");
+	ret = scanf("%65536[^\x04]", buffer);
+	if (ret < 1)
+	{
+		return 0;
+	}
+
+	fputc('\n', stdout);
+	if (!build_raw_bytes_from_hex_string(buffer, sizeof(buffer) / sizeof(buffer[0]), data, sizeof(data) / sizeof(data[0]), &length))
+	{
+		if (nsp_dissect((CalcModel)model, stderr, data, length, ep) == 0)
+		{
+			printf("Dissection successful\n");
+		}
+		else
+		{
+			printf("Dissection failed\n");
+		}
+	}
+	else
+	{
+		printf("Failed to build raw data, not dissected\n");
+	}
+
+	return 0;
+}
+
 static int dusb_get_param_ids(CalcHandle * h)
 {
 	int ret;
@@ -969,6 +1015,28 @@ static int dusb_set_param_id(CalcHandle * h)
 	return 0;
 }
 
+static int test_nspire_remote_mgmt(CalcHandle * h)
+{
+	int retval = 0;
+	uint8_t data[9] = { 0x00, 0x00, 0x02, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
+	is_ready(h);
+
+	printf("Packet 1\n");
+	retval = nsp_cmd_s_generic_data(h, sizeof(data) / sizeof(data[0]), data, NSP_SID_REMOTE_MGMT, 0x00);
+	// Packets returned by the calculator have weird data nowadays.
+	if (!retval || retval == ERR_INVALID_PACKET)
+	{
+		uint32_t size;
+		uint8_t * data2 = NULL;
+		printf("Packet 2\n");
+		retval = nsp_cmd_r_generic_data(h, &size, &data2);
+		g_free(data2);
+	}
+
+	return retval;
+}
+
 static struct
 {
 	const char * desc;
@@ -1013,7 +1081,9 @@ static struct
 	{ "83+-family-specific set some 32-byte memory area", ti83pfamily_sid },
 	{ "DUSB: dissect raw packet", dusb_dissect_rpkt },
 	{ "DUSB: get parameter IDs", dusb_get_param_ids },
-	{ "DUSB: set parameter ID", dusb_set_param_id }
+	{ "DUSB: set parameter ID", dusb_set_param_id },
+	{ "NSP: dissect raw packet", nsp_dissect_rpkt },
+	{ "NSP: test remote management stuff", test_nspire_remote_mgmt },
 };
 
 int main(int argc, char **argv)

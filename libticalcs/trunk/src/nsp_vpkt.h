@@ -44,12 +44,6 @@ typedef struct
 	uint8_t		*data;
 } NSPVirtualPacket;
 
-typedef struct
-{
-	uint16_t	id;
-	const char *name;
-} NSPServiceName;
-
 // Constants
 
 #define NSP_SRC_ADDR            0x6400
@@ -71,14 +65,16 @@ typedef struct
 #define NSP_PORT_KEYPRESSES     0x4042
 
 #define NSP_PORT_LOGIN          0x4050
+#define NSP_PORT_MESSAGES       0x4051
 
 #define NSP_PORT_FILE_MGMT      0x4060
+#define NSP_PORT_TIROBOT        0x4070
 #define NSP_PORT_OS_INSTALL     0x4080
+#define NSP_PORT_REMOTE_MGMT    0x4090
+
 #define NSP_PORT_DISCONNECT     0x40DE
 
 // Functions
-
-TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id);
 
 TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new(CalcHandle *handle);
 TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle *handle, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data);

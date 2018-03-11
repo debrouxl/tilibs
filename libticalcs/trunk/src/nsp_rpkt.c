@@ -29,10 +29,87 @@
 
 #include "ticalcs.h"
 #include "internal.h"
+#include "nsp_rpkt.h"
 #include "logging.h"
 #include "error.h"
 
 #define VPKT_DBG	1	// 1 = verbose, 2 = more verbose
+
+typedef struct
+{
+	uint16_t		id;
+	const char*		name;
+} NSPServiceId;
+
+typedef struct
+{
+	uint16_t		id;
+	const char*		name;
+} NSPAddress;
+
+static const NSPAddress nspaddrs[] =
+{
+	{ 0x0000, "TI" },
+	{ 0x6400, "PC" },
+	{ 0x6401, "TI" },
+};
+
+static const NSPServiceId nspsids[] =
+{
+	{ 0x00FE, "Reception Acknowledgment" },
+	{ 0x00FF, "Reception Ack" },
+	{ 0x4001, "Null" },
+	{ 0x4002, "Echo" },
+	{ 0x4003, "Device Address Request/Assignment" },
+	{ 0x4020, "Device Information" },
+	{ 0x4021, "Screen Capture" },
+	{ 0x4024, "Screen Capture w/ RLE" },
+	{ 0x4042, "Keypresses" },
+	{ 0x4050, "Login" },
+	{ 0x4051, "Messages" },
+	{ 0x4060, "File Management" },
+	{ 0x4070, "TI-Robot" },
+	{ 0x4080, "OS Installation" },
+	{ 0x4090, "Remote Management" },
+	{ 0x40DE, "Service Disconnect" },
+
+	{ 0x8003, "8003" },
+	{ 0x8004, "8004" },
+	{ 0x8005, "8005" },
+	{ 0x8006, "8006" },
+	{ 0x8007, "8007" },
+	{ 0x8009, "8009" },
+};
+
+TIEXPORT3 const char* TICALL nsp_addr2name(uint16_t id)
+{
+	unsigned int i;
+
+	for (i = 0; i < sizeof(nspaddrs) / sizeof(nspaddrs[0]); i++)
+	{
+		if (id == nspaddrs[i].id)
+		{
+			return nspaddrs[i].name;
+		}
+	}
+
+	return "";
+}
+
+TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id)
+{
+	unsigned int i;
+
+	for (i = 0; i < sizeof(nspsids) / sizeof(nspsids[0]); i++)
+	{
+		if (id == nspsids[i].id)
+		{
+			return nspsids[i].name;
+		}
+	}
+
+	return "";
+}
 
 // CRC implementation from O. Armand (ExtendeD)
 static uint16_t compute_crc(uint8_t *data, uint32_t size)
@@ -137,8 +214,8 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 		pkt->seq = handle->priv.nsp_seq_pc;
 	}
 
-	ticalcs_info("   %04x:%04x->%04x:%04x AK=%02x SQ=%02x HC=%02x DC=%04x (%i bytes)", 
-			pkt->src_addr, pkt->src_port, pkt->dst_addr, pkt->dst_port, 
+	ticalcs_info("   %04x:%04x->%04x:%04x AK=%02x SQ=%02x HC=%02x DC=%04x (%i bytes)",
+			pkt->src_addr, pkt->src_port, pkt->dst_addr, pkt->dst_port,
 			pkt->ack, pkt->seq, pkt->hdr_sum, pkt->data_sum, pkt->data_size);
 	if (pkt->data_size)
 	{
@@ -245,6 +322,107 @@ TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 
 		break;
 	}
+
+	return ret;
+}
+
+static const char* ep_way(uint8_t ep)
+{
+	if (ep == 0x01)
+	{
+		return "TI>PC";
+	}
+	else if (ep == 0x02)
+	{
+		return "PC>TI";
+	}
+	else
+	{
+		return "XX>XX";
+	}
+}
+
+TIEXPORT3 int TICALL nsp_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len, uint8_t ep)
+{
+	int ret = 0;
+	uint16_t unused;
+	uint16_t src_addr;
+	uint16_t src_port;
+	uint16_t dst_addr;
+	uint16_t dst_port;
+	uint16_t data_sum;
+	uint8_t data_size;
+	uint8_t ack;
+	uint8_t seq;
+	uint8_t hdr_sum;
+	uint8_t cmd;
+	uint32_t i;
+	uint8_t computed_hdr_sum;
+	uint16_t computed_data_sum;
+
+	VALIDATE_NONNULL(f);
+	VALIDATE_NONNULL(data);
+
+	if (len < NSP_HEADER_SIZE + 1 || len > NSP_HEADER_SIZE + 1 + NSP_DATA_SIZE) // 1 is the cmd byte.
+	{
+		ticalcs_critical("Length %lu (%lX) is too small or too large for a valid NSP raw packet", (unsigned long)len, (unsigned long)len);
+		return ERR_INVALID_PACKET;
+	}
+
+	unused    = (((uint16_t)data[0]) << 8) | data[1];
+	src_addr  = (((uint16_t)data[2]) << 8) | data[3];
+	src_port  = (((uint16_t)data[4]) << 8) | data[5];
+	dst_addr  = (((uint16_t)data[6]) << 8) | data[7];
+	dst_port  = (((uint16_t)data[8]) << 8) | data[9];
+	data_sum  = (((uint16_t)data[10]) << 8) | data[11];
+	data_size = data[12];
+	ack       = data[13];
+	seq       = data[14];
+	hdr_sum   = data[15];
+	cmd       = data[16];
+
+	fprintf(f, "%08lX\t| %s: %04X - %s (%04X - %s) -> %04X - %s (%04X - %s)\n", (unsigned long)len, ep_way(ep),
+	           src_addr, nsp_addr2name(src_addr), src_port, nsp_sid2name(src_port),
+	           dst_addr, nsp_addr2name(dst_addr), dst_port, nsp_sid2name(dst_port));
+	fprintf(f, "\t  unused=%04X ack=%02X seq=%02X header_checksum=%02X data_checksum=%04X (%u bytes)\n",
+	           unused, ack, seq, hdr_sum, data_sum, data_size);
+	fprintf(f, "\t  cmd=%02X\n", cmd);
+
+	if (data_size > NSP_DATA_SIZE)
+	{
+		ticalcs_critical("Data size %u (%X) is too large for a valid NSP raw packet", data_size, data_size);
+		return ERR_INVALID_PACKET;
+	}
+	if (len != (uint32_t)data_size + NSP_HEADER_SIZE)
+	{
+		ticalcs_critical("Data size %u (%X) is incoherent with given NSP raw packet length %lu (%lX)", data_size, data_size, (unsigned long)len, (unsigned long)len);
+		return ERR_INVALID_PACKET;
+	}
+
+	computed_hdr_sum = 0;
+	for (i = 0; i < NSP_HEADER_SIZE - 1; i++)
+	{
+		computed_hdr_sum += data[i];
+	}
+	computed_data_sum = tifiles_checksum(data, len);
+	fprintf(f, "\t  computed_hdr_sum=%02X computed_data_sum=%04X\n", computed_hdr_sum, computed_data_sum);
+	if (computed_hdr_sum != hdr_sum || computed_data_sum != data_sum)
+	{
+	fprintf(f, "\t  (NOTE: header and/or data sum do not match header)\n");
+	}
+
+	data += NSP_HEADER_SIZE + 1;
+	len -= NSP_HEADER_SIZE + 1;
+	fprintf(f, "\t\t");
+	for (i = 0; i < len;)
+	{
+		fprintf(f, "%02X ", *data++);
+		if (!(++i & 15))
+		{
+			fprintf(f, "\n\t\t");
+		}
+	}
+	fputc('\n', f);
 
 	return ret;
 }

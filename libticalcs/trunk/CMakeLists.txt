@@ -55,6 +55,7 @@ set(PUBLIC_HEADERS
         src/dusb_rpkt.h
         src/dusb_vpkt.h
         src/dusb_cmd.h
+        src/nsp_rpkt.h
         src/nsp_vpkt.h
         src/nsp_cmd.h
         src/cmdz80.h

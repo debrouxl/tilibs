@@ -44,41 +44,6 @@
 
 #include "nsp_vpkt.h"
 
-// Type to string
-
-static const NSPServiceName sid_types[] =
-{
-	{ 0x00FE, "Reception Acknowledgment" },
-	{ 0x00FF, "Reception Ack" },
-	{ 0x4001, "Null" },
-	{ 0x4002, "Echo" },
-	{ 0x4003, "Device Address Request/Assignment" },
-	{ 0x4020, "Device Information" },
-	{ 0x4021, "Screen Capture" },
-	{ 0x4024, "Screen Capture w/ RLE" },
-	{ 0x4042, "Keypresses" },
-	{ 0x4050, "Login" },
-	{ 0x4060, "File Management" },
-	{ 0x4080, "OS Installation" },
-	{ 0x40DE, "Service Disconnect" },
-	{ -1, NULL},
-};
-
-TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id)
-{
-	const NSPServiceName *p;
-
-	for (p = sid_types; p->name != NULL; p++)
-	{
-		if (p->id == id)
-		{
-			return p->name;
-		}
-	}
-
-	return "unknown: not listed";
-}
-
 // Creation/Destruction/Garbage Collecting of packets
 
 TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new(CalcHandle * handle)
