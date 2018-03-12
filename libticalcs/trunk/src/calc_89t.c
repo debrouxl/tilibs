@@ -938,15 +938,15 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 					ret = ERR_UNSUPPORTED;
 				}
 			}
-			else
-			{
-				if (   params[1]->ok && params[0]->size == 4
-				    && params[2]->ok && params[1]->size == 1
-				    && params[3]->ok && params[2]->size == 1
-				    && params[4]->ok && params[3]->size == 1)
+
+			if (!ret) {
+				if (   params[1]->ok && params[1]->size == 4
+				    && params[2]->ok && params[2]->size == 1
+				    && params[3]->ok && params[3]->size == 1
+				    && params[4]->ok && params[4]->size == 1)
 				{
 					// and computes
-					calc_time = (((uint32_t)params[0]->data[0]) << 24) | (((uint32_t)params[0]->data[1]) << 16) | (((uint32_t)params[0]->data[2]) <<  8) | (params[0]->data[3] <<  0);
+					calc_time = (((uint32_t)params[1]->data[0]) << 24) | (((uint32_t)params[1]->data[1]) << 16) | (((uint32_t)params[1]->data[2]) <<  8) | (params[1]->data[3] <<  0);
 
 					time(&now);	// retrieve current DST setting
 					memcpy(&ref, localtime(&now), sizeof(struct tm));
@@ -971,9 +971,9 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 					_clock->minutes = cur->tm_min;
 					_clock->seconds = cur->tm_sec;
 
-					_clock->date_format = params[1]->data[0] == 0 ? 3 : params[1]->data[0];
-					_clock->time_format = params[2]->data[0] ? 24 : 12;
-					_clock->state = params[3]->data[0];
+					_clock->date_format = params[2]->data[0] == 0 ? 3 : params[2]->data[0];
+					_clock->time_format = params[3]->data[0] ? 24 : 12;
+					_clock->state = params[4]->data[0];
 				}
 				else
 				{
@@ -1268,7 +1268,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		}
 		i++;
 
-		if (params1[i]->ok && params1[i]->size == 3)
+		if (params1[i]->ok && params1[i]->size == 4)
 		{
 			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1u.%02u", params1[i]->data[1], params1[i]->data[2]);
 			infos->mask |= INFOS_OS_VERSION;
@@ -1288,6 +1288,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->mask |= INFOS_RAM_PHYS;
 		}
 		i++;
+
 		if (params1[i]->ok && params1[i]->size == 8)
 		{
 			infos->ram_user = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
@@ -1301,6 +1302,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->mask |= INFOS_RAM_USER;
 		}
 		i++;
+
 		if (params1[i]->ok && params1[i]->size == 8)
 		{
 			infos->ram_free = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
@@ -1328,6 +1330,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->mask |= INFOS_FLASH_PHYS;
 		}
 		i++;
+
 		if (params1[i]->ok && params1[i]->size == 8)
 		{
 			infos->flash_user = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
@@ -1341,6 +1344,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->mask |= INFOS_FLASH_USER;
 		}
 		i++;
+
 		if (params1[i]->ok && params1[i]->size == 8)
 		{
 			infos->flash_free = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
@@ -1362,6 +1366,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->mask |= INFOS_LCD_WIDTH;
 		}
 		i++;
+
 		if (params1[i]->ok && params1[i]->size == 2)
 		{
 			infos->lcd_height = (  (((uint16_t)params1[i]->data[ 0]) <<  8)
@@ -1370,33 +1375,11 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		}
 		i++;
 
-		i = 0;
-		if (params2[i]->ok && params2[i]->size == 1)
-		{
-			infos->bits_per_pixel = params2[i]->data[0];
-			infos->mask |= INFOS_BPP;
-		}
+		infos->bits_per_pixel = 1;
+		infos->mask |= INFOS_BPP;
 
-		if (params2[i]->ok && params2[i]->size == 1)
-		{
-			infos->battery = params2[i]->data[0];
-			infos->mask |= INFOS_BATTERY;
-		}
-		i++;
-
-		if (params2[i]->ok && params2[i]->size == 1)
-		{
-			infos->run_level = params2[i]->data[0];
-			infos->mask |= INFOS_RUN_LEVEL;
-		}
-		i++;
-
-		if (params2[i]->ok && params2[i]->size == 1)
-		{
-			infos->clock_support = params2[i]->data[0];
-			infos->mask |= INFOS_CLOCK_SUPPORT;
-		}
-		i++;
+		infos->clock_support = 1;
+		infos->mask |= INFOS_CLOCK_SUPPORT;
 
 		infos->model = CALC_TI89T;
 		infos->mask |= INFOS_CALC_MODEL;
