@@ -52,14 +52,10 @@
  * when converting to locale.
  *
  * Return value: %dst as a newly allocated string or NULL if error.
- **/ 
+ **/
 TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 {
-#ifdef __WIN32__
-	int is_utf8 = G_WIN32_HAVE_WIDECHAR_API();
-#else
-	int is_utf8 = g_get_charset(NULL);
-#endif
+	int is_utf8 = ticonv_environment_is_utf8();
 	const char *str;
 	unsigned short *utf16_src, *p;
 	unsigned short *utf16_dst, *q;
@@ -262,7 +258,7 @@ TIEXPORT4 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 	// This conversion is needed and works only if the filename charset
 	// is UTF-8. Otherwise, the equivalent conversion is done in
 	// ticonv_utf16_to_gfe.
-	if (!g_get_filename_charsets(NULL)) return g_strdup(src_);
+	if (!ticonv_environment_has_utf8_filenames()) return g_strdup(src_);
 
 	p = src = (char *)src_;
 	q = dst = g_malloc0(18*strlen(src)+1);
@@ -325,4 +321,32 @@ TIEXPORT4 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 TIEXPORT4 void TICALL ticonv_zfe_free(char *src)
 {
 	g_free(src);
+}
+
+/**
+ * ticonv_environment_is_utf8:
+ *
+ * This function returns whether the current locale uses an UTF-8 charset.
+ *
+ * Return value: TRUE when the current locale uses an UTF-8 charset, FALSE otherwise.
+ **/
+TIEXPORT4 int TICALL ticonv_environment_is_utf8(void)
+{
+#ifdef __WIN32__
+	return G_WIN32_HAVE_WIDECHAR_API();
+#else
+	return g_get_charset(NULL);
+#endif
+}
+
+/**
+ * ticonv_environment_has_utf8_filenames:
+ *
+ * This function returns whether the filename charset is UTF-8.
+ *
+ * Return value: TRUE when the filename charset is UTF-8, FALSE otherwise.
+ **/
+TIEXPORT4 int TICALL ticonv_environment_has_utf8_filenames(void)
+{
+	return g_get_filename_charsets(NULL);
 }

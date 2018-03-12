@@ -79,10 +79,7 @@ static unsigned short * ticonv_usb_to_utf16(const char *ti, unsigned short *utf1
 		return NULL;
 	}
 
-	if (utf16 != NULL)
-	{
-		memcpy(utf16, tmp, 2 * ticonv_utf16_strlen(tmp));
-	}
+	memcpy(utf16, tmp, 2 * ticonv_utf16_strlen(tmp));
 	ticonv_utf16_free(tmp);
 
 	return utf16;
@@ -167,10 +164,7 @@ static char* ticonv_utf16_to_usb(const unsigned short *utf16, char *ti)
 		return NULL;
 	}
 
-	if (ti != NULL)
-	{
-		strcpy(ti, tmp);
-	}
+	strcpy(ti, tmp);
 	ticonv_utf8_free(tmp);
 
 	return ti;

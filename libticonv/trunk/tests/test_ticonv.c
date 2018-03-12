@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 {
 	int i, j;
 	unsigned int n = 0;
-	int is_utf8 = g_get_charset(NULL);
+	int is_utf8 = ticonv_environment_is_utf8();
 
 	charsets[0] = ti73_charset;
 	charsets[1] = ti82_charset;

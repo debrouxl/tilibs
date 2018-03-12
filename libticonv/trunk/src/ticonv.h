@@ -189,6 +189,8 @@ extern "C" {
 	TIEXPORT4 void  TICALL ticonv_gfe_free(char *src);
 	TIEXPORT4 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src);
 	TIEXPORT4 void  TICALL ticonv_zfe_free(char *src);
+	TIEXPORT4 int   TICALL ticonv_environment_is_utf8(void);
+	TIEXPORT4 int   TICALL ticonv_environment_has_utf8_filenames(void);
 
 	// iconv.c
 	/* Allocate descriptor for code conversion from codeset FROMCODE to codeset TOCODE.  */

@@ -33,6 +33,7 @@
 
 #include "ticonv.h"
 #include "charset.h"
+#include "logging.h"
 
 /***********/
 /* Methods */
@@ -71,7 +72,7 @@ TIEXPORT4 size_t TICALL ticonv_utf16_strlen(const unsigned short *str)
 	}
 	else
 	{
-		g_critical("%s(NULL)", __FUNCTION__);
+		ticonv_critical("%s(NULL)", __FUNCTION__);
 	}
 	return l;
 }
@@ -92,14 +93,14 @@ TIEXPORT4 unsigned short* ticonv_utf8_to_utf16(const char *str)
 
 	if (str == NULL)
 	{
-		g_critical("%s: str is NULL", __FUNCTION__);
+		ticonv_critical("%s: str is NULL", __FUNCTION__);
 		return NULL;
 	}
 
 	dst = g_utf8_to_utf16(src, -1, NULL, NULL, &error);
 	if (error)
 	{
-		g_critical("%s", error->message);
+		ticonv_critical("%s", error->message);
 	}
 
 	return dst;
@@ -132,14 +133,14 @@ TIEXPORT4 char* ticonv_utf16_to_utf8(const unsigned short *str)
 
 	if (str == NULL)
 	{
-		g_critical("%s: str is NULL", __FUNCTION__);
+		ticonv_critical("%s: str is NULL", __FUNCTION__);
 		return NULL;
 	}
 
 	dst = g_utf16_to_utf8(src, -1, NULL, NULL, &error);
 	if (error)
 	{
-		g_critical("%s", error->message);
+		ticonv_critical("%s", error->message);
 	}
 
 	return dst;
@@ -213,7 +214,7 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
 	}
 	else
 	{
-		g_critical("%s: an argument is NULL", __FUNCTION__);
+		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -241,7 +242,7 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigne
 	}
 	else
 	{
-		g_critical("%s: utf16 is NULL", __FUNCTION__);
+		ticonv_critical("%s: utf16 is NULL", __FUNCTION__);
 	}
 	return out;
 }
@@ -310,7 +311,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
 	}
 	else
 	{
-		g_critical("%s: an argument is NULL", __FUNCTION__);
+		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -338,7 +339,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, con
 	}
 	else
 	{
-		g_critical("%s: ti is NULL", __FUNCTION__);
+		ticonv_critical("%s: ti is NULL", __FUNCTION__);
 	}
 	return out;
 }
@@ -369,7 +370,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, cons
 	}
 	else
 	{
-		g_critical("%s: an argument is NULL", __FUNCTION__);
+		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -399,7 +400,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const 
 	}
 	else
 	{
-		g_critical("%s: an argument is NULL", __FUNCTION__);
+		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -439,7 +440,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_utf8_sn(CalcModel model, const char *sr
 	}
 	else
 	{
-		g_critical("%s: an argument is invalid", __FUNCTION__);
+		ticonv_critical("%s: an argument is invalid", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -477,7 +478,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src
 	}
 	else
 	{
-		g_critical("%s: an argument is NULL", __FUNCTION__);
+		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -507,7 +508,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, 
 	}
 	else
 	{
-		g_critical("%s: src is NULL", __FUNCTION__);
+		ticonv_critical("%s: src is NULL", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -550,7 +551,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_filename_sn(CalcModel model, const char
 	}
 	else
 	{
-		g_critical("%s: an argument is invalid", __FUNCTION__);
+		ticonv_critical("%s: an argument is invalid", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -591,7 +592,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char 
 	}
 	else
 	{
-		g_critical("%s: an argument is NULL", __FUNCTION__);
+		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -622,7 +623,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_filename(CalcModel model, const char *s
 	}
 	else
 	{
-		g_critical("%s: src is NULL", __FUNCTION__);
+		ticonv_critical("%s: src is NULL", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -662,7 +663,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile_sn(CalcModel model, const char *
 	}
 	else
 	{
-		g_critical("%s: an argument is invalid", __FUNCTION__);
+		ticonv_critical("%s: an argument is invalid", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -700,7 +701,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *s
 	}
 	else
 	{
-		g_critical("%s: an argument is NULL", __FUNCTION__);
+		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -725,7 +726,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src
 
 	if (src == NULL)
 	{
-		g_critical("%s: src is NULL", __FUNCTION__);
+		ticonv_critical("%s: src is NULL", __FUNCTION__);
 		return NULL;
 	}
 
@@ -802,7 +803,7 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile_sn(CalcModel model, const char
 	}
 	else
 	{
-		g_critical("%s: an argument is invalid", __FUNCTION__);
+		ticonv_critical("%s: an argument is invalid", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -840,7 +841,7 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char 
 	}
 	else
 	{
-		g_critical("%s: an argument is NULL", __FUNCTION__);
+		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -865,7 +866,7 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *s
 
 	if (src == NULL)
 	{
-		g_critical("%s: src is NULL", __FUNCTION__);
+		ticonv_critical("%s: src is NULL", __FUNCTION__);
 		return NULL;
 	}
 
