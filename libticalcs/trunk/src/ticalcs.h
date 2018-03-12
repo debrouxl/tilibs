@@ -574,9 +574,9 @@ typedef struct
 	uint8_t		language_id;
 	uint8_t		sub_lang_id;
 	uint16_t	device_type;		// hand-held-dependent
-	char		boot_version[16];
-	char		boot2_version[16];
-	char		os_version[16];
+	char		boot_version[32];
+	char		boot2_version[32];
+	char		os_version[32];
 	uint64_t	ram_phys;
 	uint64_t	ram_user;
 	uint64_t	ram_free;

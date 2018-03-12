@@ -410,7 +410,7 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 			// Enumerate elements of root folder.
 			for (i = 0; i < (int)g_node_n_children(*vars); i++) 
 			{
-				char new_folder_name[FLDNAME_MAX];
+				char new_folder_name[FLDNAME_MAX + 4];
 				const char * separator_if_any;
 				GNode * folder = g_node_nth_child(*vars, i);
 				uint8_t vartype = ((VarEntry *)(folder->data))->type;
@@ -433,6 +433,7 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 				}
 
 				ticalcs_slprintf(new_folder_name, sizeof(new_folder_name), "%s%s%s", folder_name, separator_if_any, ((VarEntry *)(folder->data))->name);
+				new_folder_name[FLDNAME_MAX] = 0;
 
 				ticalcs_info(_("Directory listing in <%s>...\n"), new_folder_name);
 

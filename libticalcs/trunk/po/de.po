@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-11-01 18:41+0100\n"
+"POT-Creation-Date: 2018-03-12 22:29+0100\n"
 "PO-Revision-Date: 2016-11-18 19:30+0300\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
@@ -58,7 +58,7 @@ msgid "Getting clock..."
 msgstr "Hole Zeit..."
 
 #: src/calc_73.c:1400 src/calc_84p.c:1685 src/calc_8x.c:1255 src/calc_9x.c:1556
-#: src/calc_9x.c:1588 src/calc_89t.c:1000 src/calc_nsp.c:835
+#: src/calc_9x.c:1588 src/calc_89t.c:1000 src/calc_nsp.c:836
 #, c-format
 msgid "Deleting %s..."
 msgstr "Lösche %s..."
@@ -201,7 +201,7 @@ msgstr "Lese und analysiere %s/%s"
 msgid "Block #%2i"
 msgstr "Block #%2i"
 
-#: src/calc_9x.c:1618 src/calc_89t.c:1096 src/calc_nsp.c:865
+#: src/calc_9x.c:1618 src/calc_89t.c:1096 src/calc_nsp.c:866
 #, c-format
 msgid "Creating %s..."
 msgstr "Erzeuge %s..."
@@ -210,7 +210,7 @@ msgstr "Erzeuge %s..."
 msgid "V200 Personal Learning Tool"
 msgstr "V200 Persönliches Lernwerkzeug"
 
-#: src/calc_89t.c:1031 src/calc_nsp.c:1034
+#: src/calc_89t.c:1031 src/calc_nsp.c:1035
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr "Benenne %s in %s um..."
@@ -239,12 +239,12 @@ msgstr "Name: %s | Typ: %8s  | Attr: %i  | Größe: %08X"
 msgid "Not enumerating documents in %s because it's not a folder\n"
 msgstr "Nummeriere die Dokumente in %s nicht, weil es kein Verzeichnis ist\n"
 
-#: src/calc_nsp.c:437
+#: src/calc_nsp.c:438
 #, c-format
 msgid "Directory listing in <%s>...\n"
 msgstr "Verzeichnisliste in <%s>...\n"
 
-#: src/calc_nsp.c:1057
+#: src/calc_nsp.c:1058
 msgid "Nspire thru DirectLink"
 msgstr "Nspire mittels DirectLink"
 

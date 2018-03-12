@@ -151,12 +151,12 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 	if (infos != NULL)
 	{
 		char language_ids[25];
-		char device_type[3];
+		char device_type[6];
 		char hw_version[11];
 		char clock_speed[15];
 		char lcd_width[20];
 		char lcd_height[20];
-		char bpp[11];
+		char bpp[14];
 		char color_screen[11];
 		char ram_phys[30];
 		char ram_user[30];
