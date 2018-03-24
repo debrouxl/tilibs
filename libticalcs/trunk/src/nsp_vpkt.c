@@ -416,6 +416,7 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 	int i, r, q;
 	long offset = 0;
 	int ret = 0;
+	CalcEventData event;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(vtl);
@@ -424,64 +425,75 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 		return ERR_INVALID_PARAMETER;
 	}
 
-	memset(&raw, 0, sizeof(raw));
-	raw.src_addr = vtl->src_addr;
-	raw.src_port = vtl->src_port;
-	raw.dst_addr = vtl->dst_addr;
-	raw.dst_port = vtl->dst_port;
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_NSP_VPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_nsp_vpkt(&event, vtl->src_addr, vtl->src_port, vtl->dst_addr, vtl->dst_port, vtl->cmd, vtl->size, vtl->data);
+	ret = ticalcs_event_send(handle, &event);
 
-	q = (vtl->size - offset) / (NSP_DATA_SIZE-1);
-	r = (vtl->size - offset) % (NSP_DATA_SIZE-1);
-
-	for (i = 1; i <= q; i++)
+	if (!ret)
 	{
-		raw.data_size = NSP_DATA_SIZE;
-		raw.data[0] = vtl->cmd;
-		memcpy(raw.data + 1, vtl->data + offset, NSP_DATA_SIZE-1);
-		offset += NSP_DATA_SIZE-1;
+		memset(&raw, 0, sizeof(raw));
+		raw.src_addr = vtl->src_addr;
+		raw.src_port = vtl->src_port;
+		raw.dst_addr = vtl->dst_addr;
+		raw.dst_port = vtl->dst_port;
 
-		ret = nsp_send(handle, &raw);
-		if (ret)
-		{
-			break;
-		}
+		q = (vtl->size - offset) / (NSP_DATA_SIZE-1);
+		r = (vtl->size - offset) % (NSP_DATA_SIZE-1);
 
-		if (raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
+		for (i = 1; i <= q; i++)
 		{
-			ret = nsp_recv_ack(handle);
+			raw.data_size = NSP_DATA_SIZE;
+			raw.data[0] = vtl->cmd;
+			memcpy(raw.data + 1, vtl->data + offset, NSP_DATA_SIZE-1);
+			offset += NSP_DATA_SIZE-1;
+
+			ret = nsp_send(handle, &raw);
 			if (ret)
 			{
 				break;
 			}
+
+			if (raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
+			{
+				ret = nsp_recv_ack(handle);
+				if (ret)
+				{
+					break;
+				}
+			}
+
+			handle->updat->max1 = vtl->size;
+			handle->updat->cnt1 += NSP_DATA_SIZE;
+			handle->updat->pbar();
 		}
 
-		handle->updat->max1 = vtl->size;
-		handle->updat->cnt1 += NSP_DATA_SIZE;
-		handle->updat->pbar();
-	}
-
-	if (!ret)
-	{
-		if (r || !vtl->size)
+		if (!ret)
 		{
-			raw.data_size = r + 1;
-			raw.data[0] = vtl->cmd;
-			if (vtl->data)
+			if (r || !vtl->size)
 			{
-				memcpy(raw.data + 1, vtl->data + offset, r);
-			}
-			offset += r;
-
-			ret = nsp_send(handle, &raw);
-			if (!ret)
-			{
-				if (raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
+				raw.data_size = r + 1;
+				raw.data[0] = vtl->cmd;
+				if (vtl->data)
 				{
-					ret = nsp_recv_ack(handle);
+					memcpy(raw.data + 1, vtl->data + offset, r);
+				}
+				offset += r;
+
+				ret = nsp_send(handle, &raw);
+				if (!ret)
+				{
+					if (raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
+					{
+						ret = nsp_recv_ack(handle);
+					}
 				}
 			}
 		}
 	}
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_SEND_NSP_VPKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_nsp_vpkt(&event, vtl->src_addr, vtl->src_port, vtl->dst_addr, vtl->dst_port, vtl->cmd, vtl->size, vtl->data);
+	ret = ticalcs_event_send(handle, &event);
 
 	return ret;
 }
@@ -493,71 +505,83 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 	long offset = 0;
 	uint32_t size;
 	int ret = 0;
+	CalcEventData event;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(vtl);
 
-	memset(&raw, 0, sizeof(raw));
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_NSP_VPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_nsp_vpkt(&event, /* src_addr */ 0, /* src_port */ 0, /* dst_addr */ 0, /* dst_port */ 0, /* cmd */ 0, /* size */ 0, /* data */ NULL);
+	ret = ticalcs_event_send(handle, &event);
 
-	size = vtl->size;
-	vtl->size = 0;
-	vtl->data = g_malloc(NSP_DATA_SIZE);
-
-	if (vtl->data)
+	if (!ret)
 	{
-		for (;;)
+		memset(&raw, 0, sizeof(raw));
+
+		size = vtl->size;
+		vtl->size = 0;
+		vtl->data = g_malloc(NSP_DATA_SIZE);
+
+		if (vtl->data)
 		{
-			ret = nsp_recv(handle, &raw);
-			if (ret)
+			for (;;)
 			{
-				break;
-			}
-			if (raw.data_size > 0)
-			{
-				vtl->cmd = raw.data[0];
-				vtl->size += raw.data_size-1;
-
-				vtl->data = g_realloc(vtl->data, vtl->size);
-				memcpy(vtl->data + offset, &(raw.data[1]), raw.data_size-1);
-				offset += raw.data_size-1;
-
-				handle->updat->max1 = size ? size : vtl->size;
-				handle->updat->cnt1 += NSP_DATA_SIZE;
-				handle->updat->pbar();
-			}
-
-			if (raw.dst_port == NSP_PORT_LOGIN)
-			{
-				ret = nsp_send_nack_ex(handle, raw.src_port);
+				ret = nsp_recv(handle, &raw);
 				if (ret)
 				{
 					break;
 				}
-			}
-			else if (raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
-			{
-				ret = nsp_send_ack(handle);
-				if (ret)
+				if (raw.data_size > 0)
+				{
+					vtl->cmd = raw.data[0];
+					vtl->size += raw.data_size-1;
+
+					vtl->data = g_realloc(vtl->data, vtl->size);
+					memcpy(vtl->data + offset, &(raw.data[1]), raw.data_size-1);
+					offset += raw.data_size-1;
+
+					handle->updat->max1 = size ? size : vtl->size;
+					handle->updat->cnt1 += NSP_DATA_SIZE;
+					handle->updat->pbar();
+				}
+
+				if (raw.dst_port == NSP_PORT_LOGIN)
+				{
+					ret = nsp_send_nack_ex(handle, raw.src_port);
+					if (ret)
+					{
+						break;
+					}
+				}
+				else if (raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
+				{
+					ret = nsp_send_ack(handle);
+					if (ret)
+					{
+						break;
+					}
+				}
+
+				if (raw.data_size < NSP_DATA_SIZE)
 				{
 					break;
 				}
-			}
-
-			if (raw.data_size < NSP_DATA_SIZE)
-			{
-				break;
-			}
-			if (size && vtl->size == size)
-			{
-				break;
+				if (size && vtl->size == size)
+				{
+					break;
+				}
 			}
 		}
+
+		vtl->src_addr = raw.src_addr;
+		vtl->src_port = raw.src_port;
+		vtl->dst_addr = raw.dst_addr;
+		vtl->dst_port = raw.dst_port;
 	}
 
-	vtl->src_addr = raw.src_addr;
-	vtl->src_port = raw.src_port;
-	vtl->dst_addr = raw.dst_addr;
-	vtl->dst_port = raw.dst_port;
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_RECV_NSP_VPKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_nsp_vpkt(&event, vtl->src_addr, vtl->src_port, vtl->dst_addr, vtl->dst_port, vtl->cmd, vtl->size, vtl->data);
+	ret = ticalcs_event_send(handle, &event);
 
 	return ret;
 }

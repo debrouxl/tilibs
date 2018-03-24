@@ -42,7 +42,7 @@
     - data [in]   : data to send (or 0x00 if NULL)
     - int [out]   : an error code
 */
-TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, const uint8_t* data)
+TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uint8_t* data)
 {
 	int i;
 	uint16_t sum;
@@ -50,7 +50,8 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 	uint8_t *buf;
 	int r, q;
 	static int ref = 0;
-	int ret;
+	int ret = 0;
+	CalcEventData event;
 
 	VALIDATE_HANDLE(handle);
 
@@ -63,57 +64,202 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 
 	ticables_progress_reset(handle->cable);
 
-	if (data == NULL)
-	{
-		// short packet (no data)
-		buf[0] = target;
-		buf[1] = cmd;
-		buf[2] = 0x00;
-		buf[3] = 0x00;
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_DBUS_PKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ length, /* id */ target, /* cmd */ cmd, /* data */ data);
+	ret = ticalcs_event_send(handle, &event);
 
-		// The TI-80 does not use length
-		ret = ticables_cable_send(handle->cable, buf, (target == DBUS_MID_PC_TI80) ? 2 : 4);
+	if (!ret)
+	{
+		if (data == NULL)
+		{
+			// short packet (no data)
+			buf[0] = target;
+			buf[1] = cmd;
+			buf[2] = 0x00;
+			buf[3] = 0x00;
+
+			// The TI-80 does not use length
+			ret = ticables_cable_send(handle->cable, buf, (target == DBUS_MID_PC_TI80) ? 2 : 4);
+		}
+		else
+		{
+			// std packet (data + checksum)
+			buf[0] = target;
+			buf[1] = cmd;
+			buf[2] = LSB(length);
+			buf[3] = MSB(length);
+
+			// copy data
+			memcpy(buf+4, data, length);
+
+			// add checksum of packet
+			sum = tifiles_checksum(data, length);
+			buf[length+4+0] = LSB(sum);
+			buf[length+4+1] = MSB(sum);
+
+			// compute chunks
+			handle->priv.progress_min_size = (handle->cable->model == CABLE_GRY) ? 512 : 2048;
+			handle->priv.progress_blk_size = (length + 6) / 20;		// 5%
+			if (handle->priv.progress_blk_size == 0)
+			{
+				handle->priv.progress_blk_size = length + 6;
+			}
+			if (handle->priv.progress_blk_size < 32)
+			{
+				handle->priv.progress_blk_size = 128;	// SilverLink doesn't like small block (< 32)
+			}
+
+			q = (length + 6) / handle->priv.progress_blk_size;
+			r = (length + 6) % handle->priv.progress_blk_size;
+
+			handle->updat->max1 = length + 6;
+			handle->updat->cnt1 = 0;
+
+			ret = 0;
+
+			// send full chunks
+			for (i = 0; i < q; i++)
+			{
+				ret = ticables_cable_send(handle->cable, &buf[i*handle->priv.progress_blk_size], handle->priv.progress_blk_size);
+				if (ret)
+				{
+					break;
+				}
+				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+
+				handle->updat->cnt1 += handle->priv.progress_blk_size;
+				if (length > handle->priv.progress_min_size)
+				{
+					handle->updat->pbar();
+				}
+
+				if (handle->updat->cancel)
+				{
+					ret = ERR_ABORT;
+					break;
+				}
+			}
+
+			// send last chunk
+			if (!ret)
+			{
+				ret = ticables_cable_send(handle->cable, &buf[i*handle->priv.progress_blk_size], (uint16_t)r);
+				if (!ret)
+				{
+					ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+
+					handle->updat->cnt1 += 1;
+					if (length > handle->priv.progress_min_size)
+					{
+						handle->updat->pbar();
+					}
+
+					if (handle->updat->cancel)
+					{
+						ret = ERR_ABORT;
+					}
+				}
+			}
+		}
+
+		// force periodic refresh
+		if (!ret && !(ref++ % 4))
+		{
+			handle->updat->refresh();
+		}
 	}
-	else 
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_SEND_DBUS_PKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ length, /* id */ target, /* cmd */ cmd, /* data */ data);
+	ret = ticalcs_event_send(handle, &event);
+
+	return ret;
+}
+
+TIEXPORT3 int TICALL dbus_recv_header(CalcHandle *handle, uint8_t* host, uint8_t* cmd, uint16_t* length)
+{
+	int ret = 0;
+	uint8_t buf[4];
+	CalcEventData event;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(host);
+	VALIDATE_NONNULL(cmd);
+	VALIDATE_NONNULL(length);
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_DBUS_PKT_HEADER, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ 0, /* id */ 0, /* cmd */ 0, /* data */ NULL);
+	ret = ticalcs_event_send(handle, &event);
+
+	if (!ret)
 	{
-		// std packet (data + checksum)
-		buf[0] = target;
-		buf[1] = cmd;
-		buf[2] = LSB(length);
-		buf[3] = MSB(length);
+		// Any packet has always at least 2 bytes (MID, CID)
+		ret = ticables_cable_recv(handle->cable, buf, 2);
+		if (!ret)
+		{
+			*host = buf[0];
+			*cmd = buf[1];
 
-		// copy data
-		memcpy(buf+4, data, length);
+			// Any non-TI-80 packet has a length; TI-80 data packets also have a length
+			if (*host != DBUS_MID_TI80_PC || *cmd == DBUS_CMD_XDP)
+			{
+				ret = ticables_cable_recv(handle->cable, buf, 2);
+				if (!ret)
+				{
+					*length = buf[0] | ((uint16_t)buf[1] << 8);
+				}
+			}
+			else
+			{
+				*length = 0;
+			}
+		}
+	}
 
-		// add checksum of packet
-		sum = tifiles_checksum(data, length);
-		buf[length+4+0] = LSB(sum);
-		buf[length+4+1] = MSB(sum);
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_RECV_DBUS_PKT_HEADER, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ *length, /* id */ *host, /* cmd */ *cmd, /* data */ NULL);
+	ret = ticalcs_event_send(handle, &event);
 
+	return ret;
+}
+
+TIEXPORT3 int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_t* data)
+{
+	int ret = 0;
+	int i;
+	uint16_t chksum;
+	uint8_t buf[4];
+	int r, q;
+	CalcEventData event;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(length);
+	VALIDATE_NONNULL(data);
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_DBUS_PKT_DATA, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ *length, /* id */ 0, /* cmd */ 0, /* data */ data);
+	ret = ticalcs_event_send(handle, &event);
+
+	if (!ret)
+	{
 		// compute chunks
 		handle->priv.progress_min_size = (handle->cable->model == CABLE_GRY) ? 512 : 2048;
-		handle->priv.progress_blk_size = (length + 6) / 20;		// 5%
+		handle->priv.progress_blk_size = *length / 20;
 		if (handle->priv.progress_blk_size == 0)
 		{
-			handle->priv.progress_blk_size = length + 6;
-		}
-		if (handle->priv.progress_blk_size < 32)
-		{
-			handle->priv.progress_blk_size = 128;	// SilverLink doesn't like small block (< 32)
+			handle->priv.progress_blk_size = 1;
 		}
 
-		q = (length + 6) / handle->priv.progress_blk_size;
-		r = (length + 6) % handle->priv.progress_blk_size;
-
-		handle->updat->max1 = length + 6;
+		q = *length / handle->priv.progress_blk_size;
+		r = *length % handle->priv.progress_blk_size;
+		handle->updat->max1 = *length;
 		handle->updat->cnt1 = 0;
 
 		ret = 0;
-
-		// send full chunks
+		// recv full chunks
 		for (i = 0; i < q; i++)
 		{
-			ret = ticables_cable_send(handle->cable, &buf[i*handle->priv.progress_blk_size], handle->priv.progress_blk_size);
+			ret = ticables_cable_recv(handle->cable, &data[i*handle->priv.progress_blk_size], handle->priv.progress_blk_size);
 			if (ret)
 			{
 				break;
@@ -121,7 +267,7 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 
 			handle->updat->cnt1 += handle->priv.progress_blk_size;
-			if (length > handle->priv.progress_min_size)
+			if (*length > handle->priv.progress_min_size)
 			{
 				handle->updat->pbar();
 			}
@@ -133,154 +279,44 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 			}
 		}
 
-		// send last chunk
+		// recv last chunk
 		if (!ret)
 		{
-			ret = ticables_cable_send(handle->cable, &buf[i*handle->priv.progress_blk_size], (uint16_t)r);
+			ret = ticables_cable_recv(handle->cable, &data[i*handle->priv.progress_blk_size], (uint16_t)r);
 			if (!ret)
 			{
 				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
-
-				handle->updat->cnt1 += 1;
-				if (length > handle->priv.progress_min_size)
+				ret = ticables_cable_recv(handle->cable, buf, 2);
+				if (!ret)
 				{
-					handle->updat->pbar();
-				}
+					handle->updat->cnt1++;
+					if (*length > handle->priv.progress_min_size)
+					{
+						handle->updat->pbar();
+					}
 
-				if (handle->updat->cancel)
-				{
-					ret = ERR_ABORT;
+					if (handle->updat->cancel)
+					{
+						ret = ERR_ABORT;
+					}
 				}
 			}
 		}
-	}
 
-	// force periodic refresh
-	if (!ret && !(ref++ % 4))
-	{
-		handle->updat->refresh();
-	}
-
-	return ret;
-}
-
-TIEXPORT3 int TICALL dbus_recv_header(CalcHandle *handle, uint8_t* host, uint8_t* cmd, uint16_t* length)
-{
-	int ret;
-	uint8_t buf[4];
-
-	VALIDATE_HANDLE(handle);
-	VALIDATE_NONNULL(host);
-	VALIDATE_NONNULL(cmd);
-	VALIDATE_NONNULL(length);
-
-	// Any packet has always at least 2 bytes (MID, CID)
-	ret = ticables_cable_recv(handle->cable, buf, 2);
-	if (!ret)
-	{
-		*host = buf[0];
-		*cmd = buf[1];
-
-		// Any non-TI-80 packet has a length; TI-80 data packets also have a length
-		if (*host != DBUS_MID_TI80_PC || *cmd == DBUS_CMD_XDP)
-		{
-			ret = ticables_cable_recv(handle->cable, buf, 2);
-			if (!ret)
-			{
-				*length = buf[0] | ((uint16_t)buf[1] << 8);
-			}
-		}
-		else
-		{
-			*length = 0;
-		}
-	}
-
-	return ret;
-}
-
-TIEXPORT3 int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_t* data)
-{
-	int ret;
-	int i;
-	uint16_t chksum;
-	uint8_t buf[4];
-	int r, q;
-
-	VALIDATE_HANDLE(handle);
-	VALIDATE_NONNULL(length);
-	VALIDATE_NONNULL(data);
-
-	// compute chunks
-	handle->priv.progress_min_size = (handle->cable->model == CABLE_GRY) ? 512 : 2048;
-	handle->priv.progress_blk_size = *length / 20;
-	if (handle->priv.progress_blk_size == 0)
-	{
-		handle->priv.progress_blk_size = 1;
-	}
-
-	q = *length / handle->priv.progress_blk_size;
-	r = *length % handle->priv.progress_blk_size;
-	handle->updat->max1 = *length;
-	handle->updat->cnt1 = 0;
-
-	ret = 0;
-	// recv full chunks
-	for (i = 0; i < q; i++)
-	{
-		ret = ticables_cable_recv(handle->cable, &data[i*handle->priv.progress_blk_size], handle->priv.progress_blk_size);
-		if (ret)
-		{
-			break;
-		}
-		ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
-
-		handle->updat->cnt1 += handle->priv.progress_blk_size;
-		if (*length > handle->priv.progress_min_size)
-		{
-			handle->updat->pbar();
-		}
-
-		if (handle->updat->cancel)
-		{
-			ret = ERR_ABORT;
-			break;
-		}
-	}
-
-	// recv last chunk
-	if (!ret)
-	{
-		ret = ticables_cable_recv(handle->cable, &data[i*handle->priv.progress_blk_size], (uint16_t)r);
 		if (!ret)
 		{
-			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
-			ret = ticables_cable_recv(handle->cable, buf, 2);
-			if (!ret)
+			// verify checksum
+			chksum = buf[0] | ((uint16_t)buf[1] << 8);
+			if (chksum != tifiles_checksum(data, *length))
 			{
-				handle->updat->cnt1++;
-				if (*length > handle->priv.progress_min_size)
-				{
-					handle->updat->pbar();
-				}
-
-				if (handle->updat->cancel)
-				{
-					ret = ERR_ABORT;
-				}
+				ret = ERR_CHECKSUM;
 			}
 		}
 	}
 
-	if (!ret)
-	{
-		// verify checksum
-		chksum = buf[0] | ((uint16_t)buf[1] << 8);
-		if (chksum != tifiles_checksum(data, *length))
-		{
-			ret = ERR_CHECKSUM;
-		}
-	}
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_RECV_DBUS_PKT_DATA, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ *length, /* id */ 0, /* cmd */ 0, /* data */ data);
+	ret = ticalcs_event_send(handle, &event);
 
 	return ret;
 }

@@ -74,7 +74,7 @@ TIEXPORT3 uint8_t TICALL tiz80_handle_to_dbus_mid(CalcHandle * handle)
 	return 0;
 }
 
-static inline int tiz80_send_simple_cmd(CalcHandle * handle, uint8_t target, uint8_t cmd, const char * cmdname, uint16_t length, const uint8_t* data)
+static inline int tiz80_send_simple_cmd(CalcHandle * handle, uint8_t target, uint8_t cmd, const char * cmdname, uint16_t length, uint8_t* data)
 {
 	VALIDATE_HANDLE(handle);
 
@@ -208,7 +208,7 @@ TIEXPORT3 int TICALL tiz80_send_CTS(CalcHandle* handle, uint8_t target)
 	return tiz80_send_simple_cmd(handle, target, DBUS_CMD_CTS, "CTS", 0, NULL);
 }
 
-TIEXPORT3 int TICALL tiz80_send_XDP(CalcHandle* handle, uint16_t length, const uint8_t * data, uint8_t target)
+TIEXPORT3 int TICALL tiz80_send_XDP(CalcHandle* handle, uint16_t length, uint8_t * data, uint8_t target)
 {
 	VALIDATE_HANDLE(handle);
 

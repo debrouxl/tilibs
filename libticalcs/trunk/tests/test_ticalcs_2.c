@@ -1037,6 +1037,37 @@ static int test_nspire_remote_mgmt(CalcHandle * h)
 	return retval;
 }
 
+static ticables_event_hook_type old_ticables_event_hook;
+static ticalcs_event_hook_type old_ticalcs_event_hook;
+
+static int cables_event_hook(CableHandle * handle, uint32_t event_count, const CableEventData * event, void * user_pointer)
+{
+	int retval = 0;
+	if (NULL != handle && NULL != event)
+	{
+		// TODO
+	}
+	if (old_ticables_event_hook)
+	{
+		retval = old_ticables_event_hook(handle, event_count, event, user_pointer);
+	}
+	return retval;
+}
+
+static int calcs_event_hook(CalcHandle * handle, uint32_t event_count, const CalcEventData * event, void * user_pointer)
+{
+	int retval = 0;
+	if (NULL != handle && NULL != event)
+	{
+		// TODO
+	}
+	if (old_ticalcs_event_hook)
+	{
+		retval = old_ticalcs_event_hook(handle, event_count, event, user_pointer);
+	}
+	return retval;
+}
+
 static struct
 {
 	const char * desc;
@@ -1184,6 +1215,7 @@ int main(int argc, char **argv)
 		fprintf(stderr, "ticables_handle_new failed\n");
 		goto end;
 	}
+	old_ticables_event_hook = ticables_cable_set_event_hook(cable, cables_event_hook);
 
 	// set calc
 	if (do_probe && calc_model == CALC_NONE)
@@ -1201,6 +1233,7 @@ int main(int argc, char **argv)
 		fprintf(stderr, "ticalcs_handle_new failed\n");
 		goto end;
 	}
+	old_ticalcs_event_hook = ticalcs_calc_set_event_hook(calc, calcs_event_hook);
 
 	// attach cable to calc (and open cable)
 	err = ticalcs_cable_attach(calc, cable);

@@ -39,7 +39,6 @@
 // Functions
 
 int log_start(CableHandle *h);
-int log_1(CableHandle *h, int dir, uint8_t data);
 int log_N(CableHandle *h, int dir, const uint8_t *data, uint32_t len);
 int log_stop(CableHandle *h);
 
@@ -47,12 +46,10 @@ int log_stop(CableHandle *h);
 
 #ifdef ENABLE_LOGGING
 # define START_LOGGING(h)		log_start(h)
-# define LOG_1_DATA(h,w,d)		log_1(h,w,d)
 # define LOG_N_DATA(h,w,d,n)	log_N(h,w,d,n)
 # define STOP_LOGGING(h)		log_stop(h)
 #else
 # define START_LOGGING(h)
-# define LOG_1_DATA(h,w,d)
 # define LOG_N_DATA(h,w,d,n)
 # define STOP_LOGGING(h)
 #endif

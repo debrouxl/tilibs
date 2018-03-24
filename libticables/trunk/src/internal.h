@@ -34,18 +34,18 @@
 #define VALIDATE_HANDLE(handle) \
 	do \
 	{ \
-		if (handle == NULL) \
+		if (!ticables_validate_handle(handle)) \
 		{ \
-			ticables_critical("%s: " #handle " is NULL", __FUNCTION__); \
+			ticables_critical("%s: " #handle " is invalid", __FUNCTION__); \
 			return ERR_ILLEGAL_ARG; \
 		} \
 	} while(0);
 #define VALIDATE_CABLEFNCTS(cable) \
 	do \
 	{ \
-		if (cable == NULL) \
+		if (!ticables_validate_cablefncts(cable)) \
 		{ \
-			ticables_critical("%s: " # cable " is NULL", __FUNCTION__); \
+			ticables_critical("%s: " # cable " is invalid", __FUNCTION__); \
 			return ERR_ILLEGAL_ARG; \
 		} \
 	} while(0);
@@ -74,6 +74,65 @@
 			return ERR_BUSY; \
 		} \
 	} while(0);
+
+static inline int ticables_validate_handle(CableHandle * handle)
+{
+	return handle != NULL;
+}
+
+static inline int ticables_validate_cablefncts(const CableFncts * cable)
+{
+	return cable != NULL;
+}
+
+static inline void ticables_event_fill_header(CableHandle * handle, CableEventData * event, CableEventType type, int retval, CableFnctsIdx operation)
+{
+	event->version = 1;
+	event->type = type;
+	event->retval = retval;
+	event->open = handle->open;
+	event->operation = operation;
+}
+
+static inline void ticables_event_fill_data(CableEventData * event, uint8_t * data, uint32_t len)
+{
+	event->data.data.data = data;
+	event->data.data.len = len;
+}
+
+static inline int ticables_event_send_simple_generic(CableHandle * handle, CableEventType type, int retval, CableFnctsIdx operation)
+{
+	int ret = retval;
+
+	if (handle->event_hook)
+	{
+		CableEventData event;
+		ticables_event_fill_header(handle, &event, type, retval, operation);
+		memset((void *)&event.data, 0, sizeof(event.data));
+		handle->event_count++;
+		ret = handle->event_hook(handle, handle->event_count, &event, handle->user_pointer);
+	}
+
+	return ret;
+}
+
+static inline int ticables_event_send_simple(CableHandle * handle, CableEventType type, int retval)
+{
+	return ticables_event_send_simple_generic(handle, type, retval, CABLE_FNCT_LAST);
+}
+
+static inline int ticables_event_send(CableHandle * handle, CableEventData * event)
+{
+	int ret = event->retval;
+
+	if (handle->event_hook)
+	{
+		handle->event_count++;
+		ret = handle->event_hook(handle, handle->event_count, event, handle->user_pointer);
+	}
+
+	return ret;
+}
 
 typedef struct {
 	uint16_t    vid;
