@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2019-10-12 12:02+0200\n"
+"POT-Creation-Date: 2019-10-12 12:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -245,127 +245,127 @@ msgstr ""
 msgid "Checking hand-held status:"
 msgstr ""
 
-#: src/calc_xx.c:125
+#: src/calc_xx.c:130
 #, c-format
 msgid "Sending key %08x:"
 msgstr ""
 
-#: src/calc_xx.c:162
+#: src/calc_xx.c:177
 #, c-format
 msgid "Executing %s/%s with %s:"
 msgstr ""
 
-#: src/calc_xx.c:199
+#: src/calc_xx.c:224
 msgid "Requesting screenshot:"
 msgstr ""
 
-#: src/calc_xx.c:297
+#: src/calc_xx.c:332
 msgid "Requesting folder & vars & apps listing:"
 msgstr ""
 
-#: src/calc_xx.c:351
+#: src/calc_xx.c:391
 msgid "Requesting RAM & FLASH free"
 msgstr ""
 
-#: src/calc_xx.c:386
+#: src/calc_xx.c:431
 msgid "Sending backup:"
 msgstr ""
 
-#: src/calc_xx.c:421
+#: src/calc_xx.c:476
 msgid "Requesting backup:"
 msgstr ""
 
-#: src/calc_xx.c:458
+#: src/calc_xx.c:523
 msgid "Sending one or more variables:"
 msgstr ""
 
-#: src/calc_xx.c:496
+#: src/calc_xx.c:571
 #, c-format
 msgid "Requesting variable '%s':"
 msgstr ""
 
-#: src/calc_xx.c:533
+#: src/calc_xx.c:618
 msgid "Sending variable (non-silent mode):"
 msgstr ""
 
-#: src/calc_xx.c:571
+#: src/calc_xx.c:666
 msgid "Receiving variable (non-silent mode):"
 msgstr ""
 
-#: src/calc_xx.c:606
+#: src/calc_xx.c:711
 msgid "Sending FLASH application:"
 msgstr ""
 
-#: src/calc_xx.c:643
+#: src/calc_xx.c:758
 msgid "Requesting receiving of FLASH application:"
 msgstr ""
 
-#: src/calc_xx.c:678
+#: src/calc_xx.c:803
 msgid "Sending FLASH os:"
 msgstr ""
 
-#: src/calc_xx.c:713
+#: src/calc_xx.c:848
 msgid "Requesting ID-LIST:"
 msgstr ""
 
-#: src/calc_xx.c:746
+#: src/calc_xx.c:891
 msgid "Sending ROM dumper:"
 msgstr ""
 
-#: src/calc_xx.c:782
+#: src/calc_xx.c:932
 msgid "Dumping ROM:"
 msgstr ""
 
-#: src/calc_xx.c:817
+#: src/calc_xx.c:972
 msgid "Setting clock:"
 msgstr ""
 
-#: src/calc_xx.c:852
+#: src/calc_xx.c:1017
 msgid "Getting clock:"
 msgstr ""
 
-#: src/calc_xx.c:887
+#: src/calc_xx.c:1062
 #, c-format
 msgid "Deleting variable '%s':"
 msgstr ""
 
-#: src/calc_xx.c:922
+#: src/calc_xx.c:1107
 #, c-format
 msgid "Creating folder '%s':"
 msgstr ""
 
-#: src/calc_xx.c:957
+#: src/calc_xx.c:1152
 msgid "Requesting version info:"
 msgstr ""
 
-#: src/calc_xx.c:992
+#: src/calc_xx.c:1197
 msgid "Sending certificate:"
 msgstr ""
 
-#: src/calc_xx.c:1027
+#: src/calc_xx.c:1242
 msgid "Requesting receiving of certificate:"
 msgstr ""
 
-#: src/calc_xx.c:1066
+#: src/calc_xx.c:1291
 #, c-format
 msgid "Renaming variable '%s/%s' to '%s/%s':"
 msgstr ""
 
-#: src/calc_xx.c:1070
+#: src/calc_xx.c:1295
 #, c-format
 msgid "Renaming variable '%s' to '%s':"
 msgstr ""
 
-#: src/calc_xx.c:1108
+#: src/calc_xx.c:1343
 #, c-format
 msgid "Setting variable '%s' to %s:"
 msgstr ""
 
-#: src/calc_xx.c:1145
+#: src/calc_xx.c:1390
 msgid "Sending fake (all vars) backup:"
 msgstr ""
 
-#: src/calc_xx.c:1180
+#: src/calc_xx.c:1435
 msgid "Requesting fake (all vars) backup:"
 msgstr ""
 
@@ -798,11 +798,11 @@ msgstr ""
 msgid "ticalcs library version %s"
 msgstr ""
 
-#: src/ticalcs.c:396
+#: src/ticalcs.c:542
 msgid "Link calc handle details:"
 msgstr ""
 
-#: src/ticalcs.c:397
+#: src/ticalcs.c:543
 #, c-format
 msgid "  model   : %s"
 msgstr ""

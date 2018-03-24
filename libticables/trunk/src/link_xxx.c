@@ -49,23 +49,41 @@ TIEXPORT1 int TICALL ticables_cable_open(CableHandle* handle)
 	cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
-	if (cable->prepare)
-	{
-		ret = cable->prepare(handle);
-	}
+	ret = ticables_event_send_simple(handle, /* type */ CABLE_EVENT_TYPE_BEFORE_OPEN, /* retval */ 0);
 
 	if (!ret)
 	{
-		if (cable->open)
+		if (cable->prepare)
 		{
-			ret = cable->open(handle);
+			ret = ticables_event_send_simple_generic(handle, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_PREPARE);
+			if (!ret)
+			{
+				ret = cable->prepare(handle);
+			}
+			ret = ticables_event_send_simple_generic(handle, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_PREPARE);
 		}
+
 		if (!ret)
 		{
-			handle->open = 1;
-			START_LOGGING(handle);
+			if (cable->open)
+			{
+				ret = ticables_event_send_simple_generic(handle, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_OPEN);
+				if (!ret)
+				{
+					ret = cable->open(handle);
+				}
+				ret = ticables_event_send_simple_generic(handle, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_OPEN);
+			}
+			if (!ret)
+			{
+				handle->open = 1;
+				START_LOGGING(handle);
+			}
 		}
 	}
+
+	ret = ticables_event_send_simple(handle, /* type */ CABLE_EVENT_TYPE_AFTER_OPEN, /* retval */ ret);
+
 	return ret;
 }
 
@@ -88,17 +106,29 @@ TIEXPORT1 int TICALL ticables_cable_close(CableHandle* handle)
 	cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
+	ret = ticables_event_send_simple(handle, /* type */ CABLE_EVENT_TYPE_BEFORE_CLOSE, /* retval */ 0);
+
 	STOP_LOGGING(handle);
-	if (handle->open)
+	if (!ret)
 	{
-		if (cable->close)
+		if (handle->open)
 		{
-			ret = cable->close(handle);
+			if (cable->close)
+			{
+				ret = ticables_event_send_simple_generic(handle, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_CLOSE);
+				if (!ret)
+				{
+					ret = cable->close(handle);
+				}
+				ret = ticables_event_send_simple_generic(handle, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_CLOSE);
+			}
+			handle->open = 0;
+			free(handle->device);
+			handle->device = NULL;
 		}
-		handle->open = 0;
-		free(handle->device);
-		handle->device = NULL;
 	}
+
+	ret = ticables_event_send_simple(handle, /* type */ CABLE_EVENT_TYPE_AFTER_CLOSE, /* retval */ ret);
 
 	return ret;
 }
@@ -124,12 +154,24 @@ TIEXPORT1 int TICALL ticables_cable_reset(CableHandle* handle)
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	handle->busy = 1;
-	if (cable->reset)
+	ret = ticables_event_send_simple(handle, /* type */ CABLE_EVENT_TYPE_BEFORE_RESET, /* retval */ 0);
+
+	if (!ret)
 	{
-		ret = cable->reset(handle);
+		handle->busy = 1;
+		if (cable->reset)
+		{
+			ret = ticables_event_send_simple_generic(handle, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_RESET);
+			if (!ret)
+			{
+				ret = cable->reset(handle);
+			}
+			ret = ticables_event_send_simple_generic(handle, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_RESET);
+		}
+		handle->busy = 0;
 	}
-	handle->busy = 0;
+
+	ret = ticables_event_send_simple(handle, /* type */ CABLE_EVENT_TYPE_AFTER_RESET, /* retval */ ret);
 
 	return ret;
 }
@@ -165,7 +207,12 @@ TIEXPORT1 int TICALL ticables_cable_probe(CableHandle* handle, int* result)
 	{
 		if (cable->prepare)
 		{
-			ret = cable->prepare(handle);
+			ret = ticables_event_send_simple_generic(handle, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_PREPARE);
+			if (!ret)
+			{
+				ret = cable->prepare(handle);
+			}
+			ret = ticables_event_send_simple_generic(handle, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_PREPARE);
 		}
 	}
 
@@ -174,7 +221,12 @@ TIEXPORT1 int TICALL ticables_cable_probe(CableHandle* handle, int* result)
 		// Do the check itself
 		if (cable->probe)
 		{
-			ret = cable->probe(handle);
+			ret = ticables_event_send_simple_generic(handle, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_PROBE);
+			if (!ret)
+			{
+				ret = cable->probe(handle);
+			}
+			ret = ticables_event_send_simple_generic(handle, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_PROBE);
 			if (result != NULL)
 			{
 				*result = !ret;
@@ -214,6 +266,7 @@ TIEXPORT1 int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uin
 {
 	const CableFncts *cable;
 	int ret = 0;
+	CableEventData event;
 
 	VALIDATE_HANDLE(handle);
 
@@ -235,31 +288,40 @@ TIEXPORT1 int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uin
 		ticables_critical("ticables_cable_send: len = 0\n");
 	}
 
-	handle->busy = 1;
-	if (data != NULL)
+	ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_SEND, /* retval */ 0, /* operation */ CABLE_FNCT_LAST);
+	ticables_event_fill_data(&event, /* data */ data, /* len */ len);
+	ret = ticables_event_send(handle, &event);
+
+	if (!ret)
 	{
-		handle->rate.count += len;
-		if (handle->pre_send_hook != NULL)
+		handle->busy = 1;
+		if (data != NULL)
 		{
-			ret = handle->pre_send_hook(handle, data, len);
-		}
-		if (!ret)
-		{
+			handle->rate.count += len;
 			if (cable->send)
 			{
-				ret = cable->send(handle, data, len);
-			}
-			if (handle->post_send_hook != NULL)
-			{
-				ret = handle->post_send_hook(handle, data, len, ret);
+				ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_SEND);
+				ticables_event_fill_data(&event, /* data */ data, /* len */ len);
+				ret = ticables_event_send(handle, &event);
+				if (!ret)
+				{
+					ret = cable->send(handle, data, len);
+				}
+				ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_SEND);
+				ticables_event_fill_data(&event, /* data */ data, /* len */ len);
+				ret = ticables_event_send(handle, &event);
 			}
 		}
+		else
+		{
+			ticables_critical("%s: data is NULL", __FUNCTION__);
+		}
+		handle->busy = 0;
 	}
-	else
-	{
-		ticables_critical("%s: data is NULL", __FUNCTION__);
-	}
-	handle->busy = 0;
+
+	ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_SEND, /* retval */ ret, /* operation */ CABLE_FNCT_LAST);
+	ticables_event_fill_data(&event, /* data */ data, /* len */ len);
+	ret = ticables_event_send(handle, &event);
 
 	return ret;
 }
@@ -278,6 +340,7 @@ TIEXPORT1 int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uin
 {
 	const CableFncts *cable;
 	int ret = 0;
+	CableEventData event;
 
 	VALIDATE_HANDLE(handle);
 
@@ -293,31 +356,39 @@ TIEXPORT1 int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uin
 		ticables_critical("ticables_cable_recv: len = 0\n");
 	}
 
-	handle->busy = 1;
-	if (data != NULL)
+	ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_RECV, /* retval */ 0, /* operation */ CABLE_FNCT_LAST);
+	ticables_event_fill_data(&event, /* data */ data, /* len */ len);
+	ret = ticables_event_send(handle, &event);
+	if (!ret)
 	{
-		handle->rate.count += len;
-		if (handle->pre_recv_hook != NULL)
+		handle->busy = 1;
+		if (data != NULL)
 		{
-			ret = handle->pre_recv_hook(handle, data, len);
-		}
-		if (!ret)
-		{
+			handle->rate.count += len;
 			if (cable->recv)
 			{
-				ret = cable->recv(handle, data, len);
-			}
-			if (handle->post_recv_hook != NULL)
-			{
-				ret = handle->post_recv_hook(handle, data, len, ret);
+				ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_RECV);
+				ticables_event_fill_data(&event, /* data */ data, /* len */ len);
+				ret = ticables_event_send(handle, &event);
+				if (!ret)
+				{
+					ret = cable->recv(handle, data, len);
+				}
+				ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_RECV);
+				ticables_event_fill_data(&event, /* data */ data, /* len */ len);
+				ret = ticables_event_send(handle, &event);
 			}
 		}
+		else
+		{
+			ticables_critical("%s: data is NULL", __FUNCTION__);
+		}
+		handle->busy = 0;
 	}
-	else
-	{
-		ticables_critical("%s: data is NULL", __FUNCTION__);
-	}
-	handle->busy = 0;
+
+	ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_RECV, /* retval */ ret, /* operation */ CABLE_FNCT_LAST);
+	ticables_event_fill_data(&event, /* data */ data, /* len */ len);
+	ret = ticables_event_send(handle, &event);
 
 	return ret;
 }
@@ -349,7 +420,17 @@ TIEXPORT1 int TICALL ticables_cable_check(CableHandle* handle, CableStatus *stat
 	{
 		if (cable->check)
 		{
-			ret = cable->check(handle, (int *)status);
+			CableEventData event;
+			ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_CHECK);
+			event.data.intval = 0;
+			ret = ticables_event_send(handle, &event);
+			if (!ret)
+			{
+				ret = cable->check(handle, (int *)status);
+			}
+			ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_CHECK);
+			event.data.intval = *status;
+			ret = ticables_event_send(handle, &event);
 		}
 	}
 	else
@@ -386,7 +467,17 @@ TIEXPORT1 int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
 	handle->busy = 1;
 	if (cable->set_d0)
 	{
-		ret = cable->set_d0(handle, state);
+		CableEventData event;
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_SET_D0);
+		event.data.intval = state;
+		ret = ticables_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = cable->set_d0(handle, state);
+		}
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_SET_D0);
+		event.data.intval = state;
+		ret = ticables_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -418,7 +509,17 @@ TIEXPORT1 int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
 	handle->busy = 1;
 	if (cable->set_d1)
 	{
-		ret = cable->set_d1(handle, state);
+		CableEventData event;
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_SET_D1);
+		event.data.intval = state;
+		ret = ticables_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = cable->set_d1(handle, state);
+		}
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_SET_D1);
+		event.data.intval = state;
+		ret = ticables_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -449,7 +550,15 @@ TIEXPORT1 int TICALL ticables_cable_get_d0(CableHandle* handle)
 	handle->busy = 1;
 	if (cable->get_d0)
 	{
-		ret = cable->get_d0(handle);
+		CableEventData event;
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_GET_D0);
+		ret = ticables_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = cable->get_d0(handle);
+		}
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_GET_D0);
+		ret = ticables_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -480,7 +589,15 @@ TIEXPORT1 int TICALL ticables_cable_get_d1(CableHandle* handle)
 	handle->busy = 1;
 	if (cable->get_d1)
 	{
-		ret = cable->get_d1(handle);
+		CableEventData event;
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_GET_D1);
+		ret = ticables_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = cable->get_d1(handle);
+		}
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_GET_D1);
+		ret = ticables_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -519,7 +636,17 @@ TIEXPORT1 int TICALL ticables_cable_set_raw(CableHandle* handle, int state)
 	handle->busy = 1;
 	if (cable->set_raw)
 	{
-		ret = cable->set_raw(handle, state);
+		CableEventData event;
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_SET_RAW);
+		event.data.intval = state;
+		ret = ticables_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = cable->set_raw(handle, state);
+		}
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_SET_RAW);
+		event.data.intval = state;
+		ret = ticables_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -558,7 +685,17 @@ TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle* handle, int *state)
 	handle->busy = 1;
 	if (cable->get_raw)
 	{
-		ret = cable->get_raw(handle, state);
+		CableEventData event;
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_GET_RAW);
+		event.data.intval = 0;
+		ret = ticables_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = cable->get_raw(handle, state);
+		}
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_GET_RAW);
+		event.data.intval = *state;
+		ret = ticables_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -591,7 +728,17 @@ TIEXPORT1 int TICALL ticables_cable_set_device(CableHandle* handle, const char *
 	handle->busy = 1;
 	if (cable->set_device)
 	{
-		ret = cable->set_device(handle, device);
+		CableEventData event;
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_SET_DEVICE);
+		event.data.cptrval = (const void *)device;
+		ret = ticables_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = cable->set_device(handle, device);
+		}
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_SET_DEVICE);
+		event.data.cptrval = (const void *)device;
+		ret = ticables_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -623,7 +770,17 @@ TIEXPORT1 int TICALL ticables_cable_get_device_info(CableHandle *handle, CableDe
 	handle->busy = 1;
 	if (cable->get_device_info)
 	{
-		ret = (cable->get_device_info)(handle, info);
+		CableEventData event;
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_GET_DEVICE_INFO);
+		event.data.ptrval = (void *)info;
+		ret = ticables_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = (cable->get_device_info)(handle, info);
+		}
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_GET_DEVICE_INFO);
+		event.data.ptrval = (void *)info;
+		ret = ticables_event_send(handle, &event);
 	}
 	else
 	{
@@ -735,13 +892,9 @@ TIEXPORT1 int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
  */
 TIEXPORT1 ticables_pre_send_hook_type TICALL ticables_cable_get_pre_send_hook(CableHandle *handle)
 {
-	if (handle == NULL)
-	{
-		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
-	}
+	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	return handle->pre_send_hook;
+	return NULL;
 }
 
 /**
@@ -754,18 +907,9 @@ TIEXPORT1 ticables_pre_send_hook_type TICALL ticables_cable_get_pre_send_hook(Ca
  */
 TIEXPORT1 ticables_pre_send_hook_type TICALL ticables_cable_set_pre_send_hook(CableHandle *handle, ticables_pre_send_hook_type hook)
 {
-	ticables_pre_send_hook_type old_hook;
+	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	if (handle == NULL)
-	{
-		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
-	}
-
-	old_hook = handle->pre_send_hook;
-	handle->pre_send_hook = hook;
-
-	return old_hook;
+	return NULL;
 }
 
 /**
@@ -777,13 +921,9 @@ TIEXPORT1 ticables_pre_send_hook_type TICALL ticables_cable_set_pre_send_hook(Ca
  */
 TIEXPORT1 ticables_post_send_hook_type TICALL ticables_cable_get_post_send_hook(CableHandle *handle)
 {
-	if (handle == NULL)
-	{
-		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
-	}
+	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	return handle->post_send_hook;
+	return NULL;
 }
 
 /**
@@ -796,18 +936,9 @@ TIEXPORT1 ticables_post_send_hook_type TICALL ticables_cable_get_post_send_hook(
  */
 TIEXPORT1 ticables_post_send_hook_type TICALL ticables_cable_set_post_send_hook(CableHandle *handle, ticables_post_send_hook_type hook)
 {
-	ticables_post_send_hook_type old_hook;
+	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	if (handle == NULL)
-	{
-		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
-	}
-
-	old_hook = handle->post_send_hook;
-	handle->post_send_hook = hook;
-
-	return old_hook;
+	return NULL;
 }
 
 /**
@@ -819,13 +950,9 @@ TIEXPORT1 ticables_post_send_hook_type TICALL ticables_cable_set_post_send_hook(
  */
 TIEXPORT1 ticables_pre_recv_hook_type TICALL ticables_cable_get_pre_recv_hook(CableHandle *handle)
 {
-	if (handle == NULL)
-	{
-		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
-	}
+	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	return handle->pre_recv_hook;
+	return NULL;
 }
 
 /**
@@ -838,18 +965,9 @@ TIEXPORT1 ticables_pre_recv_hook_type TICALL ticables_cable_get_pre_recv_hook(Ca
  */
 TIEXPORT1 ticables_pre_recv_hook_type TICALL ticables_cable_set_pre_recv_hook(CableHandle *handle, ticables_pre_recv_hook_type hook)
 {
-	ticables_pre_recv_hook_type old_hook;
+	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	if (handle == NULL)
-	{
-		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
-	}
-
-	old_hook = handle->pre_recv_hook;
-	handle->pre_recv_hook = hook;
-
-	return old_hook;
+	return NULL;
 }
 
 /**
@@ -861,13 +979,9 @@ TIEXPORT1 ticables_pre_recv_hook_type TICALL ticables_cable_set_pre_recv_hook(Ca
  */
 TIEXPORT1 ticables_post_recv_hook_type TICALL ticables_cable_get_post_recv_hook(CableHandle *handle)
 {
-	if (handle == NULL)
-	{
-		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
-	}
+	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	return handle->post_recv_hook;
+	return NULL;
 }
 
 /**
@@ -880,16 +994,139 @@ TIEXPORT1 ticables_post_recv_hook_type TICALL ticables_cable_get_post_recv_hook(
  */
 TIEXPORT1 ticables_post_recv_hook_type TICALL ticables_cable_set_post_recv_hook(CableHandle *handle, ticables_post_recv_hook_type hook)
 {
-	ticables_post_recv_hook_type old_hook;
+	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	if (handle == NULL)
+	return NULL;
+}
+
+/**
+ * ticables_cable_get_event_hook:
+ *
+ * Get the current event hook function pointer.
+ *
+ * Return value: a function pointer.
+ */
+TIEXPORT1 ticables_event_hook_type TICALL ticables_cable_get_event_hook(CableHandle *handle)
+{
+	if (!ticables_validate_handle(handle))
 	{
 		ticables_critical("%s: handle is NULL", __FUNCTION__);
 		return NULL;
 	}
 
-	old_hook = handle->post_recv_hook;
-	handle->post_recv_hook = hook;
+	return handle->event_hook;
+}
+
+/**
+ * ticables_cable_set_post_recv_hook:
+ * @hook: new post recv hook
+ *
+ * Set the current post recv hook function pointer.
+ *
+ * Return value: the previous post recv hook, so that the caller can use it to chain hooks.
+ */
+TIEXPORT1 ticables_event_hook_type TICALL ticables_cable_set_event_hook(CableHandle *handle, ticables_event_hook_type hook)
+{
+	ticables_event_hook_type old_hook;
+
+	if (!ticables_validate_handle(handle))
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return NULL;
+	}
+
+	old_hook = handle->event_hook;
+	handle->event_hook = hook;
 
 	return old_hook;
+}
+
+/**
+ * ticables_cable_get_event_user_pointer:
+ *
+ * Set the current post recv hook function pointer.
+ *
+ * Return value: the previous post recv hook, so that the caller can use it to chain hooks.
+ */
+TIEXPORT1 void * ticables_cable_get_event_user_pointer(CableHandle *handle)
+{
+	if (!ticables_validate_handle(handle))
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return NULL;
+	}
+
+	return handle->user_pointer;
+}
+
+/**
+ * ticables_cable_set_event_user_pointer:
+ * @user_pointer: new user pointer
+ *
+ * Set the current post recv hook function pointer.
+ *
+ * Return value: the previous post recv hook, so that the caller can use it to chain hooks.
+ */
+TIEXPORT1 void * ticables_cable_set_event_user_pointer(CableHandle *handle, void * user_pointer)
+{
+	void * old_pointer;
+
+	if (!ticables_validate_handle(handle))
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return NULL;
+	}
+
+	old_pointer = handle->user_pointer;
+	handle->user_pointer = user_pointer;
+
+	return old_pointer;
+}
+
+/**
+ * ticables_cable_get_event_count:
+ *
+ * Get the current event count since the handle was initialized.
+ *
+ * Return value: an unsigned integer.
+ */
+TIEXPORT1 uint32_t TICALL ticables_cable_get_event_count(CableHandle *handle)
+{
+	if (!ticables_validate_handle(handle))
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return 0;
+	}
+
+	return handle->event_count;
+}
+
+/**
+ * ticables_cable_fire_user_event:
+ * @handle: a previously allocated handle.
+ * @type: event type.
+ * @user_data: user-specified data.
+ * @user_len: user-specified length.
+ *
+ * Fire a user-specified event to the registered event hook function, if any.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ */
+TIEXPORT1 int TICALL ticables_cable_fire_user_event(CableHandle *handle, CableEventType type, int retval, void * user_data, uint32_t user_len)
+{
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+
+	if (handle->event_hook && type >= CABLE_EVENT_TYPE_USER)
+	{
+		CableEventData event;
+		ticables_event_fill_header(handle, &event, /* type */ type, /* retval */ retval, /* operation */ CABLE_FNCT_LAST);
+		event.data.user_data.data = user_data;
+		event.data.user_data.len = user_len;
+		handle->event_count++;
+		ret = handle->event_hook(handle, handle->event_count, &event, handle->user_pointer);
+	}
+
+	return ret;
 }

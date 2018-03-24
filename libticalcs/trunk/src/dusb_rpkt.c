@@ -70,90 +70,38 @@ TIEXPORT3 int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 	uint8_t buf[sizeof(pkt->data) + 5];
 	uint32_t size;
 	int ret;
+	CalcEventData event;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(pkt);
 
-	memset(buf, 0, sizeof(buf));
-	size = pkt->size;
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_DUSB_RPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dusb_rpkt(&event, /* size */ pkt->size, /* type */ pkt->type, /* data */ pkt->data);
+	ret = ticalcs_event_send(handle, &event);
 
-	if (size > sizeof(pkt->data))
-	{
-		size = sizeof(pkt->data);
-	}
-
-	buf[0] = MSB(MSW(size));
-	buf[1] = LSB(MSW(size));
-	buf[2] = MSB(LSW(size));
-	buf[3] = LSB(LSW(size));
-	buf[4] = pkt->type;
-	memcpy(buf + 5, pkt->data, size);
-
-	//printf("dusb_send: pkt->size=%d\n", pkt->size);
-	ticables_progress_reset(handle->cable);
-	ret = ticables_cable_send(handle->cable, buf, size + 5);
 	if (!ret)
 	{
-		if (size >= 128)
+		memset(buf, 0, sizeof(buf));
+		size = pkt->size;
+
+		if (size > sizeof(pkt->data))
 		{
-			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+			size = sizeof(pkt->data);
 		}
 
-		if (handle->updat->cancel)
-		{
-			ret = ERR_ABORT;
-		}
-	}
-
-	return ret;
-}
-
-TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
-{
-	uint8_t buf[5];
-	int ret;
-
-	VALIDATE_HANDLE(handle);
-	VALIDATE_NONNULL(pkt);
-
-	// Any packet has always an header of 5 bytes (size & type)
-	ticables_progress_reset(handle->cable);
-	ret = ticables_cable_recv(handle->cable, buf, 5);
-	while (!ret)
-	{
-
-		pkt->size = buf[3] | (((uint32_t)buf[2]) << 8) | (((uint32_t)buf[1]) << 16) | (((uint32_t)buf[0]) << 24);
-		pkt->type = buf[4];
-
-		if (   (handle->model == CALC_TI84P_USB || handle->model == CALC_TI84PC_USB || handle->model == CALC_TI82A_USB || handle->model == CALC_TI84PT_USB)
-		    && pkt->size > 250)
-		{
-			ticalcs_warning("Raw packet is unexpectedly large: %u bytes", pkt->size);
-		}
-		else if (   (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
-		         && pkt->size > 1018)
-		{
-			ticalcs_warning("Raw packet is unexpectedly large: %u bytes", pkt->size);
-		}
-		else if (handle->model == CALC_TI89T_USB)
-		{
-			// Fall through.
-		}
-		// else do nothing for now.
-
-		if (pkt->size > sizeof(pkt->data))
-		{
-			ticalcs_critical("Raw packet is too large: %u bytes", pkt->size);
-			ret = ERR_INVALID_PACKET;
-			break;
-		}
+		buf[0] = MSB(MSW(size));
+		buf[1] = LSB(MSW(size));
+		buf[2] = MSB(LSW(size));
+		buf[3] = LSB(LSW(size));
+		buf[4] = pkt->type;
+		memcpy(buf + 5, pkt->data, size);
 
 		//printf("dusb_send: pkt->size=%d\n", pkt->size);
-		// Next, follows data
-		ret = ticables_cable_recv(handle->cable, pkt->data, pkt->size);
+		ticables_progress_reset(handle->cable);
+		ret = ticables_cable_send(handle->cable, buf, size + 5);
 		if (!ret)
 		{
-			if (pkt->size >= 128)
+			if (size >= 128)
 			{
 				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 			}
@@ -163,8 +111,84 @@ TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 				ret = ERR_ABORT;
 			}
 		}
-		break;
 	}
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_SEND_DUSB_RPKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dusb_rpkt(&event, /* size */ pkt->size, /* type */ pkt->type, /* data */ pkt->data);
+	ret = ticalcs_event_send(handle, &event);
+
+	return ret;
+}
+
+TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
+{
+	uint8_t buf[5];
+	int ret;
+	CalcEventData event;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(pkt);
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_DUSB_RPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dusb_rpkt(&event, /* size */ 0, /* type */ 0, /* data */ pkt->data);
+	ret = ticalcs_event_send(handle, &event);
+
+	if (!ret)
+	{
+		// Any packet has always an header of 5 bytes (size & type)
+		ticables_progress_reset(handle->cable);
+		ret = ticables_cable_recv(handle->cable, buf, 5);
+		while (!ret)
+		{
+
+			pkt->size = buf[3] | (((uint32_t)buf[2]) << 8) | (((uint32_t)buf[1]) << 16) | (((uint32_t)buf[0]) << 24);
+			pkt->type = buf[4];
+
+			if (   (handle->model == CALC_TI84P_USB || handle->model == CALC_TI84PC_USB || handle->model == CALC_TI82A_USB || handle->model == CALC_TI84PT_USB)
+			    && pkt->size > 250)
+			{
+				ticalcs_warning("Raw packet is unexpectedly large: %u bytes", pkt->size);
+			}
+			else if (   (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
+				 && pkt->size > 1018)
+			{
+				ticalcs_warning("Raw packet is unexpectedly large: %u bytes", pkt->size);
+			}
+			else if (handle->model == CALC_TI89T_USB)
+			{
+				// Fall through.
+			}
+			// else do nothing for now.
+
+			if (pkt->size > sizeof(pkt->data))
+			{
+				ticalcs_critical("Raw packet is too large: %u bytes", pkt->size);
+				ret = ERR_INVALID_PACKET;
+				break;
+			}
+
+			//printf("dusb_send: pkt->size=%d\n", pkt->size);
+			// Next, follows data
+			ret = ticables_cable_recv(handle->cable, pkt->data, pkt->size);
+			if (!ret)
+			{
+				if (pkt->size >= 128)
+				{
+					ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+				}
+
+				if (handle->updat->cancel)
+				{
+					ret = ERR_ABORT;
+				}
+			}
+			break;
+		}
+	}
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_RECV_DUSB_RPKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dusb_rpkt(&event, /* size */ pkt->size, /* type */ pkt->type, /* data */ pkt->data);
+	ret = ticalcs_event_send(handle, &event);
 
 	return ret;
 }

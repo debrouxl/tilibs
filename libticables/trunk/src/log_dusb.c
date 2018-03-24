@@ -50,11 +50,6 @@ int log_dusb_start(void)
 	return 0;
 }
 
-int log_dusb_1(int dir, uint8_t data)
-{
-	return 0;
-}
-
 int log_dusb_N(int dir, const uint8_t * data, uint32_t len)
 {
 	return 0;

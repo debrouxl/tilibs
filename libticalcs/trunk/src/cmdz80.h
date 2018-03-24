@@ -51,7 +51,7 @@ static inline uint8_t tiz80_handle_to_dbus_mid_8586(CalcHandle * handle)
 
 /* TI-Z80 family, send functions */
 TIEXPORT3 int TICALL tiz80_send_CTS(CalcHandle* handle, uint8_t target);
-TIEXPORT3 int TICALL tiz80_send_XDP(CalcHandle* handle, uint16_t length, const uint8_t * data, uint8_t target);
+TIEXPORT3 int TICALL tiz80_send_XDP(CalcHandle* handle, uint16_t length, uint8_t * data, uint8_t target);
 TIEXPORT3 int TICALL tiz80_send_SKP(CalcHandle* handle, uint8_t rej_code, uint8_t target);
 TIEXPORT3 int TICALL tiz80_send_ACK(CalcHandle* handle, uint8_t target);
 TIEXPORT3 int TICALL tiz80_send_ERR(CalcHandle* handle, uint8_t target);

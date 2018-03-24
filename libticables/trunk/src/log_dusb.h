@@ -23,7 +23,6 @@
 #define __LOG_DUSB__
 
 int log_dusb_start(void);
-int log_dusb_1(int dir, uint8_t data);
 int log_dusb_N(int dir, const uint8_t *data, uint32_t len);
 int log_dusb_stop(void);
 

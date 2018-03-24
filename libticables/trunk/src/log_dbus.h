@@ -23,7 +23,6 @@
 #define __LOG_DBUS__
 
 int log_dbus_start(void);
-int log_dbus_1(int dir, uint8_t data);
 int log_dbus_N(int dir, const uint8_t *data, uint32_t len);
 int log_dbus_stop(void);
 

@@ -80,23 +80,6 @@ int log_start(CableHandle *h)
 	return ret;
 }
 
-int log_1(CableHandle *h, int dir, uint8_t data)
-{
-	log_hex_1(dir, data);
-
-	if (h->model == CABLE_USB)
-	{
-		log_dusb_1(dir, data);
-		log_nsp_1(dir, data);
-	}
-	else
-	{
-		log_dbus_1(dir, data);
-	}
-
-	return 0;
-}
-
 int log_N(CableHandle *h, int dir, const uint8_t *data, uint32_t len)
 {
 	log_hex_N(dir, data, len);

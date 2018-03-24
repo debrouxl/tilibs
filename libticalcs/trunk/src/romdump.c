@@ -51,6 +51,9 @@
 
 static int send_pkt(CalcHandle* handle, uint16_t cmd, uint16_t len, uint8_t* data)
 {
+	int ret = 0;
+	CalcEventData event;
+
 	uint16_t sum;
 	uint8_t * buf = handle->buffer;
 
@@ -73,7 +76,20 @@ static int send_pkt(CalcHandle* handle, uint16_t cmd, uint16_t len, uint8_t* dat
 	buf[len+4+0] = LSB(sum);
 	buf[len+4+1] = MSB(sum);
 
-	return ticables_cable_send(handle->cable, buf, len+6);
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_ROMDUMP_PKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_romdump_pkt(&event, /* length */ len, /* cmd */ cmd, /* data */ data);
+	ret = ticalcs_event_send(handle, &event);
+
+	if (!ret)
+	{
+		ret = ticables_cable_send(handle->cable, buf, len+6);
+	}
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_SEND_ROMDUMP_PKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_romdump_pkt(&event, /* length */ len, /* cmd */ cmd, /* data */ data);
+	ret = ticalcs_event_send(handle, &event);
+
+	return ret;
 }
 
 static inline int cmd_is_valid(uint16_t cmd)
@@ -99,98 +115,110 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 {
 	int i, r, q;
 	uint16_t sum, chksum;
-	int ret;
+	int ret = 0;
 	uint8_t * buf = handle->buffer;
+	CalcEventData event;
 
-	// Any packet has always at least 4 bytes (cmd, len)
-	ret = ticables_cable_recv(handle->cable, buf, 4);
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_ROMDUMP_PKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_romdump_pkt(&event, /* length */ 0, /* cmd */ 0, /* data */ data);
+	ret = ticalcs_event_send(handle, &event);
+
 	if (!ret)
 	{
-
-		*cmd = (((uint16_t)buf[1]) << 8) | buf[0];
-		*len = (((uint16_t)buf[3]) << 8) | buf[2];
-
-		if (!cmd_is_valid(*cmd))
+		// Any packet has always at least 4 bytes (cmd, len)
+		ret = ticables_cable_recv(handle->cable, buf, 4);
+		if (!ret)
 		{
-			ret = ERR_INVALID_CMD;
-			goto exit;
-		}
 
-		if (*cmd == CMD_ERROR)
-		{
-			ret = ERR_ROM_ERROR;
-			goto exit;
-		}
+			*cmd = (((uint16_t)buf[1]) << 8) | buf[0];
+			*len = (((uint16_t)buf[3]) << 8) | buf[2];
 
-		// compute chunks
-		handle->priv.progress_min_size = 256;
-		handle->priv.progress_blk_size = *len / 20;
-		if (handle->priv.progress_blk_size == 0)
-		{
-			handle->priv.progress_blk_size = 1;
-		}
-
-		q = *len / handle->priv.progress_blk_size;
-		r = *len % handle->priv.progress_blk_size;
-		handle->updat->cnt1 = 0;
-		handle->updat->max1 = *len;
-
-		// recv full chunks
-		for(i = 0; i < q; i++)
-		{
-			ret = ticables_cable_recv(handle->cable, &buf[i*handle->priv.progress_blk_size + 4], handle->priv.progress_blk_size);
-			if (ret)
+			if (!cmd_is_valid(*cmd))
 			{
+				ret = ERR_INVALID_CMD;
 				goto exit;
 			}
-			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
-			handle->updat->cnt1 += handle->priv.progress_blk_size;
-			if (*len > handle->priv.progress_min_size)
-			{
-				ticalcs_update_pbar(handle);
-			}
-			//if (ticalcs_update_canceled(handle))
-			//	return ERR_ABORT;
-		}
 
-		// recv last chunk
-		{
-			ret = ticables_cable_recv(handle->cable, &buf[i*handle->priv.progress_blk_size + 4], (uint16_t)(r+2));
-			if (ret)
+			if (*cmd == CMD_ERROR)
 			{
+				ret = ERR_ROM_ERROR;
 				goto exit;
 			}
-			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
-			handle->updat->cnt1++;
-			if (*len > handle->priv.progress_min_size)
+
+			// compute chunks
+			handle->priv.progress_min_size = 256;
+			handle->priv.progress_blk_size = *len / 20;
+			if (handle->priv.progress_blk_size == 0)
 			{
-				ticalcs_update_pbar(handle);
+				handle->priv.progress_blk_size = 1;
 			}
-			if (ticalcs_update_canceled(handle))
+
+			q = *len / handle->priv.progress_blk_size;
+			r = *len % handle->priv.progress_blk_size;
+			handle->updat->cnt1 = 0;
+			handle->updat->max1 = *len;
+
+			// recv full chunks
+			for(i = 0; i < q; i++)
 			{
-				ret = ERR_ABORT;
+				ret = ticables_cable_recv(handle->cable, &buf[i*handle->priv.progress_blk_size + 4], handle->priv.progress_blk_size);
+				if (ret)
+				{
+					goto exit;
+				}
+				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+				handle->updat->cnt1 += handle->priv.progress_blk_size;
+				if (*len > handle->priv.progress_min_size)
+				{
+					ticalcs_update_pbar(handle);
+				}
+				//if (ticalcs_update_canceled(handle))
+				//	return ERR_ABORT;
+			}
+
+			// recv last chunk
+			{
+				ret = ticables_cable_recv(handle->cable, &buf[i*handle->priv.progress_blk_size + 4], (uint16_t)(r+2));
+				if (ret)
+				{
+					goto exit;
+				}
+				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+				handle->updat->cnt1++;
+				if (*len > handle->priv.progress_min_size)
+				{
+					ticalcs_update_pbar(handle);
+				}
+				if (ticalcs_update_canceled(handle))
+				{
+					ret = ERR_ABORT;
+					goto exit;
+				}
+			}
+
+			// verify checksum
+			chksum = (buf[*len+4 + 1] << 8) | buf[*len+4 + 0];
+			sum = tifiles_checksum(buf, *len + 4);
+			//printf("<%04x %04x>\n", sum, chksum);
+
+			if (chksum != sum)
+			{
+				ret = ERR_CHECKSUM;
 				goto exit;
 			}
-		}
 
-		// verify checksum
-		chksum = (buf[*len+4 + 1] << 8) | buf[*len+4 + 0];
-		sum = tifiles_checksum(buf, *len + 4);
-		//printf("<%04x %04x>\n", sum, chksum);
-
-		if (chksum != sum)
-		{
-			ret = ERR_CHECKSUM;
-			goto exit;
-		}
-
-		if (data)
-		{
-			memmove(data, buf+4, *len);
+			if (data)
+			{
+				memmove(data, buf+4, *len);
+			}
 		}
 	}
-
 exit:
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_RECV_ROMDUMP_PKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_romdump_pkt(&event, /* length */ *len, /* cmd */ *cmd, /* data */ data);
+	ret = ticalcs_event_send(handle, &event);
+
 	return ret;
 }
 

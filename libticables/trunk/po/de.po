@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.3.6\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-11-06 12:06+0100\n"
+"POT-Creation-Date: 2019-01-05 13:26+0100\n"
 "PO-Revision-Date: 2019-06-07 21:03+0200\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
 "Language-Team: German\n"
@@ -647,36 +647,36 @@ msgstr "Link Kabel Verbindungsaufbau:"
 msgid "ticables library version %s"
 msgstr "ticables Bibliothek Version %s"
 
-#: src/ticables.c:550
+#: src/ticables.c:552
 msgid "Link cable handle details:"
 msgstr "Link Kabel handle Details:"
 
-#: src/ticables.c:551
+#: src/ticables.c:553
 #, c-format
 msgid "  model   : %s"
 msgstr "  Modell   : %s"
 
-#: src/ticables.c:552
+#: src/ticables.c:554
 #, c-format
 msgid "  port    : %s"
 msgstr "  Port    : %s"
 
-#: src/ticables.c:553
+#: src/ticables.c:555
 #, c-format
 msgid "  timeout : %2.1fs"
 msgstr "  Timeout : %2.1fs"
 
-#: src/ticables.c:554
+#: src/ticables.c:556
 #, c-format
 msgid "  delay   : %i us"
 msgstr "  Delay   : %i us"
 
-#: src/ticables.c:557
+#: src/ticables.c:559
 #, c-format
 msgid "  device  : %s"
 msgstr "  Gerät  : %s"
 
-#: src/ticables.c:558
+#: src/ticables.c:560
 #, c-format
 msgid "  address : 0x%03x"
 msgstr "  Adresse : 0x%03x"

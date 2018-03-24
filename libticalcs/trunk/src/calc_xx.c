@@ -92,7 +92,12 @@ TIEXPORT3 int TICALL ticalcs_calc_isready(CalcHandle* handle)
 	handle->busy = 1;
 	if (calc->is_ready)
 	{
-		ret = calc->is_ready(handle);
+		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_IS_READY);
+		if (!ret)
+		{
+			ret = calc->is_ready(handle);
+		}
+		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_IS_READY);
 	}
 	handle->busy = 0;
 
@@ -126,7 +131,17 @@ TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint32_t key)
 	handle->busy = 1;
 	if (calc->send_key)
 	{
-		ret = calc->send_key(handle, key);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_KEY);
+		event.data.uintval = key;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->send_key(handle, key);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_KEY);
+		event.data.uintval = key;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -163,7 +178,17 @@ TIEXPORT3 int TICALL ticalcs_calc_execute(CalcHandle* handle, VarEntry* ve, cons
 	handle->busy = 1;
 	if (calc->execute)
 	{
-		ret = calc->execute(handle, ve, args);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_EXECUTE);
+		event.data.ptrval = (void *)ve;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->execute(handle, ve, args);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_EXECUTE);
+		event.data.ptrval = (void *)ve;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -200,7 +225,17 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoor
 	handle->busy = 1;
 	if (calc->recv_screen)
 	{
-		ret = calc->recv_screen(handle, sc, bitmap);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_SCREEN);
+		event.data.ptrval = (void *)sc;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->recv_screen(handle, sc, bitmap);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_SCREEN);
+		event.data.ptrval = (void *)*bitmap;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -298,7 +333,12 @@ TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, 
 	handle->busy = 1;
 	if (calc->get_dirlist)
 	{
-		ret = calc->get_dirlist(handle, vars, apps);
+		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_GET_DIRLIST);
+		if (!ret)
+		{
+			ret = calc->get_dirlist(handle, vars, apps);
+		}
+		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_GET_DIRLIST);
 	}
 	handle->busy = 0;
 
@@ -352,7 +392,12 @@ TIEXPORT3 int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram,
 	handle->busy = 1;
 	if (calc->get_memfree)
 	{
-		ret = calc->get_memfree(handle, ram, flash);
+		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_GET_MEMFREE);
+		if (!ret)
+		{
+			ret = calc->get_memfree(handle, ram, flash);
+		}
+		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_GET_MEMFREE);
 	}
 	handle->busy = 0;
 
@@ -387,7 +432,17 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent*
 	handle->busy = 1;
 	if (calc->send_backup)
 	{
-		ret = calc->send_backup(handle, content);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_BACKUP);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->send_backup(handle, content);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_BACKUP);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -422,7 +477,17 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent*
 	handle->busy = 1;
 	if (calc->recv_backup)
 	{
-		ret = calc->recv_backup(handle, content);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_BACKUP);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->recv_backup(handle, content);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_BACKUP);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -459,7 +524,17 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode, Fi
 	handle->busy = 1;
 	if (calc->send_var)
 	{
-		ret = calc->send_var(handle, mode, content);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_VAR);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->send_var(handle, mode, content);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_VAR);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -497,7 +572,17 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode, Fi
 	handle->busy = 1;
 	if (calc->recv_var)
 	{
-		ret = calc->recv_var(handle, mode, content, vr);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_VAR);
+		event.data.ptrval = (void *)vr;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->recv_var(handle, mode, content, vr);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_VAR);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -534,7 +619,17 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
 	handle->busy = 1;
 	if (calc->send_var_ns)
 	{
-		ret = calc->send_var_ns(handle, mode, content);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_VAR_NS);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->send_var_ns(handle, mode, content);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_VAR_NS);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -572,7 +667,17 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
 	handle->busy = 1;
 	if (calc->recv_var_ns)
 	{
-		ret = calc->recv_var_ns(handle, mode, content, var);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_VAR_NS);
+		event.data.ptrval = (void *)var;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->recv_var_ns(handle, mode, content, var);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_VAR_NS);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -607,7 +712,17 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* con
 	handle->busy = 1;
 	if (calc->send_app)
 	{
-		ret = calc->send_app(handle, content);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_APP);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->send_app(handle, content);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_APP);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -644,7 +759,17 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* con
 	handle->busy = 1;
 	if (calc->recv_app)
 	{
-		ret = calc->recv_app(handle, content, vr);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_APP);
+		event.data.ptrval = (void *)vr;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->recv_app(handle, content, vr);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_APP);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -679,7 +804,17 @@ TIEXPORT3 int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* cont
 	handle->busy = 1;
 	if (calc->send_os)
 	{
-		ret = calc->send_os(handle, content);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_OS);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->send_os(handle, content);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_OS);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -714,7 +849,17 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlis
 	handle->busy = 1;
 	if (calc->recv_idlist)
 	{
-		ret = calc->recv_idlist(handle, idlist);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_IDLIST);
+		memset((void *)&event.data, 0, sizeof(event.data));
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->recv_idlist(handle, idlist);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_IDLIST);
+		event.data.ptrval = (void *)idlist;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -747,7 +892,12 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
 	handle->busy = 1;
 	if (calc->dump_rom_1)
 	{
-		ret = calc->dump_rom_1(handle);
+		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_DUMP_ROM1);
+		if (!ret)
+		{
+			ret = calc->dump_rom_1(handle);
+		}
+		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_DUMP_ROM1);
 	}
 	handle->busy = 0;
 
@@ -783,7 +933,12 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize si
 	handle->busy = 1;
 	if (calc->dump_rom_2)
 	{
-		ret = calc->dump_rom_2(handle, size, filename);
+		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_DUMP_ROM2);
+		if (!ret)
+		{
+			ret = calc->dump_rom_2(handle, size, filename);
+		}
+		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_DUMP_ROM2);
 	}
 	handle->busy = 0;
 
@@ -818,7 +973,17 @@ TIEXPORT3 int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* _cloc
 	handle->busy = 1;
 	if (calc->set_clock)
 	{
-		ret = calc->set_clock(handle, _clock);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SET_CLOCK);
+		event.data.ptrval = (void *)_clock;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->set_clock(handle, _clock);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SET_CLOCK);
+		event.data.ptrval = (void *)_clock;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -853,7 +1018,17 @@ TIEXPORT3 int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* _cloc
 	handle->busy = 1;
 	if (calc->get_clock)
 	{
-		ret = calc->get_clock(handle, _clock);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_GET_CLOCK);
+		memset((void *)&event.data, 0, sizeof(event.data));
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->get_clock(handle, _clock);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_GET_CLOCK);
+		event.data.ptrval = (void *)_clock;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -888,7 +1063,17 @@ TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
 	handle->busy = 1;
 	if (calc->del_var)
 	{
-		ret = calc->del_var(handle, vr);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_DEL_VAR);
+		event.data.ptrval = (void *)vr;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->del_var(handle, vr);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_DEL_VAR);
+		event.data.ptrval = (void *)vr;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -923,7 +1108,17 @@ TIEXPORT3 int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
 	handle->busy = 1;
 	if (calc->new_fld)
 	{
-		ret = calc->new_fld(handle, vr);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_NEW_FOLDER);
+		event.data.ptrval = (void *)vr;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->new_fld(handle, vr);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_NEW_FOLDER);
+		event.data.ptrval = (void *)vr;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -958,7 +1153,17 @@ TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* inf
 	handle->busy = 1;
 	if (calc->get_version)
 	{
-		ret = calc->get_version(handle, infos);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_GET_VERSION);
+		memset((void *)&event.data, 0, sizeof(event.data));
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->get_version(handle, infos);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_GET_VERSION);
+		event.data.ptrval = (void *)infos;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -993,7 +1198,17 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* co
 	handle->busy = 1;
 	if (calc->send_cert)
 	{
-		ret = calc->send_cert(handle, content);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_CERT);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->send_cert(handle, content);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_CERT);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -1005,7 +1220,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* co
  * @handle: a previously allocated handle
  * @content: where to store content
  *
- * Request receiving of a FLASH app.
+ * Request receiving of a certificate.
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
@@ -1028,7 +1243,17 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* co
 	handle->busy = 1;
 	if (calc->recv_cert)
 	{
-		ret = calc->recv_cert(handle, content);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_CERT);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->recv_cert(handle, content);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_CERT);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -1073,7 +1298,17 @@ TIEXPORT3 int TICALL ticalcs_calc_rename_var(CalcHandle* handle, VarRequest* old
 	handle->busy = 1;
 	if (calc->rename_var)
 	{
-		ret = calc->rename_var(handle, oldname, newname);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RENAME);
+		event.data.ptrval = (void *)oldname;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->rename_var(handle, oldname, newname);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RENAME);
+		event.data.ptrval = (void *)newname;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -1110,7 +1345,17 @@ TIEXPORT3 int TICALL ticalcs_calc_change_attr(CalcHandle* handle, VarRequest* vr
 	handle->busy = 1;
 	if (calc->change_attr)
 	{
-		ret = calc->change_attr(handle, vr, attr);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_CHATTR);
+		event.data.ptrval = (void *)vr;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->change_attr(handle, vr, attr);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_CHATTR);
+		event.data.ptrval = (void *)vr;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -1146,7 +1391,17 @@ TIEXPORT3 int TICALL ticalcs_calc_send_all_vars_backup(CalcHandle* handle, FileC
 	handle->busy = 1;
 	if (calc->send_all_vars_backup)
 	{
-		ret = calc->send_all_vars_backup(handle, content);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_ALL_VARS_BACKUP);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->send_all_vars_backup(handle, content);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_ALL_VARS_BACKUP);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 
@@ -1181,7 +1436,17 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_all_vars_backup(CalcHandle* handle, FileC
 	handle->busy = 1;
 	if (calc->recv_all_vars_backup)
 	{
-		ret = calc->recv_all_vars_backup(handle, content);
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_ALL_VARS_BACKUP);
+		memset((void *)&event.data, 0, sizeof(event.data));
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->recv_all_vars_backup(handle, content);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_ALL_VARS_BACKUP);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
 	}
 	handle->busy = 0;
 

@@ -23,7 +23,6 @@
 #define __LOG_NSP__
 
 int log_nsp_start(void);
-int log_nsp_1(int dir, uint8_t data);
 int log_nsp_N(int dir, const uint8_t *data, uint32_t len);
 int log_nsp_stop(void);
 
