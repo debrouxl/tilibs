@@ -8,6 +8,7 @@ fprintf(stderr, "%d\t" TYPE "\n", __LINE__, FUNCTION(args))
 FUNCTION(args); fprintf(stderr, "%d\n", __LINE__)
 
 #define INT "%d"
+#define UINT "%u"
 #define PTR "%p"
 #define STR "\"%s\""
 #define VOID ""
@@ -59,10 +60,16 @@ int main(int argc, char **argv)
     PRINTF(ticables_cable_set_pre_recv_hook, PTR, NULL, (void *)0x12345678);
     PRINTF(ticables_cable_get_post_recv_hook, PTR, NULL);
     PRINTF(ticables_cable_set_post_recv_hook, PTR, NULL, (void *)0x12345678);
+    PRINTF(ticables_cable_get_event_hook, PTR, NULL);
+    PRINTF(ticables_cable_set_event_hook, PTR, NULL, (void *)0x12345678);
+
+    PRINTF(ticables_cable_get_event_user_pointer, PTR, NULL);
+    PRINTF(ticables_cable_set_event_user_pointer, PTR, NULL, (void *)0x12345678);
+    PRINTF(ticables_cable_get_event_count, UINT, NULL);
+    PRINTF(ticables_cable_fire_user_event, INT, NULL, 0, 0, (void *)0x12345678, 0);
 // type2str.c
     PRINTF(ticables_model_to_string, STR, -1);
     PRINTF(ticables_string_to_model, INT, NULL);
-
     PRINTF(ticables_port_to_string, STR, -1);
     PRINTF(ticables_string_to_port, INT, NULL);
     PRINTF(ticables_usbpid_to_string, STR, -1);
@@ -74,7 +81,6 @@ int main(int argc, char **argv)
     PRINTF(ticables_probing_found, INT, NULL);
     PRINTF(ticables_is_usb_enabled, INT);
     PRINTF(ticables_get_usb_devices, INT, NULL, NULL);
-
     PRINTF(ticables_free_usb_devices, INT, NULL);
 
     ticables_library_exit();

@@ -29,21 +29,6 @@
 extern "C" {
 #endif
 
-// Convenient structures
-
-typedef struct
-{
-	uint16_t	src_addr;
-	uint16_t	src_port;
-	uint16_t	dst_addr;
-	uint16_t	dst_port;
-
-	uint8_t		cmd;
-
-	uint32_t	size;
-	uint8_t		*data;
-} NSPVirtualPacket;
-
 // Constants
 
 #define NSP_SRC_ADDR            0x6400

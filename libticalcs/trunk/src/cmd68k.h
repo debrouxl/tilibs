@@ -37,7 +37,7 @@ TIEXPORT3 uint8_t TICALL ti68k_handle_to_dbus_mid(CalcHandle * handle);
 /* TI-68k family, send functions */
 TIEXPORT3 int TICALL ti68k_send_VAR(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname, uint8_t target);
 TIEXPORT3 int TICALL ti68k_send_CTS(CalcHandle* handle, uint8_t target);
-TIEXPORT3 int TICALL ti68k_send_XDP(CalcHandle* handle, uint32_t length, const uint8_t * data, uint8_t target);
+TIEXPORT3 int TICALL ti68k_send_XDP(CalcHandle* handle, uint32_t length, uint8_t * data, uint8_t target);
 TIEXPORT3 int TICALL ti68k_send_ACK(CalcHandle* handle, uint8_t target);
 TIEXPORT3 int TICALL ti68k_send_ERR(CalcHandle* handle, uint8_t target);
 TIEXPORT3 int TICALL ti68k_send_RDY(CalcHandle* handle, uint8_t target);

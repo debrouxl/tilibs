@@ -276,6 +276,104 @@ static inline GNode * dirlist_create_append_node(void * data, GNode ** tree)
 
 #define ticalcs_update_canceled(handle)  (handle->updat->cancel)
 
+static inline void ticalcs_event_fill_header(CalcHandle * handle, CalcEventData * event, CalcEventType type, int retval, CalcFnctsIdx operation)
+{
+	event->version = 1;
+	event->type = type;
+	event->retval = retval;
+	event->attached = handle->attached;
+	event->open = handle->open;
+	event->operation = operation;
+}
+
+static inline void ticalcs_event_fill_dbus_pkt(CalcEventData * event, uint16_t length, uint8_t id, uint8_t cmd, uint8_t * data)
+{
+	event->data.dbus_pkt.length = length;
+	event->data.dbus_pkt.id = id;
+	event->data.dbus_pkt.cmd = cmd;
+	event->data.dbus_pkt.data = data;
+}
+
+static inline void ticalcs_event_fill_dusb_rpkt(CalcEventData * event, uint32_t size, uint8_t type, uint8_t * data)
+{
+	event->data.dusb_rpkt.size = size;
+	event->data.dusb_rpkt.type = type;
+	event->data.dusb_rpkt.data = data;
+}
+
+static inline void ticalcs_event_fill_dusb_vpkt(CalcEventData * event, uint32_t size, uint16_t type, uint8_t * data)
+{
+	event->data.dusb_vpkt.size = size;
+	event->data.dusb_vpkt.type = type;
+	event->data.dusb_vpkt.data = data;
+}
+
+static inline void ticalcs_event_fill_nsp_rpkt(CalcEventData * event, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint16_t data_sum, uint8_t data_size, uint8_t ack, uint8_t seq, uint8_t hdr_sum, uint8_t * data)
+{
+	event->data.nsp_rpkt.src_addr = src_addr;
+	event->data.nsp_rpkt.src_port = src_port;
+	event->data.nsp_rpkt.dst_addr = dst_addr;
+	event->data.nsp_rpkt.dst_port = dst_port;
+	event->data.nsp_rpkt.data_sum = data_sum;
+	event->data.nsp_rpkt.data_size = data_sum;
+	event->data.nsp_rpkt.ack = ack;
+	event->data.nsp_rpkt.seq = seq;
+	event->data.nsp_rpkt.hdr_sum = hdr_sum;
+	event->data.nsp_rpkt.data = data;
+}
+
+static inline void ticalcs_event_fill_nsp_vpkt(CalcEventData * event, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint32_t size, uint8_t * data)
+{
+	event->data.nsp_vpkt.src_addr = src_addr;
+	event->data.nsp_vpkt.src_port = src_port;
+	event->data.nsp_vpkt.dst_addr = dst_addr;
+	event->data.nsp_vpkt.dst_port = dst_port;
+	event->data.nsp_vpkt.cmd = cmd;
+	event->data.nsp_vpkt.size = size;
+	event->data.nsp_vpkt.data = data;
+}
+
+static inline void ticalcs_event_fill_romdump_pkt(CalcEventData * event, uint16_t length, uint16_t cmd, uint8_t * data)
+{
+	event->data.romdump_pkt.length = length;
+	event->data.romdump_pkt.cmd = cmd;
+	event->data.romdump_pkt.data = data;
+}
+
+static inline int ticalcs_event_send_simple_generic(CalcHandle * handle, CalcEventType type, int retval, CalcFnctsIdx operation)
+{
+	int ret = retval;
+
+	if (handle->event_hook)
+	{
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, type, retval, operation);
+		memset((void *)&event.data, 0, sizeof(event.data));
+		handle->event_count++;
+		ret = handle->event_hook(handle, handle->event_count, &event, handle->user_pointer);
+	}
+
+	return ret;
+}
+
+static inline int ticalcs_event_send_simple(CalcHandle * handle, CalcEventType type, int retval)
+{
+	return ticalcs_event_send_simple_generic(handle, type, retval, CALC_FNCT_LAST);
+}
+
+static inline int ticalcs_event_send(CalcHandle * handle, CalcEventData * event)
+{
+	int ret = event->retval;
+
+	if (handle->event_hook)
+	{
+		handle->event_count++;
+		ret = handle->event_hook(handle, handle->event_count, event, handle->user_pointer);
+	}
+
+	return ret;
+}
+
 // backup.c
 int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content);
 

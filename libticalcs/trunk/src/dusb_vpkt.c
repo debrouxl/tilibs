@@ -498,7 +498,8 @@ TIEXPORT3 int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 	DUSBRawPacket raw;
 	int i, r, q;
 	long offset;
-	int ret;
+	int ret = 0;
+	CalcEventData event;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(vtl);
@@ -509,132 +510,143 @@ TIEXPORT3 int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 
 	memset(&raw, 0, sizeof(raw));
 
-	do
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_DUSB_VPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dusb_vpkt(&event, /* size */ vtl->size, /* type */ vtl->type, /* data */ vtl->data);
+	ret = ticalcs_event_send(handle, &event);
+
+	if (!ret)
 	{
-		if (vtl->size <= handle->priv.dusb_rpkt_maxlen - DUSB_DH_SIZE)
+		do
 		{
-			// we have a single packet which is the last one, too
-			raw.size = vtl->size + DUSB_DH_SIZE;
-			raw.type = DUSB_RPKT_VIRT_DATA_LAST;
-
-			raw.data[0] = MSB(MSW(vtl->size));
-			raw.data[1] = LSB(MSW(vtl->size));
-			raw.data[2] = MSB(LSW(vtl->size));
-			raw.data[3] = LSB(LSW(vtl->size));
-			raw.data[4] = MSB(vtl->type);
-			raw.data[5] = LSB(vtl->type);
-			if (vtl->data)
+			if (vtl->size <= handle->priv.dusb_rpkt_maxlen - DUSB_DH_SIZE)
 			{
-				memcpy(&raw.data[DUSB_DH_SIZE], vtl->data, vtl->size);
-			}
+				// we have a single packet which is the last one, too
+				raw.size = vtl->size + DUSB_DH_SIZE;
+				raw.type = DUSB_RPKT_VIRT_DATA_LAST;
 
-			ret = dusb_send(handle, &raw);
-			if (ret)
-			{
-				break;
-			}
-#if (VPKT_DBG == 2)
-			ticalcs_info("  PC->TI: Virtual Packet Data Final\n\t\t(size = %08x, type = %s)", vtl->size, dusb_vpkt_type2name(vtl->type));
-#elif (VPKT_DBG == 1)
-			ticalcs_info("  PC->TI: %s", dusb_vpkt_type2name(vtl->type));
-#endif
-			workaround_send(handle, &raw, vtl);
-			ret = dusb_recv_acknowledge(handle);
-			if (ret)
-			{
-				break;
-			}
-		}
-		else
-		{
-			// we have more than one packet: first packet has data header
-			raw.size = handle->priv.dusb_rpkt_maxlen;
-			raw.type = DUSB_RPKT_VIRT_DATA;
-
-			raw.data[0] = MSB(MSW(vtl->size));
-			raw.data[1] = LSB(MSW(vtl->size));
-			raw.data[2] = MSB(LSW(vtl->size));
-			raw.data[3] = LSB(LSW(vtl->size));
-			raw.data[4] = MSB(vtl->type);
-			raw.data[5] = LSB(vtl->type);
-			memcpy(&raw.data[DUSB_DH_SIZE], vtl->data, handle->priv.dusb_rpkt_maxlen - DUSB_DH_SIZE);
-			offset = handle->priv.dusb_rpkt_maxlen - DUSB_DH_SIZE;
-
-			ret = dusb_send(handle, &raw);
-			if (ret)
-			{
-				break;
-			}
-#if (VPKT_DBG == 2)
-			ticalcs_info("  PC->TI: Virtual Packet Data with Continuation\n\t\t(size = %08x, type = %s)", vtl->size, dusb_vpkt_type2name(vtl->type));
-#elif (VPKT_DBG == 1)
-			ticalcs_info("  PC->TI: %s", dusb_vpkt_type2name(vtl->type));
-#endif
-			ret = dusb_recv_acknowledge(handle);
-			if (ret)
-			{
-				break;
-			}
-
-			// other packets doesn't have data header but last one has a different type
-			q = (vtl->size - offset) / handle->priv.dusb_rpkt_maxlen;
-			r = (vtl->size - offset) % handle->priv.dusb_rpkt_maxlen;
-
-			// send full chunks (no header)
-			for (i = 1; i <= q; i++)
-			{
-				raw.size = handle->priv.dusb_rpkt_maxlen;
-				raw.type = DUSB_RPKT_VIRT_DATA;
-				memcpy(raw.data, vtl->data + offset, handle->priv.dusb_rpkt_maxlen);
-				offset += handle->priv.dusb_rpkt_maxlen;
+				raw.data[0] = MSB(MSW(vtl->size));
+				raw.data[1] = LSB(MSW(vtl->size));
+				raw.data[2] = MSB(LSW(vtl->size));
+				raw.data[3] = LSB(LSW(vtl->size));
+				raw.data[4] = MSB(vtl->type);
+				raw.data[5] = LSB(vtl->type);
+				if (vtl->data)
+				{
+					memcpy(&raw.data[DUSB_DH_SIZE], vtl->data, vtl->size);
+				}
 
 				ret = dusb_send(handle, &raw);
 				if (ret)
 				{
-					goto end;
+					break;
 				}
 #if (VPKT_DBG == 2)
-				ticalcs_info("  PC->TI: Virtual Packet Data with Continuation");
+				ticalcs_info("  PC->TI: Virtual Packet Data Final\n\t\t(size = %08x, type = %s)", vtl->size, dusb_vpkt_type2name(vtl->type));
+#elif (VPKT_DBG == 1)
+				ticalcs_info("  PC->TI: %s", dusb_vpkt_type2name(vtl->type));
+#endif
+				workaround_send(handle, &raw, vtl);
+				ret = dusb_recv_acknowledge(handle);
+				if (ret)
+				{
+					break;
+				}
+			}
+			else
+			{
+				// we have more than one packet: first packet has data header
+				raw.size = handle->priv.dusb_rpkt_maxlen;
+				raw.type = DUSB_RPKT_VIRT_DATA;
+
+				raw.data[0] = MSB(MSW(vtl->size));
+				raw.data[1] = LSB(MSW(vtl->size));
+				raw.data[2] = MSB(LSW(vtl->size));
+				raw.data[3] = LSB(LSW(vtl->size));
+				raw.data[4] = MSB(vtl->type);
+				raw.data[5] = LSB(vtl->type);
+				memcpy(&raw.data[DUSB_DH_SIZE], vtl->data, handle->priv.dusb_rpkt_maxlen - DUSB_DH_SIZE);
+				offset = handle->priv.dusb_rpkt_maxlen - DUSB_DH_SIZE;
+
+				ret = dusb_send(handle, &raw);
+				if (ret)
+				{
+					break;
+				}
+#if (VPKT_DBG == 2)
+				ticalcs_info("  PC->TI: Virtual Packet Data with Continuation\n\t\t(size = %08x, type = %s)", vtl->size, dusb_vpkt_type2name(vtl->type));
+#elif (VPKT_DBG == 1)
+				ticalcs_info("  PC->TI: %s", dusb_vpkt_type2name(vtl->type));
 #endif
 				ret = dusb_recv_acknowledge(handle);
 				if (ret)
 				{
-					goto end;
+					break;
 				}
 
-				handle->updat->max1 = vtl->size;
-				handle->updat->cnt1 += handle->priv.dusb_rpkt_maxlen;
-				handle->updat->pbar();
-			}
+				// other packets doesn't have data header but last one has a different type
+				q = (vtl->size - offset) / handle->priv.dusb_rpkt_maxlen;
+				r = (vtl->size - offset) % handle->priv.dusb_rpkt_maxlen;
 
-			// send last chunk (type)
-			raw.size = r;
-			raw.type = DUSB_RPKT_VIRT_DATA_LAST;
-			memcpy(raw.data, vtl->data + offset, r);
-			offset += r;
+				// send full chunks (no header)
+				for (i = 1; i <= q; i++)
+				{
+					raw.size = handle->priv.dusb_rpkt_maxlen;
+					raw.type = DUSB_RPKT_VIRT_DATA;
+					memcpy(raw.data, vtl->data + offset, handle->priv.dusb_rpkt_maxlen);
+					offset += handle->priv.dusb_rpkt_maxlen;
 
-			ret = dusb_send(handle, &raw);
-			if (ret)
-			{
-				break;
-			}
+					ret = dusb_send(handle, &raw);
+					if (ret)
+					{
+						goto end;
+					}
+#if (VPKT_DBG == 2)
+					ticalcs_info("  PC->TI: Virtual Packet Data with Continuation");
+#endif
+					ret = dusb_recv_acknowledge(handle);
+					if (ret)
+					{
+						goto end;
+					}
+
+					handle->updat->max1 = vtl->size;
+					handle->updat->cnt1 += handle->priv.dusb_rpkt_maxlen;
+					handle->updat->pbar();
+				}
+
+				// send last chunk (type)
+				raw.size = r;
+				raw.type = DUSB_RPKT_VIRT_DATA_LAST;
+				memcpy(raw.data, vtl->data + offset, r);
+				offset += r;
+
+				ret = dusb_send(handle, &raw);
+				if (ret)
+				{
+					break;
+				}
 
 #if (VPKT_DBG == 2)
-			ticalcs_info("  PC->TI: Virtual Packet Data Final");
+				ticalcs_info("  PC->TI: Virtual Packet Data Final");
 #endif
-			// XXX is that workaround necessary on 83PCE/84+CE/84+CE-T ?
-			if (handle->model != CALC_TI84P_USB && handle->model != CALC_TI84PC_USB && handle->model != CALC_TI82A_USB && handle->model != CALC_TI84PT_USB)
-			{
-				workaround_send(handle, &raw, vtl);
+				// XXX is that workaround necessary on 83PCE/84+CE/84+CE-T ?
+				if (handle->model != CALC_TI84P_USB && handle->model != CALC_TI84PC_USB && handle->model != CALC_TI82A_USB && handle->model != CALC_TI84PT_USB)
+				{
+					workaround_send(handle, &raw, vtl);
+				}
+				ret = dusb_recv_acknowledge(handle);
+				if (ret)
+				{
+					break;
+				}
 			}
-			ret = dusb_recv_acknowledge(handle);
-			if (ret)
-			{
-				break;
-			}
-		}
-	} while(0);
+		} while(0);
+	}
 end:
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_SEND_DUSB_VPKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dusb_vpkt(&event, /* size */ vtl->size, /* type */ vtl->type, /* data */ vtl->data);
+	ret = ticalcs_event_send(handle, &event);
 
 	return ret;
 }
@@ -679,7 +691,8 @@ TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacke
 	DUSBRawPacket raw;
 	int i = 0;
 	unsigned long alloc_size;
-	int ret;
+	int ret = 0;
+	CalcEventData event;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(vtl);
@@ -687,120 +700,129 @@ TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacke
 
 	memset(&raw, 0, sizeof(raw));
 
-	do
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_DUSB_VPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dusb_vpkt(&event, /* size */ 0, /* type */ 0, /* data */ NULL);
+	ret = ticalcs_event_send(handle, &event);
+
+	if (!ret)
 	{
-		ret = dusb_recv(handle, &raw);
-		if (ret)
+		do
 		{
-			break;
-		}
-
-		if (raw.type != DUSB_RPKT_VIRT_DATA && raw.type != DUSB_RPKT_VIRT_DATA_LAST)
-		{
-			ticalcs_critical("Unexpected raw packet type");
-			ret = ERR_INVALID_PACKET;
-			break;
-		}
-
-		if (!i++)
-		{
-			// first packet has a data header
-			if (raw.size < DUSB_DH_SIZE)
+			ret = dusb_recv(handle, &raw);
+			if (ret)
 			{
-				ticalcs_critical("First raw packet is too small");
+				break;
+			}
+
+			if (raw.type != DUSB_RPKT_VIRT_DATA && raw.type != DUSB_RPKT_VIRT_DATA_LAST)
+			{
+				ticalcs_critical("Unexpected raw packet type");
 				ret = ERR_INVALID_PACKET;
 				break;
 			}
 
-			if (raw.size > sizeof(raw.data))
+			if (!i++)
 			{
-				ticalcs_critical("Raw packet is too large: %u bytes", raw.size);
-				ret = ERR_INVALID_PACKET;
-				break;
-			}
-
-			*declared_size = (((uint32_t)raw.data[0]) << 24) | (((uint32_t)raw.data[1]) << 16) | (((uint32_t)raw.data[2]) << 8) | (((uint32_t)raw.data[3]) << 0);
-			alloc_size = (*declared_size > 10000 ? 10000 : *declared_size);
-
-			if (alloc_size < raw.size - DUSB_DH_SIZE)
-			{
-				alloc_size = raw.size - DUSB_DH_SIZE;
-			}
-
-			vtl->type = (((uint16_t)raw.data[4]) << 8) | (raw.data[5] << 0);
-			vtl->data = g_realloc(vtl->data, alloc_size);
-			if (vtl->data != NULL)
-			{
-				memcpy(vtl->data, &raw.data[DUSB_DH_SIZE], raw.size - DUSB_DH_SIZE);
-			}
-			vtl->size = raw.size - DUSB_DH_SIZE;
-#if (VPKT_DBG == 2)
-			ticalcs_info("  TI->PC: %s\n\t\t(size = %08x, type = %s)",
-				raw.type == DUSB_RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation",
-				*declared_size, dusb_vpkt_type2name(vtl->type));
-#elif (VPKT_DBG == 1)
-			ticalcs_info("  TI->PC: %s", dusb_vpkt_type2name(vtl->type));
-#endif
-			if (vtl->data != NULL && vtl->type == 0xEE00)
-			{
-				ticalcs_info("    Error Code : %04x\n", (((int)vtl->data[0]) << 8) | vtl->data[1]);
-			}
-		}
-		else
-		{
-			// others have more data
-
-			if (vtl->size + raw.size > alloc_size)
-			{
-				if (vtl->size + raw.size <= est_size)
+				// first packet has a data header
+				if (raw.size < DUSB_DH_SIZE)
 				{
-					alloc_size = est_size;
+					ticalcs_critical("First raw packet is too small");
+					ret = ERR_INVALID_PACKET;
+					break;
 				}
-				else
+
+				if (raw.size > sizeof(raw.data))
 				{
-					alloc_size = (vtl->size + raw.size) * 2;
+					ticalcs_critical("Raw packet is too large: %u bytes", raw.size);
+					ret = ERR_INVALID_PACKET;
+					break;
 				}
+
+				*declared_size = (((uint32_t)raw.data[0]) << 24) | (((uint32_t)raw.data[1]) << 16) | (((uint32_t)raw.data[2]) << 8) | (((uint32_t)raw.data[3]) << 0);
+				alloc_size = (*declared_size > 10000 ? 10000 : *declared_size);
+
+				if (alloc_size < raw.size - DUSB_DH_SIZE)
+				{
+					alloc_size = raw.size - DUSB_DH_SIZE;
+				}
+
+				vtl->type = (((uint16_t)raw.data[4]) << 8) | (raw.data[5] << 0);
 				vtl->data = g_realloc(vtl->data, alloc_size);
-			}
-
-			memcpy(vtl->data + vtl->size, raw.data, raw.size);
-			vtl->size += raw.size;
+				if (vtl->data != NULL)
+				{
+					memcpy(vtl->data, &raw.data[DUSB_DH_SIZE], raw.size - DUSB_DH_SIZE);
+				}
+				vtl->size = raw.size - DUSB_DH_SIZE;
 #if (VPKT_DBG == 2)
-			ticalcs_info("  TI->PC: %s", raw.type == DUSB_RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation");
+				ticalcs_info("  TI->PC: %s\n\t\t(size = %08x, type = %s)",
+					raw.type == DUSB_RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation",
+					*declared_size, dusb_vpkt_type2name(vtl->type));
+#elif (VPKT_DBG == 1)
+				ticalcs_info("  TI->PC: %s", dusb_vpkt_type2name(vtl->type));
 #endif
-
-			if (raw.type == DUSB_RPKT_VIRT_DATA_LAST)
-			{
-				handle->updat->max1 = vtl->size;
-			}
-			else if (vtl->size < *declared_size)
-			{
-				handle->updat->max1 = *declared_size;
-			}
-			else if (vtl->size < est_size)
-			{
-				handle->updat->max1 = est_size;
+				if (vtl->data != NULL && vtl->type == 0xEE00)
+				{
+					ticalcs_info("    Error Code : %04x\n", (((int)vtl->data[0]) << 8) | vtl->data[1]);
+				}
 			}
 			else
 			{
-				handle->updat->max1 = vtl->size + raw.size;
+				// others have more data
+
+				if (vtl->size + raw.size > alloc_size)
+				{
+					if (vtl->size + raw.size <= est_size)
+					{
+						alloc_size = est_size;
+					}
+					else
+					{
+						alloc_size = (vtl->size + raw.size) * 2;
+					}
+					vtl->data = g_realloc(vtl->data, alloc_size);
+				}
+
+				memcpy(vtl->data + vtl->size, raw.data, raw.size);
+				vtl->size += raw.size;
+#if (VPKT_DBG == 2)
+				ticalcs_info("  TI->PC: %s", raw.type == DUSB_RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation");
+#endif
+
+				if (raw.type == DUSB_RPKT_VIRT_DATA_LAST)
+				{
+					handle->updat->max1 = vtl->size;
+				}
+				else if (vtl->size < *declared_size)
+				{
+					handle->updat->max1 = *declared_size;
+				}
+				else if (vtl->size < est_size)
+				{
+					handle->updat->max1 = est_size;
+				}
+				else
+				{
+					handle->updat->max1 = vtl->size + raw.size;
+				}
+
+				handle->updat->cnt1 = vtl->size;
+				handle->updat->pbar();
 			}
 
-			handle->updat->cnt1 = vtl->size;
-			handle->updat->pbar();
-		}
+			workaround_recv(handle, &raw, vtl);
 
-		workaround_recv(handle, &raw, vtl);
+			ret = dusb_send_acknowledge(handle);
+			if (ret)
+			{
+				break;
+			}
 
-		ret = dusb_send_acknowledge(handle);
-		if (ret)
-		{
-			break;
-		}
+		} while (raw.type != DUSB_RPKT_VIRT_DATA_LAST);
+	}
 
-	} while (raw.type != DUSB_RPKT_VIRT_DATA_LAST);
-
-	//printf("dusb_recv_data: rpkt.size=%d\n", raw.size);
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_RECV_DUSB_VPKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dusb_vpkt(&event, /* size */ vtl->size, /* type */ vtl->type, /* data */ vtl->data);
+	ret = ticalcs_event_send(handle, &event);
 
 	return ret;
 }
@@ -814,6 +836,7 @@ TIEXPORT3 int TICALL dusb_recv_data(CalcHandle* handle, DUSBVirtualPacket* vtl)
 	VALIDATE_NONNULL(vtl);
 
 	ret = dusb_recv_data_varsize(handle, vtl, &declared_size, 0);
+	// TODO MAYBE reimplement the following block as a temporary event hook ?
 	if (!ret)
 	{
 		if (declared_size != vtl->size)

@@ -28,17 +28,7 @@
 extern "C" {
 #endif
 
-// Convenients structures
-
 #define DUSB_DH_SIZE		(4+2)	// size + type
-
-typedef struct
-{
-	uint32_t	size;		// virtual packet size
-	uint16_t	type;		// virtual packet type
-
-	uint8_t		*data;		// virtual packet data
-} DUSBVirtualPacket;
 
 // Virtual packet types
 

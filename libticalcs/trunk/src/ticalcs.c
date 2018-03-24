@@ -45,7 +45,7 @@
 
 extern const CalcUpdate default_update;
 
-static CalcFncts const *const calcs[] = 
+static CalcFncts const *const calcs[] =
 {
 	&calc_00,
 #ifndef NO_TI73
@@ -290,6 +290,149 @@ TIEXPORT3 uint32_t TICALL ticalcs_supported_calcs (void)
 	return supported_calcs;
 }
 
+static int default_event_hook(CalcHandle * handle, uint32_t event_count, const CalcEventData * event, void * user_pointer)
+{
+	(void)user_pointer;
+	const char * calcstr = ticalcs_model_to_string(ticalcs_get_model(handle));
+	CableHandle * cable = ticalcs_cable_get(handle);
+	const char * cablestr = ticables_model_to_string(ticables_get_model(cable));
+	const char * portstr = ticables_port_to_string(ticables_get_port(cable));
+	int pkt_debug = (getenv("TICALCS_PKT_DEBUG") != NULL);
+	if (getenv("TICALCS_EVENT_DEBUG") != NULL)
+	{
+		ticalcs_info("Event #%u %d for calc %s connected through cable %s port %s", event_count, event->type, calcstr, cablestr, portstr);
+	}
+	switch (event->type)
+	{
+		case CALC_EVENT_TYPE_BEFORE_CABLE_ATTACH: break;
+		case CALC_EVENT_TYPE_AFTER_CABLE_ATTACH:
+		{
+			ticalcs_info("Cable %s port %s attached", cablestr, portstr);
+			break;
+		}
+
+		case CALC_EVENT_TYPE_BEFORE_CABLE_DETACH: break;
+		case CALC_EVENT_TYPE_AFTER_CABLE_DETACH:
+		{
+			ticalcs_info("Cable %s port %s detached", cablestr, portstr);
+			break;
+		}
+
+		case CALC_EVENT_TYPE_BEFORE_SEND_DBUS_PKT:
+		{
+			if (pkt_debug)
+			{
+				ticalcs_info("Before PC->TI DBUS PKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+			}
+			break;
+		}
+
+		case CALC_EVENT_TYPE_AFTER_RECV_DBUS_PKT_HEADER:
+		case CALC_EVENT_TYPE_AFTER_RECV_DBUS_PKT_DATA:
+		{
+			if (pkt_debug)
+			{
+				ticalcs_info("After TI->PC DBUS PKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+			}
+			break;
+		}
+
+		case CALC_EVENT_TYPE_BEFORE_SEND_DUSB_RPKT:
+		{
+			if (pkt_debug)
+			{
+				ticalcs_info("Before PC->TI DUSB RPKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+			}
+			break;
+		}
+
+		case CALC_EVENT_TYPE_AFTER_RECV_DUSB_RPKT:
+		{
+			if (pkt_debug)
+			{
+				ticalcs_info("After TI->PC DUSB RPKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+			}
+			break;
+		}
+
+		case CALC_EVENT_TYPE_BEFORE_SEND_DUSB_VPKT:
+		{
+			if (pkt_debug)
+			{
+				ticalcs_info("Before PC->TI DUSB VPKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+			}
+			break;
+		}
+
+		case CALC_EVENT_TYPE_AFTER_RECV_DUSB_VPKT:
+		{
+			if (pkt_debug)
+			{
+				ticalcs_info("After TI->PC DUSB VPKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+			}
+			break;
+		}
+
+		case CALC_EVENT_TYPE_BEFORE_SEND_NSP_RPKT:
+		{
+			if (pkt_debug)
+			{
+				ticalcs_info("Before PC->TI NSP RPKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+			}
+			break;
+		}
+
+		case CALC_EVENT_TYPE_AFTER_RECV_NSP_RPKT:
+		{
+			if (pkt_debug)
+			{
+				ticalcs_info("After TI->PC NSP RPKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+			}
+			break;
+		}
+
+
+		case CALC_EVENT_TYPE_BEFORE_SEND_NSP_VPKT:
+		{
+			if (pkt_debug)
+			{
+				ticalcs_info("Before PC->TI NSP VPKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+			}
+			break;
+		}
+
+		case CALC_EVENT_TYPE_AFTER_RECV_NSP_VPKT:
+		{
+			if (pkt_debug)
+			{
+				ticalcs_info("After TI->PC NSP VPKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+			}
+			break;
+		}
+
+		case CALC_EVENT_TYPE_BEFORE_SEND_ROMDUMP_PKT:
+		{
+			if (pkt_debug)
+			{
+				ticalcs_info("Before PC->TI ROM dump PKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+			}
+			break;
+		}
+
+		case CALC_EVENT_TYPE_AFTER_RECV_ROMDUMP_PKT:
+		{
+			if (pkt_debug)
+			{
+				ticalcs_info("After TI->PC ROM dump PKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+			}
+			break;
+		}
+
+		default: break;
+	}
+	return event->retval;
+}
+
 /**
  * ticalcs_handle_new:
  * @model: a hand-held model
@@ -326,6 +469,9 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 
 			handle->priv.nsp_src_port = 0x8001;
 			handle->priv.nsp_dst_port = 0x4003; // NSP_PORT_ADDR_REQUEST
+
+			handle->event_hook = default_event_hook;
+			//handle->event_count = 0;
 
 			handle->buffer = (uint8_t *)g_malloc(65536 + 6);
 			if (handle->buffer == NULL)
@@ -429,18 +575,25 @@ TIEXPORT3 CalcModel TICALL ticalcs_get_model(CalcHandle *handle)
  **/
 TIEXPORT3 int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable)
 {
-	int ret;
+	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	handle->cable = cable;
-	handle->attached = !0;
+	ret = ticalcs_event_send_simple(handle, /* type */ CALC_EVENT_TYPE_BEFORE_CABLE_ATTACH, /* retval */ 0);
 
-	ret = ticables_cable_open(cable);
 	if (!ret)
 	{
-		handle->open = !0;
+		handle->cable = cable;
+		handle->attached = !0;
+
+		ret = ticables_cable_open(cable);
+		if (!ret)
+		{
+			handle->open = !0;
+		}
 	}
+
+	ret = ticalcs_event_send_simple(handle, /* type */ CALC_EVENT_TYPE_AFTER_CABLE_ATTACH, /* retval */ ret);
 
 	return ret;
 }
@@ -455,18 +608,25 @@ TIEXPORT3 int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable
  **/
 TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle* handle)
 {
-	int ret;
+	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	ret = ticables_cable_close(handle->cable);
+	ret = ticalcs_event_send_simple(handle, /* type */ CALC_EVENT_TYPE_BEFORE_CABLE_DETACH, /* retval */ 0);
+
 	if (!ret)
 	{
-		handle->open = 0;
+		ret = ticables_cable_close(handle->cable);
+		if (!ret)
+		{
+			handle->open = 0;
 
-		handle->attached = 0;
-		handle->cable = NULL;
+			handle->attached = 0;
+			handle->cable = NULL;
+		}
 	}
+
+	ret = ticalcs_event_send_simple(handle, /* type */ CALC_EVENT_TYPE_AFTER_CABLE_DETACH, /* retval */ ret);
 
 	return ret;
 }
@@ -573,4 +733,136 @@ TIEXPORT3 int TICALL ticalcs_model_supports_nsp(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
 	        &&*/ ( model == CALC_NSPIRE));
+}
+
+/**
+ * ticalcs_calc_get_event_hook:
+ *
+ * Get the current event hook function pointer.
+ *
+ * Return value: a function pointer.
+ */
+TIEXPORT3 ticalcs_event_hook_type TICALL ticalcs_calc_get_event_hook(CalcHandle *handle)
+{
+	if (!ticalcs_validate_handle(handle))
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return NULL;
+	}
+
+	return handle->event_hook;
+}
+
+/**
+ * ticalcs_calc_set_post_recv_hook:
+ * @hook: new post recv hook
+ *
+ * Set the current event hook function pointer.
+ *
+ * Return value: the previous post recv hook, so that the caller can use it to chain hooks.
+ */
+TIEXPORT3 ticalcs_event_hook_type TICALL ticalcs_calc_set_event_hook(CalcHandle *handle, ticalcs_event_hook_type hook)
+{
+	ticalcs_event_hook_type old_hook;
+
+	if (!ticalcs_validate_handle(handle))
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return NULL;
+	}
+
+	old_hook = handle->event_hook;
+	handle->event_hook = hook;
+
+	return old_hook;
+}
+
+/**
+ * ticalcs_calc_get_event_user_pointer:
+ *
+ * Set the current post recv hook function pointer.
+ *
+ * Return value: the previous post recv hook, so that the caller can use it to chain hooks.
+ */
+TIEXPORT3 void * ticalcs_calc_get_event_user_pointer(CalcHandle *handle)
+{
+	if (!ticalcs_validate_handle(handle))
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return NULL;
+	}
+
+	return handle->user_pointer;
+}
+
+/**
+ * ticalcs_calc_set_event_user_pointer:
+ * @user_pointer: new user pointer
+ *
+ * Set the current post recv hook function pointer.
+ *
+ * Return value: the previous post recv hook, so that the caller can use it to chain hooks.
+ */
+TIEXPORT3 void * ticalcs_calc_set_event_user_pointer(CalcHandle *handle, void * user_pointer)
+{
+	void * old_pointer;
+
+	if (!ticalcs_validate_handle(handle))
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return NULL;
+	}
+
+	old_pointer = handle->user_pointer;
+	handle->user_pointer = user_pointer;
+
+	return old_pointer;
+}
+
+/**
+ * ticalcs_calc_get_event_count:
+ *
+ * Get the current event count since the handle was initialized.
+ *
+ * Return value: an unsigned integer.
+ */
+TIEXPORT3 uint32_t TICALL ticalcs_calc_get_event_count(CalcHandle *handle)
+{
+	if (!ticalcs_validate_handle(handle))
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return 0;
+	}
+
+	return handle->event_count;
+}
+
+/**
+ * ticalcs_calc_fire_user_event:
+ * @handle: a previously allocated handle.
+ * @type: event type.
+ * @user_data: user-specified data.
+ * @user_len: user-specified length.
+ *
+ * Fire a user-specified event to the registered event hook function, if any.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ */
+TIEXPORT1 int TICALL ticalcs_calc_fire_user_event(CalcHandle *handle, CalcEventType type, int retval, void * user_data, uint32_t user_len)
+{
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+
+	if (handle->event_hook && type >= CALC_EVENT_TYPE_USER)
+	{
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ type, /* retval */ retval, /* operation */ CALC_FNCT_LAST);
+		event.data.user_data.data = user_data;
+		event.data.user_data.len = user_len;
+		handle->event_count++;
+		ret = handle->event_hook(handle, handle->event_count, &event, handle->user_pointer);
+	}
+
+	return ret;
 }
