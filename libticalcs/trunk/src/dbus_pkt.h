@@ -24,6 +24,12 @@
 #ifndef __TICALCS_DBUS__
 #define __TICALCS_DBUS__
 
+#include <stdio.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 /*************/
 /* Constants */
@@ -138,5 +144,19 @@
 #define DBUS_REJ_SKIP     2
 #define DBUS_REJ_MEMORY   3
 #define DBUS_REJ_VERSION  4
+
+// Functions
+
+TIEXPORT3 const char* TICALL dbus_cmd2name(uint8_t id);
+TIEXPORT3 const char* TICALL dbus_cmd2officialname(uint8_t id);
+TIEXPORT3 const char* TICALL dbus_cmd2desc(uint8_t id);
+
+TIEXPORT3 const char* TICALL dbus_mid2direction(uint8_t id);
+
+TIEXPORT3 int TICALL dbus_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -814,6 +814,49 @@ static int ti83pfamily_sid(CalcHandle *h)
 
 #include "../src/dusb_cmd.h"
 
+static int dbus_dissect_pkt(CalcHandle *h)
+{
+	int ret;
+	char buffer[262144 + 14];
+	uint8_t data[65536 + 6];
+	uint32_t length = 0;
+	int model;
+
+	printf("Enter calc model (usually 1-12, 16-17): ");
+	ret = scanf("%d", &model);
+	if (ret < 1)
+	{
+		return 0;
+	}
+
+	buffer[0] = 0;
+	printf("Enter DBUS packet as hex string of up to 4 * max packet size (non-hex characters ignored; CTRL+D to end):\n");
+	ret = scanf("%262156[^\x04]", buffer);
+	if (ret < 1)
+	{
+		return 0;
+	}
+
+	fputc('\n', stdout);
+	if (!build_raw_bytes_from_hex_string(buffer, sizeof(buffer) / sizeof(buffer[0]), data, sizeof(data) / sizeof(data[0]), &length))
+	{
+		if (dbus_dissect((CalcModel)model, stderr, data, length) == 0)
+		{
+			printf("Dissection successful\n");
+		}
+		else
+		{
+			printf("Dissection failed\n");
+		}
+	}
+	else
+	{
+		printf("Failed to build raw data, not dissected\n");
+	}
+
+	return 0;
+}
+
 static int dusb_dissect_rpkt(CalcHandle *h)
 {
 	int ret;
@@ -1110,6 +1153,7 @@ static struct
 	{ "83+-family-specific get standard calculator ID", ti83pfamily_gid },
 	{ "83+-family-specific retrieve some 32-byte memory area", ti83pfamily_rid },
 	{ "83+-family-specific set some 32-byte memory area", ti83pfamily_sid },
+	{ "DBUS: dissect packet", dbus_dissect_pkt },
 	{ "DUSB: dissect raw packet", dusb_dissect_rpkt },
 	{ "DUSB: get parameter IDs", dusb_get_param_ids },
 	{ "DUSB: set parameter ID", dusb_set_param_id },

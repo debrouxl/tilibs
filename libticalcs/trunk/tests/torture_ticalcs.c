@@ -520,6 +520,17 @@ static void torture_dusb(void)
     PRINTF(dusb_cmd_s_param_set_r_data_ack, INT, NULL, 0, 0, (void *)0x12345678);
 }
 
+static void torture_dbus(void)
+{
+// dbus_pkt.c
+    PRINTF(dbus_cmd2name, STR, 0);
+    PRINTF(dbus_cmd2officialname, STR, 0);
+    PRINTF(dbus_cmd2desc, STR, 0);
+    PRINTF(dbus_mid2direction, STR, 0);
+    PRINTF(dbus_dissect, INT, CALC_NONE, NULL, (void *)0x12345678, 8);
+    PRINTF(dbus_dissect, INT, CALC_NONE, (void *)0x12345678, NULL, 8);
+}
+
 static void torture_cmdz80(void)
 {
 // cmdz80.c
@@ -728,6 +739,35 @@ static void torture_cmd68k(void)
     PRINTF(ti92_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
 }
 
+static const uint8_t dbus_bad_req_ver_80[] = { 0x00, 0x2D };
+static const uint8_t dbus_good_req_scr_80[] = { 0x00, 0x6D };
+static const uint8_t dbus_good_rep_ack_80[] = { 0x80, 0x56 };
+static const uint8_t dbus_good_rep_xdp_80[] = { 0x80, 0x15, 0x04, 0x00, 0x12, 0x34, 0x56, 0x78, 0x14, 0x01 };
+static const uint8_t dbus_good_ready_generic[] = { 0x00, 0x56, 0x00, 0x00 };
+static const uint8_t dbus_good_ready_89[] = { 0x98, 0x56, 0x00, 0x00 };
+static const uint8_t dbus_good_cts_cbl[] = { 0x19, 0x09, 0x00, 0x00 };
+// These three packets are the important ones for Send({7}) followed by Get L1, sent by a 89(T) to lab equipment such as CBL2.
+static const uint8_t dbus_good_var_inline_list_single_element_single_byte_89[] = { 0x89, 0x06, 0x08, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x01, 0xFF, 0x00, 0x07, 0x01 };
+static const uint8_t dbus_good_xdp_send_inline_list_single_element_single_byte_value_7_89[] = { 0x89, 0x15, 0x07, 0x00, 0x01, 0x00, 0x00, 0x00, 0x20, 0x37, 0x00, 0x58, 0x00 };
+static const uint8_t dbus_good_req_get_l1_89[] = { 0x89, 0xA2, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x04, 0x00 };
+
+static void dissect_functions_unit_test_1(void)
+{
+    assert(ERR_INVALID_PACKET == dbus_dissect(CALC_NONE, stderr, (void *)0x12345678, 1));
+    assert(ERR_INVALID_PACKET == dbus_dissect(CALC_NONE, stderr, (void *)0x12345678, 3));
+    assert(ERR_INVALID_PACKET == dbus_dissect(CALC_NONE, stderr, (void *)0x12345678, 65543));
+    assert(ERR_INVALID_PACKET == dbus_dissect(CALC_NONE, stderr, dbus_bad_req_ver_80, sizeof(dbus_bad_req_ver_80)));
+    assert(0 == dbus_dissect(CALC_NONE, stderr, dbus_good_req_scr_80, sizeof(dbus_good_req_scr_80)));
+    assert(0 == dbus_dissect(CALC_NONE, stderr, dbus_good_rep_ack_80, sizeof(dbus_good_rep_ack_80)));
+    assert(0 == dbus_dissect(CALC_NONE, stderr, dbus_good_rep_xdp_80, sizeof(dbus_good_rep_xdp_80)));
+    assert(0 == dbus_dissect(CALC_NONE, stderr, dbus_good_ready_generic, sizeof(dbus_good_ready_generic)));
+    assert(0 == dbus_dissect(CALC_NONE, stderr, dbus_good_ready_89, sizeof(dbus_good_ready_89)));
+    assert(0 == dbus_dissect(CALC_NONE, stderr, dbus_good_cts_cbl, sizeof(dbus_good_cts_cbl)));
+    assert(0 == dbus_dissect(CALC_NONE, stderr, dbus_good_var_inline_list_single_element_single_byte_89, sizeof(dbus_good_var_inline_list_single_element_single_byte_89)));
+    assert(0 == dbus_dissect(CALC_NONE, stderr, dbus_good_xdp_send_inline_list_single_element_single_byte_value_7_89, sizeof(dbus_good_xdp_send_inline_list_single_element_single_byte_value_7_89)));
+    assert(0 == dbus_dissect(CALC_NONE, stderr, dbus_good_req_get_l1_89, sizeof(dbus_good_req_get_l1_89)));
+}
+
 static const uint8_t dusb_bad_raw_type_1[] = { 0x00, 0x00, 0x00, 0x00, 0x00 };
 static const uint8_t dusb_bad_raw_type_2[] = { 0x00, 0x00, 0x00, 0x00, 0x06 };
 
@@ -815,7 +855,7 @@ static const uint8_t dusb_good_vpkt_data_final_DD00[] = {
 
 static const uint8_t dusb_good_vpkt_data_ack[] = { 0x00, 0x00, 0x00, 0x02, 0x05, 0xE0, 0x00 };
 
-static void dissect_functions_unit_test_1(void)
+static void dissect_functions_unit_test_2(void)
 {
     uint8_t first = 1;
 
@@ -859,7 +899,7 @@ static const uint8_t nsp_good_keypress_home[] = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-static void dissect_functions_unit_test_2(void)
+static void dissect_functions_unit_test_3(void)
 {
     assert(ERR_INVALID_PACKET == nsp_dissect(CALC_NONE, stderr, (void *)0x12345678, 16, 0));
     assert(ERR_INVALID_PACKET == nsp_dissect(CALC_NONE, stderr, (void *)0x12345678, 272, 0));
@@ -876,11 +916,13 @@ int main(int argc, char **argv)
     torture_ticalcs();
     torture_nsp();
     torture_dusb();
+    torture_dbus();
     torture_cmdz80();
     torture_cmd68k();
 
     dissect_functions_unit_test_1();
     dissect_functions_unit_test_2();
+    dissect_functions_unit_test_3();
 
     ticalcs_library_exit();
 
