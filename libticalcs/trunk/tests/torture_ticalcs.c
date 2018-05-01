@@ -520,6 +520,17 @@ static void torture_dusb(void)
     PRINTF(dusb_cmd_s_param_set_r_data_ack, INT, NULL, 0, 0, (void *)0x12345678);
 }
 
+static void torture_dbus(void)
+{
+// dbus_pkt.c
+    PRINTF(dbus_cmd2name, STR, 0);
+    PRINTF(dbus_cmd2officialname, STR, 0);
+    PRINTF(dbus_cmd2desc, STR, 0);
+    PRINTF(dbus_mid2direction, STR, 0);
+    PRINTF(dbus_dissect, INT, CALC_NONE, NULL, (void *)0x12345678, 8);
+    PRINTF(dbus_dissect, INT, CALC_NONE, (void *)0x12345678, NULL, 8);
+}
+
 static void torture_cmdz80(void)
 {
 // cmdz80.c
@@ -876,6 +887,7 @@ int main(int argc, char **argv)
     torture_ticalcs();
     torture_nsp();
     torture_dusb();
+    torture_dbus();
     torture_cmdz80();
     torture_cmd68k();
 

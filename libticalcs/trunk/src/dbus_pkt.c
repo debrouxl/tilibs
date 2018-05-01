@@ -32,6 +32,145 @@
 #include "logging.h"
 #include "error.h"
 
+typedef struct
+{
+	uint8_t     id;
+	uint8_t     has_data;
+	const char *name;
+	const char *officialname;
+	const char *description;
+} DBUSCmdInfo;
+
+static const DBUSCmdInfo cmd_types[] =
+{
+	{ DBUS_CMD_VAR,  1, "VAR",  "RTS",  "Variable header" },
+	{ DBUS_CMD_CTS,  0, "CTS",  "RDY",  "Continue To Send" },
+	{ DBUS_CMD_XDP,  1, "XDP",  "XDP",  "Data Packet" },
+	{ DBUS_CMD_ELD,  0, "ELD",  "EBL",  "Enable LockDown" },
+	{ DBUS_CMD_DLD,  0, "DLD",  "DBL",  "Disable LockDown" },
+	{ DBUS_CMD_EKE,  0, "EKE",  "EKE",  "Enable Key Echo" },
+	{ DBUS_CMD_DKE,  0, "DKE",  "DKE",  "Disable Key Echo" },
+	{ DBUS_CMD_VER,  0, "VER",  "RDI",  "Request version" },
+	{ DBUS_CMD_SKP,  1, "SKP",  "EOR",  "Skip/Exit" },
+	{ DBUS_CMD_SID,  1, "SID",  "SIOA", "Send calc ID" },
+	{ DBUS_CMD_ACK,  0, "ACK",  "ACK",  "Acknowledge" },
+	{ DBUS_CMD_ERR,  1, "ERR",  "CHK",  "Checksum error" }, // ERR has data when receiving.
+	{ DBUS_CMD_RDY,  0, "RDY",  "RDC",  "Test calculator ready" },
+	{ DBUS_CMD_SCR,  0, "SCR",  "REQ",  "Request screenshot" },
+	{ DBUS_CMD_GID,  0, "GID",  "???",  "Get calculator ID (from cert)" },
+	{ DBUS_CMD_DMP,  1, "DMP",  "???",  "Request memory page dump" },
+	{ DBUS_CMD_TG2,  1, "TG2",  "???",  "TestGuard 2 packet" },
+	{ DBUS_CMD_RID,  0, "RID",  "RIOA", "Request calc ID" },
+	{ DBUS_CMD_CNT,  0, "CNT",  "RTC",  "Continue" },
+	{ DBUS_CMD_KEY,  0, "KEY",  "SKY",  "Send key" }, // KEY has special 4-byte format: no length.
+	{ DBUS_CMD_DEL,  1, "DEL",  "DVL",  "Delete variable / app" },
+	{ DBUS_CMD_RUN,  1, "RUN",  "EPL",  "Run variable / app" },
+	{ DBUS_CMD_EOT,  0, "EOT",  "DONE", "End Of Transmission" },
+	{ DBUS_CMD_REQ,  1, "REQ",  "GET",  "Request variable" },
+	{ DBUS_CMD_ERR2, 1, "ERR2", "???",  "Checksum error" }, // ERR2 might have data when receiving ?
+	{ DBUS_CMD_IND,  1, "IND",  "GTE",  "Request variable index" },
+	{ DBUS_CMD_RTS,  1, "RTS",  "SEND", "Request To Send" },
+	{ DBUS_CMD_RSE,  1, "RSE",  "SETP", "Request to Send and Execute" },
+};
+
+typedef struct
+{
+	uint8_t     id;
+	const char *direction;
+} DBUSMachineInfo;
+
+static const DBUSMachineInfo machine_types[] =
+{
+	{ DBUS_MID_PC_TIXX, "PC>TI" },         // 0x00, also PC_TI80
+	{ DBUS_MID_PC_TI82, "PC>TI" },         // 0x02
+	{ DBUS_MID_PC_TI83, "PC>TI" },         // 0x03
+	{ DBUS_MID_PC_TI85, "PC>TI" },         // 0x05
+	{ DBUS_MID_PC_TI86, "PC>TI" },         // 0x06
+	{ DBUS_MID_PC_TI73, "PC>TI" },         // 0x07
+	{ DBUS_MID_PC_TI89, "PC>TI" },         // 0x08, also PC_TI89t / PC_TI92p / PC_V200
+	{ DBUS_MID_PC_TI92, "PC>TI" },         // 0x09
+
+	{ DBUS_MID_CBL_TI73, "CBL>TI" },       // 0x12, also CBL_TI82 / CBL_TI83 / CBL_TI83p / CBL_TI84p
+	{ DBUS_MID_CBL_TI85, "CBL>TI" },       // 0x15, also CBL_TI86
+	{ DBUS_MID_CBL_TI89, "CBL>TI" },       // 0x19, also CBL_TI89t / CBL_TI92 / CBL_TI92p / CBL_V200
+
+	{ DBUS_MID_PC_TI83p, "PC>TI" },        // 0x23, also PC_TI84p
+
+	{ DBUS_MID_TI83p_PC, "TI>PC" },        // 0x73, also TI84p_PC
+	{ DBUS_MID_TI73_PC,  "TI>PC" },        // 0x74
+	{ DBUS_MID_TI80_PC,  "TI>PC" },        // 0x80
+	{ DBUS_MID_TI82_PC,  "TI>PC|TI_CBL" }, // 0x82, also TI82_CBL
+	{ DBUS_MID_TI83_PC,  "TI>PC" },        // 0x83
+	{ DBUS_MID_TI85_PC,  "TI>PC|TI>CBL" }, // 0x85, also TI85_CBL / TI86_CBL
+	{ DBUS_MID_TI86_PC,  "TI>PC" },        // 0x86
+	{ DBUS_MID_TI92p_PC, "TI>PC" },        // 0x88, also V200_PC
+	{ DBUS_MID_TI92_PC,  "TI>PC|TI>CBL" }, // 0x89, also TI89_CBL / TI89T_CBL / TI92_CBL / TI82P_CBL / V200_CBL
+	{ DBUS_MID_TI73_CBL, "TI>CBL" },       // 0x95, also TI893_CBL / TI83p_CBL / TI84p_CBL
+	{ DBUS_MID_TI89_PC,  "TI>PC" },        // 0x98, also TI89t_PC
+
+};
+
+TIEXPORT3 const char* TICALL dbus_cmd2name(uint8_t id)
+{
+	unsigned int i;
+
+	for (i = 0; i < sizeof(cmd_types) / sizeof(cmd_types[0]); i++)
+	{
+		if (id == cmd_types[i].id)
+		{
+			return cmd_types[i].name;
+		}
+	}
+
+	return "";
+}
+
+TIEXPORT3 const char* TICALL dbus_cmd2officialname(uint8_t id)
+{
+	unsigned int i;
+
+	for (i = 0; i < sizeof(cmd_types) / sizeof(cmd_types[0]); i++)
+	{
+		if (id == cmd_types[i].id)
+		{
+			return cmd_types[i].officialname;
+		}
+	}
+
+	return "";
+}
+
+TIEXPORT3 const char* TICALL dbus_cmd2desc(uint8_t id)
+{
+	unsigned int i;
+
+	for (i = 0; i < sizeof(cmd_types) / sizeof(cmd_types[0]); i++)
+	{
+		if (id == cmd_types[i].id)
+		{
+			return cmd_types[i].description;
+		}
+	}
+
+	return "";
+}
+
+TIEXPORT3 const char* TICALL dbus_mid2direction(uint8_t id)
+{
+	unsigned int i;
+
+	for (i = 0; i < sizeof(machine_types) / sizeof(machine_types[0]); i++)
+	{
+		if (id == machine_types[i].id)
+		{
+			return machine_types[i].direction;
+		}
+	}
+
+	return "";
+}
+
+
 // We split packets into chunks to get control regularly and update statistics.
 
 /*
@@ -376,4 +515,19 @@ TIEXPORT3 int TICALL dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, 
 	}
 
 	return ret;
+}
+
+TIEXPORT3 int TICALL dbus_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len)
+{
+	VALIDATE_NONNULL(f);
+	VALIDATE_NONNULL(data);
+
+	if (len < 2 || len > 65536U + 6)
+	{
+		ticalcs_critical("Length %lu (%lX) is too small or too large for a valid DBUS packet", (unsigned long)len, (unsigned long)len);
+		return ERR_INVALID_PACKET;
+	}
+
+	// TODO, from libticables' hex2dbus.c.
+	return ERR_INVALID_PACKET;
 }
