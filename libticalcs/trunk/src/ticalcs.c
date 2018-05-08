@@ -536,21 +536,7 @@ TIEXPORT3 CalcUpdate* TICALL ticalcs_update_get(CalcHandle *handle)
  */
 TIEXPORT3 int TICALL ticalcs_model_supports_dbus(CalcModel model)
 {
-	return (   /*model <  CALC_MAX
-	        &&*/ ( model == CALC_TI73
-	            || model == CALC_TI82
-	            || model == CALC_TI83
-	            || model == CALC_TI83P
-	            || model == CALC_TI84P
-	            || model == CALC_TI85
-	            || model == CALC_TI86
-	            || model == CALC_TI89
-	            || model == CALC_TI89T
-	            || model == CALC_TI92
-	            || model == CALC_TI92P
-	            || model == CALC_V200
-	            || model == CALC_TI80
-	            || model == CALC_TI84PC));
+	return ticonv_model_has_legacy_ioport(model);
 }
 
 /**
