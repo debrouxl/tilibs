@@ -68,7 +68,7 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
 
 	// detokenization to UTF-16
 	p = utf16_src = (unsigned short *)src;
-	q = utf16_dst = g_malloc0(18*ticonv_utf16_strlen(utf16_src)+2);
+	q = utf16_dst = (unsigned short *)g_malloc0(18*ticonv_utf16_strlen(utf16_src)+2);
 
 	// conversion from UTF-16 to UTF-16
 	if (ticonv_model_is_ti68k(model) && !is_utf8)
@@ -261,7 +261,7 @@ TIEXPORT4 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 	if (!ticonv_environment_has_utf8_filenames()) return g_strdup(src_);
 
 	p = src = (char *)src_;
-	q = dst = g_malloc0(18*strlen(src)+1);
+	q = dst = (char *)g_malloc0(18*strlen(src)+1);
 
 	while(*p)
 	{

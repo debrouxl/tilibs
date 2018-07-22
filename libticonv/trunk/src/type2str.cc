@@ -21,8 +21,8 @@
  */
 
 /*
-	This unit contains an iconv-compatible wrapper for the TI charset
-	conversion routines.
+	This unit contains generic functions for converting between a model
+	string and enum CalcModel.
 */
 
 #ifdef HAVE_CONFIG_H

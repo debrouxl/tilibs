@@ -233,7 +233,7 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigne
 	char * out = NULL;
 	if (utf16 != NULL)
 	{
-		char * ti = g_malloc0(4*ticonv_utf16_strlen(utf16) + 1);	// upper bound
+		char * ti = (char *)g_malloc0(4*ticonv_utf16_strlen(utf16) + 1);	// upper bound
 		out = ticonv_charset_utf16_to_ti_s(model, utf16, ti);
 		if (out == NULL)
 		{
@@ -330,7 +330,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, con
 	unsigned short * out = NULL;
 	if (ti != NULL)
 	{
-		unsigned short * utf16 = g_malloc0(4 * strlen(ti) + 2);	// upper bound
+		unsigned short * utf16 = (unsigned short *)g_malloc0(4 * strlen(ti) + 2);	// upper bound
 		out = ticonv_charset_ti_to_utf16_s(model, ti, utf16);
 		if (out == NULL)
 		{
