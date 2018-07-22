@@ -1,5 +1,7 @@
 ticonv.h : Type definitions and Exports
-ticonv.c : General functions and Generic TI charset <=> UTF-16 conversions
-charset.c : TI8x/TI9x charset <=> UTF-16 conversion routines
-tokens.c : Generic detokenization support
-filename.c : Generic TI varname to filename transcoding
+ticonv.cc : General functions and Generic TI charset <=> UTF-16 conversions
+charset.cc : TI8x/TI9x charset <=> UTF-16 conversion routines
+tokens.cc : Generic detokenization support
+filename.cc : Generic TI varname to filename transcoding
+iconv.cc : iconv interface for libticonv
+type2str.cc : Calculator model <=> string conversion routines

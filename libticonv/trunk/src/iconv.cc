@@ -24,6 +24,8 @@
 	conversion routines.
 */
 
+extern "C" {
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -43,10 +45,10 @@ TIEXPORT4 ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const cha
 {
   ticonv_iconv_t cd;
   cd.src_calc=ticonv_string_to_model(fromcode);
+  cd.dest_calc=ticonv_string_to_model(tocode);
 #if 1
   cd.iconv_desc=iconv_open(cd.src_calc || fromcode == NULL ? "UTF-16" : fromcode, cd.dest_calc || tocode == NULL ? "UTF-16" : tocode);
 #endif
-  cd.dest_calc=ticonv_string_to_model(tocode);
   cd.lossy_count=0;
   cd.lookahead_result=0;
   cd.lookahead_errno=0;
@@ -81,14 +83,14 @@ TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
     }
   } else {
     unsigned short *temp=NULL;
-    void *iconv_src;
+    char *iconv_src;
     size_t iconv_inbytes;
     size_t bufsize=2;
     char *buf=NULL;
     char *iconv_dest=NULL;
 
     if (cd.src_calc) {
-      char *input=g_malloc(*inbytesleft+1), *inputp=input;
+      char *input=(char *)g_malloc(*inbytesleft+1), *inputp=input;
       size_t tempsize;
       strncpy(input,*inbuf,*inbytesleft);
       input[*inbytesleft]=0;
@@ -97,13 +99,13 @@ TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
       for (inputp=input; strchr(inputp,0)<input+*inbytesleft; inputp=strchr(inputp,0)+1) {
         unsigned short *temp2=ticonv_charset_ti_to_utf16(cd.src_calc,inputp);
         size_t temp2size=ticonv_utf16_strlen(temp2)+1;
-        temp=g_realloc(temp,(tempsize+temp2size)<<1);
+        temp=(unsigned short *)g_realloc(temp,(tempsize+temp2size)<<1);
         memcpy(temp+tempsize,temp2,temp2size);
         tempsize+=temp2size;
         ticonv_utf16_free(temp2);
       }
       g_free(input);
-      iconv_src=temp;
+      iconv_src=(char *)temp;
       iconv_inbytes=tempsize<<1;
       if ((*inbuf)[*inbytesleft]) iconv_inbytes-=2;
     } else {
@@ -119,7 +121,7 @@ TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
         iconv(cd.iconv_desc,NULL,NULL,NULL,NULL);
         iconv_dest_pos=iconv_dest-buf;
         convchar_pos=(char*)convchar-buf;
-        buf=g_realloc(buf,bufsize+4);
+        buf=(char *)g_realloc(buf,bufsize+4);
         iconv_dest=buf+iconv_dest_pos;
         convchar=(unsigned short *)(buf+convchar_pos);
         iconv_size=bufsize-iconv_dest_pos;
@@ -137,7 +139,7 @@ TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
           if (!convchar) {
             convchar=(unsigned short *)iconv_dest;
           }
-          result=iconv(cd.iconv_desc,(void*)&iconv_src,&iconv_inbytes,&iconv_dest,&iconv_size);
+          result=iconv(cd.iconv_desc,&iconv_src,&iconv_inbytes,&iconv_dest,&iconv_size);
         }
         if (result==(size_t)-1 && errno!=E2BIG) {
           break;
@@ -166,7 +168,7 @@ TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
             }
             if (result==(size_t)-1) {
               iconv_size+=2; /* look 1 codepoint ahead */
-              result=iconv(cd.iconv_desc,(void*)&iconv_src,&iconv_inbytes,&iconv_dest,&iconv_size);
+              result=iconv(cd.iconv_desc,&iconv_src,&iconv_inbytes,&iconv_dest,&iconv_size);
               if (result==(size_t)-1 && errno!=E2BIG) {
                 break;
               }
@@ -213,12 +215,12 @@ TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
       }
       g_free(buf);
     } else {
-      result=iconv(cd.iconv_desc,(void*)&iconv_src,&iconv_inbytes,outbuf,outbytesleft);
+      result=iconv(cd.iconv_desc,&iconv_src,&iconv_inbytes,outbuf,outbytesleft);
     }
 
     if (cd.src_calc) {
       if (iconv_inbytes) {
-        char *tmp1=ticonv_charset_utf16_to_ti(cd.src_calc,iconv_src),*tmp2;
+        char *tmp1=ticonv_charset_utf16_to_ti(cd.src_calc,(const unsigned short *)iconv_src),*tmp2;
         unsigned short *p;
         size_t l1,l2;
         for (p=temp; p<(unsigned short *)iconv_src; p++) {
@@ -255,4 +257,6 @@ TIEXPORT4 int TICALL ticonv_iconv_close (ticonv_iconv_t cd)
 #else
   return 0;
 #endif
+}
+
 }

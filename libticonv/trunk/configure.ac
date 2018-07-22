@@ -28,7 +28,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PREFIX_DEFAULT(/usr/local)
 
 dnl Files to configure.
-AC_CONFIG_SRCDIR([src/ticonv.c])
+AC_CONFIG_SRCDIR([src/ticonv.cc])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
@@ -46,6 +46,7 @@ LT_INIT
 
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
@@ -86,6 +87,7 @@ case "$host" in
   *)          ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"
+CXXFLAGS="$CXXFLAGS $ARCH"
 
 build_mac=''
 case "${host_os}" in
@@ -127,6 +129,7 @@ case $host_os in
       AC_MSG_WARN([produced libraries might be incompatible with MSVC-compiled code])
     else
       CFLAGS="$CFLAGS $msnative_struct"
+      CXXFLAGS="$CXXFLAGS $msnative_struct"
       AC_MSG_RESULT([${msnative_struct}])
     fi
   fi
@@ -156,6 +159,7 @@ case $host_os in
 	      AC_MSG_RESULT([no])
 	   else
 	      CFLAGS="$CFLAGS $visibility_flag"
+	      CXXFLAGS="$CXXFLAGS $visibility_flag"
 	      AC_MSG_RESULT([${visibility_flag}])
 	      AC_DEFINE(HAVE_FVISIBILITY, 1, [Use -fvisibility=hidden flag])
 	    fi

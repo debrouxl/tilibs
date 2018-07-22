@@ -39,6 +39,10 @@
 #include "export4.h"
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 	/***********************/
 	/* Types & Definitions */
 	/***********************/
@@ -95,10 +99,6 @@ typedef struct
 // namespace scheme: library_class_function like ticonv_library_init
 // functions suffixed with _s means 'static', no memory allocation
 // TODO functions suffixed with _sn means 'static with length limit', no memory allocation
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 	/****************/
 	/* Entry points */
