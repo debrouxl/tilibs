@@ -132,7 +132,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 	if (fread_word(f, &tmp) < 0) goto tfrr; // Offset 0x3A
 	content->num_entries = tmp;
 
-	content->entries = g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
+	content->entries = (VarEntry **)g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
 	if (content->entries == NULL) 
 	{
 		ret = ERR_MALLOC;
@@ -141,7 +141,8 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 
 	for (i = 0, j = 0; i < content->num_entries; i++) 
 	{
-		VarEntry *entry = content->entries[j] = g_malloc0(sizeof(VarEntry));
+		VarEntry *entry = content->entries[j] = (VarEntry *)g_malloc0(sizeof(VarEntry));
+		uint8_t attr;
 
 		if (fread_long(f, &curr_offset) < 0) goto tfrr; // Offset N, 0x3C for the first entry
 		if (curr_offset > file_size)
@@ -152,8 +153,8 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 		if (fread_8_chars(f, varname) < 0)  goto tfrr; // Offset N+4, 0x40 for the first entry
 		ticonv_varname_from_tifile_sn(content->model_dst, varname, entry->name, sizeof(entry->name), entry->type);
 		if (fread_byte(f, &(entry->type)) < 0) goto tfrr; // Offset N+12, 0x48 for the first entry
-		if (fread_byte(f, &(entry->attr)) < 0) goto tfrr; // Offset N+13, 0x49 for the first entry
-		entry->attr = (entry->attr == 2 || entry->attr == 3) ? ATTRB_ARCHIVED : entry->attr;
+		if (fread_byte(f, &attr) < 0) goto tfrr; // Offset N+13, 0x49 for the first entry
+		entry->attr = (attr == 2 || attr == 3) ? ATTRB_ARCHIVED : (FileAttr)attr;
 		if (fread_word(f, NULL) < 0) goto tfrr; // Offset N+14, 0x4A for the first entry
 
 		if (entry->type == TI92_DIR) // same as TI89_DIR, TI89t_DIR, ...
@@ -208,7 +209,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 		}
 	}
 	content->num_entries = j;
-	content->entries = g_realloc(content->entries, content->num_entries * sizeof(VarEntry*));
+	content->entries = (VarEntry **)g_realloc(content->entries, content->num_entries * sizeof(VarEntry*));
 	//fread_long(f, &next_offset);
 	//fseek(f, next_offset - 2, SEEK_SET);
 	//fread_word(f, &(content->checksum));

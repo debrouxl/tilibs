@@ -1,12 +1,12 @@
 tifiles.h : Enumerations, structures and type definitions
-tifiles.c : Entry Points
-error.c : General Functions
-type2str.c : Types and strings conversions
-filetypes.c : File type checking
-misc.c : Miscelaneous
-typesxx.c : Types and strings conversions
-filesxx.c : Operations on TI files (single/group only)
-grouped.c : Grouping/Ungrouping of TI files
-comments.c : Automatic comments in files
-ve_fp.c : VarEntry & FlashPage structures creation/deletion
-tigroup.c : Operations on Ti Groups (*.tig)
+tifiles.cc : Entry Points
+error.cc : General Functions
+type2str.cc : Types and strings conversions
+filetypes.cc : File type checking
+misc.cc : Miscellaneous
+typesxx.cc : Types and strings conversions
+filesxx.cc : Operations on TI files (single/group only)
+grouped.cc : Grouping/Ungrouping of TI files
+comments.cc : Automatic comments in files
+ve_fp.cc : VarEntry & FlashPage structures creation/deletion
+tigroup.cc : Operations on Ti Groups (*.tig)src/cert.cc

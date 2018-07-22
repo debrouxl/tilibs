@@ -150,5 +150,5 @@ TIEXPORT2 FileClass TICALL tifiles_string_to_class(const char *str)
 			return TIFILE_TIGROUP;
 	}
 
-	return 0;
+	return TIFILE_NONE;
 }

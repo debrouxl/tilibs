@@ -25,6 +25,10 @@
 #include <stdint.h>
 #include "tifiles.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Structures */
 
 typedef FileContent		Ti8xRegular;
@@ -60,5 +64,9 @@ int ti8x_file_write_flash(const char *filename, Ti8xFlash *content, char **filen
 
 // displaying
 int ti8x_file_display(const char *filename);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

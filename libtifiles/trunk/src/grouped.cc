@@ -129,7 +129,7 @@ TIEXPORT2 int TICALL tifiles_group_contents(FileContent **src_contents, FileCont
 	}
 
 	dst->num_entries = n;
-	dst->entries = g_malloc0((n + 1) * sizeof(VarEntry*));
+	dst->entries = (VarEntry **)g_malloc0((n + 1) * sizeof(VarEntry*));
 	if (dst->entries == NULL)
 	{
 		g_free(dst);
@@ -199,7 +199,7 @@ TIEXPORT2 int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***de
 		memcpy(dst[i], src, sizeof(FileContent));
 
 		// allocate and duplicate entry
-		dst[i]->entries = g_malloc0((1+1) * sizeof(VarEntry*));
+		dst[i]->entries = (VarEntry **)g_malloc0((1+1) * sizeof(VarEntry*));
 		dst_entry = dst[i]->entries[0] = tifiles_ve_dup(src->entries[i]);
 
 		// update some fields

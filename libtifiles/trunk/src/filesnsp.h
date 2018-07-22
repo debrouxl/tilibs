@@ -25,6 +25,10 @@
 #include <stdint.h>
 #include "tifiles.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Functions */
 
 // allocating
@@ -48,5 +52,9 @@ int tnsp_file_write_flash(const char *filename, FileContent *content, char **fil
 
 // displaying
 int tnsp_file_display(const char *filename);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

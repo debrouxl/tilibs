@@ -827,7 +827,7 @@ static int test_ti8x_group_merge()
 static int test_tigroup()
 {
 	TigContent *content = NULL;
-	TigEntry te = { NULL, 0, { NULL } };
+	TigEntry te = { NULL, TIFILE_NONE, { NULL } };
 	int ret = -1;
 
 	// SVN can't handle file like 'pépé'. You will have to rename it from pepe to pépé and
@@ -958,27 +958,27 @@ int main(int argc, char **argv)
 	printf("--\n");
 
 	// test filetypes.c
-	for(i = CALC_TI73; i <= CALC_V200; i++)
+	for(i = CALC_TI73; i < CALC_MAX; i++)
 	{
-		printf("%s (%i) ", tifiles_fext_of_group(i), i);
+		printf("%s (%i) ", tifiles_fext_of_group((CalcModel)i), i);
 	}
 	printf("\n");
 
-	for(i = CALC_TI73; i <= CALC_V200; i++)
+	for(i = CALC_TI73; i < CALC_MAX; i++)
 	{
-		printf("%s ", tifiles_fext_of_backup(i));
+		printf("%s ", tifiles_fext_of_backup((CalcModel)i));
 	}
 	printf("\n");
 
-	for(i = CALC_TI73; i <= CALC_V200; i++)
+	for(i = CALC_TI73; i < CALC_MAX; i++)
 	{
-		printf("%s ", tifiles_fext_of_flash_os(i));
+		printf("%s ", tifiles_fext_of_flash_os((CalcModel)i));
 	}
 	printf("\n");
 
-	for(i = CALC_TI73; i <= CALC_V200; i++)
+	for(i = CALC_TI73; i < CALC_MAX; i++)
 	{
-		printf("%s ", tifiles_fext_of_flash_app(i));
+		printf("%s ", tifiles_fext_of_flash_app((CalcModel)i));
 	}
 	printf("\n");
 	printf("--\n");
