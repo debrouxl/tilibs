@@ -2,32 +2,32 @@ cmake_minimum_required(VERSION 3.5)
 
 project(libtifiles2
         VERSION     1.1.8
-        LANGUAGES   C)
+        LANGUAGES   CXX)
 
 file(GLOB HEADER_FILES src/*.h)
 set(SRC_FILES
         ${HEADER_FILES}
-        src/cert.c
-        src/comments.c
-        src/error.c
-        src/files8x.c
-        src/files9x.c
-        src/filesnsp.c
-        src/filesxx.c
-        src/filetypes.c
-        src/grouped.c
-        src/intelhex.c
-        src/misc.c
-        src/rwfile.c
-        src/tifiles.c
-        src/tigroup.c
-        src/type2str.c
-        src/types68k.c
-        src/types83p.c
-        src/typesnsp.c
-        src/typesoldz80.c
-        src/typesxx.c
-        src/ve_fp.c)
+        src/cert.cc
+        src/comments.cc
+        src/error.cc
+        src/files8x.cc
+        src/files9x.cc
+        src/filesnsp.cc
+        src/filesxx.cc
+        src/filetypes.cc
+        src/grouped.cc
+        src/intelhex.cc
+        src/misc.cc
+        src/rwfile.cc
+        src/tifiles.cc
+        src/tigroup.cc
+        src/type2str.cc
+        src/types68k.cc
+        src/types83p.cc
+        src/typesnsp.cc
+        src/typesoldz80.cc
+        src/typesxx.cc
+        src/ve_fp.cc)
 
 set(PUBLIC_HEADERS
         src/tifiles.h

@@ -218,7 +218,7 @@ TIEXPORT2 char *TICALL tifiles_get_varname(const char *full_name)
 {
 	if (full_name != NULL)
 	{
-		char *bs = strchr(full_name, '\\');
+		char *bs = (char *)strchr(full_name, '\\');
 
 		if (bs == NULL)
 		{
@@ -257,12 +257,11 @@ TIEXPORT2 char *TICALL tifiles_get_fldname(const char *full_name)
  **/
 TIEXPORT2 char *TICALL tifiles_get_fldname_s(const char *full_name, char * dest_fldname)
 {
-	char *bs;
 	int i;
 
 	if (full_name != NULL && dest_fldname != NULL)
 	{
-		bs = strchr(full_name, '\\');
+		char *bs = (char *)strchr(full_name, '\\');
 		if (bs == NULL)
 		{
 			dest_fldname[0] = 0;

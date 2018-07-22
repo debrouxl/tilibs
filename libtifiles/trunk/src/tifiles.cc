@@ -57,9 +57,9 @@ int tifiles_instance = 0;	// counts # of instances
 TIEXPORT2 int TICALL tifiles_library_init()
 {
 	char locale_dir[65536];
-	
+
 #ifdef __WIN32__
-	HANDLE hDll;
+	HMODULE hDll;
 	int i;
 
 	hDll = GetModuleHandle("libtifiles2-11.dll");
