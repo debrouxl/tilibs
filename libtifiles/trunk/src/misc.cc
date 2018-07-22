@@ -218,7 +218,7 @@ TIEXPORT2 char *TICALL tifiles_get_varname(const char *full_name)
 {
 	if (full_name != NULL)
 	{
-		char *bs = strchr(full_name, '\\');
+		char *bs = (char *)strchr(full_name, '\\');
 
 		if (bs == NULL)
 		{
@@ -243,13 +243,13 @@ TIEXPORT2 char *TICALL tifiles_get_varname(const char *full_name)
  **/
 TIEXPORT2 char *TICALL tifiles_get_fldname(const char *full_name)
 {
+	// FIXME this is not thread-safe !
 	static char folder[FLDNAME_MAX];
-	char *bs;
 	int i;
 
 	if (full_name != NULL)
 	{
-		bs = strchr(full_name, '\\');
+		char *bs = (char *)strchr(full_name, '\\');
 		if (bs == NULL)
 		{
 			folder[0] = 0;

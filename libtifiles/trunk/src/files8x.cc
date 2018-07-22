@@ -259,7 +259,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 	if (fseek(f, offset, SEEK_SET) < 0) goto tfrr; // Offset 0x37
 
 	content->num_entries = i;
-	content->entries = g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
+	content->entries = (VarEntry **)g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
 	if (content->entries == NULL) 
 	{
 		ret = ERR_MALLOC;
@@ -268,7 +268,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
-		VarEntry *entry = content->entries[i] = g_malloc0(sizeof(VarEntry));
+		VarEntry *entry = content->entries[i] = (VarEntry *)g_malloc0(sizeof(VarEntry));
 		uint16_t packet_length, entry_size;
 
 		if (fread_word(f, &packet_length) < 0) goto tfrr; // Offset 0x37
@@ -477,7 +477,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
 	}
 	if (header_size > 9)
 	{
-		if (fread(extra_header, 1, header_size - 9, f) < header_size - 9) goto tfrb;
+		if (fread(extra_header, 1, header_size - 9, f) < (size_t)header_size - 9) goto tfrb;
 	}
 	content->version = extra_header[2];
 
@@ -721,7 +721,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 				content->pages = NULL;
 
 				// TODO: modify this code if TI ever makes a TI-Z80 model with more than 256 Flash pages...
-				content->pages = g_malloc0((256+1) * sizeof(Ti8xFlashPage *));
+				content->pages = (FlashPage **)g_malloc0((256+1) * sizeof(Ti8xFlashPage *));
 				if (content->pages == NULL)
 				{
 					ret = ERR_MALLOC;
@@ -737,7 +737,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 					uint16_t page;
 					uint8_t flag = 0x80;
 					uint8_t data[FLASH_PAGE_SIZE];
-					FlashPage* fp = content->pages[i] = g_malloc0(sizeof(FlashPage));
+					FlashPage* fp = content->pages[i] = (FlashPage *)g_malloc0(sizeof(FlashPage));
 
 					ret = hex_block_read(f, &size, &addr, &flag, data, &page);
 

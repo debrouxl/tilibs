@@ -179,7 +179,7 @@ TIEXPORT2 int TICALL tifiles_te_display(TigEntry* entry)
  **/
 TIEXPORT2 TigEntry**	TICALL tifiles_te_create_array(unsigned int nelts)
 {
-	return g_malloc0((nelts + 1) * sizeof(TigEntry *));
+	return (TigEntry **)g_malloc0((nelts + 1) * sizeof(TigEntry *));
 }
 
 /**
@@ -194,7 +194,7 @@ TIEXPORT2 TigEntry**	TICALL tifiles_te_create_array(unsigned int nelts)
  **/
 TIEXPORT2 TigEntry**	TICALL tifiles_te_resize_array(TigEntry** array, unsigned int nelts)
 {
-	TigEntry ** ptr = g_realloc(array, (nelts + 1) * sizeof(TigEntry *));
+	TigEntry ** ptr = (TigEntry **)g_realloc(array, (nelts + 1) * sizeof(TigEntry *));
 	if (ptr != NULL)
 	{
 		ptr[nelts] = NULL;
@@ -934,7 +934,7 @@ tuf:
  **/
 TIEXPORT2 TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, unsigned int n)
 {
-	TigContent* content = g_malloc0(sizeof(*content));
+	TigContent* content = (TigContent *)g_malloc0(sizeof(*content));
 	if (content != NULL)
 	{
 		content->model = content->model_dst = model;
@@ -1006,7 +1006,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_tigroup(TigContent *content)
 static int open_temp_file(const char *orig_name, char **temp_name)
 {
 	const char *suffix;
-	char *template;
+	char *templ;
 	int fd;
 
 	*temp_name = NULL;
@@ -1015,11 +1015,11 @@ static int open_temp_file(const char *orig_name, char **temp_name)
 	{
 		suffix = NULL;
 	}
-	template = g_strconcat("tigXXXXXX", suffix, NULL);
+	templ = g_strconcat("tigXXXXXX", suffix, NULL);
 
-	fd = g_file_open_tmp(template, temp_name, NULL);
+	fd = g_file_open_tmp(templ, temp_name, NULL);
 
-	g_free(template);
+	g_free(templ);
 	if (fd == -1) {
 		g_free(*temp_name);
 		*temp_name = NULL;
@@ -1121,7 +1121,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 
 		// add to TigContent
 		{
-			int model = tifiles_file_get_model(fname);
+			CalcModel model = tifiles_file_get_model(fname);
 
 			if (content->model == CALC_NONE)
 			{

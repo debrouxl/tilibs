@@ -49,7 +49,7 @@
  **/
 TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 {
-	FileContent* content = g_malloc0(sizeof(FileContent));
+	FileContent* content = (FileContent *)g_malloc0(sizeof(FileContent));
 
 	if (content != NULL)
 	{
@@ -326,7 +326,7 @@ TIEXPORT2 int TICALL tifiles_file_display_regular(FileContent *content)
 				}
 				tifiles_info("  name:        %s", ticonv_varname_to_utf8_sn(content->model, ve->name, trans, sizeof(trans), ve->type));
 				tifiles_info("  type:        %02X (%s)", ve->type, tifiles_vartype2string(content->model, ve->type));
-				tifiles_info("  attr:        %s", tifiles_attribute_to_string(ve->attr));
+				tifiles_info("  attr:        %s", tifiles_attribute_to_string((FileAttr)ve->attr));
 				tifiles_info("  version:     %02X (%u)", ve->version, ve->version);
 				tifiles_info("  length:      %04X (%u)", ve->size, ve->size);
 				tifiles_info("  data:        %p", ve->data);
@@ -354,7 +354,7 @@ TIEXPORT2 int TICALL tifiles_file_display_regular(FileContent *content)
  **/
 TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 {
-	BackupContent* content = g_malloc0(sizeof(BackupContent));
+	BackupContent* content = (BackupContent *)g_malloc0(sizeof(BackupContent));
 
 	if (content != NULL)
 	{
@@ -527,7 +527,7 @@ TIEXPORT2 int TICALL tifiles_file_display_backup(BackupContent *content)
  **/
 TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 {
-	FlashContent* content = g_malloc0(sizeof(FlashContent));
+	FlashContent* content = (FlashContent *)g_malloc0(sizeof(FlashContent));
 
 	if (content != NULL)
 	{

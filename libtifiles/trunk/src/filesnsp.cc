@@ -83,11 +83,11 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 	content->model = CALC_NSPIRE;
 	content->model_dst = content->model;
 
-	content->entries = g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
+	content->entries = (VarEntry **)g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
 
 	{
 		long cur_pos;
-		VarEntry *entry = content->entries[0] = g_malloc0(sizeof(VarEntry));
+		VarEntry *entry = content->entries[0] = (VarEntry *)g_malloc0(sizeof(VarEntry));
 
 		gchar *basename = g_path_get_basename(filename);
 		gchar *ext = tifiles_fext_get(basename);

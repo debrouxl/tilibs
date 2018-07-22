@@ -370,7 +370,7 @@ TIEXPORT2 char * TICALL tifiles_fext_get(const char *filename)
 {
 	if (filename != NULL)
 	{
-		char * d = strrchr(filename, '.');
+		char * d = (char *)strrchr(filename, '.');
 		if (d != NULL)
 		{
 			return (++d);
@@ -1248,7 +1248,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
  **/
 TIEXPORT2 CalcModel TICALL tifiles_fext_to_model(const char *ext)
 {
-	int type = CALC_NONE;
+	CalcModel type = CALC_NONE;
 
 	if (ext == NULL)
 	{
@@ -1396,7 +1396,7 @@ TIEXPORT2 FileClass TICALL tifiles_file_get_class(const char *filename)
 	}
 	else
 	{
-		return 0;
+		return TIFILE_NONE;
 	}
 }
 

@@ -48,6 +48,10 @@
 # define LIBFILES_VERSION VERSION
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Types */
 
 // TI-XX: up to 4*8 chars + 1, NSpire, up to 4*255 chars + 1
@@ -74,7 +78,7 @@ typedef enum
  **/
 typedef enum 
 {
-	TIFILE_SINGLE = 1, TIFILE_GROUP = 2, TIFILE_REGULAR = 3, TIFILE_BACKUP = 4,
+	TIFILE_NONE = 0, TIFILE_SINGLE = 1, TIFILE_GROUP = 2, TIFILE_REGULAR = 3, TIFILE_BACKUP = 4,
 	TIFILE_FLASH = 8, TIFILE_TIGROUP = 16, TIFILE_OS = 32, TIFILE_APP = 64,
 } FileClass;
 
@@ -309,10 +313,6 @@ typedef struct
 /* Functions */
 
 // namespace scheme: library_class_function like tifiles_fext_get
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 	/****************/
 	/* Entry points */
