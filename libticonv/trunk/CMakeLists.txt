@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(libticonv
         VERSION     1.1.6
-        LANGUAGES   C)
+        LANGUAGES   CXX)
 
 # Takes care of the i18n po/pot/gmo/mo files
 i18n_mo_from_po_pot()
@@ -10,12 +10,12 @@ i18n_mo_from_po_pot()
 file(GLOB HEADER_FILES src/*.h)
 set(SRC_FILES
         ${HEADER_FILES}
-        src/charset.c
-        src/filename.c
+        src/charset.cc
+        src/filename.cc
         src/iconv.c
-        src/ticonv.c
-        src/tokens.c
-        src/type2str.c)
+        src/ticonv.cc
+        src/tokens.cc
+        src/type2str.cc)
 
 set(PUBLIC_HEADERS
         src/ticonv.h
