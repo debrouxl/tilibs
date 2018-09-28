@@ -153,7 +153,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 			case CALC_TI84PC_USB:
 			{
 				size -= 4;
-				*bitmap = ticalcs_alloc_screen(TI84PC_ROWS * TI84PC_COLS * 2);
+				*bitmap = (uint8_t *)ticalcs_alloc_screen(TI84PC_ROWS * TI84PC_COLS * 2);
 				ret = ticalcs_screen_84pcse_rle_uncompress(data, size, *bitmap, TI84PC_ROWS * TI84PC_COLS * 2);
 				g_free(data);
 				if (ret)
@@ -368,7 +368,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	attrs[2]->data[7] = LSB(content->mem_address);
 
 	length = content->data_length1 + content->data_length2 + content->data_length3;
-	data = p = g_malloc(length);
+	data = p = (uint8_t *)g_malloc(length);
 	memcpy(p, content->data_part1, content->data_length1);
 	p += content->data_length1;
 	memcpy(p, content->data_part2, content->data_length2);
@@ -579,7 +579,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 					}
 				}
 
-				ve->data = tifiles_ve_alloc_data(ve->size);
+				ve->data = (uint8_t *)tifiles_ve_alloc_data(ve->size);
 				memcpy(ve->data, data, ve->size);
 
 				g_free(data);
@@ -635,7 +635,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 #endif
 
 	size = ptr->num_pages * FLASH_PAGE_SIZE;
-	data = tifiles_fp_alloc_data(size);	// must be rounded-up
+	data = (uint8_t *)tifiles_fp_alloc_data(size);	// must be rounded-up
 	if (data == NULL)
 	{
 		return ERR_MALLOC;
@@ -815,7 +815,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 					fp->page = data_page++;
 					fp->flag = 0x80;
 					fp->size = FLASH_PAGE_SIZE;
-					fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
+					fp->data = (uint8_t *)tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 					memcpy(fp->data, data + FLASH_PAGE_SIZE*page, FLASH_PAGE_SIZE);
 
 					handle->updat->cnt2 = page;
@@ -828,7 +828,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 					fp->page = data_page++;
 					fp->flag = 0x80;
 					fp->size = r;
-					fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
+					fp->data = (uint8_t *)tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 					memcpy(fp->data, data + FLASH_PAGE_SIZE*page, r);
 
 					handle->updat->cnt2 = page;
@@ -1745,25 +1745,26 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			uint8_t product_id = 0;
 			uint8_t has_boot_build_number = 0;
 			uint8_t has_os_build_number = 0;
+			unsigned int infos_mask = 0;
 
 			if (params[i]->ok && params[i]->size == 1)
 			{
 				infos->run_level = params[i]->data[0];
-				infos->mask |= INFOS_RUN_LEVEL;
+				infos_mask |= INFOS_RUN_LEVEL;
 			}
 			i++;
 
 			if (params[i]->ok && params[i]->size == 2)
 			{
 				infos->device_type = params[i]->data[1];
-				infos->mask |= INFOS_DEVICE_TYPE;
+				infos_mask |= INFOS_DEVICE_TYPE;
 			}
 			i++;
 
 			if (params[i]->ok)
 			{
 				ticalcs_strlcpy(infos->product_name, (char *)params[i]->data, sizeof(infos->product_name));
-				infos->mask |= INFOS_PRODUCT_NAME;
+				infos_mask |= INFOS_PRODUCT_NAME;
 			}
 			i++;
 
@@ -1772,30 +1773,30 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				product_id = params[i]->data[0];
 				ticalcs_slprintf(infos->main_calc_id, sizeof(infos->main_calc_id), "%02X%02X%02X%02X%02X",
 				                 product_id, params[i]->data[1], params[i]->data[2], params[i]->data[3], params[i]->data[4]);
-				infos->mask |= INFOS_MAIN_CALC_ID;
+				infos_mask |= INFOS_MAIN_CALC_ID;
 				ticalcs_strlcpy(infos->product_id, infos->main_calc_id, sizeof(infos->product_id));
-				infos->mask |= INFOS_PRODUCT_ID;
+				infos_mask |= INFOS_PRODUCT_ID;
 			}
 			i++;
 
 			if (params[i]->ok && params[i]->size == 2)
 			{
 				infos->hw_version = (((uint16_t)params[i]->data[0]) << 8) | params[i]->data[1];
-				infos->mask |= INFOS_HW_VERSION;
+				infos_mask |= INFOS_HW_VERSION;
 			}
 			i++;
 
 			if (params[i]->ok && params[i]->size == 1)
 			{
 				infos->language_id = params[i]->data[0];
-				infos->mask |= INFOS_LANG_ID;
+				infos_mask |= INFOS_LANG_ID;
 			}
 			i++;
 
 			if (params[i]->ok && params[i]->size == 1)
 			{
 				infos->sub_lang_id = params[i]->data[0];
-				infos->mask |= INFOS_SUB_LANG_ID;
+				infos_mask |= INFOS_SUB_LANG_ID;
 			}
 			i++;
 
@@ -1810,14 +1811,14 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				if (!has_boot_build_number)
 				{
 					ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1u.%02u", params[i]->data[1], params[i]->data[2]);
-					infos->mask |= INFOS_BOOT_VERSION;
+					infos_mask |= INFOS_BOOT_VERSION;
 				}
 				else if (params[i]->size == 4)
 				{
 					ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1u.%1u.%1u.%04u",
 					                 params[i]->data[1], params[i]->data[2], params[i]->data[3],
 					                 (((uint16_t)(params[i - 1]->data[0])) << 8) | params[i - 1]->data[1]);
-					infos->mask |= INFOS_BOOT_VERSION;
+					infos_mask |= INFOS_BOOT_VERSION;
 				}
 				// else do nothing.
 			}
@@ -1834,14 +1835,14 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				if (!has_os_build_number)
 				{
 					ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1u.%02u", params[i]->data[1], params[i]->data[2]);
-					infos->mask |= INFOS_OS_VERSION;
+					infos_mask |= INFOS_OS_VERSION;
 				}
 				else if (params[i]->size == 4)
 				{
 					ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1u.%1u.%1u.%04u",
 					                 params[i]->data[1], params[i]->data[2], params[i]->data[3],
 					                 (((uint16_t)(params[i - 1]->data[0])) << 8) | params[i - 1]->data[1]);
-					infos->mask |= INFOS_OS_VERSION;
+					infos_mask |= INFOS_OS_VERSION;
 				}
 				// else do nothing.
 			}
@@ -1857,7 +1858,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				                   | (((uint64_t)(params[i]->data[5])) << 16)
 				                   | (((uint64_t)(params[i]->data[6])) <<  8)
 				                   | (((uint64_t)(params[i]->data[7]))      ));
-				infos->mask |= INFOS_RAM_PHYS;
+				infos_mask |= INFOS_RAM_PHYS;
 			}
 			i++;
 			if (params[i]->ok && params[i]->size == 8)
@@ -1870,7 +1871,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				                   | (((uint64_t)(params[i]->data[5])) << 16)
 				                   | (((uint64_t)(params[i]->data[6])) <<  8)
 				                   | (((uint64_t)(params[i]->data[7]))      ));
-				infos->mask |= INFOS_RAM_USER;
+				infos_mask |= INFOS_RAM_USER;
 			}
 			i++;
 			if (params[i]->ok && params[i]->size == 8)
@@ -1883,7 +1884,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				                   | (((uint64_t)(params[i]->data[5])) << 16)
 				                   | (((uint64_t)(params[i]->data[6])) <<  8)
 				                   | (((uint64_t)(params[i]->data[7]))      ));
-				infos->mask |= INFOS_RAM_FREE;
+				infos_mask |= INFOS_RAM_FREE;
 			}
 			i++;
 
@@ -1897,7 +1898,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				                     | (((uint64_t)(params[i]->data[5])) << 16)
 				                     | (((uint64_t)(params[i]->data[6])) <<  8)
 				                     | (((uint64_t)(params[i]->data[7]))      ));
-				infos->mask |= INFOS_FLASH_PHYS;
+				infos_mask |= INFOS_FLASH_PHYS;
 			}
 			i++;
 			if (params[i]->ok && params[i]->size == 8)
@@ -1910,7 +1911,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				                     | (((uint64_t)(params[i]->data[5])) << 16)
 				                     | (((uint64_t)(params[i]->data[6])) <<  8)
 				                     | (((uint64_t)(params[i]->data[7]))      ));
-				infos->mask |= INFOS_FLASH_USER;
+				infos_mask |= INFOS_FLASH_USER;
 			}
 			i++;
 			if (params[i]->ok && params[i]->size == 8)
@@ -1923,7 +1924,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				                     | (((uint64_t)(params[i]->data[5])) << 16)
 				                     | (((uint64_t)(params[i]->data[6])) <<  8)
 				                     | (((uint64_t)(params[i]->data[7]))      ));
-				infos->mask |= INFOS_FLASH_FREE;
+				infos_mask |= INFOS_FLASH_FREE;
 			}
 			i++;
 
@@ -1931,42 +1932,42 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			{
 				infos->lcd_width = (  (((uint16_t)(params[i]->data[ 0])) <<  8)
 				                    | (((uint16_t)(params[i]->data[ 1]))      ));
-				infos->mask |= INFOS_LCD_WIDTH;
+				infos_mask |= INFOS_LCD_WIDTH;
 			}
 			i++;
 			if (params[i]->ok && params[i]->size == 2)
 			{
 				infos->lcd_height = (  (((uint16_t)(params[i]->data[ 0])) <<  8)
 				                     | (((uint16_t)(params[i]->data[ 1]))      ));
-				infos->mask |= INFOS_LCD_HEIGHT;
+				infos_mask |= INFOS_LCD_HEIGHT;
 			}
 			i++;
 
 			if (params[i]->ok && params[i]->size == 1)
 			{
 				infos->bits_per_pixel = params[i]->data[0];
-				infos->mask |= INFOS_BPP;
+				infos_mask |= INFOS_BPP;
 			}
 			i++;
 
 			if (params[i]->ok && params[i]->size == 1)
 			{
 				infos->color_screen = params[i]->data[0];
-				infos->mask |= INFOS_COLOR_SCREEN;
+				infos_mask |= INFOS_COLOR_SCREEN;
 			}
 			i++;
 
 			if (params[i]->ok && params[i]->size == 1)
 			{
 				infos->battery = params[i]->data[0];
-				infos->mask |= INFOS_BATTERY;
+				infos_mask |= INFOS_BATTERY;
 			}
 			i++;
 
 			if (params[i]->ok && params[i]->size == 1)
 			{
 				infos->exact_math = params[i]->data[0];
-				infos->mask |= INFOS_EXACT_MATH;
+				infos_mask |= INFOS_EXACT_MATH;
 			}
 			i++;
 
@@ -2023,7 +2024,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 					break;
 				}
 			}
-			infos->mask |= INFOS_CALC_MODEL;
+			infos_mask |= INFOS_CALC_MODEL;
+			infos->mask = (InfosMask)infos_mask;
 		}
 	}
 	dusb_cp_del_array(handle, size, params);
@@ -2031,7 +2033,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	return ret;
 }
 
-const CalcFncts calc_84p_usb =
+extern const CalcFncts calc_84p_usb =
 {
 	CALC_TI84P_USB,
 	"TI84+",
@@ -2102,7 +2104,7 @@ const CalcFncts calc_84p_usb =
 	&tixx_recv_all_vars_backup
 };
 
-const CalcFncts calc_84pcse_usb =
+extern const CalcFncts calc_84pcse_usb =
 {
 	CALC_TI84PC_USB,
 	"TI84+CSE",
@@ -2173,7 +2175,7 @@ const CalcFncts calc_84pcse_usb =
 	&tixx_recv_all_vars_backup
 };
 
-const CalcFncts calc_83pce_usb =
+extern const CalcFncts calc_83pce_usb =
 {
 	CALC_TI83PCE_USB,
 	"TI83PCE",
@@ -2244,7 +2246,7 @@ const CalcFncts calc_83pce_usb =
 	&tixx_recv_all_vars_backup
 };
 
-const CalcFncts calc_84pce_usb =
+extern const CalcFncts calc_84pce_usb =
 {
 	CALC_TI84PCE_USB,
 	"TI84+CE",
@@ -2315,7 +2317,7 @@ const CalcFncts calc_84pce_usb =
 	&tixx_recv_all_vars_backup
 };
 
-const CalcFncts calc_82a_usb =
+extern const CalcFncts calc_82a_usb =
 {
 	CALC_TI82A_USB,
 	"TI82A",
@@ -2386,7 +2388,7 @@ const CalcFncts calc_82a_usb =
 	&tixx_recv_all_vars_backup
 };
 
-const CalcFncts calc_84pt_usb =
+extern const CalcFncts calc_84pt_usb =
 {
 	CALC_TI84PT_USB,
 	"TI84PT",

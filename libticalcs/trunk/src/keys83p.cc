@@ -26,7 +26,7 @@
   Conversion of an ASCII code into a TI key
   This table is very incomplete. It contains most of ASCII chars only.
 */
-const CalcKey TI83P_KEYS[] =
+extern const CalcKey TI83P_KEYS[] =
 {
 /* 0x00 */
   {"", {"", 0}, {"", 0}, {"", 0}, {"", 0}, {"", 0}},

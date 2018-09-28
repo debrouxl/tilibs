@@ -59,7 +59,7 @@ TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint3
 	{
 		//GList * vtl_pkt_list;
 
-		vtl = g_malloc0(sizeof(NSPVirtualPacket)); // aborts the program if it fails.
+		vtl = (NSPVirtualPacket *)g_malloc0(sizeof(NSPVirtualPacket)); // aborts the program if it fails.
 
 		nsp_vtl_pkt_fill(vtl, size, src_addr, src_port, dst_addr, dst_port, cmd, data); // aborts the program if it fails.
 
@@ -126,7 +126,7 @@ TIEXPORT3 NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(NSPVirtualPacket* v
 	{
 		if (size + 1 > size)
 		{
-			uint8_t * data = g_realloc(vtl->data, size + 1);
+			uint8_t * data = (uint8_t *)g_realloc(vtl->data, size + 1);
 			if (size > vtl->size)
 			{
 				// The previous time, vtl->size + 1 bytes were allocated and initialized.
@@ -520,7 +520,7 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 
 		size = vtl->size;
 		vtl->size = 0;
-		vtl->data = g_malloc(NSP_DATA_SIZE);
+		vtl->data = (uint8_t *)g_malloc(NSP_DATA_SIZE);
 
 		if (vtl->data)
 		{
@@ -536,7 +536,7 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 					vtl->cmd = raw.data[0];
 					vtl->size += raw.data_size-1;
 
-					vtl->data = g_realloc(vtl->data, vtl->size);
+					vtl->data = (uint8_t *)g_realloc(vtl->data, vtl->size);
 					memcpy(vtl->data + offset, &(raw.data[1]), raw.data_size-1);
 					offset += raw.data_size-1;
 

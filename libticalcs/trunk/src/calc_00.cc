@@ -206,7 +206,7 @@ int noop_recv_all_vars_backup (CalcHandle* handle, FileContent* content)
 	return 0;
 }
 
-const CalcFncts calc_00 = 
+extern const CalcFncts calc_00 = 
 {
 	CALC_NONE,
 	"NONE",

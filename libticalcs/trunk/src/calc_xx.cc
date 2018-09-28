@@ -58,7 +58,7 @@ TIEXPORT3 CalcFeatures TICALL ticalcs_calc_features(CalcHandle* handle)
 		return FTS_NONE;
 	}
 
-	return calc->features;
+	return (CalcFeatures)calc->features;
 }
 
 /**
@@ -274,7 +274,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_screen_rgb888(CalcHandle* handle, CalcScr
 		}
 		else
 		{
-			bitmap2 = ticalcs_alloc_screen(3 * sc->width * sc->height);
+			bitmap2 = (uint8_t *)ticalcs_alloc_screen(3 * sc->width * sc->height);
 			ret = ticalcs_screen_convert_native_to_rgb888(sc->pixel_format, *bitmap, sc->width, sc->height, bitmap2);
 			if (ret)
 			{
@@ -346,14 +346,14 @@ TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, 
 	{
 		if (*vars != NULL)
 		{
-			ti = (*vars)->data;
+			ti = (TreeInfo *)((*vars)->data);
 			ti->mem_mask |= MEMORY_USED;
 			ti->mem_used = ticalcs_dirlist_ram_used(*vars);
 		}
 
 		if (*apps != NULL)
 		{
-			ti = (*apps)->data;
+			ti = (TreeInfo *)((*apps)->data);
 			ti->mem_mask |= MEMORY_USED;
 			ti->mem_used = ticalcs_dirlist_flash_used(*vars, *apps);
 		}

@@ -275,7 +275,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 						if (!ret)
 						{
 							uint32_t len = sc->width * sc->height * infos.bits_per_pixel / 8;
-							uint8_t * dst = ticalcs_alloc_screen(len);
+							uint8_t * dst = (uint8_t *)ticalcs_alloc_screen(len);
 							if (dst != NULL)
 							{
 								ret = ticalcs_screen_nspire_rle_uncompress(sc->pixel_format, data, size, dst, len);
@@ -640,7 +640,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 						ve = content->entries[0] = tifiles_ve_create();
 						memcpy(ve, vr, sizeof(VarEntry));
 
-						ve->data = tifiles_ve_alloc_data(ve->size);
+						ve->data = (uint8_t *)tifiles_ve_alloc_data(ve->size);
 						if (data && ve->data)
 						{
 							memcpy(ve->data, data, ve->size);
@@ -893,6 +893,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	{
 		uint32_t size;
 		uint8_t cmd, *data;
+		unsigned int infos_mask = 0;
 
 		ret = nsp_cmd_s_dev_infos(handle, NSP_CMD_DI_MODEL);
 		if (ret)
@@ -906,7 +907,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		}
 
 		ticalcs_strlcpy(infos->product_name, (char *)data, sizeof(infos->product_name));
-		infos->mask = INFOS_PRODUCT_NAME;
+		infos_mask = INFOS_PRODUCT_NAME;
 
 		g_free(data);
 
@@ -931,7 +932,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		                     | (((uint64_t)data[ 5]) << 16)
 		                     | (((uint64_t)data[ 6]) <<  8)
 		                     | (((uint64_t)data[ 7])      ));
-		infos->mask |= INFOS_FLASH_FREE;
+		infos_mask |= INFOS_FLASH_FREE;
 
 		infos->flash_phys = (  (((uint64_t)data[ 8]) << 56)
 		                     | (((uint64_t)data[ 9]) << 48)
@@ -941,7 +942,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		                     | (((uint64_t)data[13]) << 16)
 		                     | (((uint64_t)data[14]) <<  8)
 		                     | (((uint64_t)data[15])      ));
-		infos->mask |= INFOS_FLASH_PHYS;
+		infos_mask |= INFOS_FLASH_PHYS;
 
 		infos->ram_free = (  (((uint64_t)data[16]) << 56)
 		                   | (((uint64_t)data[17]) << 48)
@@ -951,7 +952,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		                   | (((uint64_t)data[21]) << 16)
 		                   | (((uint64_t)data[22]) <<  8)
 		                   | (((uint64_t)data[23])      ));
-		infos->mask |= INFOS_RAM_FREE;
+		infos_mask |= INFOS_RAM_FREE;
 
 		infos->ram_phys = (  (((uint64_t)data[24]) << 56)
 		                   | (((uint64_t)data[25]) << 48)
@@ -961,52 +962,54 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		                   | (((uint64_t)data[29]) << 16)
 		                   | (((uint64_t)data[30]) <<  8)
 		                   | (((uint64_t)data[31])      ));
-		infos->mask |= INFOS_RAM_PHYS;
+		infos_mask |= INFOS_RAM_PHYS;
 
 		infos->battery = (data[32] == 0x01) ? 0 : 1;
-		infos->mask |= INFOS_BATTERY;
+		infos_mask |= INFOS_BATTERY;
 
 		infos->clock_speed = data[35];
-		infos->mask |= INFOS_CLOCK_SPEED;
+		infos_mask |= INFOS_CLOCK_SPEED;
 
 		ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1i.%1i.%04i", data[36], data[37], (((int)data[38]) << 8) | data[39]);
-		infos->mask |= INFOS_OS_VERSION;
+		infos_mask |= INFOS_OS_VERSION;
 
 		ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%1i.%04i", data[40], data[41], (((int)data[42]) << 8) | data[43]);
-		infos->mask |= INFOS_BOOT_VERSION;
+		infos_mask |= INFOS_BOOT_VERSION;
 
 		ticalcs_slprintf(infos->boot2_version, sizeof(infos->boot2_version), "%1i.%1i.%04i", data[44], data[45], (((int)data[46]) << 8) | data[47]);
-		infos->mask |= INFOS_BOOT2_VERSION;
+		infos_mask |= INFOS_BOOT2_VERSION;
 
 		infos->hw_version = (  (((uint32_t)data[48]) << 24)
 		                     | (((uint32_t)data[49]) << 16)
 		                     | (((uint32_t)data[50]) <<  8)
 		                     | (((uint32_t)data[51])      ));
-		infos->mask |= INFOS_HW_VERSION;
+		infos_mask |= INFOS_HW_VERSION;
 
 		infos->run_level = data[53];
-		infos->mask |= INFOS_RUN_LEVEL;
+		infos_mask |= INFOS_RUN_LEVEL;
 
 		infos->lcd_width = (  (((uint16_t)data[58]) << 8)
 		                    | (((uint16_t)data[59])     ));
-		infos->mask |= INFOS_LCD_WIDTH;
+		infos_mask |= INFOS_LCD_WIDTH;
 
 		infos->lcd_height = (  (((uint16_t)data[60]) << 8)
 		                     | (((uint16_t)data[61])     ));
-		infos->mask |= INFOS_LCD_HEIGHT;
+		infos_mask |= INFOS_LCD_HEIGHT;
 
 		infos->bits_per_pixel = data[62];
-		infos->mask |= INFOS_BPP;
+		infos_mask |= INFOS_BPP;
 
 		infos->device_type = data[64];
-		infos->mask |= INFOS_DEVICE_TYPE;
+		infos_mask |= INFOS_DEVICE_TYPE;
 
 		memset(infos->main_calc_id, 0, sizeof(infos->main_calc_id));
 		strncpy(infos->main_calc_id, (char*)(data + 82), 28);
-		infos->mask |= INFOS_MAIN_CALC_ID;
+		infos_mask |= INFOS_MAIN_CALC_ID;
 		memset(infos->product_id, 0, sizeof(infos->product_id));
 		strncpy(infos->product_id, (char*)(data + 82), 28);
-		infos->mask |= INFOS_PRODUCT_ID;
+		infos_mask |= INFOS_PRODUCT_ID;
+
+		infos->mask = (InfosMask)infos_mask;
 
 		g_free(data);
 	} while (0);
@@ -1050,7 +1053,7 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	return ret;
 }
 
-const CalcFncts calc_nsp = 
+extern const CalcFncts calc_nsp = 
 {
 	CALC_NSPIRE,
 	"Nspire",

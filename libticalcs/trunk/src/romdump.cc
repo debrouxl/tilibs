@@ -55,7 +55,7 @@ static int send_pkt(CalcHandle* handle, uint16_t cmd, uint16_t len, uint8_t* dat
 	CalcEventData event;
 
 	uint16_t sum;
-	uint8_t * buf = handle->buffer;
+	uint8_t * buf = (uint8_t *)handle->buffer;
 
 	// command
 	buf[0] = LSB(cmd);
@@ -116,7 +116,7 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 	int i, r, q;
 	uint16_t sum, chksum;
 	int ret = 0;
-	uint8_t * buf = handle->buffer;
+	uint8_t * buf = (uint8_t *)handle->buffer;
 	CalcEventData event;
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_ROMDUMP_PKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
@@ -332,7 +332,7 @@ int rd_dump(CalcHandle* handle, const char *filename)
 
 	VALIDATE_HANDLE(handle);
 
-	data = handle->buffer;
+	data = (uint8_t *)handle->buffer;
 
 	f = fopen(filename, "wb");
 	if (f == NULL)
@@ -474,7 +474,7 @@ int rd_is_ready(CalcHandle* handle)
 
 int rd_send(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *data)
 {
-	char *template, *tempfname;
+	char *templatename, *tempfname;
 	int fd, ret;
 
 	VALIDATE_HANDLE(handle);
@@ -482,9 +482,9 @@ int rd_send(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *dat
 	   the correct suffix or tifiles_file_read_regular will be
 	   confused) */
 
-	template = g_strconcat("rdXXXXXX", strrchr(prgname, '.'), NULL);
-	fd = g_file_open_tmp(template, &tempfname, NULL);
-	g_free(template);
+	templatename = g_strconcat("rdXXXXXX", strrchr(prgname, '.'), NULL);
+	fd = g_file_open_tmp(templatename, &tempfname, NULL);
+	g_free(templatename);
 	if (fd == -1)
 	{
 		ret = ERR_FILE_OPEN;

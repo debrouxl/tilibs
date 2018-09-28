@@ -107,7 +107,7 @@ static const DUSBCmdParamInfo param_types[] =
 	{ DUSB_PID_STOPWATCH_START, "Stopwatch start" }, // 0x0059
 	{ DUSB_PID_STOPWATCH_VALUE1, "Stopwatch value 1" }, // 0x005B
 	{ DUSB_PID_STOPWATCH_VALUE2, "Stopwatch value 2" }, // 0x005C
-	{ -1, NULL}
+	{ 0xFFFF, NULL}
 };
 
 TIEXPORT3 const char* TICALL dusb_cmd_param_type2name(uint16_t id)
@@ -129,7 +129,7 @@ TIEXPORT3 const char* TICALL dusb_cmd_param_type2name(uint16_t id)
 
 TIEXPORT3 DUSBCalcParam* TICALL dusb_cp_new(CalcHandle * handle, uint16_t id, uint16_t size)
 {
-	return dusb_cp_new_ex(handle, id, size, g_malloc0(size)); // aborts the program if it fails.
+	return dusb_cp_new_ex(handle, id, size, (uint8_t *)g_malloc0(size)); // aborts the program if it fails.
 }
 
 TIEXPORT3 DUSBCalcParam* TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data)
@@ -140,7 +140,7 @@ TIEXPORT3 DUSBCalcParam* TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id,
 	{
 		//GList * cpca_list;
 
-		cp = g_malloc0(sizeof(DUSBCalcParam)); // aborts the program if it fails.
+		cp = (DUSBCalcParam *)g_malloc0(sizeof(DUSBCalcParam)); // aborts the program if it fails.
 
 		cp->id = id;
 		cp->size = size;
@@ -201,7 +201,7 @@ TIEXPORT3 DUSBCalcParam ** TICALL dusb_cp_new_array(CalcHandle * handle, unsigne
 
 	if (ticalcs_validate_handle(handle))
 	{
-		array = g_malloc0((size+1) * sizeof(DUSBCalcParam *)); // aborts the program if it fails.
+		array = (DUSBCalcParam **)g_malloc0((size+1) * sizeof(DUSBCalcParam *)); // aborts the program if it fails.
 	}
 	else
 	{
@@ -243,7 +243,7 @@ TIEXPORT3 DUSBCalcParam * TICALL dusb_cp_realloc_data(DUSBCalcParam* cp, uint16_
 {
 	if (cp != NULL)
 	{
-		uint8_t * data = g_realloc(cp->data, size);
+		uint8_t * data = (uint8_t *)g_realloc(cp->data, size);
 		if (size > cp->size)
 		{
 			memset(data + cp->size, 0x00, size - cp->size);
@@ -263,7 +263,7 @@ TIEXPORT3 void TICALL dusb_cp_free_data(void * data)
 
 TIEXPORT3 DUSBCalcAttr* TICALL dusb_ca_new(CalcHandle * handle, uint16_t id, uint16_t size)
 {
-	return dusb_ca_new_ex(handle, id, size, g_malloc0(size)); // aborts the program if it fails.
+	return dusb_ca_new_ex(handle, id, size, (uint8_t *)g_malloc0(size)); // aborts the program if it fails.
 }
 
 TIEXPORT3 DUSBCalcAttr* TICALL dusb_ca_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data)
@@ -274,7 +274,7 @@ TIEXPORT3 DUSBCalcAttr* TICALL dusb_ca_new_ex(CalcHandle * handle, uint16_t id, 
 	{
 		//GList * cpca_list;
 
-		ca = g_malloc0(sizeof(DUSBCalcAttr)); // aborts the program if it fails.
+		ca = (DUSBCalcAttr *)g_malloc0(sizeof(DUSBCalcAttr)); // aborts the program if it fails.
 
 		ca->id = id;
 		ca->size = size;
@@ -335,7 +335,7 @@ TIEXPORT3 DUSBCalcAttr ** TICALL dusb_ca_new_array(CalcHandle * handle, unsigned
 
 	if (ticalcs_validate_handle(handle))
 	{
-		array = g_malloc0((size+1) * sizeof(DUSBCalcAttr *)); // aborts the program if it fails.
+		array = (DUSBCalcAttr **)g_malloc0((size+1) * sizeof(DUSBCalcAttr *)); // aborts the program if it fails.
 	}
 	else
 	{
@@ -377,7 +377,7 @@ TIEXPORT3 DUSBCalcParam * TICALL dusb_ca_realloc_data(DUSBCalcParam* ca, uint16_
 {
 	if (ca != NULL)
 	{
-		uint8_t * data = g_realloc(ca->data, size);
+		uint8_t * data = (uint8_t *)g_realloc(ca->data, size);
 		if (size > ca->size)
 		{
 			memset(data + ca->size, 0x00, size - ca->size);
@@ -865,7 +865,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, const DUSBModeSet m
 		retval = dusb_recv_buf_size_alloc(handle, NULL);
 		if (!retval)
 		{
-			pkt = dusb_vtl_pkt_new_ex(handle, sizeof(mode), DUSB_VPKT_PING, dusb_vtl_pkt_alloc_data(sizeof(mode)));
+			pkt = dusb_vtl_pkt_new_ex(handle, sizeof(mode), DUSB_VPKT_PING, (uint8_t *)dusb_vtl_pkt_alloc_data(sizeof(mode)));
 
 			pkt->data[0] = MSB(mode.arg1);
 			pkt->data[1] = LSB(mode.arg1);
@@ -897,7 +897,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_begin(CalcHandle *handle, uint32_t size)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 11, DUSB_VPKT_OS_BEGIN, dusb_vtl_pkt_alloc_data(11));
+	pkt = dusb_vtl_pkt_new_ex(handle, 11, DUSB_VPKT_OS_BEGIN, (uint8_t *)dusb_vtl_pkt_alloc_data(11));
 
 	pkt->data[7] = MSB(MSW(size));
 	pkt->data[8] = LSB(MSW(size));
@@ -960,7 +960,7 @@ static int s_os(uint8_t type, CalcHandle *handle, uint16_t addr, uint8_t page, u
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 4 + size, type, dusb_vtl_pkt_alloc_data(4 + size));
+	pkt = dusb_vtl_pkt_new_ex(handle, 4 + size, type, (uint8_t *)dusb_vtl_pkt_alloc_data(4 + size));
 
 	pkt->data[0] = MSB(addr);
 	pkt->data[1] = LSB(addr);
@@ -996,7 +996,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_header_89(CalcHandle *handle, uint32_t size, 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_OS_HEADER, dusb_vtl_pkt_alloc_data(size));
+	pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_OS_HEADER, (uint8_t *)dusb_vtl_pkt_alloc_data(size));
 
 	memcpy(pkt->data, data, size);
 	retval = dusb_send_data(handle, pkt);
@@ -1016,7 +1016,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_data_89(CalcHandle *handle, uint32_t size, ui
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_OS_DATA, dusb_vtl_pkt_alloc_data(size));
+	pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_OS_DATA, (uint8_t *)dusb_vtl_pkt_alloc_data(size));
 
 	memcpy(pkt->data, data, size);
 	retval = dusb_send_data(handle, pkt);
@@ -1036,7 +1036,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_data_834pce(CalcHandle *handle, uint32_t addr
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 4 + size, DUSB_VPKT_OS_DATA, dusb_vtl_pkt_alloc_data(4 + size));
+	pkt = dusb_vtl_pkt_new_ex(handle, 4 + size, DUSB_VPKT_OS_DATA, (uint8_t *)dusb_vtl_pkt_alloc_data(4 + size));
 
 	pkt->data[0] = (addr      ) & 0xFF;
 	pkt->data[1] = (addr >>  8) & 0xFF;
@@ -1093,7 +1093,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_param_request(CalcHandle *handle, unsigned int n
 	VALIDATE_HANDLE(handle);
 	VALIDATE_ATTRS(npids, pids);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 2 + npids * sizeof(uint16_t), DUSB_VPKT_PARM_REQ, dusb_vtl_pkt_alloc_data(2 + npids * sizeof(uint16_t)));
+	pkt = dusb_vtl_pkt_new_ex(handle, 2 + npids * sizeof(uint16_t), DUSB_VPKT_PARM_REQ, (uint8_t *)dusb_vtl_pkt_alloc_data(2 + npids * sizeof(uint16_t)));
 
 	pkt->data[0] = MSB(npids);
 	pkt->data[1] = LSB(npids);
@@ -1230,7 +1230,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, u
 		}
 
 		*size = pkt->size - 7;
-		*data = g_memdup(pkt->data + 7, pkt->size - 7);
+		*data = (uint8_t *)g_memdup(pkt->data + 7, pkt->size - 7);
 	}
 
 end:
@@ -1250,7 +1250,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, unsigned int
 	VALIDATE_HANDLE(handle);
 	VALIDATE_ATTRS(naids, aids);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 4 + 2 * naids + 7, DUSB_VPKT_DIR_REQ, dusb_vtl_pkt_alloc_data(4 + 2 * naids + 7));
+	pkt = dusb_vtl_pkt_new_ex(handle, 4 + 2 * naids + 7, DUSB_VPKT_DIR_REQ, (uint8_t *)dusb_vtl_pkt_alloc_data(4 + 2 * naids + 7));
 
 	pkt->data[j++] = MSB(MSW(naids));
 	pkt->data[j++] = LSB(MSW(naids));
@@ -1382,7 +1382,7 @@ static int dusb_cmd_s_rts2(CalcHandle *handle, const char *folder, const char *n
 		pks += 4 + attrs[i]->size;
 	}
 
-	pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_RTS, dusb_vtl_pkt_alloc_data(pks));
+	pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_RTS, (uint8_t *)dusb_vtl_pkt_alloc_data(pks));
 
 	if (strlen(folder))
 	{
@@ -1464,7 +1464,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *fold
 	}
 	pks += 2;
 
-	pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_VAR_REQ, dusb_vtl_pkt_alloc_data(pks));
+	pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_VAR_REQ, (uint8_t *)dusb_vtl_pkt_alloc_data(pks));
 
 	if (strlen(folder))
 	{
@@ -1548,7 +1548,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_var_content(CalcHandle *handle, uint32_t *size, 
 			*size = pkt->size;
 		}
 
-		*data = g_malloc0(pkt->size);
+		*data = (uint8_t *)g_malloc0(pkt->size);
 		if (*data != NULL)
 		{
 			memcpy(*data, pkt->data, pkt->size);
@@ -1575,7 +1575,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_content(CalcHandle *handle, uint32_t size, u
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_VAR_CNTS, dusb_vtl_pkt_alloc_data(size));
+	pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_VAR_CNTS, (uint8_t *)dusb_vtl_pkt_alloc_data(size));
 
 	memcpy(pkt->data, data, size);
 	retval = dusb_send_data(handle, pkt);
@@ -1595,7 +1595,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_param_set(CalcHandle *handle, const DUSBCalcPara
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(param);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 2 + 2 + param->size, DUSB_VPKT_PARM_SET, dusb_vtl_pkt_alloc_data(2 + 2 + param->size));
+	pkt = dusb_vtl_pkt_new_ex(handle, 2 + 2 + param->size, DUSB_VPKT_PARM_SET, (uint8_t *)dusb_vtl_pkt_alloc_data(2 + 2 + param->size));
 
 	pkt->data[0] = MSB(param->id);
 	pkt->data[1] = LSB(param->id);
@@ -1657,7 +1657,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 		pks += 4 + dst_attrs[i]->size;
 	}
 
-	pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_MODIF_VAR, dusb_vtl_pkt_alloc_data(pks));
+	pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_MODIF_VAR, (uint8_t *)dusb_vtl_pkt_alloc_data(pks));
 
 	if (strlen(src_folder))
 	{
@@ -1774,7 +1774,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, 
 	{
 		pks += 2;
 	}
-	pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_EXECUTE, dusb_vtl_pkt_alloc_data(pks));
+	pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_EXECUTE, (uint8_t *)dusb_vtl_pkt_alloc_data(pks));
 
 	pkt->data[j++] = strlen(folder);
 	if (handle->model == CALC_TI89T_USB && folder[0] != 0)
@@ -1987,7 +1987,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_error(CalcHandle *handle, uint16_t code)
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 2, DUSB_VPKT_ERROR, dusb_vtl_pkt_alloc_data(2));
+	pkt = dusb_vtl_pkt_new_ex(handle, 2, DUSB_VPKT_ERROR, (uint8_t *)dusb_vtl_pkt_alloc_data(2));
 
 	pkt->data[0] = MSB(code);
 	pkt->data[1] = LSB(code);
