@@ -140,58 +140,14 @@ static int completed = 0;
 #define uInEnd     (((usb_struct *)(h->priv2))->in_endpoint)
 #define uOutEnd    (((usb_struct *)(h->priv2))->out_endpoint)
 
-#if HAVE_LIBUSB10_STRERROR
-static const char* tigl_strerror(enum libusb_error errcode)
-{
-	return libusb_strerror(errorcode);
-}
-#else
-/*
- * Taken from libusb git, will be included in later releases of
- * libusb-1.0 but as most distros will not be shipping that for a while
- * this will have to do. ~ Jon 2011/02/08
- */
-static const char* tigl_strerror(enum libusb_error errcode)
-{
-	switch (errcode)
-	{
-		case LIBUSB_SUCCESS:
-			return "Success";
-		case LIBUSB_ERROR_IO:
-			return "Input/output error";
-		case LIBUSB_ERROR_INVALID_PARAM:
-			return "Invalid parameter";
-		case LIBUSB_ERROR_ACCESS:
-			return "Access denied (insufficient permissions)";
-		case LIBUSB_ERROR_NO_DEVICE:
-			return "No such device (it may have been disconnected)";
-		case LIBUSB_ERROR_NOT_FOUND:
-			return "Entity not found";
-		case LIBUSB_ERROR_BUSY:
-			return "Resource busy";
-		case LIBUSB_ERROR_TIMEOUT:
-			return "Operation timed out";
-		case LIBUSB_ERROR_OVERFLOW:
-			return "Overflow";
-		case LIBUSB_ERROR_PIPE:
-			return "Pipe error";
-		case LIBUSB_ERROR_INTERRUPTED:
-			return "System call interrupted (perhaps due to signal)";
-		case LIBUSB_ERROR_NO_MEM:
-			return "Insufficient memory";
-		case LIBUSB_ERROR_NOT_SUPPORTED:
-			return "Operation not supported or unimplemented on this platform";
-		case LIBUSB_ERROR_OTHER:
-			return "Other error";
-	}
-	return "Unknown error";
-}
+#if !HAVE_LIBUSB10_STRERROR
+#error Please use a version of libusb 1.0 which provides libusb_strerror().
 #endif
 
 static void tigl_get_product(char * string, size_t maxlen, struct libusb_device *dev)
 {
 	libusb_device_handle *han;
-	int ret;
+	libusb_error ret;
 	struct libusb_device_descriptor desc;
 	int r = libusb_get_device_descriptor(dev, &desc);
 
@@ -206,11 +162,11 @@ static void tigl_get_product(char * string, size_t maxlen, struct libusb_device 
 	{
 		if (!libusb_open(dev, &han))
 		{
-			ret = libusb_get_string_descriptor_ascii(han, desc.iProduct, (unsigned char *) string, maxlen);
+			ret = (libusb_error)libusb_get_string_descriptor_ascii(han, desc.iProduct, (unsigned char *) string, maxlen);
 			libusb_close(han);
 			if (ret <= 0)
 			{
-				ticables_warning("libusb_get_string_descriptor_ascii (%s).\n", tigl_strerror(ret));
+				ticables_warning("libusb_get_string_descriptor_ascii (%s).\n", libusb_strerror(ret));
 			}
 		}
 		// else do nothing.
@@ -299,20 +255,20 @@ static int tigl_open(int id, libusb_device_handle ** udh)
 		return ERR_LIBUSB_OPEN;
 	}
 
-	if (!libusb_open(tigl_devices[id].dev, udh))
+	if (!libusb_open((libusb_device *)(tigl_devices[id].dev), udh))
 	{
 		/* only one configuration: #1 */
 		ret = libusb_set_configuration(*udh, 1);
 		if (ret)
 		{
-			ticables_warning("libusb_set_configuration (%s).\n", tigl_strerror(ret));
+			ticables_warning("libusb_set_configuration (%s).\n", libusb_strerror((libusb_error)ret));
 		}
 
 		/* configuration #1, interface #0 */
 		ret = libusb_claim_interface(*udh, 0);
 		if (ret)
 		{
-			ticables_warning("libusb_claim_interface (%s).\n", tigl_strerror(ret));
+			ticables_warning("libusb_claim_interface (%s).\n", libusb_strerror((libusb_error)ret));
 			return ERR_LIBUSB_CLAIM;
 		}
 
@@ -361,14 +317,14 @@ static int tigl_reset(CableHandle *h)
 	ret = libusb_clear_halt(uHdl, uOutEnd);
 	if (ret)
 	{
-		ticables_warning("libusb_clear_halt (%s).\n", tigl_strerror(ret));
+		ticables_warning("libusb_clear_halt (%s).\n", libusb_strerror((libusb_error)ret));
 	}
 
 	// Reset in pipe
 	ret = libusb_clear_halt(uHdl, uInEnd);
 	if (ret)
 	{
-		ticables_warning("libusb_clear_halt (%s).\n", tigl_strerror(ret));
+		ticables_warning("libusb_clear_halt (%s).\n", libusb_strerror((libusb_error)ret));
 	}
 
 	return 0;
@@ -423,7 +379,7 @@ static int slv_open(CableHandle *h)
 	}
 
 	cable_info = tigl_devices[h->address];
-	uDev = tigl_devices[h->address].dev;
+	uDev = (libusb_device *)(tigl_devices[h->address].dev);
 	uInEnd  = 0x81;
 	uOutEnd = 0x02;
 
@@ -498,7 +454,7 @@ static int slv_reset(CableHandle *h)
 		ret = libusb_reset_device(uHdl);
 		if (ret != 0)
 		{
-			ticables_warning("libusb_device_reset (%s).\n", tigl_strerror(ret));
+			ticables_warning("libusb_device_reset (%s).\n", libusb_strerror((libusb_error)ret));
 			/* On Mac OS X, reenumeration isn't automatic, so let's not return here. */
 #ifndef __MACOSX__
 			ret = ERR_LIBUSB_RESET;
@@ -538,12 +494,12 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
 
 	if (ret == LIBUSB_ERROR_TIMEOUT)
 	{
-		ticables_warning("libusb_bulk_transfer (%s).\n", tigl_strerror(ret));
+		ticables_warning("libusb_bulk_transfer (%s).\n", libusb_strerror((libusb_error)ret));
 		return ERR_WRITE_TIMEOUT;
 	}
 	else if (ret < 0)
 	{
-		ticables_warning("libusb_bulk_transfer (%s).\n", tigl_strerror(ret));
+		ticables_warning("libusb_bulk_transfer (%s).\n", libusb_strerror((libusb_error)ret));
 		return ERR_WRITE_ERROR;
 	}
 
@@ -554,12 +510,12 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
 
 		if (ret == LIBUSB_ERROR_TIMEOUT)
 		{
-			ticables_warning("libusb_bulk_transfer (%s).\n", tigl_strerror(ret));
+			ticables_warning("libusb_bulk_transfer (%s).\n", libusb_strerror((libusb_error)ret));
 			return ERR_WRITE_TIMEOUT;
 		}
 		else if (ret < 0)
 		{
-			ticables_warning("libusb_bulk_transfer (%s).\n", tigl_strerror(ret));
+			ticables_warning("libusb_bulk_transfer (%s).\n", libusb_strerror((libusb_error)ret));
 			return ERR_WRITE_ERROR;
 		}
 	}
@@ -575,7 +531,7 @@ static int slv_put(CableHandle* h, uint8_t *data, uint32_t len)
 static void bulk_transfer_cb(struct libusb_transfer *transfer2)
 {
 	// This comes from libusb.
-	int *completed2 = transfer2->user_data;
+	int *completed2 = (int *)(transfer2->user_data);
 	*completed2 = 1;
 	/* caller interprets results and frees transfer */
 }
@@ -689,13 +645,13 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 
 		if (ret == LIBUSB_ERROR_TIMEOUT)
 		{
-			ticables_warning("slv_bulk_read (%s).\n", tigl_strerror(ret));
+			ticables_warning("slv_bulk_read (%s).\n", libusb_strerror((libusb_error)ret));
 			nBytesRead = 0;
 			return ERR_READ_TIMEOUT;
 		}
 		else if (ret != 0)
 		{
-			ticables_warning("slv_bulk_read (%s).\n", tigl_strerror(ret));
+			ticables_warning("slv_bulk_read (%s).\n", libusb_strerror((libusb_error)ret));
 			nBytesRead = 0;
 			return ERR_READ_ERROR;
 		}
@@ -746,13 +702,13 @@ static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
 
 			if (ret == LIBUSB_ERROR_TIMEOUT)
 			{
-				ticables_warning("slv_bulk_read (%s).\n", tigl_strerror(ret));
+				ticables_warning("slv_bulk_read (%s).\n", libusb_strerror((libusb_error)ret));
 				nBytesRead = 0;
 				return ERR_READ_TIMEOUT;
 			}
 			else if (ret != 0)
 			{
-				ticables_warning("slv_bulk_read (%s).\n", tigl_strerror(ret));
+				ticables_warning("slv_bulk_read (%s).\n", libusb_strerror((libusb_error)ret));
 				nBytesRead = 0;
 				return ERR_READ_ERROR;
 			}
@@ -892,7 +848,7 @@ static int slv_check(CableHandle *h, int *status)
 	return 0;
 }
 
-const CableFncts cable_slv =
+extern const CableFncts cable_slv =
 {
 	CABLE_SLV,
 	"SLV",
@@ -909,7 +865,7 @@ const CableFncts cable_slv =
 	&slv_get_device_info
 };
 
-const CableFncts cable_raw =
+extern const CableFncts cable_raw =
 {
 	CABLE_USB,
 	"USB",

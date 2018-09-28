@@ -195,11 +195,11 @@ static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 
 	for (j = 0; j < len; j++)
 	{
-		uint8_t byte = data[j];
+		uint8_t curbyte = data[j];
 
 		for (bit = 0; bit < 8; bit++)
 		{
-			if (byte & 1)
+			if (curbyte & 1)
 			{
 				io_wr(com_out, 2);
 				TO_START(clk);
@@ -244,7 +244,7 @@ static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 				} while ((io_rd(com_in) & 0x20) == 0x00);
 			}
 
-			byte >>= 1;
+			curbyte >>= 1;
 			for (i = 0; i < h->delay; i++)
 			{
 				io_rd(com_in);
@@ -264,7 +264,7 @@ static int ser_get(CableHandle *h, uint8_t *data, uint32_t len)
 
 	for(j = 0; j < len; j++)
 	{
-		uint8_t v, byte = 0;
+		uint8_t v, curbyte = 0;
 
 		for (bit = 0; bit < 8; bit++) 
 		{
@@ -279,7 +279,7 @@ static int ser_get(CableHandle *h, uint8_t *data, uint32_t len)
 
 			if (v == 0x10) 
 			{
-				byte = (byte >> 1) | 0x80;
+				curbyte = (curbyte >> 1) | 0x80;
 				io_wr(com_out, 1);
 
 				TO_START(clk);
@@ -294,7 +294,7 @@ static int ser_get(CableHandle *h, uint8_t *data, uint32_t len)
 			} 
 			else 
 			{
-				byte = (byte >> 1) & 0x7F;
+				curbyte = (curbyte >> 1) & 0x7F;
 				io_wr(com_out, 2);
 
 				TO_START(clk);
@@ -314,7 +314,7 @@ static int ser_get(CableHandle *h, uint8_t *data, uint32_t len)
 			}
 		}
 
-		data[j] = byte;
+		data[j] = curbyte;
 	}
 
 	return 0;
@@ -407,7 +407,7 @@ static int ser_set_device(CableHandle *h, const char * device)
 	return ERR_ILLEGAL_ARG;
 }
 
-const CableFncts cable_ser = 
+extern const CableFncts cable_ser = 
 {
 	CABLE_BLK,
 	"BLK",

@@ -19,16 +19,27 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/* Probing wrapper */
+
+/*
+  This unit performs some auto-detection for:
+  - Operating System
+  - I/O ports such as parallel and serial ports
+  - link cable type
+*/
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
 #if defined(__LINUX__)
-#include "linux/ioports.c"
+#include "linux/detect.cc"
+#elif defined(__MACOSX__)
+#include "macos/detect.cc"
 #elif defined(__BSD__)
-#include "linux/ioports.c"
+#include "bsd/detect.cc"
 #elif defined(__WIN32__)
-#include "win32/ioports.c"
+#include "win32/detect.cc"
 #else
-#include "none.c"
+#include "none.cc"
 #endif

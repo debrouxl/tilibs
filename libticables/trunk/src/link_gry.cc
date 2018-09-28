@@ -19,25 +19,25 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* "Home-made serial" link & "Black TIGraphLink" link unit */
+/* "Grey TIGraphLink" link cable unit */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#ifndef NO_CABLE_BLK
+#ifndef NO_CABLE_GRY
 
-#if defined(__LINUX__) && defined(HAVE_TERMIOS_H)
-#include "linux/link_ser.c"
+#if defined(__LINUX__)
+#include "linux/link_gry.cc"
 
 #elif defined(__BSD__)
-#include "linux/link_ser.c"
+#include "linux/link_gry.cc"
 
 #elif defined(__WIN32__)
-#include "win32/link_ser.c"
+#include "win32/link_gry.cc"
 
 #elif defined(__MACOSX__)
-#include "none.c"
+#include "linux/link_gry.cc"
 
 #else
 #endif

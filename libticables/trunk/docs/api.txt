@@ -1,6 +1,5 @@
 ticables.h : Enumerations, structures and type definitions
-ticables.c : Entry Points
-error.c : General Functions
-type2str.c : Types / Strings conversions
-link_xxx.c : Link cable management layer
-probe.c : Automatic probing of cables
+ticables.cc : Entry Points
+type2str.cc : Types / Strings conversions
+link_xxx.cc : Link cable management layer
+probe.cc : Automatic probing of cablessrc/error.cc

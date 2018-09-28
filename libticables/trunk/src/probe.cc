@@ -63,7 +63,7 @@ TIEXPORT1 void TICALL ticables_probing_show(int **array)
 {
 	if (array != NULL)
 	{
-		CableModel model;
+		int model;
 
 		for (model = CABLE_NUL; model < CABLE_MAX; model++)
 		{
@@ -99,8 +99,8 @@ TIEXPORT1 void TICALL ticables_probing_show(int **array)
  **/
 TIEXPORT1 int TICALL ticables_probing_do(int ***result, unsigned int timeout, ProbingMethod method)
 {
-	CablePort port;
-	CableModel model;
+	int port;
+	int model;
 	int **array;
 	int found = 0;
 
@@ -175,7 +175,7 @@ TIEXPORT1 int TICALL ticables_probing_do(int ***result, unsigned int timeout, Pr
 				CableHandle* handle;
 				int err, ret;
 
-				handle = ticables_handle_new(model, port);
+				handle = ticables_handle_new((CableModel)model, (CablePort)port);
 				if (handle != NULL)
 				{
 					ticables_options_set_timeout(handle, timeout);
@@ -276,7 +276,7 @@ TIEXPORT1 int TICALL ticables_get_usb_devices(int **list, int *len)
 #if defined(__WIN32__) || (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0))
 		ret = usb_probe_device_info(&info, &n);
 #endif
-		*list = calloc(1 + n, sizeof(int));
+		*list = (int *)calloc(1 + n, sizeof(int));
 		for (i = 0; i < n; i++)
 		{
 			(*list)[i] = info[i].pid;
@@ -417,7 +417,7 @@ TIEXPORT1 int TICALL ticables_get_usb_device_info(CableDeviceInfo **list, int *l
 #if defined(__WIN32__) || (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0))
 		ret = usb_probe_device_info(&usbinfo, &n);
 #endif
-		*list = calloc(1 + n, sizeof(CableDeviceInfo));
+		*list = (CableDeviceInfo *)calloc(1 + n, sizeof(CableDeviceInfo));
 		for (i = 0; i < n; i++)
 		{
 			translate_usb_device_info(&(*list)[i], &usbinfo[i]);

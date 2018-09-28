@@ -378,7 +378,7 @@ static int gry_set_device(CableHandle *h, const char * device)
 	return ERR_ILLEGAL_ARG;
 }
 
-const CableFncts cable_gry = 
+extern const CableFncts cable_gry = 
 {
 	CABLE_GRY,
 	"GRY",

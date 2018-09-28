@@ -1,8 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
 
 /*  libticables2 - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2015  Lionel Debroux
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,25 +18,25 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* "Home-made parallel" link cable unit */
+/* TCP server virtual link */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#ifndef NO_CABLE_PAR
+#ifndef NO_CABLE_TCPS
 
-#if defined(__LINUX__) && defined(HAVE_LINUX_PARPORT_H)
-#include "linux/link_par.c"
+#if defined(__LINUX__)
+#include "linux/link_tcps.cc"
 
 #elif defined(__BSD__)
-/* Not ported yet */
+#include "linux/link_tcps.cc"
 
 #elif defined(__WIN32__)
-#include "win32/link_par.c"
+/* Not ported yet */
 
 #elif defined(__MACOSX__)
-#include "none.c"
+#include "linux/link_tcps.cc"
 
 #else
 #endif

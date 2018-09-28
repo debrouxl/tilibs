@@ -65,10 +65,10 @@ static int gry_prepare(CableHandle *h)
 
 	switch (h->port)
 	{
-		case PORT_1: h->address = 0x3f8; device = "/dev/"DEVNAME"0"; break;
-		case PORT_2: h->address = 0x2f8; device = "/dev/"DEVNAME"1"; break;
-		case PORT_3: h->address = 0x3e8; device = "/dev/"DEVNAME"2"; break;
-		case PORT_4: h->address = 0x3e8; device = "/dev/"DEVNAME"3"; break;
+		case PORT_1: h->address = 0x3f8; device = "/dev/" DEVNAME "0"; break;
+		case PORT_2: h->address = 0x2f8; device = "/dev/" DEVNAME "1"; break;
+		case PORT_3: h->address = 0x3e8; device = "/dev/" DEVNAME "2"; break;
+		case PORT_4: h->address = 0x3e8; device = "/dev/" DEVNAME "3"; break;
 		default: return ERR_ILLEGAL_ARG;
 	}
 
@@ -322,7 +322,7 @@ static int gry_set_device(CableHandle *h, const char * device)
 	return ERR_ILLEGAL_ARG;
 }
 
-const CableFncts cable_gry = 
+extern const CableFncts cable_gry = 
 {
 	CABLE_GRY,
 	"GRY",

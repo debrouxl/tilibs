@@ -405,7 +405,7 @@ int usb_find_devices(void)
         return -ENOFILE;
 }
 
-struct usb_device *usb_device(usb_dev_handle *dev)
+struct usb_device *usb_device_(usb_dev_handle *dev)
 {
     if (_usb_device)
         return _usb_device(dev);

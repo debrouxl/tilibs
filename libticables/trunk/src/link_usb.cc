@@ -19,27 +19,22 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* "Grey TIGraphLink" link cable unit */
+/* TI-GRAPH LINK USB support */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#ifndef NO_CABLE_GRY
+#ifndef NO_CABLE_SLV
 
-#if defined(__LINUX__)
-#include "linux/link_gry.c"
+#if defined(__WIN32__) && !defined(__MINGW32__)
+# define HAVE_LIBUSB
+#endif
 
-#elif defined(__BSD__)
-#include "linux/link_gry.c"
-
-#elif defined(__WIN32__)
-#include "win32/link_gry.c"
-
-#elif defined(__MACOSX__)
-#include "linux/link_gry.c"
-
-#else
+#ifdef HAVE_LIBUSB
+# include "linux/link_usb.cc"
+#elif defined(HAVE_LIBUSB_1_0)
+# include "linux/link_usb1.cc"
 #endif
 
 #endif

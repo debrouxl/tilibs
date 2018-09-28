@@ -22,6 +22,9 @@
 /* "Home-made parallel" link cable unit */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "../ticables.h"
 #include "../logging.h"
@@ -30,19 +33,21 @@
 #include "../internal.h"
 #include "detect.h"
 #include "ioports.h"
+#include "../bsd/detect.h"
+#include "../macos/detect.h"
 
-#define lpt_out (h->address + 0)
-#define lpt_in  (h->address + 1)
-#define lpt_ctl (h->address + 2)
+#define dev_fd  (GPOINTER_TO_INT(h->priv))
 
 static int par_prepare(CableHandle *h)
 {
 	const char * device;
+	int ret;
+
 	switch(h->port)
 	{
-	case PORT_1: h->address = 0x378; device = "LPT1"; break;
-	case PORT_2: h->address = 0x278; device = "LPT2"; break;
-	case PORT_3: h->address = 0x3bc; device = "LPT3"; break;
+	case PORT_1: h->address = 0x378; device = "/dev/parport0"; break;
+	case PORT_2: h->address = 0x278; device = "/dev/parport1"; break;
+	case PORT_3: h->address = 0x3bc; device = "/dev/parport2"; break;
 	default: return ERR_ILLEGAL_ARG;
 	}
 
@@ -51,21 +56,18 @@ static int par_prepare(CableHandle *h)
 		h->device = strdup(device);
 	}
 
-	if (win32_check_os() == WIN_NT)
+	// detect stuffs
+#if defined(__MACOSX__)
+	ret = macosx_check_parport(h->device);
+#elif defined(__BSD__)
+	ret = bsd_check_parport(h->device);
+#else
+	ret = linux_check_parport(h->device);
+#endif
+	if (ret)
 	{
-		if (win32_check_dha())
-		{
-			free(h->device); h->device = NULL;
-			return ERR_DHA_NOT_FOUND;
-		}
-	}
-	else if (win32_check_os() == WIN_64)
-	{
-		if (win32_check_rwp())
-		{
-			free(h->device); h->device = NULL;
-			return ERR_DHA_NOT_FOUND;
-		}
+		free(h->device); h->device = NULL;
+		return ret;
 	}
 
 	return 0;
@@ -74,17 +76,20 @@ static int par_prepare(CableHandle *h)
 static int par_open(CableHandle *h)
 {
 	int ret;
-	ret = io_open(h->address);
+	int fd;
+
+	ret = par_io_open(h->device, &fd);
 	if (!ret)
 	{
-		io_wr(lpt_ctl, io_rd(lpt_ctl) & ~0x20); // output mode only
+		h->priv = GINT_TO_POINTER(fd);
 	}
+
 	return ret;
 }
 
 static int par_close(CableHandle *h)
 {
-	return io_close(h->address);
+	return par_io_close(dev_fd);
 }
 
 static int par_reset(CableHandle *h)
@@ -93,66 +98,15 @@ static int par_reset(CableHandle *h)
 
 	// wait for releasing of lines
 	TO_START(clk);
-	do 
+	do
 	{
-		io_wr(lpt_out, 3);
+		par_io_wr(dev_fd, 3);
 		if (TO_ELAPSED(clk, h->timeout))
+		{
 			return 0;
-	} while ((io_rd(lpt_in) & 0x30) != 0x30);
-
-	return 0;
-}
-
-static int par_probe(CableHandle *h)
-{
-	int timeout = 1;
-	tiTIME clk;
-
-	// 1
-	io_wr(lpt_out, 2);
-	TO_START(clk);
-	do
-	{
-		if (TO_ELAPSED(clk, timeout))
-		{
-			return ERR_WRITE_TIMEOUT;
 		}
 	}
-	while ((io_rd(lpt_in) & 0x10));
-
-	io_wr(lpt_out, 3);
-	TO_START(clk);
-	do
-	{
-		if (TO_ELAPSED(clk, timeout))
-		{
-			return ERR_WRITE_TIMEOUT;
-		}
-	}
-	while (!(io_rd(lpt_in) & 0x10));
-
-	// 0
-	io_wr(lpt_out, 1);
-	TO_START(clk);
-	do
-	{
-		if (TO_ELAPSED(clk, timeout))
-		{
-			return ERR_WRITE_TIMEOUT;
-		}
-	}
-	while (io_rd(lpt_in) & 0x20);
-
-	io_wr(lpt_out, 3);
-	TO_START(clk);
-	do
-	{
-		if (TO_ELAPSED(clk, timeout))
-		{
-			return ERR_WRITE_TIMEOUT;
-		}
-	}
-	while (!(io_rd(lpt_in) & 0x20));
+	while ((par_io_rd(dev_fd) & 0x30) != 0x30);
 
 	return 0;
 }
@@ -161,10 +115,10 @@ static int par_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int bit;
 	unsigned int i;
-	unsigned int j;
+	uint32_t j;
 	tiTIME clk;
 
-	for (j = 0; j < len; j++)
+	for(j = 0; j < len; j++)
 	{
 		uint8_t byte = data[j];
 
@@ -172,53 +126,54 @@ static int par_put(CableHandle *h, uint8_t *data, uint32_t len)
 		{
 			if (byte & 1) 
 			{
-				io_wr(lpt_out, 2);
-				TO_START(clk);
-				do 
-				{
-					if (TO_ELAPSED(clk, h->timeout))
-					{
-						return ERR_WRITE_TIMEOUT;
-					}
-				} while ((io_rd(lpt_in) & 0x10));
+				par_io_wr(dev_fd, 2);
 
-				io_wr(lpt_out, 3);
 				TO_START(clk);
-				do 
+				while ((par_io_rd(dev_fd) & 0x10))
 				{
 					if (TO_ELAPSED(clk, h->timeout))
 					{
 						return ERR_WRITE_TIMEOUT;
 					}
-				} while (!(io_rd(lpt_in) & 0x10));
+				}
+
+				par_io_wr(dev_fd, 3);
+				TO_START(clk);
+				while ((par_io_rd(dev_fd) & 0x10) == 0x00)
+				{
+					if (TO_ELAPSED(clk, h->timeout))
+					{
+						return ERR_WRITE_TIMEOUT;
+					}
+				}
 			}
-			else 
+			else
 			{
-				io_wr(lpt_out, 1);
+				par_io_wr(dev_fd, 1);
 				TO_START(clk);
-				do 
-				{
-					if (TO_ELAPSED(clk, h->timeout))
-					{
-			  			return ERR_WRITE_TIMEOUT;
-					}
-				} while (io_rd(lpt_in) & 0x20);
-
-				io_wr(lpt_out, 3);
-				TO_START(clk);
-				do 
+				while (par_io_rd(dev_fd) & 0x20)
 				{
 					if (TO_ELAPSED(clk, h->timeout))
 					{
 						return ERR_WRITE_TIMEOUT;
 					}
-				} while (!(io_rd(lpt_in) & 0x20));
+				}
+
+				par_io_wr(dev_fd, 3);
+				TO_START(clk);
+				while ((par_io_rd(dev_fd) & 0x20) == 0x00)
+				{
+					if (TO_ELAPSED(clk, h->timeout))
+					{
+						return ERR_WRITE_TIMEOUT;
+					}
+				}
 			}
 
 			byte >>= 1;
 			for (i = 0; i < h->delay; i++)
 			{
-				io_rd(lpt_in);
+				par_io_rd(dev_fd);
 			}
 		}
 	}
@@ -230,17 +185,17 @@ static int par_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int bit;
 	unsigned int i;
-	unsigned int j;
+	uint32_t j;
 	tiTIME clk;
 
 	for(j = 0; j < len; j++)
 	{
 		uint8_t v, byte = 0;
 
-		for (bit = 0; bit < 8; bit++)
+		for (bit = 0; bit < 8; bit++) 
 		{
 			TO_START(clk);
-			while ((v = io_rd(lpt_in) & 0x30) == 0x30)
+			while ((v = par_io_rd(dev_fd) & 0x30) == 0x30) 
 			{
 				if (TO_ELAPSED(clk, h->timeout))
 				{
@@ -248,40 +203,40 @@ static int par_get(CableHandle *h, uint8_t *data, uint32_t len)
 				}
 			}
 
-			if (v == 0x10)
+			if (v == 0x10) 
 			{
 				byte = (byte >> 1) | 0x80;
-				io_wr(lpt_out, 1);
+				par_io_wr(dev_fd, 1);
 
 				TO_START(clk);
-				while ((io_rd(lpt_in) & 0x20) == 0x00) 
+				while ((par_io_rd(dev_fd) & 0x20) == 0x00) 
 				{
 					if (TO_ELAPSED(clk, h->timeout))
 					{
-						return ERR_WRITE_TIMEOUT;
+						return ERR_READ_TIMEOUT;
 					}
 				}
-				io_wr(lpt_out, 3);
+				par_io_wr(dev_fd, 3);
 			}
 			else
 			{
 				byte = (byte >> 1) & 0x7F;
-				io_wr(lpt_out, 2);
+				par_io_wr(dev_fd, 2);
 
 				TO_START(clk);
-				while ((io_rd(lpt_in) & 0x10) == 0x00) 
+				while ((par_io_rd(dev_fd) & 0x10) == 0x00) 
 				{
 					if (TO_ELAPSED(clk, h->timeout))
 					{
-						return ERR_WRITE_TIMEOUT;
+						return ERR_READ_TIMEOUT;
 					}
 				}
-				io_wr(lpt_out, 3);
+				par_io_wr(dev_fd, 3);
 			}
 
 			for (i = 0; i < h->delay; i++)
 			{
-				io_rd(lpt_in);
+				par_io_rd(dev_fd);
 			}
 		}
 
@@ -291,13 +246,63 @@ static int par_get(CableHandle *h, uint8_t *data, uint32_t len)
 	return 0;
 }
 
+static int par_probe(CableHandle *h)
+{
+	int timeout = 1;
+	tiTIME clk;
+
+	// 1
+	par_io_wr(dev_fd, 2);
+	TO_START(clk);
+	while ((par_io_rd(dev_fd) & 0x10))
+	{
+		if (TO_ELAPSED(clk, timeout))
+		{
+			return ERR_WRITE_TIMEOUT;
+		}
+	}
+
+	par_io_wr(dev_fd, 3);
+	TO_START(clk);
+	while ((par_io_rd(dev_fd) & 0x10) == 0x00)
+	{
+		if (TO_ELAPSED(clk, timeout))
+		{
+			return ERR_WRITE_TIMEOUT;
+		}
+	}
+
+	// 0
+	par_io_wr(dev_fd, 1);
+	TO_START(clk);
+	while (par_io_rd(dev_fd) & 0x20)
+	{
+		if (TO_ELAPSED(clk, timeout))
+		{
+			return ERR_WRITE_TIMEOUT;
+		}
+	}
+
+	par_io_wr(dev_fd, 3);
+	TO_START(clk);
+	while ((par_io_rd(dev_fd) & 0x20) == 0x00)
+	{
+		if (TO_ELAPSED(clk, timeout))
+		{
+			return ERR_WRITE_TIMEOUT;
+		}
+	}
+
+	return 0;
+}
+
 static int par_check(CableHandle *h, int *status)
 {
 	*status = STATUS_NONE;
 
-	if (!((io_rd(lpt_in) & 0x30) == 0x30))
+	if (!((par_io_rd(dev_fd) & 0x30) == 0x30))
 	{
-		*status = STATUS_RX | STATUS_TX;
+		*status = (STATUS_RX | STATUS_TX);
 	}
 
 	return 0;
@@ -307,15 +312,15 @@ static int par_check(CableHandle *h, int *status)
 
 static int par_set_red_wire(CableHandle *h, int b)
 {
-	int v = swap_bits(io_rd(lpt_in) >> 4);
+	int v = swap_bits(par_io_rd(dev_fd) >> 4);
 
 	if (b)
 	{
-		io_wr(lpt_out, v | 0x02);
+		par_io_wr(dev_fd, v | 0x02);
 	}
 	else
 	{
-		io_wr(lpt_out, v & ~0x02);
+		par_io_wr(dev_fd, v & ~0x02);
 	}
 
 	return 0;
@@ -323,15 +328,15 @@ static int par_set_red_wire(CableHandle *h, int b)
 
 static int par_set_white_wire(CableHandle *h, int b)
 {
-	int v = swap_bits(io_rd(lpt_in) >> 4);
+	int v = swap_bits(par_io_rd(dev_fd) >> 4);
 
 	if (b)
 	{
-		io_wr(lpt_out, v | 0x01);
+		par_io_wr(dev_fd, v | 0x01);
 	}
 	else
 	{
-		io_wr(lpt_out, v & ~0x01);
+		par_io_wr(dev_fd, v & ~0x01);
 	}
 
 	return 0;
@@ -339,23 +344,23 @@ static int par_set_white_wire(CableHandle *h, int b)
 
 static int par_get_red_wire(CableHandle *h)
 {
-	return (0x10 & io_rd(lpt_in)) ? 1 : 0;
+	return ((0x10 & par_io_rd(dev_fd)) ? 1 : 0);
 }
 
 static int par_get_white_wire(CableHandle *h)
 {
-	return (0x20 & io_rd(lpt_in)) ? 1 : 0;
+	return ((0x20 & par_io_rd(dev_fd)) ? 1 : 0);
 }
 
 static int par_set_raw(CableHandle *h, int state)
 {
-	io_wr(lpt_out, swap_bits(state));
+	par_io_wr(dev_fd, swap_bits(state));
 	return 0;
 }
 
 static int par_get_raw(CableHandle *h, int *state)
 {
-	*state = (io_rd(lpt_in) >> 4) & 3;
+	*state = (par_io_rd(dev_fd) >> 4) & 3;
 	return 0;
 }
 
@@ -378,7 +383,7 @@ static int par_set_device(CableHandle *h, const char * device)
 	return ERR_ILLEGAL_ARG;
 }
 
-const CableFncts cable_par = 
+extern const CableFncts cable_par = 
 {
 	CABLE_PAR,
 	"PAR",

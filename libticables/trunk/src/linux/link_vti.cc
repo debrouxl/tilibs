@@ -115,7 +115,7 @@ static int vti_open(CableHandle *h)
 	/* Attach the shm */
 	for (i = 0; i < 2; i++)
 	{
-		if ((shm[i] = shmat(shmid[i], NULL, 0)) == NULL)
+		if ((shm[i] = (LinkBuffer *)shmat(shmid[i], NULL, 0)) == (LinkBuffer *)-1)
 		{
 			ticables_warning("unable to attach shared memory (shmat).\n");
 			return ERR_VTI_SHMAT;
@@ -234,7 +234,7 @@ static int vti_check(CableHandle *h, int *status)
 	return 0;
 }
 
-const CableFncts cable_vti = 
+extern const CableFncts cable_vti = 
 {
 	CABLE_VTI,
 	"VTI",

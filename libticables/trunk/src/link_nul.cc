@@ -112,7 +112,7 @@ int noop_set_device(CableHandle *h, const char * device)
 	return 0;
 }
 
-const CableFncts cable_nul = 
+extern const CableFncts cable_nul = 
 {
 	CABLE_NUL,
 	"NUL",
