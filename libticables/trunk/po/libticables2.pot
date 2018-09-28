@@ -17,129 +17,129 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/bsd/detect.c:138 src/linux/detect.c:179 src/macos/detect.c:138
+#: src/bsd/detect.cc:138 src/linux/detect.cc:179 src/macos/detect.cc:138
 #, c-format
 msgid "can't open '%s'."
 msgstr ""
 
-#: src/bsd/detect.c:172 src/linux/detect.c:213 src/macos/detect.c:172
+#: src/bsd/detect.cc:172 src/linux/detect.cc:213 src/macos/detect.cc:172
 #, c-format
 msgid "    node %s: exists"
 msgstr ""
 
-#: src/bsd/detect.c:176 src/linux/detect.c:217 src/macos/detect.c:176
+#: src/bsd/detect.cc:176 src/linux/detect.cc:217 src/macos/detect.cc:176
 #, c-format
 msgid "    node %s: does not exist"
 msgstr ""
 
-#: src/bsd/detect.c:177 src/linux/detect.c:218 src/macos/detect.c:177
+#: src/bsd/detect.cc:177 src/linux/detect.cc:218 src/macos/detect.cc:177
 msgid "    => you will have to create the node."
 msgstr ""
 
-#: src/bsd/detect.c:184 src/linux/detect.c:225
+#: src/bsd/detect.cc:184 src/linux/detect.cc:225
 #, c-format
 msgid "    node %s: accessible"
 msgstr ""
 
-#: src/bsd/detect.c:190 src/linux/detect.c:231 src/macos/detect.c:184
+#: src/bsd/detect.cc:190 src/linux/detect.cc:231 src/macos/detect.cc:184
 #, c-format
 msgid "    permissions/user/group:%s%s %s"
 msgstr ""
 
-#: src/bsd/detect.c:203 src/linux/detect.c:244 src/macos/detect.c:197
+#: src/bsd/detect.cc:203 src/linux/detect.cc:244 src/macos/detect.cc:197
 msgid "    user can r/w on device: yes"
 msgstr ""
 
-#: src/bsd/detect.c:204 src/bsd/detect.c:245 src/linux/detect.c:245
-#: src/linux/detect.c:286
+#: src/bsd/detect.cc:204 src/bsd/detect.cc:245 src/linux/detect.cc:245
+#: src/linux/detect.cc:286
 msgid "    => device is inaccessible for unknown reasons"
 msgstr ""
 
-#: src/bsd/detect.c:209 src/linux/detect.c:250 src/macos/detect.c:202
+#: src/bsd/detect.cc:209 src/linux/detect.cc:250 src/macos/detect.cc:202
 msgid "    user can r/w on device: no"
 msgstr ""
 
-#: src/bsd/detect.c:214 src/linux/detect.c:255 src/macos/detect.c:207
+#: src/bsd/detect.cc:214 src/linux/detect.cc:255 src/macos/detect.cc:207
 msgid "    others can r/w on device: yes"
 msgstr ""
 
-#: src/bsd/detect.c:220 src/linux/detect.c:261 src/macos/detect.c:213
+#: src/bsd/detect.cc:220 src/linux/detect.cc:261 src/macos/detect.cc:213
 msgid "    others can r/w on device: no"
 msgstr ""
 
-#: src/bsd/detect.c:227 src/linux/detect.c:268 src/macos/detect.c:220
+#: src/bsd/detect.cc:227 src/linux/detect.cc:268 src/macos/detect.cc:220
 #, c-format
 msgid "    is the user '%s' in the group '%s': yes"
 msgstr ""
 
-#: src/bsd/detect.c:232 src/linux/detect.c:273 src/macos/detect.c:225
+#: src/bsd/detect.cc:232 src/linux/detect.cc:273 src/macos/detect.cc:225
 #, c-format
 msgid "    is the user '%s' in the group '%s': no"
 msgstr ""
 
-#: src/bsd/detect.c:233 src/linux/detect.c:274 src/macos/detect.c:226
+#: src/bsd/detect.cc:233 src/linux/detect.cc:274 src/macos/detect.cc:226
 #, c-format
 msgid "    => you should add your username at the group '%s' in '/etc/group'"
 msgstr ""
 
-#: src/bsd/detect.c:234 src/linux/detect.c:275 src/macos/detect.c:227
+#: src/bsd/detect.cc:234 src/linux/detect.cc:275 src/macos/detect.cc:227
 msgid "    => you will have to restart your session, too"
 msgstr ""
 
-#: src/bsd/detect.c:253 src/linux/detect.c:294 src/macos/detect.c:245
+#: src/bsd/detect.cc:253 src/linux/detect.cc:294 src/macos/detect.cc:245
 #, c-format
 msgid "Check for super-user access: %s"
 msgstr ""
 
-#: src/bsd/detect.c:263 src/linux/detect.c:308
+#: src/bsd/detect.cc:263 src/linux/detect.cc:308
 msgid "Check for tty support:"
 msgstr ""
 
-#: src/bsd/detect.c:264 src/linux/detect.c:310
+#: src/bsd/detect.cc:264 src/linux/detect.cc:310
 msgid "    tty support: available."
 msgstr ""
 
-#: src/bsd/detect.c:267 src/linux/detect.c:317 src/macos/detect.c:253
+#: src/bsd/detect.cc:267 src/linux/detect.cc:317 src/macos/detect.cc:253
 msgid "Check for tty usability:"
 msgstr ""
 
-#: src/bsd/detect.c:279 src/linux/detect.c:348 src/linux/detect.c:388
+#: src/bsd/detect.cc:279 src/linux/detect.cc:348 src/linux/detect.cc:388
 msgid "    is useable: yes"
 msgstr ""
 
-#: src/bsd/detect.c:292 src/linux/detect.c:406 src/macos/detect.c:267
+#: src/bsd/detect.cc:292 src/linux/detect.cc:406 src/macos/detect.cc:267
 msgid "Check for libusb support:"
 msgstr ""
 
-#: src/bsd/detect.c:294 src/linux/detect.c:408 src/macos/detect.c:269
+#: src/bsd/detect.cc:294 src/linux/detect.cc:408 src/macos/detect.cc:269
 msgid "    usb support: available."
 msgstr ""
 
-#: src/bsd/detect.c:297 src/linux/detect.c:410 src/macos/detect.c:272
+#: src/bsd/detect.cc:297 src/linux/detect.cc:410 src/macos/detect.cc:272
 msgid "    usb support: not compiled."
 msgstr ""
 
-#: src/error.c:67
+#: src/error.cc:67
 msgid "Msg: link cable is busy."
 msgstr ""
 
-#: src/error.c:69
+#: src/error.cc:69
 msgid "Cause: a transfer is in progress."
 msgstr ""
 
-#: src/error.c:75
+#: src/error.cc:75
 msgid "Msg: unable to use parallel/serial port: access refused."
 msgstr ""
 
-#: src/error.c:77
+#: src/error.cc:77
 msgid "Cause: you are not running program as root or setuid root."
 msgstr ""
 
-#: src/error.c:83
+#: src/error.cc:83
 msgid "Msg: unable to use serial (/dev/ttySx) device."
 msgstr ""
 
-#: src/error.c:85
+#: src/error.cc:85
 msgid ""
 "Cause: the /dev/ttySx node doesn't exist or you don't have required "
 "permissions. How to grant permission to devices to the user depends on the "
@@ -148,11 +148,11 @@ msgid ""
 "the ':'. Example: dialout:x:20:romain "
 msgstr ""
 
-#: src/error.c:97
+#: src/error.cc:97
 msgid "Msg: unable to use parport (/dev/parportX) device."
 msgstr ""
 
-#: src/error.c:99
+#: src/error.cc:99
 msgid ""
 "Cause: the /dev/parportX node doesn't exist or you don't have required "
 "permissions. How to grant permission to devices to the user depends on the "
@@ -161,11 +161,11 @@ msgid ""
 "Example: lp:x:7:romain "
 msgstr ""
 
-#: src/error.c:111
+#: src/error.cc:111
 msgid "Msg: unable to use USB pseudo file system."
 msgstr ""
 
-#: src/error.c:113
+#: src/error.cc:113
 msgid ""
 "Cause: the USB filesystem is not mounted or cannot access USB device because "
 "current user doesn't have the necessary permissions. How to grant permission "
@@ -178,462 +178,466 @@ msgid ""
 "are explained in the CONFIG file shipped with the ticables2 library. "
 msgstr ""
 
-#: src/error.c:130
+#: src/error.cc:130
 msgid "Msg: illegal operation or argument."
 msgstr ""
 
-#: src/error.c:132
+#: src/error.cc:132
 msgid ""
 "Cause: the program which uses this library is buggy. Fire-up the developer!"
 msgstr ""
 
-#: src/error.c:138
+#: src/error.cc:138
 msgid "Msg: DhaHelper driver and/or library not found."
 msgstr ""
 
-#: src/error.c:140 src/error.c:148
+#: src/error.cc:140 src/error.cc:148
 msgid ""
 "Cause: the driver may have been not started yet; it may have been "
 "uninstalled; the library has been installed without administrator privileges."
 msgstr ""
 
-#: src/error.c:146
+#: src/error.cc:146
 msgid "Msg: RwPorts driver and/or library not found."
 msgstr ""
 
-#: src/error.c:154
+#: src/error.cc:154
 msgid "Msg: error occured while writing to the device."
 msgstr ""
 
-#: src/error.c:159
+#: src/error.cc:159
 msgid "Msg: timeout occured while writing to the device."
 msgstr ""
 
-#: src/error.c:161 src/error.c:174
+#: src/error.cc:161 src/error.cc:174
 msgid "Cause: check that link cable is plugged and/or the calculator is ready."
 msgstr ""
 
-#: src/error.c:167
+#: src/error.cc:167
 msgid "Msg: error occured while reading from the device."
 msgstr ""
 
-#: src/error.c:172
+#: src/error.cc:172
 msgid "Msg: timeout occured while reading from the device."
 msgstr ""
 
-#: src/error.c:180
+#: src/error.cc:180
 msgid "Msg: the probing of device failed."
 msgstr ""
 
-#: src/error.c:182
+#: src/error.cc:182
 msgid "Cause: internal error. If you get it, this is a bug!"
 msgstr ""
 
-#: src/error.c:195
+#: src/error.cc:195
 msgid "Msg: unable to open serial port."
 msgstr ""
 
-#: src/error.c:197
+#: src/error.cc:197
 msgid "Cause: check that device is not used/locked by another application."
 msgstr ""
 
-#: src/error.c:205
+#: src/error.cc:205
 msgid "Msg: failed to get VTI handle."
 msgstr ""
 
-#: src/error.c:207
+#: src/error.cc:207
 msgid "Cause: VTI may not be running. VTI must be launched before."
 msgstr ""
 
-#: src/error.c:217
+#: src/error.cc:217
 msgid "Msg: unable to get a unique IPC (Inter Process Communication) key."
 msgstr ""
 
-#: src/error.c:219
+#: src/error.cc:219
 msgid ""
 "Cause: check that you have enough resources for allocating a shared memory "
 "segment."
 msgstr ""
 
-#: src/error.c:226
+#: src/error.cc:226
 msgid "Msg: unable to open/close pipes for virtual linking."
 msgstr ""
 
-#: src/error.c:228
+#: src/error.cc:228
 msgid ""
 "Cause: check that you have permissions to create a pipe in the /tmp "
 "directory."
 msgstr ""
 
-#: src/error.c:235
+#: src/error.cc:235
 msgid "Msg: unable to open serial device."
 msgstr ""
 
-#: src/error.c:237 src/error.c:246
+#: src/error.cc:237 src/error.cc:246
 msgid ""
 "Cause: check that you have permissions on /dev/ttySx device. Check that "
 "device is not locked."
 msgstr ""
 
-#: src/error.c:244
+#: src/error.cc:244
 msgid "Msg: unable to issue a specific command on serial device."
 msgstr ""
 
-#: src/error.c:252
+#: src/error.cc:252
 msgid "Msg: unable to open parallel device."
 msgstr ""
 
-#: src/error.c:254 src/error.c:262
+#: src/error.cc:254 src/error.cc:262
 msgid ""
 "Cause: check that you have permissions on /dev/parportX device. Check that "
 "device is not locked."
 msgstr ""
 
-#: src/error.c:260
+#: src/error.cc:260
 msgid "Msg: unable to issue a specific command on parallel device."
 msgstr ""
 
-#: src/error.c:268
+#: src/error.cc:268
 msgid "Msg: unable to find the libusb-win32 driver."
 msgstr ""
 
-#: src/error.c:270
+#: src/error.cc:270
 msgid "Cause: the driver is not present and/or installed."
 msgstr ""
 
-#: src/error.c:278
+#: src/error.cc:278
 msgid "Msg: failed to open the USB device."
 msgstr ""
 
-#: src/error.c:280
+#: src/error.cc:280
 msgid ""
 "Cause: Check that the USB cable is plugged in and that the calculator is "
 "turned ON! Also, check libusb and usbfs for valid permissions."
 msgstr ""
 
-#: src/error.c:286
+#: src/error.cc:286
 msgid "Msg: unable to reset USB device."
 msgstr ""
 
-#: src/error.c:288
+#: src/error.cc:288
 msgid ""
 "Cause: Check that cable is connected or not stalled. Try to unplug/plug it."
 msgstr ""
 
-#: src/error.c:294
+#: src/error.cc:294
 msgid "Msg: attempting to use a cable which has not been open before."
 msgstr ""
 
-#: src/error.c:296
+#: src/error.cc:296
 msgid "Cause: Internal error."
 msgstr ""
 
-#: src/error.c:302
+#: src/error.cc:302
 msgid "Msg: no cable found."
 msgstr ""
 
-#: src/error.c:304
+#: src/error.cc:304
 msgid "Cause: probing failed or invalid parameters."
 msgstr ""
 
-#: src/error.c:310
+#: src/error.cc:310
 msgid "Msg: DLL not found."
 msgstr ""
 
-#: src/error.c:312
+#: src/error.cc:312
 msgid "Cause: maybe you renamed the DLL ?"
 msgstr ""
 
-#: src/error.c:318
+#: src/error.cc:318
 msgid "Msg: this cable does not support raw I/O."
 msgstr ""
 
-#: src/error.c:320
+#: src/error.cc:320
 msgid "Cause: unsupported operation type on cable."
 msgstr ""
 
-#: src/error.c:329
+#: src/error.cc:329
 msgid "Msg: unable to open/close sockets for virtual linking."
 msgstr ""
 
-#: src/error.c:331
+#: src/error.cc:331
 msgid "Cause: check that you have permissions to open sockets."
 msgstr ""
 
-#: src/link_nul.c:119
+#: src/link_nul.cc:119
 msgid "Dummy link"
 msgstr ""
 
-#: src/link_nul.c:120
+#: src/link_nul.cc:120
 msgid "Dummy link used when no cable is set"
 msgstr ""
 
-#: src/link_nul.c:136
+#: src/link_nul.cc:136
 msgid "Dummy link for TiEmu"
 msgstr ""
 
-#: src/link_nul.c:137
+#: src/link_nul.cc:137
 msgid "Internal Link Port cable for TiEmu (internal use)"
 msgstr ""
 
-#: src/linux/detect.c:312
+#: src/linux/detect.cc:312
 msgid "    tty support: not compiled."
 msgstr ""
 
-#: src/linux/detect.c:320
+#: src/linux/detect.cc:320
 msgid "not usable"
 msgstr ""
 
-#: src/linux/detect.c:329
+#: src/linux/detect.cc:329
 #, c-format
 msgid "unable to open serial device '%s'"
 msgstr ""
 
-#: src/linux/detect.c:336
+#: src/linux/detect.cc:336
 #, c-format
 msgid "Error running TIOCGSERIAL ioctl on device %s - %s"
 msgstr ""
 
-#: src/linux/detect.c:343 src/linux/detect.c:383
+#: src/linux/detect.cc:343 src/linux/detect.cc:383
 msgid "    is useable: no"
 msgstr ""
 
-#: src/linux/detect.c:359
+#: src/linux/detect.cc:359
 msgid "Check for parport support:"
 msgstr ""
 
-#: src/linux/detect.c:361
+#: src/linux/detect.cc:361
 msgid "    parport support: available."
 msgstr ""
 
-#: src/linux/detect.c:363
+#: src/linux/detect.cc:363
 msgid "    parport support: not compiled."
 msgstr ""
 
-#: src/linux/detect.c:368
+#: src/linux/detect.cc:368
 msgid "Check for parport usability:"
 msgstr ""
 
-#: src/linux/detect.c:414
+#: src/linux/detect.cc:414
 msgid "Check for libusb usability:"
 msgstr ""
 
-#: src/linux/detect.c:418 src/linux/detect.c:429 src/linux/detect.c:437
-#: src/linux/detect.c:440
+#: src/linux/detect.cc:418 src/linux/detect.cc:429 src/linux/detect.cc:437
+#: src/linux/detect.cc:440
 #, c-format
 msgid "    usb filesystem (%s): %s"
 msgstr ""
 
-#: src/linux/detect.c:446
+#: src/linux/detect.cc:446
 #, c-format
 msgid "    usb filesystem (/[proc|dev]/bus/usb): %s"
 msgstr ""
 
-#: src/linux/detect.c:447
+#: src/linux/detect.cc:447
 msgid "    => you must have udev or usbfs support."
 msgstr ""
 
-#: src/linux/detect.c:448
+#: src/linux/detect.cc:448
 msgid "    => take a look at the ticables2/CONFIG file."
 msgstr ""
 
-#: src/linux/ioports.c:71
+#: src/linux/ioports.cc:71
 msgid "ioctl failed on parallel device: can't claim exclusive access."
 msgstr ""
 
-#: src/linux/ioports.c:78
+#: src/linux/ioports.cc:78
 msgid "ioctl failed on parallel device: can't claim parport."
 msgstr ""
 
-#: src/linux/ioports.c:87
+#: src/linux/ioports.cc:87
 msgid "ioctl failed on parallel device: can't change transfer mode."
 msgstr ""
 
-#: src/linux/ioports.c:99
+#: src/linux/ioports.cc:99
 msgid "ioctl failed on parallel device: can't release parport."
 msgstr ""
 
-#: src/linux/ioports.c:113
+#: src/linux/ioports.cc:113
 msgid "ioctl failed on parallel device: can't read status lines."
 msgstr ""
 
-#: src/linux/ioports.c:124
+#: src/linux/ioports.cc:124
 msgid "ioctl failed on parallel device: can't write on data lines."
 msgstr ""
 
-#: src/linux/ioports.c:163 src/linux/ioports.c:179
+#: src/linux/ioports.cc:163 src/linux/ioports.cc:179
 msgid "ioctl failed on serial device."
 msgstr ""
 
-#: src/linux/link_gry.c:116
+#: src/linux/link_gry.cc:116
 #, c-format
 msgid "unable to open this serial port: %s (wrong permissions).\n"
 msgstr ""
 
-#: src/linux/link_gry.c:120
+#: src/linux/link_gry.cc:120
 #, c-format
 msgid "unable to open this serial port: %s\n"
 msgstr ""
 
-#: src/linux/link_gry.c:318 src/linux/link_par.c:379 src/linux/link_tcpc.c:102
-#: src/linux/link_tcps.c:102 src/linux/link_ser.c:395 src/win32/link_gry2.c:368
-#: src/win32/link_gry.c:374 src/win32/link_par.c:374 src/win32/link_ser.c:403
+#: src/linux/link_gry.cc:318 src/linux/link_par.cc:379
+#: src/linux/link_tcpc.cc:102 src/linux/link_tcps.cc:102
+#: src/linux/link_ser.cc:395 src/win32/link_gry2.cc:368
+#: src/win32/link_gry.cc:374 src/win32/link_par.cc:374
+#: src/win32/link_ser.cc:403
 #, c-format
 msgid "unable to set device %s.\n"
 msgstr ""
 
-#: src/linux/link_gry.c:329 src/win32/link_gry2.c:379 src/win32/link_gry.c:385
+#: src/linux/link_gry.cc:329 src/win32/link_gry2.cc:379
+#: src/win32/link_gry.cc:385
 msgid "GrayLink"
 msgstr ""
 
-#: src/linux/link_gry.c:330 src/win32/link_gry2.c:380 src/win32/link_gry.c:386
+#: src/linux/link_gry.cc:330 src/win32/link_gry2.cc:380
+#: src/win32/link_gry.cc:386
 msgid "GrayLink serial cable"
 msgstr ""
 
-#: src/linux/link_par.c:390 src/win32/link_par.c:385
+#: src/linux/link_par.cc:390 src/win32/link_par.cc:385
 msgid "Parallel"
 msgstr ""
 
-#: src/linux/link_par.c:391 src/win32/link_par.c:386
+#: src/linux/link_par.cc:391 src/win32/link_par.cc:386
 msgid "Home-made parallel cable"
 msgstr ""
 
-#: src/linux/link_tcpc.c:113
+#: src/linux/link_tcpc.cc:113
 msgid "TCPC"
 msgstr ""
 
-#: src/linux/link_tcpc.c:114
+#: src/linux/link_tcpc.cc:114
 msgid "Virtual TCP client link"
 msgstr ""
 
-#: src/linux/link_tcps.c:113
+#: src/linux/link_tcps.cc:113
 msgid "TCPS"
 msgstr ""
 
-#: src/linux/link_tcps.c:114
+#: src/linux/link_tcps.cc:114
 msgid "Virtual TCP server link"
 msgstr ""
 
-#: src/linux/link_ser.c:406 src/win32/link_ser.c:414
+#: src/linux/link_ser.cc:406 src/win32/link_ser.cc:414
 msgid "BlackLink"
 msgstr ""
 
-#: src/linux/link_ser.c:407 src/win32/link_ser.c:415
+#: src/linux/link_ser.cc:407 src/win32/link_ser.cc:415
 msgid "BlackLink or home-made serial cable"
 msgstr ""
 
-#: src/linux/link_tie.c:155
+#: src/linux/link_tie.cc:155
 #, c-format
 msgid "error: %s\n"
 msgstr ""
 
-#: src/linux/link_tie.c:354 src/win32/link_tie.c:370
+#: src/linux/link_tie.cc:354 src/win32/link_tie.cc:370
 msgid "TiEmu"
 msgstr ""
 
-#: src/linux/link_tie.c:355 src/win32/link_tie.c:371
+#: src/linux/link_tie.cc:355 src/win32/link_tie.cc:371
 msgid "Virtual link for TiEmu"
 msgstr ""
 
-#: src/linux/link_usb1.c:257
+#: src/linux/link_usb1.cc:213
 #, c-format
 msgid " found %s on #%i, version <%x.%02x>\n"
 msgstr ""
 
-#: src/linux/link_usb1.c:284
+#: src/linux/link_usb1.cc:240
 msgid " no devices found!\n"
 msgstr ""
 
-#: src/linux/link_usb1.c:899 src/linux/link_usb.c:1123
+#: src/linux/link_usb1.cc:855 src/linux/link_usb.cc:1123
 msgid "SilverLink"
 msgstr ""
 
-#: src/linux/link_usb1.c:900 src/linux/link_usb.c:1124
+#: src/linux/link_usb1.cc:856 src/linux/link_usb.cc:1124
 msgid "SilverLink (TI-GRAPH LINK USB) cable"
 msgstr ""
 
-#: src/linux/link_usb1.c:916 src/linux/link_usb.c:1140
+#: src/linux/link_usb1.cc:872 src/linux/link_usb.cc:1140
 msgid "DirectLink"
 msgstr ""
 
-#: src/linux/link_usb1.c:917 src/linux/link_usb.c:1141
+#: src/linux/link_usb1.cc:873 src/linux/link_usb.cc:1141
 msgid "DirectLink (DIRECT USB) cable"
 msgstr ""
 
-#: src/linux/link_usb.c:362
+#: src/linux/link_usb.cc:362
 #, c-format
 msgid "usb_find_busses (%s).\n"
 msgstr ""
 
-#: src/linux/link_usb.c:370
+#: src/linux/link_usb.cc:370
 #, c-format
 msgid "usb_find_devices (%s).\n"
 msgstr ""
 
-#: src/linux/link_usb.c:378
+#: src/linux/link_usb.cc:378
 msgid "no devices found!\n"
 msgstr ""
 
-#: src/linux/link_vti.c:241 src/win32/link_vti.c:331
+#: src/linux/link_vti.cc:241 src/win32/link_vti.cc:331
 msgid "Virtual TI"
 msgstr ""
 
-#: src/linux/link_vti.c:242 src/win32/link_vti.c:332
+#: src/linux/link_vti.cc:242 src/win32/link_vti.cc:332
 msgid "Virtual link for VTi"
 msgstr ""
 
-#: src/probe.c:114
+#: src/probe.cc:114
 msgid "Link cable probing:"
 msgstr ""
 
-#: src/ticables.c:176
+#: src/ticables.cc:176
 #, c-format
 msgid "ticables library version %s"
 msgstr ""
 
-#: src/ticables.c:552
+#: src/ticables.cc:552
 msgid "Link cable handle details:"
 msgstr ""
 
-#: src/ticables.c:553
+#: src/ticables.cc:553
 #, c-format
 msgid "  model   : %s"
 msgstr ""
 
-#: src/ticables.c:554
+#: src/ticables.cc:554
 #, c-format
 msgid "  port    : %s"
 msgstr ""
 
-#: src/ticables.c:555
+#: src/ticables.cc:555
 #, c-format
 msgid "  timeout : %2.1fs"
 msgstr ""
 
-#: src/ticables.c:556
+#: src/ticables.cc:556
 #, c-format
 msgid "  delay   : %i us"
 msgstr ""
 
-#: src/ticables.c:559
+#: src/ticables.cc:559
 #, c-format
 msgid "  device  : %s"
 msgstr ""
 
-#: src/ticables.c:560
+#: src/ticables.cc:560
 #, c-format
 msgid "  address : 0x%03x"
 msgstr ""
 
-#: src/win32/link_vti.c:108
+#: src/win32/link_vti.cc:108
 msgid "FATAL ERROR: unable to get an handle on the ticables-2 library."
 msgstr ""
 
-#: src/win32/link_vti.c:109
+#: src/win32/link_vti.cc:109
 msgid "Did you rename the library ?!"
 msgstr ""
 
-#: src/win32/link_vti.c:144
+#: src/win32/link_vti.cc:144
 #, c-format
 msgid "Opened %s"
 msgstr ""

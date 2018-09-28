@@ -1,7 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
+/* $Id: detect.c 663 2004-04-28 16:25:13Z tijl $ */
 
-/*  libticables2 - link cable library, a part of the TiLP project
- *  Copyright (C) 2015  Lionel Debroux
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2004  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,27 +19,16 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* TCP server virtual link */
-
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+# include <config.h>
 #endif
-
-#ifndef NO_CABLE_TCPS
 
 #if defined(__LINUX__)
-#include "linux/link_tcps.c"
-
+#include "linux/ioports.cc"
 #elif defined(__BSD__)
-#include "linux/link_tcps.c"
-
+#include "linux/ioports.cc"
 #elif defined(__WIN32__)
-/* Not ported yet */
-
-#elif defined(__MACOSX__)
-#include "linux/link_tcps.c"
-
+#include "win32/ioports.cc"
 #else
-#endif
-
+#include "none.cc"
 #endif

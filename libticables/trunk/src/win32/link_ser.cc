@@ -407,7 +407,7 @@ static int ser_set_device(CableHandle *h, const char * device)
 	return ERR_ILLEGAL_ARG;
 }
 
-const CableFncts cable_ser = 
+extern const CableFncts cable_ser = 
 {
 	CABLE_BLK,
 	"BLK",

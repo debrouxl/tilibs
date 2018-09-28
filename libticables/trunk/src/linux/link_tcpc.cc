@@ -18,7 +18,7 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* TCP server virtual link cable unit */
+/* TCP client virtual link cable unit */
 
 /*
  * This unit uses a TCP socket between 2 programs which use this lib.
@@ -47,47 +47,47 @@
 #include "../internal.h"
 #include "detect.h"
 
-static int tcps_prepare(CableHandle *h)
+static int tcpc_prepare(CableHandle *h)
 {
 	return 0;
 }
 
-static int tcps_open(CableHandle *h)
+static int tcpc_open(CableHandle *h)
 {
 	return 0;
 }
 
-static int tcps_close(CableHandle *h)
+static int tcpc_close(CableHandle *h)
 {
 	return 0;
 }
 
-static int tcps_reset(CableHandle *h)
+static int tcpc_reset(CableHandle *h)
 {
 	return 0;
 }
 
-static int tcps_probe(CableHandle *h)
+static int tcpc_probe(CableHandle *h)
 {
 	return 0;
 }
 
-static int tcps_put(CableHandle *h, uint8_t *data, uint32_t len)
+static int tcpc_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	return 0;
 }
 
-static int tcps_get(CableHandle *h, uint8_t *data, uint32_t len)
+static int tcpc_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	return 0;
 }
 
-static int tcps_check(CableHandle *h, int *status)
+static int tcpc_check(CableHandle *h, int *status)
 {
 	return 0;
 }
 
-static int tcps_set_device(CableHandle *h, const char * device)
+static int tcpc_set_device(CableHandle *h, const char * device)
 {
 	if (device != NULL)
 	{
@@ -106,19 +106,19 @@ static int tcps_set_device(CableHandle *h, const char * device)
 	return ERR_ILLEGAL_ARG;
 }
 
-const CableFncts cable_tcps =
+extern const CableFncts cable_tcpc =
 {
-	CABLE_TCPS,
-	"TCPS",
-	N_("TCPS"),
-	N_("Virtual TCP server link"),
+	CABLE_TCPC,
+	"TCPC",
+	N_("TCPC"),
+	N_("Virtual TCP client link"),
 	0,
-	&tcps_prepare,
-	&tcps_open, &tcps_close, &tcps_reset, &tcps_probe, NULL,
-	&tcps_put, &tcps_get, &tcps_check,
+	&tcpc_prepare,
+	&tcpc_open, &tcpc_close, &tcpc_reset, &tcpc_probe, NULL,
+	&tcpc_put, &tcpc_get, &tcpc_check,
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&tcps_set_device,
+	&tcpc_set_device,
 	NULL
 };

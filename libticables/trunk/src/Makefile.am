@@ -16,24 +16,24 @@ libticables2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 libticables2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@ @LIBUSB10_LIBS@
 libticables2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticables2_la_SOURCES = *.h \
-	data_log.c \
-	detect.c \
-	error.c \
-	ioports.c \
-	link_gry.c link_nul.c link_par.c link_blk.c \
-	link_usb.c link_tie.c link_vti.c link_xxx.c \
-	link_tcpc.c link_tcps.c \
-	log_dbus.c log_dusb.c log_hex.c log_nsp.c \
-	hex2dbus.c hex2dusb.c hex2nsp.c \
-	probe.c \
-	ticables.c \
-	type2str.c \
-	none.c
+	data_log.cc \
+	detect.cc \
+	error.cc \
+	ioports.cc \
+	link_gry.cc link_nul.cc link_par.cc link_blk.cc \
+	link_usb.cc link_tie.cc link_vti.cc link_xxx.cc \
+	link_tcpc.cc link_tcps.cc \
+	log_dbus.cc log_dusb.cc log_hex.cc log_nsp.cc \
+	hex2dbus.cc hex2dusb.cc hex2nsp.cc \
+	probe.cc \
+	ticables.cc \
+	type2str.cc \
+	none.cc
 
-EXTRA_DIST = bsd/* linux/* macos/* win32/*.c win32/*.h win32/dha/* win32/usb/* win64/*.c win64/*.h win64/rwp/*
+EXTRA_DIST = bsd/* linux/* macos/* win32/*.cc win32/*.h win32/dha.c win32/dha/* win32/usb/* win64/*.c win64/*.cc win64/*.h win64/rwp.c win64/rwp/*
 
 if OS_WIN32
-  libticables2_la_SOURCES += win32/libusb_dyn.c
+  libticables2_la_SOURCES += win32/libusb_dyn.cc
 
   libticables2_la_DEPENDENCIES = ../build/mingw/ticables2-rc.o
   libticables2_la_LDFLAGS += -Wl,../build/mingw/ticables2-rc.o -Wl,--output-def,libticables2.def
@@ -46,4 +46,4 @@ else
 endif
 
 wc:
-	wc *.c *.h ./linux/*.c ./linux/*.h ./win32/*.c ./win32/*.h ./win64/*.c ./win64/*.h ./bsd/*.c ./bsd/*.h ./macos/*.c ./macos/*.h
+	wc *.cc *.h ./linux/*.cc ./linux/*.h ./win32/*.cc ./win32/*.c ./win32/*.h ./win32/dha/*.c ./win32/dha/*.h ./win64/*.cc ./win64/*.c ./win64/*.h ./win64/rwp/*.c ./win64/rwp/*.h ./bsd/*.cc ./bsd/*.h ./macos/*.cc ./macos/*.h

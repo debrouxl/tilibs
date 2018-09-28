@@ -115,7 +115,7 @@ static int tie_reset(CableHandle *h);
 static int tie_open(CableHandle *h)
 {
 	int p = h->address;
-	int new = 0;
+	int newseg = 0;
 
 	if ((ipc_key = ftok("/tmp", 0x1234)) == -1)
 	{
@@ -124,7 +124,7 @@ static int tie_open(CableHandle *h)
 	shmid = shmget(ipc_key, 1, IPC_CREAT | IPC_EXCL | 0666);
 	if (shmid != -1)
 	{
-		new = 1;
+		newseg = 1;
 	}
 	else if ((shmid == -1) && (errno == EEXIST))
 	{
@@ -133,7 +133,7 @@ static int tie_open(CableHandle *h)
 			return ERR_TIE_OPEN;
 		}
 	}
-	if ((shmaddr = shmat(shmid, NULL, 0)) == (int *)-1)
+	if ((shmaddr = (int *)shmat(shmid, NULL, 0)) == (int *)-1)
 	{
 		return ERR_TIE_OPEN;
 	}
@@ -165,7 +165,7 @@ static int tie_open(CableHandle *h)
 		return ERR_TIE_OPEN;
 	}
 
-	ref_cnt = new ? 1 : 2;
+	ref_cnt = newseg ? 1 : 2;
 	return tie_reset(h);
 }
 
@@ -347,7 +347,7 @@ static int tie_check(CableHandle *h, int *status)
 	return 0;
 }
 
-const CableFncts cable_tie =
+extern const CableFncts cable_tie =
 {
 	CABLE_TIE,
 	"TIE",

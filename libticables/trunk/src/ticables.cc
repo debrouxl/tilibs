@@ -145,7 +145,7 @@ TIEXPORT1 int TICALL ticables_library_init(void)
 	char locale_dir[65536];
 
 #ifdef __WIN32__
-	HANDLE hDll;
+	HMODULE hDll;
 	int i;
 
 	hDll = GetModuleHandle("libticables2-8.dll");
@@ -318,7 +318,7 @@ TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort po
 
 	for (i = 0; cables[i] != NULL; i++)
 	{
-		if (cables[i]->model == (const int)model)
+		if (cables[i]->model == model)
 		{
 			handle->cable = (CableFncts *)cables[i];
 			break;
@@ -449,7 +449,7 @@ TIEXPORT1 CableModel TICALL ticables_get_model(CableHandle* handle)
 	else
 	{
 		ticables_critical("%s(NULL)", __FUNCTION__);
-		return 0;
+		return CABLE_NUL;
 	}
 }
 
@@ -470,7 +470,7 @@ TIEXPORT1 CablePort TICALL ticables_get_port(CableHandle* handle)
 	else
 	{
 		ticables_critical("%s(NULL)", __FUNCTION__);
-		return 0;
+		return PORT_0;
 	}
 }
 
@@ -491,7 +491,7 @@ TIEXPORT1 const char * TICALL ticables_get_device(CableHandle* handle)
 	else
 	{
 		ticables_critical("%s(NULL)", __FUNCTION__);
-		return 0;
+		return NULL;
 	}
 }
 

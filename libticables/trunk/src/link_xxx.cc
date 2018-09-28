@@ -41,12 +41,11 @@
  **/
 TIEXPORT1 int TICALL ticables_cable_open(CableHandle* handle)
 {
-	const CableFncts *cable;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	ret = ticables_event_send_simple(handle, /* type */ CABLE_EVENT_TYPE_BEFORE_OPEN, /* retval */ 0);
@@ -98,12 +97,11 @@ TIEXPORT1 int TICALL ticables_cable_open(CableHandle* handle)
  **/
 TIEXPORT1 int TICALL ticables_cable_close(CableHandle* handle)
 {
-	const CableFncts *cable;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	ret = ticables_event_send_simple(handle, /* type */ CABLE_EVENT_TYPE_BEFORE_CLOSE, /* retval */ 0);
@@ -143,12 +141,11 @@ TIEXPORT1 int TICALL ticables_cable_close(CableHandle* handle)
  **/
 TIEXPORT1 int TICALL ticables_cable_reset(CableHandle* handle)
 {
-	const CableFncts *cable;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
@@ -187,13 +184,12 @@ TIEXPORT1 int TICALL ticables_cable_reset(CableHandle* handle)
  **/
 TIEXPORT1 int TICALL ticables_cable_probe(CableHandle* handle, int* result)
 {
-	const CableFncts *cable;
 	int opened;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	opened = handle->open;
@@ -264,13 +260,12 @@ TIEXPORT1 int TICALL ticables_cable_probe(CableHandle* handle, int* result)
  **/
 TIEXPORT1 int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint32_t len)
 {
-	const CableFncts *cable;
 	int ret = 0;
 	CableEventData event;
 
 	VALIDATE_HANDLE(handle);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
@@ -338,13 +333,12 @@ TIEXPORT1 int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uin
  **/
 TIEXPORT1 int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint32_t len)
 {
-	const CableFncts *cable;
 	int ret = 0;
 	CableEventData event;
 
 	VALIDATE_HANDLE(handle);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
@@ -404,12 +398,11 @@ TIEXPORT1 int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uin
  **/
 TIEXPORT1 int TICALL ticables_cable_check(CableHandle* handle, CableStatus *status)
 {
-	const CableFncts *cable;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
@@ -453,12 +446,11 @@ TIEXPORT1 int TICALL ticables_cable_check(CableHandle* handle, CableStatus *stat
  **/
 TIEXPORT1 int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
 {
-	const CableFncts *cable;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
@@ -495,12 +487,11 @@ TIEXPORT1 int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
  **/
 TIEXPORT1 int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
 {
-	const CableFncts *cable;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
@@ -536,12 +527,11 @@ TIEXPORT1 int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
  **/
 TIEXPORT1 int TICALL ticables_cable_get_d0(CableHandle* handle)
 {
-	const CableFncts *cable;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
@@ -575,12 +565,11 @@ TIEXPORT1 int TICALL ticables_cable_get_d0(CableHandle* handle)
  **/
 TIEXPORT1 int TICALL ticables_cable_get_d1(CableHandle* handle)
 {
-	const CableFncts *cable;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
@@ -618,12 +607,11 @@ TIEXPORT1 int TICALL ticables_cable_get_d1(CableHandle* handle)
  **/
 TIEXPORT1 int TICALL ticables_cable_set_raw(CableHandle* handle, int state)
 {
-	const CableFncts *cable;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
@@ -666,13 +654,12 @@ TIEXPORT1 int TICALL ticables_cable_set_raw(CableHandle* handle, int state)
  **/
 TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle* handle, int *state)
 {
-	const CableFncts *cable;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(state);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
@@ -713,13 +700,12 @@ TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle* handle, int *state)
  **/
 TIEXPORT1 int TICALL ticables_cable_set_device(CableHandle* handle, const char * device)
 {
-	const CableFncts *cable;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(device);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	RETURN_IF_HANDLE_OPEN(handle);
@@ -755,13 +741,12 @@ TIEXPORT1 int TICALL ticables_cable_set_device(CableHandle* handle, const char *
  */
 TIEXPORT1 int TICALL ticables_cable_get_device_info(CableHandle *handle, CableDeviceInfo *info)
 {
-	const CableFncts *cable;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(info);
 
-	cable = handle->cable;
+	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
@@ -1122,7 +1107,7 @@ TIEXPORT1 int TICALL ticables_cable_fire_user_event(CableHandle *handle, CableEv
 	{
 		CableEventData event;
 		ticables_event_fill_header(handle, &event, /* type */ type, /* retval */ retval, /* operation */ CABLE_FNCT_LAST);
-		event.data.user_data.data = user_data;
+		event.data.user_data.data = (uint8_t *)user_data;
 		event.data.user_data.len = user_len;
 		handle->event_count++;
 		ret = handle->event_hook(handle, handle->event_count, &event, handle->user_pointer);

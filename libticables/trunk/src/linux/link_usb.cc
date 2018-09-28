@@ -1116,7 +1116,7 @@ static int slv_check(CableHandle *h, int *status)
 #endif
 }
 
-const CableFncts cable_slv =
+extern const CableFncts cable_slv =
 {
 	CABLE_SLV,
 	"SLV",
@@ -1133,7 +1133,7 @@ const CableFncts cable_slv =
 	&slv_get_device_info
 };
 
-const CableFncts cable_raw =
+extern const CableFncts cable_raw =
 {
 	CABLE_USB,
 	"USB",

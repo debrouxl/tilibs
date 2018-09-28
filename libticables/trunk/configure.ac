@@ -28,7 +28,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PREFIX_DEFAULT(/usr/local)
 
 dnl Files to configure.
-AC_CONFIG_SRCDIR([src/ticables.c])
+AC_CONFIG_SRCDIR([src/ticables.cc])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
@@ -49,6 +49,7 @@ LT_INIT
 
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
@@ -71,13 +72,13 @@ AC_SUBST(GLIB_LIBS)
 
 # USB cable support
 AC_ARG_ENABLE(libusb,
-  AC_HELP_STRING([--disable-libusb], [disable USB support through libusb 0.1.x]),
+  AC_HELP_STRING([--disable-libusb], [disable USB support through libusb 0.1.x / 1.0.x]),
   [cab_cv_use_libusb=$enableval], [cab_cv_use_libusb=yes])
-AC_CACHE_CHECK([whether to enable USB through libusb 0.1.x],
+AC_CACHE_CHECK([whether to enable USB through outdated libusb 0.1.x],
   [cab_cv_use_libusb], [cab_cv_use_libusb=no])
 
 AC_ARG_ENABLE(libusb10,
-  AC_HELP_STRING([--enable-libusb10], [enable EXPERIMENTAL USB support through libusb 1.0.x]),
+  AC_HELP_STRING([--enable-libusb10], [enable USB support through libusb 1.0.x]),
   [cab_cv_use_libusb10=$enableval], [cab_cv_use_libusb10=no])
 AC_CACHE_CHECK([whether to enable USB through libusb 1.0.x],
   [cab_cv_use_libusb10], [cab_cv_use_libusb10=no])
@@ -87,7 +88,8 @@ if [test "x$cab_cv_use_libusb" != xno]; then
     PKG_CHECK_MODULES([LIBUSB10], [ libusb-1.0 >= 1.0.0 ],
       [HAVE_LIBUSB10=yes
        AC_CHECK_LIB([usb-1.0], [libusb_strerror],
-                    [HAVE_LIBUSB10_STRERROR=yes], [HAVE_LIBUSB10_STRERROR=no])
+                    [AC_DEFINE([HAVE_LIBUSB10_STRERROR], [1], [libusb 1.0.x has libusb_strerror])],
+                    [AC_ERROR([Use a version of libusb which provides libusb_strerror])])
       ])
   else
     case $host_os in
@@ -169,6 +171,7 @@ case "$host" in
   sparc*-sun-solaris*)   ARCH="-D__SPARC__ -D__SOL__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"
+CXXFLAGS="$CXXFLAGS $ARCH"
 
 # Ensure MSVC-compatible struct packing convention is used when
 # compiling for Win32 with gcc.
@@ -201,6 +204,7 @@ case $host_os in
       AC_MSG_WARN([produced libraries might be incompatible with MSVC-compiled code])
     else
       CFLAGS="$CFLAGS $msnative_struct"
+      CXXFLAGS="$CXXFLAGS $msnative_struct"
       AC_MSG_RESULT([${msnative_struct}])
     fi
   fi
@@ -230,6 +234,7 @@ case $host_os in
 	      AC_MSG_RESULT([no])
 	   else
 	      CFLAGS="$CFLAGS $visibility_flag"
+	      CXXFLAGS="$CXXFLAGS $visibility_flag"
 	      AC_MSG_RESULT([${visibility_flag}])
 	      AC_DEFINE(HAVE_FVISIBILITY, 1, [Use -fvisibility=hidden flag])
 	    fi
