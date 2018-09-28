@@ -169,7 +169,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	int ret;
-	uint8_t *buffer = handle->buffer2;
+	uint8_t *buffer = (uint8_t *)handle->buffer2;
 	uint8_t *data = NULL;
 
 	data = (uint8_t *)ticalcs_alloc_screen(65537U);
@@ -199,7 +199,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 						sc->clipped_width = TI73_COLS;
 						sc->clipped_height = TI73_ROWS;
 						sc->pixel_format = CALC_PIXFMT_MONO;
-						*bitmap = ticalcs_realloc_screen(data, TI73_COLS * TI73_ROWS / 8);
+						*bitmap = (uint8_t *)ticalcs_realloc_screen(data, TI73_COLS * TI73_ROWS / 8);
 					}
 					else
 					{
@@ -221,7 +221,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 								break;
 							}
 
-							*bitmap = ticalcs_realloc_screen(data, size + pktsize);
+							*bitmap = (uint8_t *)ticalcs_realloc_screen(data, size + pktsize);
 							if (*bitmap != NULL)
 							{
 								data = *bitmap;
@@ -248,7 +248,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 						if (!ret)
 						{
-							*bitmap = ticalcs_alloc_screen(TI84PC_ROWS * TI84PC_COLS * 2);
+							*bitmap = (uint8_t *)ticalcs_alloc_screen(TI84PC_ROWS * TI84PC_COLS * 2);
 							ret = ticalcs_screen_84pcse_rle_uncompress(data, size, *bitmap, TI84PC_ROWS * TI84PC_COLS * 2);
 						}
 					}
@@ -280,7 +280,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	{
 		return ret;
 	}
-	ti = (*vars)->data;
+	ti = (TreeInfo *)((*vars)->data);
 
 	ret = SEND_REQ(handle, 0x0000, TI73_DIR, "\0\0\0\0\0\0\0", 0x00, 0x00);
 	if (!ret)
@@ -288,7 +288,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		ret = RECV_ACK(handle, &unused);
 		if (!ret)
 		{
-			ret = RECV_XDP(handle, &unused, handle->buffer2);
+			ret = RECV_XDP(handle, &unused, (uint8_t *)handle->buffer2);
 			if (!ret)
 			{
 				ret = SEND_ACK(handle);
@@ -412,7 +412,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 		ret = RECV_ACK(handle, &unused);
 		if (!ret)
 		{
-			ret = RECV_XDP(handle, &unused, handle->buffer2);
+			ret = RECV_XDP(handle, &unused, (uint8_t *)handle->buffer2);
 			if (!ret)
 			{
 				ret = SEND_EOT(handle);
@@ -576,7 +576,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		handle->updat->max2 = 3;
 		ticalcs_update_pbar(handle);
 
-		content->data_part1 = tifiles_ve_alloc_data(65536);
+		content->data_part1 = (uint8_t *)tifiles_ve_alloc_data(65536U);
 		ret = RECV_XDP(handle, &content->data_length1, content->data_part1);
 		if (!ret)
 		{
@@ -589,7 +589,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		handle->updat->cnt2++;
 		ticalcs_update_pbar(handle);
 
-		content->data_part2 = tifiles_ve_alloc_data(65536);
+		content->data_part2 = (uint8_t *)tifiles_ve_alloc_data(65536U);
 		ret = RECV_XDP(handle, &content->data_length2, content->data_part2);
 		if (!ret)
 		{
@@ -602,7 +602,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		handle->updat->cnt2++;
 		ticalcs_update_pbar(handle);
 
-		content->data_part3 = tifiles_ve_alloc_data(65536);
+		content->data_part3 = (uint8_t *)tifiles_ve_alloc_data(65536U);
 		ret = RECV_XDP(handle, &content->data_length3, content->data_part3);
 		if (!ret)
 		{
@@ -776,7 +776,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 			break;
 		}
 
-		ve->data = tifiles_ve_alloc_data(ve->size);
+		ve->data = (uint8_t *)tifiles_ve_alloc_data(ve->size);
 		ret = RECV_XDP(handle, &ve_size, ve->data);
 		if (!ret)
 		{
@@ -1021,7 +1021,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 			fp->page = old_page;
 			fp->flag = 0x80;
 			fp->size = offset;
-			fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
+			fp->data = (uint8_t *)tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 			memcpy(fp->data, buffer, fp->size);
 
 			page++;
@@ -1072,7 +1072,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	fp->page = old_page;
 	fp->flag = 0x80;
 	fp->size = offset;
-	fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
+	fp->data = (uint8_t *)tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 	memcpy(fp->data, buffer, fp->size);
 	page++;
 
@@ -1315,7 +1315,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	uint8_t varattr;
 	uint8_t version;
 	char varname[9];
-	uint8_t * buffer = handle->buffer2;
+	uint8_t * buffer = (uint8_t *)handle->buffer2;
 	uint32_t calc_time;
 
 	struct tm ref, *cur;
@@ -1468,7 +1468,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		}
 		infos->language_id = buf[6];
 		infos->sub_lang_id = buf[7];
-		infos->mask = INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID;
+		infos->mask = (InfosMask)(INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID);
 
 		tifiles_hexdump(buf, length);
 		ticalcs_info(_("  OS: %s"), infos->os_version);
@@ -1613,7 +1613,7 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	return ret;
 }
 
-const CalcFncts calc_73 =
+extern const CalcFncts calc_73 =
 {
 	CALC_TI73,
 	"TI73",
@@ -1683,7 +1683,7 @@ const CalcFncts calc_73 =
 	&noop_recv_all_vars_backup
 };
 
-const CalcFncts calc_83p =
+extern const CalcFncts calc_83p =
 {
 	CALC_TI83P,
 	"TI83+",
@@ -1753,7 +1753,7 @@ const CalcFncts calc_83p =
 	&noop_recv_all_vars_backup
 };
 
-const CalcFncts calc_84p =
+extern const CalcFncts calc_84p =
 {
 	CALC_TI84P,
 	"TI84+",
@@ -1823,7 +1823,7 @@ const CalcFncts calc_84p =
 	&noop_recv_all_vars_backup
 };
 
-const CalcFncts calc_84pcse =
+extern const CalcFncts calc_84pcse =
 {
 	CALC_TI84PC,
 	"TI84+CSE",

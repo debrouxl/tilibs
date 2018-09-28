@@ -206,7 +206,7 @@ TIEXPORT3 int TICALL ticalcs_library_init(void)
 	char locale_dir[65536 + 20];
 
 #ifdef __WIN32__
-	HANDLE hDll;
+	HMODULE hDll;
 	int i;
 
 	hDll = GetModuleHandle("libticalcs2-13.dll");
@@ -451,7 +451,7 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 
 	for (i = 0; i < sizeof(calcs) / sizeof(calcs[0]) - 1; i++) // - 1 for the terminating NULL.
 	{
-		if (calcs[i]->model == (int const)model)
+		if (calcs[i]->model == (int)model)
 		{
 			calc = (CalcFncts *)calcs[i];
 			break;

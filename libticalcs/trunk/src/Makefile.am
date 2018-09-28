@@ -21,26 +21,26 @@ libticalcs2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ \
 	@TICABLES_LIBS@ @TIFILES_LIBS@ @TICONV_LIBS@
 libticalcs2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticalcs2_la_SOURCES = *.h \
-	backup.c \
-	calc_00.c calc_xx.c \
-	calc_73.c calc_8x.c calc_9x.c \
-	calc_84p.c calc_89t.c \
-	calc_nsp.c \
-	clock.c \
-	cmdz80.c cmd68k.c dusb_cmd.c nsp_cmd.c \
-	dirlist.c \
-	error.c \
-	keys73.c keys83.c keys83p.c keys86.c keys89.c keys92p.c \
-	dbus_pkt.c \
-	dusb_rpkt.c dusb_vpkt.c \
-	nsp_rpkt.c nsp_vpkt.c \
-	probe.c \
-	romdump.c \
-	screen.c \
-	ticalcs.c \
-	tikeys.c \
-	type2str.c \
-	update.c
+	backup.cc \
+	calc_00.cc calc_xx.cc \
+	calc_73.cc calc_8x.cc calc_9x.cc \
+	calc_84p.cc calc_89t.cc \
+	calc_nsp.cc \
+	clock.cc \
+	cmdz80.cc cmd68k.cc dusb_cmd.cc nsp_cmd.cc \
+	dirlist.cc \
+	error.cc \
+	keys73.cc keys83.cc keys83p.cc keys86.cc keys89.cc keys92p.cc \
+	dbus_pkt.cc \
+	dusb_rpkt.cc dusb_vpkt.cc \
+	nsp_rpkt.cc nsp_vpkt.cc \
+	probe.cc \
+	romdump.cc \
+	screen.cc \
+	ticalcs.cc \
+	tikeys.cc \
+	type2str.cc \
+	update.cc
 
 if OS_WIN32
   libticalcs2_la_DEPENDENCIES = ../build/mingw/ticalcs2-rc.o

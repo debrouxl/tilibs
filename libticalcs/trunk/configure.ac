@@ -28,7 +28,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PREFIX_DEFAULT(/usr/local)
 
 dnl Files to configure.
-AC_CONFIG_SRCDIR([src/ticalcs.c])
+AC_CONFIG_SRCDIR([src/ticalcs.cc])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
@@ -52,6 +52,7 @@ LT_INIT
 
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
@@ -102,6 +103,7 @@ case "$host" in
   *)          ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"
+CXXFLAGS="$CXXFLAGS $ARCH"
 
 # Ensure MSVC-compatible struct packing convention is used when
 # compiling for Win32 with gcc.
@@ -134,6 +136,7 @@ case $host_os in
       AC_MSG_WARN([produced libraries might be incompatible with MSVC-compiled code])
     else
       CFLAGS="$CFLAGS $msnative_struct"
+      CXXFLAGS="$CXXFLAGS $msnative_struct"
       AC_MSG_RESULT([${msnative_struct}])
     fi
   fi
@@ -163,6 +166,7 @@ case $host_os in
 	      AC_MSG_RESULT([no])
 	   else
 	      CFLAGS="$CFLAGS $visibility_flag"
+	      CXXFLAGS="$CXXFLAGS $visibility_flag"
 	      AC_MSG_RESULT([${visibility_flag}])
 	      AC_DEFINE(HAVE_FVISIBILITY, 1, [Use -fvisibility=hidden flag])
 	    fi
@@ -172,22 +176,22 @@ esac
 
 # Check for tools needed to build ROM dumpers
 
-# Find a C compiler for the build system (needed for compiling tf2hex)
-AC_ARG_VAR([CC_FOR_BUILD], [C compiler for programs to be run on the build system])
-AC_ARG_VAR([CFLAGS_FOR_BUILD], [C compiler flags for CC_FOR_BUILD])
+# Find a C++ compiler for the build system (needed for compiling tf2hex)
+AC_ARG_VAR([CXX_FOR_BUILD], [C++ compiler for programs to be run on the build system])
+AC_ARG_VAR([CXXFLAGS_FOR_BUILD], [C++ compiler flags for CXX_FOR_BUILD])
 AC_MSG_CHECKING([for the host compiler])
 if test "x$build" == "x$host" ; then
   # Not cross-compiling.
-  CC_FOR_BUILD=$CC
-  CFLAGS_FOR_BUILD=$CFLAGS
-  AC_MSG_RESULT([${CC_FOR_BUILD}])
+  CXX_FOR_BUILD=$CXX
+  CXXFLAGS_FOR_BUILD=$CXXFLAGS
+  AC_MSG_RESULT([${CXX_FOR_BUILD}])
 else
-  # Try to find the host CC among several choices
-  AC_CHECK_PROGS(CC_FOR_BUILD, [gcc cc clang c89 c99], [false])
-  if test "x$CC_FOR_BUILD" = "xfalse" ; then
+  # Try to find the host CXX among several choices
+  AC_CHECK_PROGS(CXX_FOR_BUILD, [c++ g++ clang++], [false])
+  if test "x$CXX_FOR_BUILD" = "xfalse" ; then
     AC_MSG_FAILURE([not found.])
   else
-    AC_MSG_RESULT([${CC_FOR_BUILD}])
+    AC_MSG_RESULT([${CXX_FOR_BUILD}])
   fi
 fi
 
