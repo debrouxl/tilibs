@@ -19,22 +19,27 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* TI-GRAPH LINK USB support */
+/* "Home-made parallel" link cable unit */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#ifndef NO_CABLE_SLV
+#ifndef NO_CABLE_PAR
 
-#if defined(__WIN32__) && !defined(__MINGW32__)
-# define HAVE_LIBUSB
-#endif
+#if defined(__LINUX__) && defined(HAVE_LINUX_PARPORT_H)
+#include "linux/link_par.cc"
 
-#ifdef HAVE_LIBUSB
-# include "linux/link_usb.c"
-#elif defined(HAVE_LIBUSB_1_0)
-# include "linux/link_usb1.c"
+#elif defined(__BSD__)
+/* Not ported yet */
+
+#elif defined(__WIN32__)
+#include "win32/link_par.cc"
+
+#elif defined(__MACOSX__)
+#include "none.cc"
+
+#else
 #endif
 
 #endif

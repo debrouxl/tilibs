@@ -2,36 +2,36 @@ cmake_minimum_required(VERSION 3.5)
 
 project(libticables2
         VERSION     1.3.6
-        LANGUAGES   C)
+        LANGUAGES   CXX)
 
 file(GLOB HEADER_FILES src/*.h)
 set(SRC_FILES
         ${HEADER_FILES}
-        src/data_log.c
-        src/detect.c
-        src/error.c
-        src/hex2dbus.c
-        src/hex2dusb.c
-        src/hex2nsp.c
-        src/ioports.c
-        src/link_blk.c
-        src/link_gry.c
-        src/link_nul.c
-        src/link_par.c
-        src/link_tcpc.c
-        src/link_tcps.c
-        src/link_tie.c
-        src/link_usb.c
-        src/link_vti.c
-        src/link_xxx.c
-        src/log_dbus.c
-        src/log_dusb.c
-        src/log_hex.c
-        src/log_nsp.c
-        src/none.c
-        src/probe.c
-        src/ticables.c
-        src/type2str.c)
+        src/data_log.cc
+        src/detect.cc
+        src/error.cc
+        src/hex2dbus.cc
+        src/hex2dusb.cc
+        src/hex2nsp.cc
+        src/ioports.cc
+        src/link_blk.cc
+        src/link_gry.cc
+        src/link_nul.cc
+        src/link_par.cc
+        src/link_tcpc.cc
+        src/link_tcps.cc
+        src/link_tie.cc
+        src/link_usb.cc
+        src/link_vti.cc
+        src/link_xxx.cc
+        src/log_dbus.cc
+        src/log_dusb.cc
+        src/log_hex.cc
+        src/log_nsp.cc
+        src/none.cc
+        src/probe.cc
+        src/ticables.cc
+        src/type2str.cc)
 
 set(PUBLIC_HEADERS
         src/ticables.h

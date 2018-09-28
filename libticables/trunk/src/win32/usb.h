@@ -367,7 +367,7 @@ extern "C"
     void usb_set_debug(int level);
     int usb_find_busses(void);
     int usb_find_devices(void);
-    struct usb_device *usb_device(usb_dev_handle *dev);
+    struct usb_device *usb_device_(usb_dev_handle *dev);
     struct usb_bus *usb_get_busses(void);
 
 

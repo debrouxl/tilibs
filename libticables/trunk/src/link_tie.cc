@@ -1,8 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: detect.c 663 2004-04-28 16:25:13Z tijl $ */
+/* $Id$ */
 
-/*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2004  Romain Lievin
+/*  libticables2 - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,27 +19,27 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* Probing wrapper */
-
-/*
-  This unit performs some auto-detection for:
-  - Operating System
-  - I/O ports such as parallel and serial ports
-  - link cable type
-*/
+/* TiEmu virtual link */
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#include <config.h>
 #endif
 
+#ifndef NO_CABLE_TIE
+
 #if defined(__LINUX__)
-#include "linux/detect.c"
-#elif defined(__MACOSX__)
-#include "macos/detect.c"
+#include "linux/link_tie.cc"
+
 #elif defined(__BSD__)
-#include "bsd/detect.c"
+#include "linux/link_tie.cc"
+
 #elif defined(__WIN32__)
-#include "win32/detect.c"
+#include "win32/link_tie.cc"
+
+#elif defined(__MACOSX__)
+#include "linux/link_tie.cc"
+
 #else
-#include "none.c"
+#endif
+
 #endif

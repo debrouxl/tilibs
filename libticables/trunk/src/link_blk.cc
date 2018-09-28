@@ -19,25 +19,25 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* "VTi" virtual link cable unit */
+/* "Home-made serial" link & "Black TIGraphLink" link unit */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#ifndef NO_CABLE_VTI
+#ifndef NO_CABLE_BLK
 
-#if defined(__LINUX__)
-#include "linux/link_vti.c"
+#if defined(__LINUX__) && defined(HAVE_TERMIOS_H)
+#include "linux/link_ser.cc"
 
 #elif defined(__BSD__)
-#include "linux/link_vti.c"
+#include "linux/link_ser.cc"
 
 #elif defined(__WIN32__)
-#include "win32/link_vti.c"
+#include "win32/link_ser.cc"
 
 #elif defined(__MACOSX__)
-#include "linux/link_vti.c"
+#include "none.cc"
 
 #else
 #endif

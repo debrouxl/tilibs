@@ -363,7 +363,7 @@ static int tie_check(CableHandle *h, int *status)
 	return 0;
 }
 
-const CableFncts cable_tie = 
+extern const CableFncts cable_tie = 
 {
 	CABLE_TIE,
 	"TIE",

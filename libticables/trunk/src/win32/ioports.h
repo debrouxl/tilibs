@@ -28,8 +28,8 @@
 int io_open(unsigned long from);
 int io_close(unsigned long from);
 
-int  (*io_rd) (unsigned int addr);
-void (*io_wr) (unsigned int addr, int data);
+extern int  (*io_rd) (unsigned int addr);
+extern void (*io_wr) (unsigned int addr, int data);
 
 int win32_comport_open(char *device, PHANDLE hCom);
 int win32_comport_close(PHANDLE hCom);

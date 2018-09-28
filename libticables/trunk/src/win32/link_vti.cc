@@ -324,7 +324,7 @@ static int vti_check(CableHandle *h, int *status)
 	return 0;
 }
 
-const CableFncts cable_vti = 
+extern const CableFncts cable_vti = 
 {
 	CABLE_VTI,
 	"VTI",

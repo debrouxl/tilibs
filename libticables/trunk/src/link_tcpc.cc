@@ -1,8 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
 
 /*  libticables2 - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2015  Lionel Debroux
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,25 +18,25 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* TiEmu virtual link */
+/* TCP client virtual link */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#ifndef NO_CABLE_TIE
+#ifndef NO_CABLE_TCPC
 
 #if defined(__LINUX__)
-#include "linux/link_tie.c"
+#include "linux/link_tcpc.cc"
 
 #elif defined(__BSD__)
-#include "linux/link_tie.c"
+#include "linux/link_tcpc.cc"
 
 #elif defined(__WIN32__)
-#include "win32/link_tie.c"
+/* Not ported yet */
 
 #elif defined(__MACOSX__)
-#include "linux/link_tie.c"
+#include "linux/link_tcpc.cc"
 
 #else
 #endif

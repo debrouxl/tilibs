@@ -99,7 +99,9 @@
 /* --- */
 
 #ifdef __WIN32__	// found in src/error.h of libusb-win32
+#ifndef ETIMEDOUT
 # define ETIMEDOUT	116
+#endif
 
 # define usb_busses	usb_get_busses()
 
@@ -397,7 +399,7 @@ static int tigl_open(int id, usb_dev_handle **udh)
 		return ERR_LIBUSB_OPEN;
 	}
 
-	*udh = usb_open(tigl_devices[id].dev);
+	*udh = usb_open((usb_device *)(tigl_devices[id].dev));
 	if (*udh != NULL) 
 	{
 		/* only one configuration: #1 */
@@ -502,7 +504,7 @@ static int slv_open(CableHandle *h)
 		return ret;
 	}
 	cable_info = tigl_devices[h->address];
-	uDev = tigl_devices[h->address].dev;
+	uDev = (usb_device *)(tigl_devices[h->address].dev);
 	uInEnd  = 0x81;
 	uOutEnd = 0x02;
 
@@ -1116,7 +1118,7 @@ static int slv_check(CableHandle *h, int *status)
 #endif
 }
 
-const CableFncts cable_slv =
+extern const CableFncts cable_slv =
 {
 	CABLE_SLV,
 	"SLV",
@@ -1133,7 +1135,7 @@ const CableFncts cable_slv =
 	&slv_get_device_info
 };
 
-const CableFncts cable_raw =
+extern const CableFncts cable_raw =
 {
 	CABLE_USB,
 	"USB",
