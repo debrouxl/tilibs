@@ -101,7 +101,7 @@ int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content)
 				goto end;
 			}
 			group[k] = tifiles_content_create_regular(handle->model);
-			ret = handle->calc->recv_var(handle, 0, group[k++], ve);
+			ret = handle->calc->recv_var(handle, MODE_NORMAL, group[k++], ve);
 			if (ret)
 			{
 				goto end;
@@ -387,7 +387,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 					g_free(filename);
 					if (te != NULL)
 					{
-						ret = handle->calc->recv_var(handle, 0, te->content.regular, ve);
+						ret = handle->calc->recv_var(handle, MODE_NORMAL, te->content.regular, ve);
 						if (ret)
 						{
 							tifiles_te_delete(te);

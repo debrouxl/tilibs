@@ -72,7 +72,7 @@ static const DUSBVtlPktInfo vpkt_types[] =
 	{ DUSB_VPKT_DELAY_ACK, "Delay Acknowledgment" },
 	{ DUSB_VPKT_EOT, "End of Transmission" },
 	{ DUSB_VPKT_ERROR, "Error" },
-	{ -1, NULL}
+	{ 0xFFFF, NULL}
 };
 
 TIEXPORT3 const char* TICALL dusb_vpkt_type2name(uint16_t id)
@@ -100,7 +100,7 @@ TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uin
 	{
 		//GList * vtl_pkt_list;
 
-		vtl = g_malloc0(sizeof(DUSBVirtualPacket)); // aborts the program if it fails.
+		vtl = (DUSBVirtualPacket *)g_malloc0(sizeof(DUSBVirtualPacket)); // aborts the program if it fails.
 
 		vtl->size = size;
 		vtl->type = type;
@@ -170,7 +170,7 @@ TIEXPORT3 DUSBVirtualPacket * TICALL dusb_vtl_pkt_realloc_data(DUSBVirtualPacket
 	{
 		if (size + DUSB_DH_SIZE > size)
 		{
-			uint8_t * data = g_realloc(vtl->data, size + DUSB_DH_SIZE);
+			uint8_t * data = (uint8_t *)g_realloc(vtl->data, size + DUSB_DH_SIZE);
 			if (size > vtl->size)
 			{
 				// The previous time, vtl->size + DUSB_DH_SIZE bytes were allocated and initialized.
@@ -747,7 +747,7 @@ TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacke
 				}
 
 				vtl->type = (((uint16_t)raw.data[4]) << 8) | (raw.data[5] << 0);
-				vtl->data = g_realloc(vtl->data, alloc_size);
+				vtl->data = (uint8_t *)g_realloc(vtl->data, alloc_size);
 				if (vtl->data != NULL)
 				{
 					memcpy(vtl->data, &raw.data[DUSB_DH_SIZE], raw.size - DUSB_DH_SIZE);
@@ -779,7 +779,7 @@ TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacke
 					{
 						alloc_size = (vtl->size + raw.size) * 2;
 					}
-					vtl->data = g_realloc(vtl->data, alloc_size);
+					vtl->data = (uint8_t *)g_realloc(vtl->data, alloc_size);
 				}
 
 				memcpy(vtl->data + vtl->size, raw.data, raw.size);
@@ -804,9 +804,6 @@ TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacke
 				{
 					handle->updat->max1 = vtl->size + raw.size;
 				}
-
-				handle->updat->cnt1 = vtl->size;
-				handle->updat->pbar();
 			}
 
 			workaround_recv(handle, &raw, vtl);

@@ -180,7 +180,7 @@ static int		recv_screen_80	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** b
 		if (!ret)
 		{
 			uint16_t max_cnt;
-			ret = ti80_recv_XDP(handle, &max_cnt, handle->buffer);
+			ret = ti80_recv_XDP(handle, &max_cnt, (uint8_t *)handle->buffer);
 			if (!ret)
 			{
 				int stripe, row, i = 0;
@@ -255,7 +255,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 			ret = RECV_XDP(handle, &max_cnt, *bitmap);
 			if (!ret || ret == ERR_CHECKSUM) // problem with checksum
 			{
-				*bitmap = ticalcs_realloc_screen(*bitmap, (handle->model < CALC_TI85) ? TI82_COLS * TI82_ROWS / 8 : TI85_COLS * TI85_ROWS / 8);
+				*bitmap = (uint8_t *)ticalcs_realloc_screen(*bitmap, (handle->model < CALC_TI85) ? TI82_COLS * TI82_ROWS / 8 : TI85_COLS * TI85_ROWS / 8);
 				ret = SEND_ACK(handle);
 			}
 		}
@@ -283,7 +283,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	{
 		return ret;
 	}
-	ti = (*vars)->data;
+	ti = (TreeInfo *)((*vars)->data);
 
 	ret = SEND_REQ(handle, 0x0000, (handle->model == CALC_TI83) ? TI83_DIR : TI86_DIR, "\0\0\0\0\0\0\0");
 	if (!ret)
@@ -291,7 +291,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		ret = RECV_ACK(handle, &unused);
 		if (!ret)
 		{
-			ret = RECV_XDP(handle, &unused, handle->buffer2);
+			ret = RECV_XDP(handle, &unused, (uint8_t *)handle->buffer2);
 			if (!ret)
 			{
 				ret = SEND_ACK(handle);
@@ -423,7 +423,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 		ret = RECV_ACK(handle, &unused);
 		if (!ret)
 		{
-			ret = RECV_XDP(handle, &unused, handle->buffer2);
+			ret = RECV_XDP(handle, &unused, (uint8_t *)handle->buffer2);
 			if (!ret)
 			{
 				ret = SEND_EOT(handle);
@@ -677,7 +677,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		handle->updat->max2 = (handle->model != CALC_TI86) ? 3 : 4;
 		ticalcs_update_pbar(handle);
 
-		content->data_part1 = tifiles_ve_alloc_data(65536);
+		content->data_part1 = (uint8_t *)tifiles_ve_alloc_data(65536U);
 		ret = RECV_XDP(handle, &content->data_length1, content->data_part1);
 		if (!ret)
 		{
@@ -690,7 +690,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		handle->updat->cnt2++;
 		ticalcs_update_pbar(handle);
 
-		content->data_part2 = tifiles_ve_alloc_data(65536);
+		content->data_part2 = (uint8_t *)tifiles_ve_alloc_data(65536U);
 		ret = RECV_XDP(handle, &content->data_length2, content->data_part2);
 		if (!ret)
 		{
@@ -705,7 +705,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 		if (content->data_length3)
 		{
-			content->data_part3 = tifiles_ve_alloc_data(65536);
+			content->data_part3 = (uint8_t *)tifiles_ve_alloc_data(65536U);
 			ret = RECV_XDP(handle, &content->data_length3, content->data_part3);
 			if (!ret)
 			{
@@ -729,7 +729,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		}
 		else
 		{
-			content->data_part4 = tifiles_ve_alloc_data(65536);
+			content->data_part4 = (uint8_t *)tifiles_ve_alloc_data(65536U);
 			ret = RECV_XDP(handle, &content->data_length4, content->data_part4);
 			if (!ret)
 			{
@@ -1054,7 +1054,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 			break;
 		}
 
-		ve->data = tifiles_ve_alloc_data(ve->size);
+		ve->data = (uint8_t *)tifiles_ve_alloc_data(ve->size);
 		ret = RECV_XDP(handle, &ve_size, ve->data);
 		if (!ret)
 		{
@@ -1122,7 +1122,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 				ticonv_varname_to_utf8_sn(handle->model, ve->name, handle->updat->text, sizeof(handle->updat->text), ve->type);
 				ticalcs_update_label(handle);
 
-				ve->data = tifiles_ve_alloc_data(ve->size);
+				ve->data = (uint8_t *)tifiles_ve_alloc_data(ve->size);
 				ret = RECV_XDP(handle, &ve_size, ve->data);
 				if (!ret)
 				{
@@ -1283,7 +1283,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	return ret;
 }
 
-const CalcFncts calc_80 =
+extern const CalcFncts calc_80 =
 {
 	CALC_TI80,
 	"TI80",
@@ -1351,7 +1351,7 @@ const CalcFncts calc_80 =
 	&noop_recv_all_vars_backup
 };
 
-const CalcFncts calc_82 =
+extern const CalcFncts calc_82 =
 {
 	CALC_TI82,
 	"TI82",
@@ -1420,7 +1420,7 @@ const CalcFncts calc_82 =
 	&noop_recv_all_vars_backup
 };
 
-const CalcFncts calc_83 =
+extern const CalcFncts calc_83 =
 {
 	CALC_TI83,
 	"TI83",
@@ -1490,7 +1490,7 @@ const CalcFncts calc_83 =
 	&noop_recv_all_vars_backup
 };
 
-const CalcFncts calc_85 =
+extern const CalcFncts calc_85 =
 {
 	CALC_TI85,
 	"TI85",
@@ -1559,7 +1559,7 @@ const CalcFncts calc_85 =
 	&noop_recv_all_vars_backup
 };
 
-const CalcFncts calc_86 =
+extern const CalcFncts calc_86 =
 {
 	CALC_TI86,
 	"TI86",

@@ -570,7 +570,7 @@ TIEXPORT3 int TICALL ti73_send_DEL(CalcHandle* handle, uint16_t varsize, uint8_t
 
 TIEXPORT3 int TICALL ti73_send_DUMP(CalcHandle* handle, uint16_t page)
 {
-	uint8_t buffer[8] = { page, 0x00, 0x00, 0x40, 0x00, 0x40, 0x0C, 0x00 };
+	uint8_t buffer[8] = { (uint8_t)page, 0x00, 0x00, 0x40, 0x00, 0x40, 0x0C, 0x00 };
 
 	VALIDATE_HANDLE(handle);
 

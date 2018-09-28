@@ -34,6 +34,11 @@
 #include <string.h>
 #include <unistd.h>
 
+// Happens for some reason on MinGW 64 32-bit GCC 8 toolchain.
+#ifndef SCNi8
+#define SCNi8 "hhi"
+#endif
+
 #include "ticables.h"
 #include "tifiles.h"
 #include "../src/ticalcs.h"
@@ -238,7 +243,7 @@ static int get_dirlist(CalcHandle *h)
 static int send_backup(CalcHandle* h)
 {
 	char filename[1030];
-	char filename2[1030];
+	char filename2[1040];
 	int ret;
 
 	filename[0] = 0;
@@ -257,7 +262,7 @@ static int send_backup(CalcHandle* h)
 static int recv_backup(CalcHandle* h)
 {
 	char filename[1030];
-	char filename2[1030];
+	char filename2[1040];
 	int ret;
 
 	filename[0] = 0;
@@ -381,7 +386,7 @@ static int recv_var_ns(CalcHandle* h)
 static int send_flash(CalcHandle *h)
 {
 	char filename[1030];
-	char filename2[1030];
+	char filename2[1040];
 	int ret;
 
 	filename[0] = 0;
@@ -468,7 +473,7 @@ static int dump_rom(CalcHandle *h)
 	ret = ticalcs_calc_dump_rom_1(h);
 	if (!ret)
 	{
-		ret = ticalcs_calc_dump_rom_2(h, 0, filename);
+		ret = ticalcs_calc_dump_rom_2(h, ROMSIZE_AUTO, filename);
 	}
 	return ret;
 }
@@ -1019,7 +1024,7 @@ static int dusb_set_param_id(CalcHandle * h)
 	uint32_t length = 0;
 	unsigned int param_id;
 
-	data = dusb_cp_alloc_data(2048);
+	data = (uint8_t *)dusb_cp_alloc_data(2048);
 
 	printf("Enter DUSB parameter ID to be set (usually < 0x60): ");
 	ret = scanf("%i", &param_id);
@@ -1164,7 +1169,7 @@ static struct
 int main(int argc, char **argv)
 {
 	CableModel cable_model = CABLE_NUL;
-	int port_number = 1;
+	CablePort port_number = PORT_1;
 	CalcModel calc_model = CALC_NONE;
 	CableHandle* cable = NULL;
 	CalcHandle* calc = NULL;
@@ -1182,7 +1187,7 @@ int main(int argc, char **argv)
 			if (colon)
 			{
 				*colon = 0;
-				port_number = atoi(colon + 1);
+				port_number = (CablePort)atoi(colon + 1);
 			}
 			cable_model = ticables_string_to_model(optarg);
 		}

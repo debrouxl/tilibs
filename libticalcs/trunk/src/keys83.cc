@@ -27,7 +27,7 @@
   This table is very incomplete. It contains most of ASCII chars only.
   Same for TI73/TI83.
 */
-const CalcKey TI83_KEYS[] =
+extern const CalcKey TI83_KEYS[] =
 {
 /* 0x00 */
   {"", {"", 0}, {"", 0}, {"", 0}, {"", 0}, {"", 0}},

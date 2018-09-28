@@ -63,7 +63,7 @@ static gboolean free_varentry(GNode* node, gpointer data)
 	(void)data;
 	if (node && node->data)
 	{
-		VarEntry* ve = node->data;
+		VarEntry* ve = (VarEntry *)(node->data);
 		tifiles_ve_delete(ve);
 	}
 
@@ -651,7 +651,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry)
 
 	if (found)
 	{
-		tifiles_ve_delete(child->data);
+		tifiles_ve_delete((VarEntry *)(child->data));
 		g_node_destroy(child);
 	}
 

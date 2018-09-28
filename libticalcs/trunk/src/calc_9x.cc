@@ -257,7 +257,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 					}
 				}
 
-				*bitmap = ticalcs_realloc_screen(*bitmap, TI89_COLS * TI89_ROWS / 8);
+				*bitmap = (uint8_t *)ticalcs_realloc_screen(*bitmap, TI89_COLS * TI89_ROWS / 8);
 				ret = SEND_ACK(handle);
 			}
 		}
@@ -276,7 +276,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
 	VarEntry info;
 	uint16_t block_size;
-	uint8_t * buffer = handle->buffer2;
+	uint8_t * buffer = (uint8_t *)handle->buffer2;
 	int ret;
 	int i, j;
 	uint8_t extra = (handle->model == CALC_V200) ? 8 : 0;
@@ -520,7 +520,7 @@ static int		get_dirlist_92	(CalcHandle* handle, GNode** vars, GNode** apps)
 		GNode *folder = NULL;
 		char folder_name[9];
 		char *utf8;
-		uint8_t * buffer = handle->buffer2;
+		uint8_t * buffer = (uint8_t *)handle->buffer2;
 		uint16_t unused;
 
 		folder_name[8] = 0;
@@ -688,7 +688,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		{
 			content->model = CALC_TI92;
 			tifiles_comment_set_backup_sn(content->comment, sizeof(content->comment));
-			content->data_part = tifiles_ve_alloc_data(128 * 1024);
+			content->data_part = (uint8_t *)tifiles_ve_alloc_data(128 * 1024);
 			content->type = TI92_BKUP;
 			content->data_length = 0;
 
@@ -754,7 +754,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	for (i = 0; !ret && i < content->num_entries; i++)
 	{
 		VarEntry *entry;
-		uint8_t * buffer = handle->buffer2;
+		uint8_t * buffer = (uint8_t *)handle->buffer2;
 		uint8_t vartype;
 		char varname[18];
 		uint32_t size;
@@ -887,7 +887,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 						ret = RECV_ACK(handle, NULL);
 						if (!ret)
 						{
-							ve->data = tifiles_ve_alloc_data(ve->size + 4);
+							ve->data = (uint8_t *)tifiles_ve_alloc_data(ve->size + 4);
 							ret = RECV_XDP(handle, &unused, ve->data);
 							if (!ret)
 							{
@@ -964,7 +964,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	for (i = 0; !ret && i < content->num_entries; i++)
 	{
 		VarEntry *entry;
-		uint8_t * buffer = handle->buffer2;
+		uint8_t * buffer = (uint8_t *)handle->buffer2;
 		uint8_t vartype;
 		char varname[18];
 		uint32_t size;
@@ -1112,7 +1112,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			ret = RECV_ACK(handle, NULL);
 			if (!ret)
 			{
-				ve->data = tifiles_ve_alloc_data(ve->size + 4);
+				ve->data = (uint8_t *)tifiles_ve_alloc_data(ve->size + 4);
 				ret = RECV_XDP(handle, &unused, ve->data);
 				if (!ret)
 				{
@@ -1709,7 +1709,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		}
 		infos->language_id = buf[6];
 		infos->sub_lang_id = buf[7];
-		infos->mask = INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID;
+		infos->mask = (InfosMask)(INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID);
 
 		tifiles_hexdump(buf, length);
 		ticalcs_info(_("  OS: %s"), infos->os_version);
@@ -1743,7 +1743,7 @@ static int		get_version_92	(CalcHandle* handle, CalcInfos* infos)
 					strncpy(infos->os_version, name, 4);
 					infos->os_version[4] = 0;
 					infos->hw_version = 1;
-					infos->mask = INFOS_OS_VERSION | INFOS_HW_VERSION;
+					infos->mask = (InfosMask)(INFOS_OS_VERSION | INFOS_HW_VERSION);
 
 					ticalcs_info(_("  OS: %s"), infos->os_version);
 					ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "low");
@@ -1789,7 +1789,7 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	return ret;
 }
 
-const CalcFncts calc_89 = 
+extern const CalcFncts calc_89 = 
 {
 	CALC_TI89,
 	"TI89",
@@ -1860,7 +1860,7 @@ const CalcFncts calc_89 =
 	&tixx_recv_all_vars_backup,
 };
 
-const CalcFncts calc_92p = 
+extern const CalcFncts calc_92p = 
 {
 	CALC_TI92P,
 	"TI92+",
@@ -1931,7 +1931,7 @@ const CalcFncts calc_92p =
 	&tixx_recv_all_vars_backup,
 };
 
-const CalcFncts calc_89t = 
+extern const CalcFncts calc_89t = 
 {
 	CALC_TI89T,
 	"Titanium",
@@ -2002,7 +2002,7 @@ const CalcFncts calc_89t =
 	&tixx_recv_all_vars_backup,
 };
 
-const CalcFncts calc_v2 = 
+extern const CalcFncts calc_v2 = 
 {
 	CALC_V200,
 	"V200",
@@ -2073,7 +2073,7 @@ const CalcFncts calc_v2 =
 	&tixx_recv_all_vars_backup,
 };
 
-const CalcFncts calc_92 = 
+extern const CalcFncts calc_92 = 
 {
 	CALC_TI92,
 	"TI92",
