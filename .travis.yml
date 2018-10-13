@@ -5,15 +5,31 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
+      addons:
+        apt:
+          packages:
+            build-essential
+            git
+            autoconf
+            automake
+            autopoint
+            libtool
+            libglib2.0-dev
+            zlib1g-dev
+            libusb-1.0-0-dev
+            gettext
+            bison
+            flex
+            groff
+            texinfo
+            libarchive-dev
     - os: osx
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rvm get head ; brew update ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq ; fi
 
 install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gettext libarchive libtool glib libusb bison flex texinfo libiconv intltool ; brew link --force gettext libarchive ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -qq build-essential git autoconf automake autopoint libtool libglib2.0-dev zlib1g-dev libusb-1.0-0-dev gettext bison flex groff texinfo libarchive-dev ; fi
 
 script:
   - mkdir prefix
