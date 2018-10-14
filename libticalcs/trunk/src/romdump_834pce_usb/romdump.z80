@@ -153,43 +153,7 @@ cmdLoop:
 	call	pktRecv
 	ld	a, d
 	or	a, a
-	jr	nz, maybeIsReady
-	ld	a, e
-	sub	2
-	jp	z, cmdExit
-	dec	a
-	jr	z, cmdReqSize
-	sub	2
-	call	nz, abort
-cmdReqBlk:
-	ld	a, l
-	xor	a, 4
-	or	a, h
-	call	nz, abort
-	ld	hl, buffer + 4
-	ld	de, (hl)
-	ex	de, hl
-	ld	bc, $8000
-	push	bc
-	ldir
-	pop	de
-	ld	a, 6
-	call	pktSend
-	jr	cmdLoop
-cmdReqSize:
-	ld	a, l
-	or	a, h
-	call	nz, abort
-	ld	de, $400000 >> 8
-	ld	hl, buffer + 5
-	ld	(hl), de
-	dec	hl
-	ld	(hl), e
-	ld	d, e
-	ld	e, l
-	call	pktSend
-	jr	cmdLoop
-maybeIsReady:
+	jr	z, notIsReady
 	cp	a, $AA
 	call	nz, abort
 	cpl
@@ -202,12 +166,83 @@ handleIsReady:
 	inc	a
 	call	pktSendEmpty
 	jr	cmdLoop
+notIsReady:
+	ld	a, e
+	sub	2
+	jp	z, cmdExit
+	dec	a
+	jr	z, cmdReqSize
+	sub	2
+	call	nz, abort
+cmdReqBlk:
+	ld	a, l
+	xor	a, 4
+	or	a, h
+	call	nz, abort
+
+	ld	bc, $FFFF
+	ld	de, (buffer + 4)
+	ld	hl, $400000
+	sbc	hl, de
+	sbc	hl, bc
+	jr	c, _
+	sbc	hl, hl
+_:	add	hl, bc
+	ex	de, hl
+	ld	c, e
+	ld	b, d
+	call	repBlkLen
+	inc	b
+	ld	hl, buffer + 4
+	jr	nz, resRepBlk
+	ld	c, e
+	ld	b, d
+	ld	de, (hl)
+	ex	de, hl
+	push	bc
+	ldir
+	pop	de
+	ld	a, 6
+sendRes:
+	call	pktSend
+	jr	cmdLoop
+resRepBlk:
+	ld	(hl), de
+	inc	hl
+	inc	hl
+	ld	(hl), a
+	ld	de, 3
+	ld	a, 7
+	jr	sendRes
+cmdReqSize:
+	ld	a, l
+	or	a, h
+	call	nz, abort
+	ld	de, $400000 >> 8
+	ld	hl, buffer + 5
+	ld	(hl), de
+	dec	hl
+	ld	(hl), e
+	ld	d, e
+	ld	e, l
+	jr	sendRes
 
 dispStr:
 	pop	hl
 	call	_PutS
 	push	hl
 	jp	_NewLine
+
+repBlkLen:
+	ld	a, (hl)
+	cpi
+repBlkLenLoop
+	ret	po
+	cpi
+	jr	z, repBlkLenLoop
+	dec	hl
+	inc	bc
+	ret
 
 ; === Packet Receive ===
 ; Receives an entire virtual packet.
@@ -263,39 +298,6 @@ cmdExit:
 pktSendEmpty:
 	ld	de, 0
 pktSend:
-#if 0
-	push	de
-	pop	bc
-	ld	(buffer), a
-	xor	a, a
-	ld	(buffer + 1), a
-	ld.sis	(buffer + 2 - ramStart), bc
-	ld	d, a
-	ld	hl, buffer
-	inc	bc
-	inc	bc
-	inc	bc
-	inc	bc
-	push	bc
-	push	hl
-pktSendSum:
-	add	a, (hl)
-	jr	nc, _
-	inc	d
-_:	cpi
-	jp	pe, pktSendSum
-	ld	(hl), a
-	inc	hl
-	ld	(hl), d
-	pop	de
-	pop	hl
-	inc	hl
-	inc	hl
-pktSendLoop:
-	call	dmaSend
-	jr	nz, pktSendLoop
-	ret
-#else
 	or	a, a
 	sbc	hl, hl
 	push	hl
@@ -329,7 +331,6 @@ pktSendChk:
 	call	dmaSend
 	ret	z
 	jr	dmaSend
-#endif
 
 checkSum:
 	push	de
