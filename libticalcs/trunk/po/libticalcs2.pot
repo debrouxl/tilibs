@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2019-10-12 12:27+0200\n"
+"POT-Creation-Date: 2019-10-12 12:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,12 +51,12 @@ msgstr ""
 msgid "Setting clock..."
 msgstr ""
 
-#: src/calc_73.cc:1328 src/calc_84p.cc:1371 src/calc_84p.cc:1525
+#: src/calc_73.cc:1328 src/calc_84p.cc:1371 src/calc_84p.cc:1521
 #: src/calc_9x.cc:1492 src/calc_89t.cc:883
 msgid "Getting clock..."
 msgstr ""
 
-#: src/calc_73.cc:1412 src/calc_84p.cc:1648 src/calc_8x.cc:1254
+#: src/calc_73.cc:1412 src/calc_84p.cc:1640 src/calc_8x.cc:1254
 #: src/calc_9x.cc:1556 src/calc_9x.cc:1588 src/calc_89t.cc:972
 #: src/calc_nsp.cc:836
 #, c-format
@@ -99,7 +99,7 @@ msgstr ""
 msgid "Receiving certificate"
 msgstr ""
 
-#: src/calc_84p.cc:1385 src/calc_84p.cc:1539
+#: src/calc_84p.cc:1385 src/calc_84p.cc:1535
 #, c-format
 msgid "Could not determine clock type: %u %u"
 msgstr ""
@@ -112,56 +112,60 @@ msgstr ""
 msgid "Will set new clock"
 msgstr ""
 
-#: src/calc_84p.cc:1553 src/calc_89t.cc:911
+#: src/calc_84p.cc:1549 src/calc_89t.cc:911
 msgid "Found valid classic clock"
 msgstr ""
 
-#: src/calc_84p.cc:1592 src/calc_89t.cc:950
+#: src/calc_84p.cc:1588 src/calc_89t.cc:950
 #, c-format
 msgid "Found classic clock but failed to retrieve its parameters: %u %u %u %u"
 msgstr ""
 
-#: src/calc_84p.cc:1610
+#: src/calc_84p.cc:1606
 msgid "Found valid new clock"
 msgstr ""
 
-#: src/calc_84p.cc:1625
+#: src/calc_84p.cc:1621
 #, c-format
 msgid ""
 "Found new clock but failed to retrieve its parameters: %u %u %u %u %u %u"
 msgstr ""
 
-#: src/calc_84p.cc:1731 src/calc_89t.cc:1161
+#: src/calc_84p.cc:1723 src/calc_89t.cc:1161
 msgid "Getting version..."
 msgstr ""
 
-#: src/calc_84p.cc:1981 src/calc_84p.cc:1990 src/calc_84p.cc:1999
-#: src/calc_84p.cc:2015 src/calc_84p.cc:2023
+#: src/calc_84p.cc:1774
+msgid "That's odd, product ID and calc ID do not match ?"
+msgstr ""
+
+#: src/calc_84p.cc:1985 src/calc_84p.cc:1994 src/calc_84p.cc:2003
+#: src/calc_84p.cc:2019 src/calc_84p.cc:2027
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr ""
 
-#: src/calc_84p.cc:2041
+#: src/calc_84p.cc:2045
 msgid "TI-84 Plus thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.cc:2112
+#: src/calc_84p.cc:2116
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.cc:2183
+#: src/calc_84p.cc:2187
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.cc:2254
+#: src/calc_84p.cc:2258
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.cc:2325
+#: src/calc_84p.cc:2329
 msgid "TI-82 Advanced thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.cc:2396
+#: src/calc_84p.cc:2400
 msgid "TI-84 Plus T thru DirectLink"
 msgstr ""
 
