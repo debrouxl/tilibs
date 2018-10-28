@@ -1380,7 +1380,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 		{
 			int classic_clock = !!params[0]->ok && !!!params[1]->ok;
 			int new_clock = !!!params[0]->ok && !!params[1]->ok;
-			if (!classic_clock && !new_clock)
+			if ((!classic_clock && !new_clock) || (classic_clock && new_clock))
 			{
 				ticalcs_warning(_("Could not determine clock type: %u %u"), params[0]->ok, params[1]->ok);
 			}
@@ -1442,7 +1442,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 					}
 				}
 			}
-			else if (new_clock)
+			else /* if (new_clock) */
 			{
 				uint8_t data[4];
 
@@ -1495,10 +1495,6 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 					}
 				}
 			}
-			else
-			{
-				ret = ERR_INVALID_PACKET;
-			}
 		}
 	}
 	dusb_cp_del_array(handle, size, params);
@@ -1530,7 +1526,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 		{
 			int classic_clock = !!params[0]->ok && !!!params[1]->ok;
 			int new_clock = !!!params[0]->ok && !!params[1]->ok;
-			if (!classic_clock && !new_clock)
+			if ((!classic_clock && !new_clock) || (classic_clock && new_clock))
 			{
 				ticalcs_warning(_("Could not determine clock type: %u %u"), params[0]->ok, params[1]->ok);
 			}
@@ -1581,7 +1577,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 					                params[2]->ok, params[3]->ok, params[4]->ok, params[5]->ok);
 				}
 			}
-			else if (new_clock)
+			else /* if (new_clock) */
 			{
 				if (   params[2]->ok && params[2]->size == 1
 				    && params[4]->ok && params[4]->size == 1
@@ -1613,10 +1609,6 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 					ticalcs_warning(_("Found new clock but failed to retrieve its parameters: %u %u %u %u %u %u"),
 					                params[6]->ok, params[7]->ok, params[8]->ok, params[9]->ok, params[10]->ok, params[11]->ok);
 				}
-			}
-			else
-			{
-				ret = ERR_INVALID_PACKET;
 			}
 		}
 	}
@@ -1703,7 +1695,7 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
 	static const uint16_t pids[] = {
-		DUSB_PID_OS_MODE, DUSB_PID_DEVICE_TYPE, DUSB_PID_PRODUCT_NAME, DUSB_PID_MAIN_PART_ID,
+		DUSB_PID_OS_MODE, DUSB_PID_DEVICE_TYPE, DUSB_PID_PRODUCT_NUMBER, DUSB_PID_PRODUCT_NAME, DUSB_PID_MAIN_PART_ID,
 		DUSB_PID_HW_VERSION, DUSB_PID_LANGUAGE_ID, DUSB_PID_SUBLANG_ID,
 		DUSB_PID_BOOT_BUILD_NUMBER, DUSB_PID_BOOT_VERSION, DUSB_PID_OS_BUILD_NUMBER, DUSB_PID_OS_VERSION,
 		DUSB_PID_PHYS_RAM, DUSB_PID_USER_RAM, DUSB_PID_FREE_RAM,
@@ -1749,6 +1741,13 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			}
 			i++;
 
+			if (params[i]->ok && params[i]->size == 4)
+			{
+				product_id = params[i]->data[3];
+				infos_mask |= INFOS_PRODUCT_ID;
+			}
+			i++;
+
 			if (params[i]->ok)
 			{
 				ticalcs_strlcpy(infos->product_name, (char *)params[i]->data, sizeof(infos->product_name));
@@ -1758,7 +1757,12 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 			if (params[i]->ok && params[i]->size == 5)
 			{
-				product_id = params[i]->data[0];
+				if ((infos_mask & INFOS_PRODUCT_ID) && product_id != params[i]->data[0])
+				{
+					ticalcs_warning(_("That's odd, product ID and calc ID do not match ?"));
+					// Nevertheless, we'll trust the product ID information (which tends to be hard-coded)
+					// instead of the calc ID information (which is normally extracted from the cert memory).
+				}
 				ticalcs_slprintf(infos->main_calc_id, sizeof(infos->main_calc_id), "%02X%02X%02X%02X%02X",
 				                 product_id, params[i]->data[1], params[i]->data[2], params[i]->data[3], params[i]->data[4]);
 				infos_mask |= INFOS_MAIN_CALC_ID;
