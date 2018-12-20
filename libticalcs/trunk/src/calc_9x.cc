@@ -495,6 +495,8 @@ static int		get_dirlist_92	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
 	VarEntry info;
 	int ret;
+	GNode *folder = NULL;
+	char folder_name[9];
 
 	ret = dirlist_init_trees(handle, vars, apps);
 	if (!ret)
@@ -517,9 +519,6 @@ static int		get_dirlist_92	(CalcHandle* handle, GNode** vars, GNode** apps)
 	for (;;)
 	{
 		VarEntry *ve;
-		GNode *folder = NULL;
-		char folder_name[9];
-		char *utf8;
 		uint8_t * buffer = (uint8_t *)handle->buffer2;
 		uint16_t unused;
 
@@ -600,7 +599,7 @@ static int		get_dirlist_92	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 		if (ve != NULL && folder != NULL)
 		{
-			utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+			char * utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 			ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Parsing %s/%s"), ((VarEntry *) (folder->data))->name, utf8);
 			ticonv_utf8_free(utf8);
 			ticalcs_update_label(handle);

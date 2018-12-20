@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2019-03-03 08:57+0100\n"
+"POT-Creation-Date: 2019-03-03 09:03+0100\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -34,41 +34,41 @@ msgstr "Parcourt %s"
 msgid "Battery low, stopping flash app transfer"
 msgstr "Batterie faible, arrêt du transfert de l'application Flash"
 
-#: src/calc_73.cc:859 src/calc_73.cc:1502 src/calc_9x.cc:1163
+#: src/calc_73.cc:859 src/calc_73.cc:1502 src/calc_9x.cc:1162
 #: src/calc_89t.cc:506
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr "Nom FLASH:  \"%s\""
 
-#: src/calc_73.cc:860 src/calc_73.cc:1503 src/calc_9x.cc:1164
+#: src/calc_73.cc:860 src/calc_73.cc:1503 src/calc_9x.cc:1163
 #: src/calc_89t.cc:507
 #, c-format
 msgid "FLASH size: %i bytes."
 msgstr "Taille FLASH: %i octets."
 
 #: src/calc_73.cc:1278 src/calc_84p.cc:1421 src/calc_84p.cc:1451
-#: src/calc_9x.cc:1448 src/calc_89t.cc:844
+#: src/calc_9x.cc:1447 src/calc_89t.cc:844
 msgid "Setting clock..."
 msgstr "Mise à jour de l'horloge..."
 
 #: src/calc_73.cc:1324 src/calc_84p.cc:1371 src/calc_84p.cc:1517
-#: src/calc_9x.cc:1492 src/calc_89t.cc:879
+#: src/calc_9x.cc:1491 src/calc_89t.cc:879
 msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
 #: src/calc_73.cc:1400 src/calc_84p.cc:1628 src/calc_8x.cc:1254
-#: src/calc_9x.cc:1556 src/calc_9x.cc:1588 src/calc_89t.cc:960
+#: src/calc_9x.cc:1555 src/calc_9x.cc:1587 src/calc_89t.cc:960
 #: src/calc_nsp.cc:836
 #, c-format
 msgid "Deleting %s..."
 msgstr "Suppression de %s..."
 
-#: src/calc_73.cc:1474 src/calc_9x.cc:1715 src/calc_9x.cc:1748
+#: src/calc_73.cc:1474 src/calc_9x.cc:1714 src/calc_9x.cc:1747
 #, c-format
 msgid "  OS: %s"
 msgstr "  OS: %s"
 
-#: src/calc_73.cc:1475 src/calc_9x.cc:1716
+#: src/calc_73.cc:1475 src/calc_9x.cc:1715
 #, c-format
 msgid "  BIOS: %s"
 msgstr "  BIOS: %s"
@@ -78,7 +78,7 @@ msgstr "  BIOS: %s"
 msgid "  HW: %i"
 msgstr "  HW: %i"
 
-#: src/calc_73.cc:1477 src/calc_9x.cc:1717 src/calc_9x.cc:1749
+#: src/calc_73.cc:1477 src/calc_9x.cc:1716 src/calc_9x.cc:1748
 #, c-format
 msgid "  Battery: %s"
 msgstr " Batterie: %s"
@@ -91,7 +91,7 @@ msgstr "bon"
 msgid "low"
 msgstr "bas"
 
-#: src/calc_73.cc:1549 src/calc_9x.cc:1230
+#: src/calc_73.cc:1549 src/calc_9x.cc:1229
 msgid "Header sent completely."
 msgstr "En-tête envoyé complètement"
 
@@ -187,7 +187,7 @@ msgstr "En attente pour sauvegarder..."
 msgid "Waiting for var(s)..."
 msgstr "Attente de variable(s)..."
 
-#: src/calc_9x.cc:353 src/calc_9x.cc:441 src/calc_9x.cc:580
+#: src/calc_9x.cc:353 src/calc_9x.cc:441 src/calc_9x.cc:579
 #, c-format
 msgid "Name: %8s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr "Nom: %8s | Type: %8s | Attr: %i  | Taille: %08X"
@@ -197,22 +197,22 @@ msgstr "Nom: %8s | Type: %8s | Attr: %i  | Taille: %08X"
 msgid "Directory listing in %8s..."
 msgstr "Listage du dossier dans %8s..."
 
-#: src/calc_9x.cc:449 src/calc_9x.cc:604 src/calc_89t.cc:249
+#: src/calc_9x.cc:449 src/calc_9x.cc:603 src/calc_89t.cc:249
 #, c-format
 msgid "Parsing %s/%s"
 msgstr "Lecture de %s/%s"
 
-#: src/calc_9x.cc:699
+#: src/calc_9x.cc:698
 #, c-format
 msgid "Block #%2i"
 msgstr "Bloc n°%2i"
 
-#: src/calc_9x.cc:1618 src/calc_89t.cc:1056 src/calc_nsp.cc:866
+#: src/calc_9x.cc:1617 src/calc_89t.cc:1056 src/calc_nsp.cc:866
 #, c-format
 msgid "Creating %s..."
 msgstr "Création de %s..."
 
-#: src/calc_9x.cc:2010
+#: src/calc_9x.cc:2009
 msgid "V200 Personal Learning Tool"
 msgstr "V200 Personal Learning Tool"
 
