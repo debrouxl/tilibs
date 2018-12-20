@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2019-10-12 12:30+0200\n"
+"POT-Creation-Date: 2019-10-12 12:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,41 +34,41 @@ msgstr ""
 msgid "Battery low, stopping flash app transfer"
 msgstr ""
 
-#: src/calc_73.cc:859 src/calc_73.cc:1514 src/calc_9x.cc:1163
+#: src/calc_73.cc:859 src/calc_73.cc:1514 src/calc_9x.cc:1162
 #: src/calc_89t.cc:506
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr ""
 
-#: src/calc_73.cc:860 src/calc_73.cc:1515 src/calc_9x.cc:1164
+#: src/calc_73.cc:860 src/calc_73.cc:1515 src/calc_9x.cc:1163
 #: src/calc_89t.cc:507
 #, c-format
 msgid "FLASH size: %i bytes."
 msgstr ""
 
 #: src/calc_73.cc:1282 src/calc_84p.cc:1425 src/calc_84p.cc:1455
-#: src/calc_9x.cc:1448 src/calc_89t.cc:848
+#: src/calc_9x.cc:1447 src/calc_89t.cc:848
 msgid "Setting clock..."
 msgstr ""
 
 #: src/calc_73.cc:1328 src/calc_84p.cc:1371 src/calc_84p.cc:1521
-#: src/calc_9x.cc:1492 src/calc_89t.cc:883
+#: src/calc_9x.cc:1491 src/calc_89t.cc:883
 msgid "Getting clock..."
 msgstr ""
 
 #: src/calc_73.cc:1412 src/calc_84p.cc:1640 src/calc_8x.cc:1254
-#: src/calc_9x.cc:1556 src/calc_9x.cc:1588 src/calc_89t.cc:972
+#: src/calc_9x.cc:1555 src/calc_9x.cc:1587 src/calc_89t.cc:972
 #: src/calc_nsp.cc:836
 #, c-format
 msgid "Deleting %s..."
 msgstr ""
 
-#: src/calc_73.cc:1486 src/calc_9x.cc:1715 src/calc_9x.cc:1748
+#: src/calc_73.cc:1486 src/calc_9x.cc:1714 src/calc_9x.cc:1747
 #, c-format
 msgid "  OS: %s"
 msgstr ""
 
-#: src/calc_73.cc:1487 src/calc_9x.cc:1716
+#: src/calc_73.cc:1487 src/calc_9x.cc:1715
 #, c-format
 msgid "  BIOS: %s"
 msgstr ""
@@ -78,7 +78,7 @@ msgstr ""
 msgid "  HW: %i"
 msgstr ""
 
-#: src/calc_73.cc:1489 src/calc_9x.cc:1717 src/calc_9x.cc:1749
+#: src/calc_73.cc:1489 src/calc_9x.cc:1716 src/calc_9x.cc:1748
 #, c-format
 msgid "  Battery: %s"
 msgstr ""
@@ -91,7 +91,7 @@ msgstr ""
 msgid "low"
 msgstr ""
 
-#: src/calc_73.cc:1561 src/calc_9x.cc:1230
+#: src/calc_73.cc:1561 src/calc_9x.cc:1229
 msgid "Header sent completely."
 msgstr ""
 
@@ -181,7 +181,7 @@ msgstr ""
 msgid "Waiting for var(s)..."
 msgstr ""
 
-#: src/calc_9x.cc:353 src/calc_9x.cc:441 src/calc_9x.cc:580
+#: src/calc_9x.cc:353 src/calc_9x.cc:441 src/calc_9x.cc:579
 #, c-format
 msgid "Name: %8s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr ""
@@ -191,22 +191,22 @@ msgstr ""
 msgid "Directory listing in %8s..."
 msgstr ""
 
-#: src/calc_9x.cc:449 src/calc_9x.cc:604 src/calc_89t.cc:249
+#: src/calc_9x.cc:449 src/calc_9x.cc:603 src/calc_89t.cc:249
 #, c-format
 msgid "Parsing %s/%s"
 msgstr ""
 
-#: src/calc_9x.cc:699
+#: src/calc_9x.cc:698
 #, c-format
 msgid "Block #%2i"
 msgstr ""
 
-#: src/calc_9x.cc:1618 src/calc_89t.cc:1068 src/calc_nsp.cc:866
+#: src/calc_9x.cc:1617 src/calc_89t.cc:1068 src/calc_nsp.cc:866
 #, c-format
 msgid "Creating %s..."
 msgstr ""
 
-#: src/calc_9x.cc:2010
+#: src/calc_9x.cc:2009
 msgid "V200 Personal Learning Tool"
 msgstr ""
 
