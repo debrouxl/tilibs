@@ -522,7 +522,7 @@ static void workaround_send(CalcHandle *handle, DUSBRawPacket *raw, DUSBVirtualP
 	}
 	else if (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
 	{
-		if (raw->type == DUSB_RPKT_VIRT_DATA_LAST && ((raw->size + 5) % 64) == 0)
+		if (raw->type == DUSB_RPKT_VIRT_DATA_LAST && ((((raw->size + 5) % 64) == 0)/* || (vtl->size > 1018 && ((vtl->size + 6) % 1018) == 0)*/))
 		{
 			ticalcs_info("XXX triggering an extra bulk write\n\tvtl->size=%d\traw->size=%d", vtl->size, raw->size);
 			ticables_cable_send(handle->cable, buf, 0);
@@ -636,7 +636,7 @@ int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 				for (i = 1; i <= q; i++)
 				{
 					raw.size = handle->priv.dusb_rpkt_maxlen;
-					raw.type = DUSB_RPKT_VIRT_DATA;
+					raw.type = (i != q || r != 0) ? DUSB_RPKT_VIRT_DATA : DUSB_RPKT_VIRT_DATA_LAST;
 					memcpy(raw.data, vtl->data + offset, handle->priv.dusb_rpkt_maxlen);
 					offset += handle->priv.dusb_rpkt_maxlen;
 
@@ -660,29 +660,36 @@ int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 				}
 
 				// send last chunk (type)
-				raw.size = r;
-				raw.type = DUSB_RPKT_VIRT_DATA_LAST;
-				memcpy(raw.data, vtl->data + offset, r);
-				offset += r;
-
-				ret = dusb_send(handle, &raw);
-				if (ret)
+				if (r != 0)
 				{
-					break;
-				}
+					raw.size = r;
+					raw.type = DUSB_RPKT_VIRT_DATA_LAST;
+					memcpy(raw.data, vtl->data + offset, r);
+					offset += r;
+
+					ret = dusb_send(handle, &raw);
+					if (ret)
+					{
+						break;
+					}
 
 #if (VPKT_DBG == 2)
-				ticalcs_info("  PC->TI: Virtual Packet Data Final");
+					ticalcs_info("  PC->TI: Virtual Packet Data Final");
 #endif
-				// XXX is that workaround necessary on 83PCE/84+CE/84+CE-T ?
-				if (handle->model != CALC_TI84P_USB && handle->model != CALC_TI84PC_USB && handle->model != CALC_TI82A_USB && handle->model != CALC_TI84PT_USB)
-				{
-					workaround_send(handle, &raw, vtl);
+					// XXX is that workaround necessary on 83PCE/84+CE/84+CE-T ?
+					if (handle->model != CALC_TI84P_USB && handle->model != CALC_TI84PC_USB && handle->model != CALC_TI82A_USB && handle->model != CALC_TI84PT_USB)
+					{
+						workaround_send(handle, &raw, vtl);
+					}
+					ret = dusb_recv_acknowledge(handle);
+					if (ret)
+					{
+						break;
+					}
 				}
-				ret = dusb_recv_acknowledge(handle);
-				if (ret)
+				else
 				{
-					break;
+					ticalcs_info("XXX r = 0");
 				}
 			}
 		} while(0);
