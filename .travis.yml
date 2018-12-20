@@ -3,8 +3,7 @@ language: c
 matrix:
   include:
     - os: linux
-      dist: trusty
-      sudo: required
+      dist: xenial
       addons:
         apt:
           packages:
@@ -25,14 +24,12 @@ matrix:
             libarchive-dev
     - os: osx
 
-before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rvm get head ; brew update ; fi
-
 install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gettext libarchive libtool glib libusb bison flex texinfo libiconv intltool ; brew link --force gettext libarchive ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gettext libarchive libtool glib libusb bison flex texinfo libiconv intltool ; brew link --force gettext libarchive ; export PKG_CONFIG_PATH="/usr/local/opt/libarchive/lib/pkgconfig"; fi
 
 script:
   - mkdir prefix
+  - export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`/prefix/lib/pkgconfig
   - cd libticonv/trunk
   - mkdir m4; autoreconf -ivf
   - ./configure --prefix=`pwd`/../../prefix --enable-iconv
@@ -41,19 +38,19 @@ script:
   - cd ../../libtifiles/trunk
   - mkdir m4; autoreconf -ivf
   - cd po; make libtifiles2.pot-update; make update-po; cd ..
-  - ./configure --prefix=`pwd`/../../prefix PKG_CONFIG_PATH=`pwd`/../../prefix/lib/pkgconfig
+  - ./configure --prefix=`pwd`/../../prefix 
   - make -j4 check
   - make -j4 install
   - cd ../../libticables/trunk
   - mkdir m4; autoreconf -ivf
   - cd po; make libticables2.pot-update; make update-po; cd ..
-  - ./configure --prefix=`pwd`/../../prefix --enable-logging --enable-libusb10 PKG_CONFIG_PATH=`pwd`/../../prefix/lib/pkgconfig
+  - ./configure --prefix=`pwd`/../../prefix --enable-logging --enable-libusb10
   - make -j4 check
   - make -j4 install
   - cd ../../libticalcs/trunk
   - mkdir m4; autoreconf -ivf
   - cd po; make libticalcs2.pot-update; make update-po; cd ..
-  - ./configure --prefix=`pwd`/../../prefix PKG_CONFIG_PATH=`pwd`/../../prefix/lib/pkgconfig
+  - ./configure --prefix=`pwd`/../../prefix
   - make -j4 check
   - make -j4 install
 
