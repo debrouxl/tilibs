@@ -224,7 +224,7 @@ static int check_for_node_usability(const char *pathname)
 	{
 	    ticables_info(_("    is the user '%s' in the group '%s': no"), user, group);
 	    ticables_info(_("    => you should add your username at the group '%s' in '/etc/group'"), group);
-	    ticables_info(_("    => you will have to restart your session, too"), group);
+	    ticables_info(_("    => you will have to restart your session, too"));
 	    free(user);
 	    free(group);
 
