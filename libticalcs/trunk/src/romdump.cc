@@ -197,12 +197,13 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 			}
 
 			// verify checksum
-			chksum = (buf[*len+4 + 1] << 8) | buf[*len+4 + 0];
+			chksum = ((uint16_t)buf[*len+4 + 1] << 8) | buf[*len+4 + 0];
 			sum = tifiles_checksum(buf, *len + 4);
 			//printf("<%04x %04x>\n", sum, chksum);
 
 			if (chksum != sum)
 			{
+				ticalcs_info(" TI->PC: CHECKSUM ERROR received:%04X computed:%04X !!!", chksum, sum);
 				ret = ERR_CHECKSUM;
 				goto exit;
 			}
@@ -304,6 +305,7 @@ static int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 		}
 		else
 		{
+			ticalcs_info(" TI->PC: INVALID COMMAND !!!");
 			ret = ERR_INVALID_CMD;
 		}
 	}
@@ -422,6 +424,7 @@ int rd_dump(CalcHandle* handle, const char *filename)
 		ret = rom_recv_DATA(handle, &length, data);
 		if (ret)
 		{
+			ticalcs_info(" TI->PC: recv_DATA returned %d", ret);
 			continue;
 		}
 
