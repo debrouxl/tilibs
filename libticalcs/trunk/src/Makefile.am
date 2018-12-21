@@ -2,7 +2,7 @@
 
 AM_CFLAGS = -Wall -W
 
-SUBDIRS = tf2hex romdump_8x romdump_84p_usb romdump_834pce_usb romdump_9x
+SUBDIRS = romdump_8x romdump_84p_usb romdump_834pce_usb romdump_9x tf2hex
 
 # libraries and files to compile and install
 lib_LTLIBRARIES = libticalcs2.la
