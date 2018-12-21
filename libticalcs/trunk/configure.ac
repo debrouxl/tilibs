@@ -207,6 +207,7 @@ AC_ARG_VAR([TIFILEUTIL], [Tool for creating TI variable files])
 have_spasm=no
 have_tifileutil=no
 have_tigcc=no
+have_m68klinuxgnu=no
 : ${SPASM=spasm}
 : ${TIFILEUTIL=tifileutil}
 
@@ -251,6 +252,14 @@ EOF
     have_tigcc=yes
   fi
   AC_MSG_RESULT([$have_tigcc])
+
+  AC_MSG_CHECKING([whether m68k-linux-gnu toolchain works])
+  if m68k-linux-gnu-as - < /dev/null >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
+    if m68k-linux-gnu-ld -v >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
+      have_m68klinuxgnu=yes
+    fi
+  fi
+  AC_MSG_RESULT([$have_m68klinuxgnu])
 fi
 
 if test "x$have_spasm$have_tifileutil" = "xyesyes" ; then
@@ -262,17 +271,18 @@ else
   fi
 fi
 
-if test "x$have_tigcc" = "xyes" ; then
+if test "x$have_tigcc" = "xyes" -o "x$have_m68klinuxgnu" = "xyes" ; then
   build_68k_rom_dumpers=yes
 else
   build_68k_rom_dumpers=no
   if test "x$enable_builtin_rom_dumpers" = "xno" ; then
-    AC_MSG_FAILURE([tigcc is not installed or is not usable.])
+    AC_MSG_FAILURE([tigcc or m68k-linux-gnu toolchain is not installed or is not usable.])
   fi
 fi
 
 AM_CONDITIONAL(BUILD_Z80_ROM_DUMPERS, test "x$build_z80_rom_dumpers" = "xyes")
 AM_CONDITIONAL(BUILD_68K_ROM_DUMPERS, test "x$build_68k_rom_dumpers" = "xyes")
+AM_CONDITIONAL(BUILD_68K_ROM_DUMPERS_USING_TIGCC, test "x$build_68k_rom_dumpers" = "xyes" -a "x$have_tigcc" = "xyes")
 
 # Output.
 AC_OUTPUT
