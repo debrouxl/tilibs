@@ -43,5 +43,5 @@
 #define MSB(v)	(v >> 8)
 #define LSB(v)	(v & 0xff)
 
-#define LE_BE(v) (((v & 0xff000000) >> 24) | ((v & 0x00ff0000) >> 8) | ((v & 0x0000ff00) << 8) | ((v & 0x000000ff) << 24))
+#define LE_BE(v) (((v & 0xff000000UL) >> 24) | ((v & 0x00ff0000UL) >> 8) | ((v & 0x0000ff00UL) << 8) | ((v & 0x000000ffUL) << 24))
 
