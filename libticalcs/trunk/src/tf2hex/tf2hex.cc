@@ -37,6 +37,12 @@ int main(int argc, char **argv)
 	fstat(fileno(fi), &st);
 	length = st.st_size;
 
+	if (length < 80)
+	{
+		fprintf(stderr, "Input file is too short to be valid.\n");
+		return 1;
+	}
+
 	lenread = fread(data, sizeof(char), length, fi);
 	fprintf(stdout, "Read %ld bytes.\n", lenread);
 
@@ -52,6 +58,7 @@ int main(int argc, char **argv)
 			return 1;
 		}
 
+		// Produce hex digits while checking / computing checksum.
 		fprintf(fo, "static unsigned char romDump%s[] = {\n", pat);
 		for(i = 0; i < length; i += STEP)
 		{
@@ -61,6 +68,7 @@ int main(int argc, char **argv)
 			}
 			fprintf(fo, "\n");
 		}
+		// TODO: 2 last digits.
 		fprintf(fo, "};\nstatic unsigned int romDumpSize%s = %ld;\n", pat, length);
 
 		fclose(fo);
