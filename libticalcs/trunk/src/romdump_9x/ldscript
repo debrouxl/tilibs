@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2018, Lionel Debroux
+ * Clearly, this is not a generic ldscript for TI-68k/AMS programs :)
+ * However, it's enough to build simple programs without relocations and imports, given the header and footer integrated into romdump_pure_asm.s.
+ * The only missing item is the final 2-byte checksum; that's no longer an issue since libtifiles was changed to report, but no longer refuse files with wrong checksums.
+ */
+SECTIONS
+{
+    . = 0x0;
+    header1 : ALIGN(2) { *(.ti68kheader1); BYTE((__footer_end - __header) & 0xFF); BYTE(((__footer_end - __header) >> 8) & 0xFF); SHORT(0); }
+    header2 : ALIGN(2) { *(.ti68kheader2); BYTE(((__end_of_program_data - __header_end) >> 8) & 0xFF); BYTE((__end_of_program_data - __header_end) & 0xFF); }
+    header3 : ALIGN(2) { *(.ti68kheader3); }
+    text : ALIGN(2) { *(.text); }
+    /* data : ALIGN(2) { *(.data); *(.rodata*); } */
+    footer : ALIGN(1) { *(.ti68kfooter); }
+}
