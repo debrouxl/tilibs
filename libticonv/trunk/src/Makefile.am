@@ -25,5 +25,7 @@ if OS_WIN32
 endif
 
 if OS_MAC
+  libticonv_la_CPPFLAGS += -I/usr/local/opt/libiconv/include/
+  libticonv_la_LDFLAGS += -L/usr/local/opt/libiconv/lib/
   libticonv_la_LIBADD += -liconv
 endif
