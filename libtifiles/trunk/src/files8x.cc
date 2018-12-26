@@ -348,14 +348,12 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 		sum += tifiles_checksum(entry->data, entry->size);
 	}
 
-	if (fread_word(f, &(content->checksum)) < 0) goto tfrr;
-#if defined(CHECKSUM_ENABLED)
-	if (sum != content->checksum)
+	if (fread_word(f, &(content->stored_checksum)) < 0) goto tfrr;
+	if (sum != content->stored_checksum)
 	{
-		ret = ERR_FILE_CHECKSUM;
-		goto tfrr;
+		tifiles_warning("Checksum mismatch in %s: computed: %0x04X / stored: %0x04X", filename, sum, content->stored_checksum);
 	}
-#endif
+	content->checksum = sum;	// sum of all checksums but unused
 
 	fclose(f);
 	return 0;
@@ -528,15 +526,13 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
 		content->data_part4 = NULL;
 	}
 
-	if (fread_word(f, &(content->checksum)) < 0) goto tfrb;
+	if (fread_word(f, &(content->stored_checksum)) < 0) goto tfrb;
 	sum = compute_backup_sum(content, header_size);
-#if defined(CHECKSUM_ENABLED)
-	if (sum != content->checksum)
+	if (sum != content->stored_checksum)
 	{
-		ret = ERR_FILE_CHECKSUM;
-		goto tfrb;
+		tifiles_warning("Checksum mismatch in %s: computed: %0x04X / stored: %0x04X", filename, sum, content->stored_checksum);
 	}
-#endif
+	content->checksum = sum;	// sum of all checksums but unused
 
 	fclose(f);
 	return 0;
