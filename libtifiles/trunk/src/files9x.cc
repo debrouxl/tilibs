@@ -202,10 +202,10 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 			sum = tifiles_checksum(entry->data, entry->size);
 			if (sum != checksum)
 			{
-				ret = ERR_FILE_CHECKSUM;
-				goto tfrr;
+				tifiles_warning("Checksum mismatch in entry #%u of %s: computed: %0x04X / stored: %0x04X", i, filename, sum, checksum);
 			}
 			content->checksum += sum;	// sum of all checksums but unused
+			content->stored_checksum += checksum;	// sum of all checksums but unused
 		}
 	}
 	content->num_entries = j;
@@ -313,16 +313,14 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 	}
 
 	if (fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrb;
-	if (fread_word(f, &(content->checksum)) < 0) goto tfrb;
+	if (fread_word(f, &(content->stored_checksum)) < 0) goto tfrb;
 
 	sum = tifiles_checksum(content->data_part, content->data_length);
-#if defined(CHECKSUM_ENABLED)
-	if (sum != content->checksum)
+	if (sum != content->stored_checksum)
 	{
-		ret = ERR_FILE_CHECKSUM;
-		goto tfrb;
+		tifiles_warning("Checksum mismatch in %s: computed: %0x04X / stored: %0x04X", filename, sum, content->stored_checksum);
 	}
-#endif
+	content->checksum = sum;	// computed checksum.
 
 	fclose(f);
 	return 0;

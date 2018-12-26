@@ -142,6 +142,8 @@ typedef struct
  * @num_entries: number of variables stored after
  * @entries: a NULL-terminated array of #TiVarEntry structures
  * @checksum: checksum of file
+ * @model_dst: target calculator model for filename conversion and file writing
+ * @stored_checksum: checksum of file as stored into the file
  *
  * A generic structure used to store the content of a single/grouped TI file.
  * Please note that:
@@ -164,6 +166,8 @@ typedef struct
 	uint16_t		checksum;
 
 	CalcModel		model_dst;
+
+	uint16_t		stored_checksum;
 } FileContent;
 
 /**
@@ -171,6 +175,7 @@ typedef struct
  * @model: calculator model
  * @comment: comment embedded in file (like "Backup file received by TiLP")
  * @checksum: checksum of file
+ * @stored_checksum: checksum of file as stored into the file
  *
  * A generic structure used to store the content of a backup file.
  **/
@@ -202,6 +207,7 @@ typedef struct
 	uint8_t*	data_part4;
 
 	uint16_t	checksum;
+	uint16_t		stored_checksum;
 } BackupContent;
 
 #define FLASH_PAGE_SIZE	16384
