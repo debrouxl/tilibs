@@ -1481,29 +1481,25 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* f
 	{
 		// true backup capability
 		BackupContent * content = tifiles_content_create_backup(handle->model);
-		if (content != NULL)
+		ret = tifiles_file_read_backup(filename, content);
+		if (!ret)
 		{
-			ret = tifiles_file_read_backup(filename, content);
-			if (!ret)
-			{
-				ret = ticalcs_calc_send_backup(handle, content);
-				tifiles_content_delete_backup(content);
-			}
+			ret = ticalcs_calc_send_backup(handle, content);
+			tifiles_content_delete_backup(content);
 		}
+		// content is destroyed by the functions behind tifiles_file_read_backup() if an error occurs.
 	}
 	else
 	{
 		// pseudo-backup
 		FileContent * content = tifiles_content_create_regular(handle->model);
-		if (content != NULL)
+		ret = tifiles_file_read_regular(filename, content);
+		if (!ret)
 		{
-			ret = tifiles_file_read_regular(filename, content);
-			if (!ret)
-			{
-				ret = ticalcs_calc_send_all_vars_backup(handle, content);
-				tifiles_content_delete_regular(content);
-			}
+			ret = ticalcs_calc_send_all_vars_backup(handle, content);
+			tifiles_content_delete_regular(content);
 		}
+		// content is destroyed by the functions behind tifiles_file_read_regular() if an error occurs.
 	}
 
 	return ret;
@@ -1538,6 +1534,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *f
 		{
 			ret = tifiles_file_write_backup(filename, content);
 		}
+		// content is not destroyed by the functions behind ticalcs_calc_recv_backup() if an error occurs.
 		tifiles_content_delete_backup(content);
 	}
 	else
@@ -1549,6 +1546,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *f
 		{
 			ret = tifiles_file_write_regular(filename, content, NULL);
 		}
+		// content is not destroyed by the functions behind ticalcs_calc_recv_all_vars_backup() if an error occurs.
 		tifiles_content_delete_regular(content);
 	}
 
@@ -1584,6 +1582,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode, c
 		ret = ticalcs_calc_send_var(handle, mode, content);
 		tifiles_content_delete_regular(content);
 	}
+	// content is destroyed by the functions behind tifiles_file_read_regular() if an error occurs.
 
 	return ret;
 }
@@ -1618,6 +1617,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, c
 	{
 		ret = tifiles_file_write_regular(filename, content, NULL);
 	}
+	// content is not destroyed by the functions behind ticalcs_calc_recv_var() if an error occurs.
 	tifiles_content_delete_regular(content);
 
 	return ret;
@@ -1646,15 +1646,13 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode
 	RETURN_IF_HANDLE_BUSY(handle);
 
 	content = tifiles_content_create_regular(handle->model);
-	if (content != NULL)
+	ret = tifiles_file_read_regular(filename, content);
+	if (!ret)
 	{
-		ret = tifiles_file_read_regular(filename, content);
-		if (!ret)
-		{
-			ret = ticalcs_calc_send_var_ns(handle, mode, content);
-			tifiles_content_delete_regular(content);
-		}
+		ret = ticalcs_calc_send_var_ns(handle, mode, content);
+		tifiles_content_delete_regular(content);
 	}
+	// content is destroyed by the functions behind tifiles_file_read_regular() if an error occurs.
 
 	return ret;
 }
@@ -1689,6 +1687,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode
 	{
 		ret = tifiles_file_write_regular(filename, content, NULL);
 	}
+	// content is not destroyed by the functions behind ticalcs_calc_recv_var_ns() if an error occurs.
 	tifiles_content_delete_regular(content);
 
 	return ret;
@@ -1722,6 +1721,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* file
 		ret = ticalcs_calc_send_app(handle, content);
 		tifiles_content_delete_flash(content);
 	}
+	// content is destroyed by the functions behind tifiles_file_read_flash() if an error occurs.
 
 	return ret;
 }
@@ -1755,6 +1755,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* file
 	{
 		ret = tifiles_file_write_flash(filename, content);
 	}
+	// content is not destroyed by the functions behind ticalcs_calc_recv_app() if an error occurs.
 	tifiles_content_delete_flash(content);
 
 	return ret;
@@ -1788,6 +1789,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* fil
 		ret = ticalcs_calc_send_cert(handle, content);
 		tifiles_content_delete_flash(content);
 	}
+	// content is destroyed by the functions behind tifiles_file_read_flash() if an error occurs.
 
 	return ret;
 }
@@ -1820,6 +1822,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filen
 		ret = ticalcs_calc_send_os(handle, content);
 		tifiles_content_delete_flash(content);
 	}
+	// content is destroyed by the functions behind tifiles_file_read_flash() if an error occurs.
 
 	return ret;
 }
@@ -1866,11 +1869,6 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* fil
 			memcpy(e, "crt", 3);
 
 			content = tifiles_content_create_flash(handle->model);
-			if (content == NULL)
-			{
-				ret = ERR_MALLOC;
-				break;
-			}
 			ret = ticalcs_calc_recv_cert(handle, content);
 			if (ret)
 			{
@@ -1909,6 +1907,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* fil
 		}
 	} while (0);
 
+	// content is not destroyed by the functions behind ticalcs_calc_recv_cert() if an error occurs.
 	tifiles_content_delete_flash(content);
 
 	return ret;
@@ -1942,6 +1941,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* 
 	{
 		ret = ticalcs_calc_send_tigroup(handle, content, mode);
 	}
+	// content is not destroyed by the functions behind tifiles_file_read_tigroup() if an error occurs.
 	tifiles_content_delete_tigroup(content);
 
 	return ret;
@@ -1975,6 +1975,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup2(CalcHandle* handle, const char* 
 	{
 		ret = tifiles_file_write_tigroup(filename, content);
 	}
+	// content is not destroyed by the functions behind ticalcs_calc_recv_tigroup() if an error occurs.
 	tifiles_content_delete_tigroup(content);
 
 	return ret;
