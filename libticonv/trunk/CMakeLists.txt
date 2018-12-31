@@ -28,16 +28,23 @@ set(SRC_FILES
         src/tokens.c
         src/type2str.c)
 
+set(PUBLIC_HEADERS
+        src/ticonv.h
+        src/export4.h
+        src/charset.h)
+
 add_library(ticonv_objlib OBJECT ${SRC_FILES})
 set_target_properties(ticonv_objlib PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 add_library(ticonv_shared SHARED $<TARGET_OBJECTS:ticonv_objlib>)
 add_library(ticonv_static STATIC $<TARGET_OBJECTS:ticonv_objlib>)
 
-set_target_properties(ticonv_shared PROPERTIES OUTPUT_NAME ticonv)
-set_target_properties(ticonv_static PROPERTIES OUTPUT_NAME ticonv)
+set_target_properties(ticonv_shared ticonv_static PROPERTIES
+        OUTPUT_NAME     ticonv
+        PUBLIC_HEADER  "${PUBLIC_HEADERS}")
 
 install(TARGETS ticonv_shared ticonv_static
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        RUNTIME DESTINATION bin)
+        ARCHIVE         DESTINATION lib
+        LIBRARY         DESTINATION lib
+        RUNTIME         DESTINATION bin
+        PUBLIC_HEADER   DESTINATION include/tilp2)

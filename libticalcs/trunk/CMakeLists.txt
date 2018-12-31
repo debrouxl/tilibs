@@ -51,16 +51,36 @@ set(SRC_FILES
         src/type2str.c
         src/update.c)
 
+set(PUBLIC_HEADERS
+        src/ticalcs.h
+        src/export3.h
+        src/keys73.h
+        src/keys83.h
+        src/keys83p.h
+        src/keys86.h
+        src/keys89.h
+        src/keys92p.h
+        src/dbus_pkt.h
+        src/dusb_rpkt.h
+        src/dusb_vpkt.h
+        src/dusb_cmd.h
+        src/nsp_vpkt.h
+        src/nsp_cmd.h
+        src/cmdz80.h
+        src/cmd68k.h)
+
 add_library(ticalcs2_objlib OBJECT ${SRC_FILES})
 set_target_properties(ticalcs2_objlib PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 add_library(ticalcs2_shared SHARED $<TARGET_OBJECTS:ticalcs2_objlib>)
 add_library(ticalcs2_static STATIC $<TARGET_OBJECTS:ticalcs2_objlib>)
 
-set_target_properties(ticalcs2_shared PROPERTIES OUTPUT_NAME ticalcs2)
-set_target_properties(ticalcs2_static PROPERTIES OUTPUT_NAME ticalcs2)
+set_target_properties(ticalcs2_shared ticalcs2_static PROPERTIES
+        OUTPUT_NAME     ticalcs2
+        PUBLIC_HEADER  "${PUBLIC_HEADERS}")
 
 install(TARGETS ticalcs2_shared ticalcs2_static
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        RUNTIME DESTINATION bin)
+        ARCHIVE         DESTINATION lib
+        LIBRARY         DESTINATION lib
+        RUNTIME         DESTINATION bin
+        PUBLIC_HEADER   DESTINATION include/tilp2)

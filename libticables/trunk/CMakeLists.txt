@@ -44,6 +44,10 @@ set(SRC_FILES
         src/ticables.c
         src/type2str.c)
 
+set(PUBLIC_HEADERS
+        src/ticables.h
+        src/export1.h
+        src/timeout.h)
 
 add_library(ticables2_objlib OBJECT ${SRC_FILES})
 set_target_properties(ticables2_objlib PROPERTIES POSITION_INDEPENDENT_CODE 1)
@@ -51,10 +55,12 @@ set_target_properties(ticables2_objlib PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_library(ticables2_shared SHARED $<TARGET_OBJECTS:ticables2_objlib>)
 add_library(ticables2_static STATIC $<TARGET_OBJECTS:ticables2_objlib>)
 
-set_target_properties(ticables2_shared PROPERTIES OUTPUT_NAME ticables2)
-set_target_properties(ticables2_static PROPERTIES OUTPUT_NAME ticables2)
+set_target_properties(ticables2_shared ticables2_static PROPERTIES
+        OUTPUT_NAME     ticables2
+        PUBLIC_HEADER  "${PUBLIC_HEADERS}")
 
 install(TARGETS ticables2_shared ticables2_static
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        RUNTIME DESTINATION bin)
+        ARCHIVE         DESTINATION lib
+        LIBRARY         DESTINATION lib
+        RUNTIME         DESTINATION bin
+        PUBLIC_HEADER   DESTINATION include/tilp2)
