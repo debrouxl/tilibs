@@ -12,6 +12,7 @@ project(tilibs C)
 #
 # Features:
 #   - builds and installs both shared and static libraries
+#   - installs the public headers of each library
 #
 # Caveats:
 #   - no support for the ROM dumpers and tests subdirectories

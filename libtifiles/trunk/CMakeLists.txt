@@ -38,16 +38,38 @@ set(SRC_FILES
         src/typesxx.c
         src/ve_fp.c)
 
+set(PUBLIC_HEADERS
+        src/tifiles.h
+        src/export2.h
+        src/files8x.h
+        src/files9x.h
+        src/types73.h
+        src/types82.h
+        src/types83.h
+        src/types83p.h
+        src/types84p.h
+        src/types85.h
+        src/types86.h
+        src/types89.h
+        src/types89t.h
+        src/types92.h
+        src/types92p.h
+        src/typesnsp.h
+        src/typesv2.h
+        src/typesxx.h)
+
 add_library(tifiles2_objlib OBJECT ${SRC_FILES})
 set_target_properties(tifiles2_objlib PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 add_library(tifiles2_shared SHARED $<TARGET_OBJECTS:tifiles2_objlib>)
 add_library(tifiles2_static STATIC $<TARGET_OBJECTS:tifiles2_objlib>)
 
-set_target_properties(tifiles2_shared PROPERTIES OUTPUT_NAME tifiles2)
-set_target_properties(tifiles2_static PROPERTIES OUTPUT_NAME tifiles2)
+set_target_properties(tifiles2_shared tifiles2_static PROPERTIES
+        OUTPUT_NAME     tifiles2
+        PUBLIC_HEADER  "${PUBLIC_HEADERS}")
 
 install(TARGETS tifiles2_shared tifiles2_static
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        RUNTIME DESTINATION bin)
+        ARCHIVE         DESTINATION lib
+        LIBRARY         DESTINATION lib
+        RUNTIME         DESTINATION bin
+        PUBLIC_HEADER   DESTINATION include/tilp2)
