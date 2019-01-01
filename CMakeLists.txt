@@ -13,10 +13,12 @@ project(tilibs C)
 # Features:
 #   - builds and installs both shared and static libraries
 #   - installs the public headers of each library
+#   - creates and installs i18n .mo files (when libs/tools are present)
 #
 # Caveats:
 #   - no support for the ROM dumpers and tests subdirectories
 #   - not all the autotools/configure options are available
+#   - no updatepot/updatepo targets are available, but simply executing intltool-update does the job...
 #   - probably doesn't work very well with ancient toolchains or on uncommon OSes
 #
 # In the future...:
@@ -43,7 +45,15 @@ elseif(WIN32)
     add_definitions(-D__WIN32__)
 endif()
 
-# i18n
+# i18n support checking
+include(FindGettext)
+include(FindIntl)
+if(Intl_FOUND AND GETTEXT_FOUND)
+    set(ENABLE_NLS 1)
+    add_definitions(-DENABLE_NLS=1)
+else()
+    message(WARNING "The Intl and GetText libs are needed for translations - Only English will be available")
+endif()
 set(LOCALEDIR "${CMAKE_INSTALL_PREFIX}/share/locale")
 
 # Global defines

@@ -9,7 +9,7 @@ add_definitions(-DPACKAGE="${PROJECT_NAME}" -DVERSION="${PROJECT_VERSION}" -DTIC
 pkg_check_modules(DEPS REQUIRED glib-2.0 ticonv ticables2 tifiles2)
 add_definitions(${DEPS_CFLAGS})
 link_directories(${DEPS_LIBRARY_DIRS})
-link_libraries(${DEPS_LIBRARIES})
+link_libraries(${DEPS_LIBRARIES} ${Intl_LIBRARIES})
 
 include_directories(src)
 
@@ -84,3 +84,5 @@ install(TARGETS ticalcs2_shared ticalcs2_static
         LIBRARY         DESTINATION lib
         RUNTIME         DESTINATION bin
         PUBLIC_HEADER   DESTINATION include/tilp2)
+
+i18n_mo_from_po_pot()
