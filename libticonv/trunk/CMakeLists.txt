@@ -11,6 +11,8 @@ if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
     link_libraries(${Iconv_LIBRARIES})
 endif()
 
+configure_and_install_pc_file(ticonv ${PROJECT_VERSION})
+
 pkg_check_modules(DEPS REQUIRED glib-2.0)
 add_definitions(${DEPS_CFLAGS})
 link_directories(${DEPS_LIBRARY_DIRS})

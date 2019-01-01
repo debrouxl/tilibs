@@ -14,6 +14,7 @@ project(tilibs C)
 #   - builds and installs both shared and static libraries
 #   - installs the public headers of each library
 #   - creates and installs i18n .mo files (when libs/tools are present)
+#   - configures and installs the .pc files for pkg-config
 #
 # Caveats:
 #   - no support for the ROM dumpers and tests subdirectories

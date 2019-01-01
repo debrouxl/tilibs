@@ -8,6 +8,8 @@ add_definitions(-DPACKAGE="${PROJECT_NAME}" -DVERSION="${PROJECT_VERSION}" -DTIC
 
 add_definitions(-DHAVE_LIBUSB_1_0=1 -DHAVE_TERMIOS_H=1)
 
+configure_and_install_pc_file(ticables2 ${PROJECT_VERSION})
+
 pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0)
 add_definitions(${DEPS_CFLAGS})
 link_directories(${DEPS_LIBRARY_DIRS})
