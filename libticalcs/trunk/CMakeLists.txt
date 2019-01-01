@@ -6,6 +6,8 @@ project(libticalcs2
 
 add_definitions(-DPACKAGE="${PROJECT_NAME}" -DVERSION="${PROJECT_VERSION}" -DTICALCS_EXPORTS)
 
+configure_and_install_pc_file(ticalcs2 ${PROJECT_VERSION})
+
 pkg_check_modules(DEPS REQUIRED glib-2.0 ticonv ticables2 tifiles2)
 add_definitions(${DEPS_CFLAGS})
 link_directories(${DEPS_LIBRARY_DIRS})

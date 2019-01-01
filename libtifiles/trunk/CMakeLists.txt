@@ -6,6 +6,8 @@ project(libtifiles2
 
 add_definitions(-DPACKAGE="${PROJECT_NAME}" -DVERSION="${PROJECT_VERSION}" -DTIFILES_EXPORTS)
 
+configure_and_install_pc_file(tifiles2 ${PROJECT_VERSION})
+
 pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive ticonv)
 add_definitions(${DEPS_CFLAGS})
 link_directories(${DEPS_LIBRARY_DIRS})
