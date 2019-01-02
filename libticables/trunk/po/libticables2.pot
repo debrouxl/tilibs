@@ -202,11 +202,11 @@ msgid "Msg: RwPorts driver and/or library not found."
 msgstr ""
 
 #: src/error.cc:154
-msgid "Msg: error occured while writing to the device."
+msgid "Msg: error occurred while writing to the device."
 msgstr ""
 
 #: src/error.cc:159
-msgid "Msg: timeout occured while writing to the device."
+msgid "Msg: timeout occurred while writing to the device."
 msgstr ""
 
 #: src/error.cc:161 src/error.cc:174
@@ -214,11 +214,11 @@ msgid "Cause: check that link cable is plugged and/or the calculator is ready."
 msgstr ""
 
 #: src/error.cc:167
-msgid "Msg: error occured while reading from the device."
+msgid "Msg: error occurred while reading from the device."
 msgstr ""
 
 #: src/error.cc:172
-msgid "Msg: timeout occured while reading from the device."
+msgid "Msg: timeout occurred while reading from the device."
 msgstr ""
 
 #: src/error.cc:180
