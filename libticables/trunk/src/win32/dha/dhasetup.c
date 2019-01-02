@@ -201,7 +201,7 @@ static int dha_enable(void)
 	iError = DeviceIoControl(hDriver, IOCTL_DHAHELPER_ENABLEDIRECTIO, NULL, 0, NULL, 0, &BytesReturned, NULL);
 	if(!iError)
 	{
-		print_last_error("DhaHelper: error %d occured in IOCTL_DHAHELPER_ENABLEDIRECTIO");
+		print_last_error("DhaHelper: error %d occurred in IOCTL_DHAHELPER_ENABLEDIRECTIO");
 		result = -1;
 	}
 	else
@@ -231,7 +231,7 @@ static int dha_disable(void)
 	iError = DeviceIoControl(hDriver, IOCTL_DHAHELPER_DISABLEDIRECTIO, NULL, 0, NULL, 0, &BytesReturned, NULL);
 	if(!iError)
 	{
-		print_last_error("DhaHelper: error %d occured in IOCTL_DHAHELPER_DISABLEDIRECTIO");
+		print_last_error("DhaHelper: error %d occurred in IOCTL_DHAHELPER_DISABLEDIRECTIO");
 		result = -1;
 	}
 	else

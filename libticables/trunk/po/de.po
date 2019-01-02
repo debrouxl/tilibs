@@ -230,11 +230,11 @@ msgid "Msg: RwPorts driver and/or library not found."
 msgstr "Msg: RwPorts-Treiber und/oder Bibliothek nicht gefunden."
 
 #: src/error.cc:154
-msgid "Msg: error occured while writing to the device."
+msgid "Msg: error occurred while writing to the device."
 msgstr "Msg: Fehler beim Schreiben auf das Gerät."
 
 #: src/error.cc:159
-msgid "Msg: timeout occured while writing to the device."
+msgid "Msg: timeout occurred while writing to the device."
 msgstr "Msg: Timeout beim Schreiben auf das Gerät."
 
 #: src/error.cc:161 src/error.cc:174
@@ -244,11 +244,11 @@ msgstr ""
 "ist."
 
 #: src/error.cc:167
-msgid "Msg: error occured while reading from the device."
+msgid "Msg: error occurred while reading from the device."
 msgstr "Msg: Fehler beim Lesen vom Gerät."
 
 #: src/error.cc:172
-msgid "Msg: timeout occured while reading from the device."
+msgid "Msg: timeout occurred while reading from the device."
 msgstr "Msg: Zeitüberschreitung beim Lesen vom Gerät."
 
 #: src/error.cc:180
