@@ -62,10 +62,10 @@ set_target_properties(ticables2_shared ticables2_static PROPERTIES
         PUBLIC_HEADER  "${PUBLIC_HEADERS}")
 
 install(TARGETS ticables2_shared ticables2_static
-        ARCHIVE         DESTINATION lib
-        LIBRARY         DESTINATION lib
-        RUNTIME         DESTINATION bin
-        PUBLIC_HEADER   DESTINATION include/tilp2)
+        ARCHIVE         DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY         DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME         DESTINATION ${CMAKE_INSTALL_BINDIR}
+        PUBLIC_HEADER   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/tilp2)
 
 i18n_mo_from_po_pot()
 
