@@ -151,12 +151,12 @@ TIEXPORT1 int TICALL ticables_error_get(int number, char **message)
 
 		case ERR_WRITE_ERROR:
 			*message = g_strdup(
-			_("Msg: error occured while writing to the device."));
+			_("Msg: error occurred while writing to the device."));
 		break;
 
 		case ERR_WRITE_TIMEOUT:
 			*message = g_strconcat(
-			_("Msg: timeout occured while writing to the device."),
+			_("Msg: timeout occurred while writing to the device."),
 			"\n",
 			_("Cause: check that link cable is plugged and/or the calculator is ready."),
 			NULL);
@@ -164,12 +164,12 @@ TIEXPORT1 int TICALL ticables_error_get(int number, char **message)
 
 		case ERR_READ_ERROR:
 			*message = g_strdup(
-			_("Msg: error occured while reading from the device."));
+			_("Msg: error occurred while reading from the device."));
 		break;
 
 		case ERR_READ_TIMEOUT:
 			*message = g_strconcat(
-			_("Msg: timeout occured while reading from the device."),
+			_("Msg: timeout occurred while reading from the device."),
 			"\n",
 			_("Cause: check that link cable is plugged and/or the calculator is ready."),
 			NULL);

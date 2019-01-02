@@ -203,7 +203,7 @@ static int rwp_read_byte(unsigned long address, unsigned char *data)
 	iError = DeviceIoControl(hDriver, IOCTL_RWPORTS_READ_BYTE, &buf, 2, &buf, 1, &BytesReturned, NULL);
 	if(!iError)
 	{
-		print_last_error("RwPorts: error %d occured in IOCTL_RWPORTS_READ_BYTE");
+		print_last_error("RwPorts: error %d occurred in IOCTL_RWPORTS_READ_BYTE");
 		result = -1;
 	}
 	else
@@ -238,7 +238,7 @@ static int rwp_write_byte(unsigned long address, unsigned char data)
 	iError = DeviceIoControl(hDriver, IOCTL_RWPORTS_WRITE_BYTE, &buf, 3, &buf, 1, &BytesReturned, NULL);
 	if(!iError)
 	{
-		print_last_error("RwPorts: error %d occured in IOCTL_RWPORTS_WRITE_BYTE");
+		print_last_error("RwPorts: error %d occurred in IOCTL_RWPORTS_WRITE_BYTE");
 		result = -1;
 	}
 	else
