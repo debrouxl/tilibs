@@ -31,6 +31,8 @@ project(tilibs C)
 #   - WISH: add support for Windows (that will probably be annoying)
 #
 
+set(USED_CMAKE_GENERATOR "${CMAKE_GENERATOR}" CACHE STRING "Expose CMAKE_GENERATOR" FORCE)
+
 message(STATUS "Detected system: ${CMAKE_SYSTEM_NAME} - host processor: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
 
 set(CMAKE_C_STANDARD 99)

@@ -62,6 +62,7 @@ set(PUBLIC_HEADERS
 
 add_library(tifiles2_objlib OBJECT ${SRC_FILES})
 set_target_properties(tifiles2_objlib PROPERTIES POSITION_INDEPENDENT_CODE 1)
+add_dependencies(tifiles2_objlib buildandinstall_libticonv)
 
 add_library(tifiles2_shared SHARED $<TARGET_OBJECTS:tifiles2_objlib>)
 add_library(tifiles2_static STATIC $<TARGET_OBJECTS:tifiles2_objlib>)
@@ -77,3 +78,5 @@ install(TARGETS tifiles2_shared tifiles2_static
         PUBLIC_HEADER   DESTINATION include/tilp2)
 
 i18n_mo_from_po_pot()
+
+create_buildandinstall_target(${PROJECT_NAME} tifiles2_shared tifiles2_static)

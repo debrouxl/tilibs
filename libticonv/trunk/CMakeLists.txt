@@ -52,3 +52,5 @@ install(TARGETS ticonv_shared ticonv_static
         PUBLIC_HEADER   DESTINATION include/tilp2)
 
 i18n_mo_from_po_pot()
+
+create_buildandinstall_target(${PROJECT_NAME} ticonv_shared ticonv_static)
