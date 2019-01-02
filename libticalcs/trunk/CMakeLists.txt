@@ -73,6 +73,7 @@ set(PUBLIC_HEADERS
 
 add_library(ticalcs2_objlib OBJECT ${SRC_FILES})
 set_target_properties(ticalcs2_objlib PROPERTIES POSITION_INDEPENDENT_CODE 1)
+add_dependencies(ticalcs2_objlib buildandinstall_libticonv buildandinstall_libticables2 buildandinstall_libtifiles2)
 
 add_library(ticalcs2_shared SHARED $<TARGET_OBJECTS:ticalcs2_objlib>)
 add_library(ticalcs2_static STATIC $<TARGET_OBJECTS:ticalcs2_objlib>)
@@ -88,3 +89,5 @@ install(TARGETS ticalcs2_shared ticalcs2_static
         PUBLIC_HEADER   DESTINATION include/tilp2)
 
 i18n_mo_from_po_pot()
+
+create_buildandinstall_target(${PROJECT_NAME} ticalcs2_shared ticalcs2_static)
