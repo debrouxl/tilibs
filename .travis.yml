@@ -1,56 +1,54 @@
 language: c
 
+_linuxpackages: &_linuxpackages
+  addons:
+    apt:
+      packages:
+        - build-essential
+        - git
+        - autoconf
+        - automake
+        - autopoint
+        - libtool
+        - libglib2.0-dev
+        - zlib1g-dev
+        - libusb-1.0-0-dev
+        - gettext
+        - bison
+        - flex
+        - groff
+        - texinfo
+        - libarchive-dev
+        - ninja-build
+        - liblz4-dev
+        - liblzma-dev
+
 matrix:
   include:
     - os: linux
       dist: xenial
-      addons:
-        apt:
-          packages:
-            build-essential
-            git
-            autoconf
-            automake
-            autopoint
-            libtool
-            libglib2.0-dev
-            zlib1g-dev
-            libusb-1.0-0-dev
-            gettext
-            bison
-            flex
-            groff
-            texinfo
-            libarchive-dev
+      env: PREBUILDER=autotools BUILDER=make
+      <<: *_linuxpackages
+    - os: linux
+      dist: xenial
+      env: PREBUILDER=cmake     BUILDER=make
+      <<: *_linuxpackages
+    - os: linux
+      dist: xenial
+      env: PREBUILDER=cmake     BUILDER=ninja
+      <<: *_linuxpackages
     - os: osx
+      env: PREBUILDER=autotools BUILDER=make
+    - os: osx
+      env: PREBUILDER=cmake     BUILDER=make
+    - os: osx
+      env: PREBUILDER=cmake     BUILDER=ninja
 
 install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gettext libarchive libtool glib libusb bison flex texinfo libiconv intltool ; brew link --force gettext libarchive ; export PKG_CONFIG_PATH="/usr/local/opt/libarchive/lib/pkgconfig"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake ninja gettext libarchive libtool glib libusb bison flex texinfo libiconv intltool ; brew link --force gettext libarchive ; export PKG_CONFIG_PATH="/usr/local/opt/libarchive/lib/pkgconfig"; fi
+  - which gcc   ; gcc --version
+  - which cmake ; cmake --version
+  - which ninja ; ninja --version
+  - which make  ; make --version
 
-script:
-  - mkdir prefix
-  - export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`/prefix/lib/pkgconfig
-  - cd libticonv/trunk
-  - mkdir m4; autoreconf -ivf
-  - ./configure --prefix=`pwd`/../../prefix --enable-iconv
-  - make -j4 check
-  - make -j4 install
-  - cd ../../libtifiles/trunk
-  - mkdir m4; autoreconf -ivf
-  - cd po; make libtifiles2.pot-update; make update-po; cd ..
-  - ./configure --prefix=`pwd`/../../prefix 
-  - make -j4 check
-  - make -j4 install
-  - cd ../../libticables/trunk
-  - mkdir m4; autoreconf -ivf
-  - cd po; make libticables2.pot-update; make update-po; cd ..
-  - ./configure --prefix=`pwd`/../../prefix --enable-logging --enable-libusb10
-  - make -j4 check
-  - make -j4 install
-  - cd ../../libticalcs/trunk
-  - mkdir m4; autoreconf -ivf
-  - cd po; make libticalcs2.pot-update; make update-po; cd ..
-  - ./configure --prefix=`pwd`/../../prefix
-  - make -j4 check
-  - make -j4 install
-
+script: .travis/script.sh
