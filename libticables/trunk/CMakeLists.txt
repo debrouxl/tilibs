@@ -8,6 +8,13 @@ add_definitions(-DPACKAGE="${PROJECT_NAME}" -DVERSION="${PROJECT_VERSION}" -DTIC
 
 add_definitions(-DHAVE_LIBUSB_1_0=1 -DHAVE_TERMIOS_H=1)
 
+option(ENABLE_LOGGING "Whether to build with cables logging enabled (default ON)" ON)
+if(ENABLE_LOGGING)
+    add_definitions(-DENABLE_LOGGING=1)
+else()
+    message("Building ${PROJECT_NAME} with logging disabled")
+endif()
+
 configure_and_install_pc_file(ticables2 ${PROJECT_VERSION})
 
 pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0)
