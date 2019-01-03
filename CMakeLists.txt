@@ -61,7 +61,7 @@ endif()
 set(LOCALEDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LOCALEDIR}")
 
 # Global defines
-add_definitions(-DENABLE_LOGGING=1 -DHAVE_FVISIBILITY=1 -DLOCALEDIR="${LOCALEDIR}")
+add_definitions(-DHAVE_FVISIBILITY=1 -DLOCALEDIR="${LOCALEDIR}")
 
 # For libs finding
 find_package(PkgConfig)
