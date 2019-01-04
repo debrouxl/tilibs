@@ -915,7 +915,7 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *s
  */
 TIEXPORT4 int TICALL ticonv_model_uses_utf8(CalcModel model)
 {
-	// In 2015, the blacklist condition about twice longer than the equivalent whitelist condition,
+	// In early 2019, the blacklist condition is about twice longer than the equivalent whitelist condition,
 	// but less likely to get future models (most of which should have exclusively direct USB connectivity) wrong.
 	return (   model != CALC_NONE
 	        && model <  CALC_MAX
@@ -1054,4 +1054,89 @@ TIEXPORT4 int TICALL ticonv_model_has_usb_ioport(CalcModel model)
 	            || model == CALC_TI84PCE_USB
 	            || model == CALC_TI82A_USB
 	            || model == CALC_TI84PT_USB));
+}
+
+/**
+ * ticonv_model_has_flash_memory:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model is equipped with Flash memory.
+ *
+ * Return value: nonzero if the calculator has Flash memory, zero if it doesn't.
+ */
+TIEXPORT4 int TICALL ticonv_model_has_flash_memory(CalcModel model)
+{
+	// In early 2019, the blacklist condition is shorter the equivalent whitelist condition,
+	// and less likely to get future models (all of which should have Flash memory) wrong.
+	return (   model != CALC_NONE
+	        && model <  CALC_MAX
+	        && model != CALC_TI82
+	        && model != CALC_TI83
+	        && model != CALC_TI85
+	        && model != CALC_TI86
+	        && model != CALC_TI92
+	        && model != CALC_TI80);
+}
+
+/**
+ * ticonv_model_has_real_screen:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model has a physical screen.
+ *
+ * Return value: nonzero if the calculator has a physical screen, zero if it doesn't.
+ */
+TIEXPORT4 int TICALL ticonv_model_has_real_screen(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ 1); // All models currently handled by libti* have a real physical screen.
+}
+
+/**
+ * ticonv_model_has_monochrome_screen:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model has a monochrome screen.
+ *
+ * Return value: nonzero if the calculator has a monochrome screen, zero if it doesn't.
+ */
+TIEXPORT4 int TICALL ticonv_model_has_monochrome_screen(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ ( model == CALC_TI73
+	            || model == CALC_TI82
+	            || model == CALC_TI83
+	            || model == CALC_TI83P
+	            || model == CALC_TI84P
+	            || model == CALC_TI85
+	            || model == CALC_TI86
+	            || model == CALC_TI89
+	            || model == CALC_TI89T
+	            || model == CALC_TI92
+	            || model == CALC_TI92P
+	            || model == CALC_V200
+	            || model == CALC_TI84P_USB
+	            || model == CALC_TI89T_USB
+	            || model == CALC_NSPIRE    // Some Nspire models have monochrome screens
+	            || model == CALC_TI80
+	            || model == CALC_TI82A_USB
+	            || model == CALC_TI84PT_USB));
+}
+
+/**
+ * ticonv_model_has_color_screen:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model has a color screen.
+ *
+ * Return value: nonzero if the calculator has a color screen, zero if it doesn't.
+ */
+TIEXPORT4 int TICALL ticonv_model_has_color_screen(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ ( model == CALC_NSPIRE    // Some Nspire models have color screens
+	            || model == CALC_TI84PC
+	            || model == CALC_TI84PC_USB
+	            || model == CALC_TI83PCE_USB
+	            || model == CALC_TI84PCE_USB));
 }

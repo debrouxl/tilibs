@@ -703,7 +703,7 @@ TIEXPORT3 int TICALL ticalcs_model_supports_dbus(CalcModel model)
  * ticalcs_model_supports_dusb:
  * @model: a calculator model taken in #CalcModel.
  *
- * Returns whether the given calculator model supports the protocol dubbed DUSB by libticalcs.
+ * Returns whether the given calculator model supports the CARS protocol dubbed DUSB by libticalcs.
  * That is, the standard protocol used by TI-Z80, TI-eZ80 and TI-68k calculators over the USB port.
  *
  * Return value: nonzero if the calculator supports the DUSB protocol, zero if it doesn't.
@@ -724,7 +724,7 @@ TIEXPORT3 int TICALL ticalcs_model_supports_dusb(CalcModel model)
  * ticalcs_model_supports_nsp:
  * @model: a calculator model taken in #CalcModel.
  *
- * Returns whether the given calculator model supports the protocol dubbed NSP by libticalcs.
+ * Returns whether the given calculator model supports the NavNet protocol dubbed NSP by libticalcs.
  * That is, the standard protocol used by TI-Nspire calculators over the USB port.
  *
  * Return value: nonzero if the calculator supports the NSP protocol, zero if it doesn't.
@@ -733,6 +733,22 @@ TIEXPORT3 int TICALL ticalcs_model_supports_nsp(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
 	        &&*/ ( model == CALC_NSPIRE));
+}
+
+/**
+ * ticalcs_model_supports_installing_flashapps:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model supports transferring additional FlashApps to the calculator.
+ * Some models support FlashApps only as an integral part of the OS upgrade image, arbitrary FlashApps can't be transferred.
+ *
+ * Return value: nonzero if the calculator supports installing additional FlashApps onto the calculator, zero if it doesn't.
+ */
+TIEXPORT3 int TICALL ticalcs_model_supports_installing_flashapps(CalcModel model)
+{
+	return ticonv_model_has_flash_memory(model) && !(   model == CALC_NSPIRE
+	                                                 || model == CALC_TI82A_USB
+	                                                 || model == CALC_TI84PT_USB);
 }
 
 /**
