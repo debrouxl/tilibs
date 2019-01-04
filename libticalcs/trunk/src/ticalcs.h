@@ -946,6 +946,7 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_model_supports_dbus(CalcModel model);
 	TIEXPORT3 int TICALL ticalcs_model_supports_dusb(CalcModel model);
 	TIEXPORT3 int TICALL ticalcs_model_supports_nsp(CalcModel model);
+	TIEXPORT3 int TICALL ticalcs_model_supports_installing_flashapps(CalcModel model);
 
 	TIEXPORT3 ticalcs_event_hook_type TICALL ticalcs_calc_get_event_hook(CalcHandle *handle);
 	TIEXPORT3 ticalcs_event_hook_type TICALL ticalcs_calc_set_event_hook(CalcHandle *handle, ticalcs_event_hook_type hook);

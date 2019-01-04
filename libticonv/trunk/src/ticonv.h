@@ -138,6 +138,10 @@ typedef struct
 	TIEXPORT4 int TICALL ticonv_model_is_tinspire(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_has_legacy_ioport(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_has_usb_ioport(CalcModel model);
+	TIEXPORT4 int TICALL ticonv_model_has_flash_memory(CalcModel model);
+	TIEXPORT4 int TICALL ticonv_model_has_real_screen(CalcModel model);
+	TIEXPORT4 int TICALL ticonv_model_has_monochrome_screen(CalcModel model);
+	TIEXPORT4 int TICALL ticonv_model_has_color_screen(CalcModel model);
 
 	// TODO TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_sn(CalcModel model, const char *src, unsigned short *dst, uint32_t maxlen, unsigned char type);
 	/* TODO TILIBS_DEPRECATED */ TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned char type);
