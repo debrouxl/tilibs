@@ -1,4 +1,4 @@
-macro(i18n_mo_from_po_pot)
+function(i18n_mo_from_po_pot)
     if(ENABLE_NLS)
         # Fetch pot file name
         file(GLOB POTFILE ${CMAKE_CURRENT_SOURCE_DIR}/po/*.pot)
@@ -19,4 +19,4 @@ macro(i18n_mo_from_po_pot)
                                      LANGUAGES           ${LANGS})
         endif()
     endif()
-endmacro()
+endfunction()

@@ -25,6 +25,7 @@ project(tilibs C)
 # In the future...:
 #   - TODO: add support to build the tests (should be rather straightforward)
 #   - TODO: add support to build the ROM dumpers (will end up just launching the external tools...)
+#   - WISH: do not hardcode the (auto-generated...) potfiles_* target names
 #   - WISH: better expose each lib's generated install target (NTS: look at cmake's components feature?)
 #   - WISH: provide Find* CMake modules for the libs themselves?
 #   - WISH: add support for Windows (that will probably be annoying)
