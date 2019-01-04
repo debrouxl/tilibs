@@ -4,26 +4,6 @@ project(libticables2
         VERSION     1.3.6
         LANGUAGES   C)
 
-add_definitions(-DPACKAGE="${PROJECT_NAME}" -DVERSION="${PROJECT_VERSION}" -DTICABLES_EXPORTS)
-
-add_definitions(-DHAVE_LIBUSB_1_0=1 -DHAVE_TERMIOS_H=1)
-
-option(ENABLE_LOGGING "Whether to build with cables logging enabled (default ON)" ON)
-if(ENABLE_LOGGING)
-    add_definitions(-DENABLE_LOGGING=1)
-else()
-    message("Building ${PROJECT_NAME} with logging disabled")
-endif()
-
-configure_and_install_pc_file(ticables2 ${PROJECT_VERSION})
-
-pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0)
-add_definitions(${DEPS_CFLAGS})
-link_directories(${DEPS_LIBRARY_DIRS})
-link_libraries(${DEPS_LIBRARIES} ${Intl_LIBRARIES})
-
-include_directories(src)
-
 file(GLOB HEADER_FILES src/*.h)
 set(SRC_FILES
         ${HEADER_FILES}
@@ -58,22 +38,25 @@ set(PUBLIC_HEADERS
         src/export1.h
         src/timeout.h)
 
-add_library(ticables2_objlib OBJECT ${SRC_FILES})
-set_target_properties(ticables2_objlib PROPERTIES POSITION_INDEPENDENT_CODE 1)
+# external deps lookup
+pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0)
 
-add_library(ticables2_shared SHARED $<TARGET_OBJECTS:ticables2_objlib>)
-add_library(ticables2_static STATIC $<TARGET_OBJECTS:ticables2_objlib>)
+# auto-creation of all targets with flags etc., alongside with internal deps
+create_targets_both_lib_types(ticables2)
 
-set_target_properties(ticables2_shared ticables2_static PROPERTIES
-        OUTPUT_NAME     ticables2
-        PUBLIC_HEADER  "${PUBLIC_HEADERS}")
-
-install(TARGETS ticables2_shared ticables2_static
-        ARCHIVE         DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY         DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME         DESTINATION ${CMAKE_INSTALL_BINDIR}
-        PUBLIC_HEADER   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/tilp2)
-
+# Takes care of the i18n po/pot/gmo/mo files
 i18n_mo_from_po_pot()
+add_dependencies(ticables2_objlib potfiles_2)
 
-create_buildandinstall_target(${PROJECT_NAME} ticables2_shared ticables2_static)
+# additional internal defines
+target_compile_definitions(ticables2_objlib PUBLIC HAVE_LIBUSB_1_0=1 HAVE_TERMIOS_H=1)
+
+# public export define
+target_compile_definitions(ticables2_objlib PUBLIC TICABLES_EXPORTS)
+
+option(ENABLE_LOGGING "Whether to build with cables logging enabled (default ON)" ON)
+if(ENABLE_LOGGING)
+    target_compile_definitions(ticables2_objlib PUBLIC ENABLE_LOGGING=1)
+else()
+    message("Building ${PROJECT_NAME} with logging disabled")
+endif()

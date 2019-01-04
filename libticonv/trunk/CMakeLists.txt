@@ -4,21 +4,8 @@ project(libticonv
         VERSION     1.1.6
         LANGUAGES   C)
 
-add_definitions(-DPACKAGE="${PROJECT_NAME}" -DVERSION="${PROJECT_VERSION}" -DTICONV_EXPORTS)
-
-find_package(Iconv REQUIRED)
-if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
-    link_libraries(${Iconv_LIBRARIES})
-endif()
-
-configure_and_install_pc_file(ticonv ${PROJECT_VERSION})
-
-pkg_check_modules(DEPS REQUIRED glib-2.0)
-add_definitions(${DEPS_CFLAGS})
-link_directories(${DEPS_LIBRARY_DIRS})
-link_libraries(${DEPS_LIBRARIES} ${Intl_LIBRARIES})
-
-include_directories(src)
+# Takes care of the i18n po/pot/gmo/mo files
+i18n_mo_from_po_pot()
 
 file(GLOB HEADER_FILES src/*.h)
 set(SRC_FILES
@@ -35,22 +22,19 @@ set(PUBLIC_HEADERS
         src/export4.h
         src/charset.h)
 
-add_library(ticonv_objlib OBJECT ${SRC_FILES})
-set_target_properties(ticonv_objlib PROPERTIES POSITION_INDEPENDENT_CODE 1)
+# external deps lookup
+pkg_check_modules(DEPS REQUIRED glib-2.0)
+find_package(Iconv REQUIRED)
 
-add_library(ticonv_shared SHARED $<TARGET_OBJECTS:ticonv_objlib>)
-add_library(ticonv_static STATIC $<TARGET_OBJECTS:ticonv_objlib>)
+# auto-creation of all targets with flags etc., alongside with internal deps
+create_targets_both_lib_types(ticonv)
 
-set_target_properties(ticonv_shared ticonv_static PROPERTIES
-        OUTPUT_NAME     ticonv
-        PUBLIC_HEADER  "${PUBLIC_HEADERS}")
+# flags/link for external deps
+if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
+    target_include_directories(ticonv_objlib PRIVATE ${Iconv_INCLUDE_DIRS})
+    target_link_libraries(ticonv_shared ${Iconv_LIBRARIES})
+    target_link_libraries(ticonv_static ${Iconv_LIBRARIES})
+endif()
 
-install(TARGETS ticonv_shared ticonv_static
-        ARCHIVE         DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY         DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME         DESTINATION ${CMAKE_INSTALL_BINDIR}
-        PUBLIC_HEADER   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/tilp2)
-
-i18n_mo_from_po_pot()
-
-create_buildandinstall_target(${PROJECT_NAME} ticonv_shared ticonv_static)
+# public export define
+target_compile_definitions(ticonv_objlib PUBLIC TICONV_EXPORTS)
