@@ -17,13 +17,12 @@ project(tilibs C)
 #   - configures and installs the .pc files for pkg-config
 #
 # Caveats:
-#   - no support for the ROM dumpers and tests subdirectories
+#   - no support for the ROM dumpers subdirectories
 #   - not all the autotools/configure options are available
 #   - no updatepot/updatepo targets are available, but simply executing intltool-update does the job...
 #   - probably doesn't work very well with ancient toolchains or on uncommon OSes
 #
 # In the future...:
-#   - TODO: add support to build the tests (should be rather straightforward)
 #   - TODO: add support to build the ROM dumpers (will end up just launching the external tools...)
 #   - WISH: do not hardcode the (auto-generated...) potfiles_* target names
 #   - WISH: better expose each lib's generated install target (NTS: look at cmake's components feature?)
@@ -78,3 +77,9 @@ add_subdirectory(libticonv/trunk)
 add_subdirectory(libtifiles/trunk)
 add_subdirectory(libticables/trunk)
 add_subdirectory(libticalcs/trunk)
+
+add_custom_target(check
+    DEPENDS ticonv_check tifiles2_check ticables2_check ticalcs2_check
+    COMMENT "Run all torture tests"
+    EXCLUDE_FROM_ALL
+)

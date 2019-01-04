@@ -64,3 +64,6 @@ add_dependencies(tifiles2_objlib buildandinstall_libticonv)
 
 # public export define
 target_compile_definitions(tifiles2_objlib PUBLIC TIFILES_EXPORTS)
+
+# tests
+add_subdirectory(tests)

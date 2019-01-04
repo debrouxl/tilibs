@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <tifiles.h>
-#include <../src/error.h>
+#include "../src/error.h"
 
 #define PRINTF(FUNCTION, TYPE, args...) \
 fprintf(stderr, "%d\t" TYPE "\n", __LINE__, FUNCTION(args))

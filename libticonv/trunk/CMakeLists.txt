@@ -38,3 +38,6 @@ endif()
 
 # public export define
 target_compile_definitions(ticonv_objlib PUBLIC TICONV_EXPORTS)
+
+# tests
+add_subdirectory(tests)

@@ -45,7 +45,9 @@ elif [ "$PREBUILDER" == "cmake" ]; then
         exit -1
     fi
     cmake ${GPARAM} -DCMAKE_INSTALL_PREFIX=${prefixpath} ..
-    cmake --build . --target install -- -j${NPROC}
+    cmake --build . --target all
+    cmake --build . --target check
+    cmake --build . --target install
 else
     echo "Unsupported prebuilder: ${PREBUILDER}"
     exit -1

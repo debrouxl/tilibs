@@ -75,3 +75,6 @@ add_dependencies(ticalcs2_objlib buildandinstall_libticonv buildandinstall_libti
 
 # public export define
 target_compile_definitions(ticables2_objlib PUBLIC TICALCS_EXPORTS)
+
+# tests
+add_subdirectory(tests)
