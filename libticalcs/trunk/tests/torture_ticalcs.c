@@ -8,7 +8,7 @@
 #include <dusb_cmd.h>
 #include <cmdz80.h>
 #include <cmd68k.h>
-#include <../src/error.h>
+#include "../src/error.h"
 
 #define PRINTF(FUNCTION, TYPE, args...) \
 fprintf(stderr, "%d\t" TYPE "\n", __LINE__, FUNCTION(args))

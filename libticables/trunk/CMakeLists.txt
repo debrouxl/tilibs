@@ -60,3 +60,6 @@ if(ENABLE_LOGGING)
 else()
     message("Building ${PROJECT_NAME} with logging disabled")
 endif()
+
+# tests
+add_subdirectory(tests)
