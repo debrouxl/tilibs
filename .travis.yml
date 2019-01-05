@@ -1,54 +1,49 @@
 language: c
+os: linux
+dist: xenial
 
-_linuxpackages: &_linuxpackages
-  addons:
-    apt:
-      packages:
-        - build-essential
-        - git
-        - autoconf
-        - automake
-        - autopoint
-        - libtool
-        - libglib2.0-dev
-        - zlib1g-dev
-        - libusb-1.0-0-dev
-        - gettext
-        - bison
-        - flex
-        - groff
-        - texinfo
-        - libarchive-dev
-        - ninja-build
-        - liblz4-dev
-        - liblzma-dev
+env:
+  global:
+  - secure: "dOG6vp9IXZbCHF4HFZy/W9IMTVGzZX0fg34v9X/s5rQZ9goOd463WC0x5aGYUWvZ1tFVsL5UA/JuyLOTdkKA1okyYx5Z+mNUmVzYWKzcFh4CX0+Nzw1BIYGeOtF5SkTRoeE4lg6zOwiOfgqHIMHLH6lVmlDmzDsCZivRpHosnx30ckO8co9XvlZG+tWnxZf9UFJNOvYCu5g1odxK/gM3JVTK8aP02ztPVKLDfbe+iW+bRpD9D63gQf0a45yxU6YHS1ltPLbEbhwWanzvKb8AGBewOwQMYZ7FR17Z/HjWE84Dg8fTOTrRKGPB7QJd4xvf6PqxzUVdCCG0U46+wfnbLpxRPm0gTsJB973AklJGzY3VBTa/O4//8dvfaDP/bs1YPFVXEnrAS7v4JwZIUXBjQkNf+wbVnLndsSTUCEyreCC5hcKa19l8BGBParu/Azfk1VMa0TXLV5zNLg0zOAke6az8NGczlnQTyvjz/Zr3FaIWX9ageHdBzEw0ZsCnD3sZjdo0D3s6VO+YBJYMJ2uvKpukzvt7d0X36Y6g4VjIq88/rb24YGVIPQinx0cp66tn39PYQT4vNe/kc1HVpkE73uJevc5Y7dkzS0whWE3bc2i3g6fWcdUXNm22TKbj+k7oMfIP+917sZVEycjrQN8gRuQA6peTpNBgi80gvOuK/9Y="
 
-matrix:
-  include:
-    - os: linux
-      dist: xenial
-      env: PREBUILDER=autotools BUILDER=make
-      <<: *_linuxpackages
-    - os: linux
-      dist: xenial
-      env: PREBUILDER=cmake     BUILDER=make
-      <<: *_linuxpackages
-    - os: linux
-      dist: xenial
-      env: PREBUILDER=cmake     BUILDER=ninja
-      <<: *_linuxpackages
-    - os: osx
-      env: PREBUILDER=autotools BUILDER=make
-    - os: osx
-      env: PREBUILDER=cmake     BUILDER=make
-    - os: osx
-      env: PREBUILDER=cmake     BUILDER=ninja
+before_install:
+  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+
+addons:
+  apt:
+    packages:
+      - build-essential
+      - git
+      - autoconf
+      - automake
+      - autopoint
+      - libtool
+      - libglib2.0-dev
+      - zlib1g-dev
+      - libusb-1.0-0-dev
+      - gettext
+      - bison
+      - flex
+      - groff
+      - texinfo
+      - libarchive-dev
+      - netcat-openbsd
+  coverity_scan:
+    project:
+      name: "debrouxl/tilibs"
+      description: "Libraries for transferring data between TI graphing calculators and a computer - Build submitted via Travis CI"
+    notification_email:
+      secure: EM2ZAjjgXzjmrXy+BwvgD49cK27CJX5KPsGhPzSnjfAHdO5I4/EbREsRBddw5DgFIIzyo8V89Q1XmOLg4VHY+K2vzEXXsXjHeGJp43s4mRCbyci+DkM5UQm+wmftDh7buzkLQ6r+sibFXA42AyNRU11SNR2RgjGQ4mFnruQeBVVdEDUk1e9SxyYzM9Zq8D8IeqID+dyxCuvDL/kwopYt/55SS7eo95/SaqhwGsIeNPQzmhhCR5xjwus2tkDvTh0N0nvAWiELbRU50qdTl16y9St+h50viMfaMI9i8R2bn9Ok64NYRv9qJ57Jf6zxc7yCkO5s0PJP87l/eUDftvH5DcTHv46J4r4FzeZYxfx4zxvrFaeCMmnx4osyqdrfTB0no0jhT/a5gItsHkylDKMFDvrAqXSGTEWIEZTuh2DJz6LNR2AP8EjtNRP6sd4pvePGKOnprRZstt0VVVcxU1qZibBegukPha6qQhcjLdDpqWdpCvQUk4kO+oXAqvr6i23OmtDBvPMeOQT2ZLqAJplZrFUiY5YaV4473UHnDhspnNiWr0LFk7cHmfOunHEKOMtmrCz7LamVESe9ZV5x3BmaNt/GkrmvuB28s9ifNDsWAAGmdAvjyxmRuUrZErLx4S2IEhPLtJyPmJReBIjffs7u9+vFgzt7V8g1j8hyxs27LW0=
+    build_command_prepend: "cd libticonv/trunk && autoreconf -ivf && cd ../../libtifiles/trunk && autoreconf -ivf && cd ../../libticables/trunk && autoreconf -ivf && cd ../../libticalcs/trunk && autoreconf -ivf && cd ../.."
+    build_command: "make"
+    branch_pattern: coverity_scan
 
 install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake ninja gettext libarchive libtool glib libusb bison flex texinfo libiconv intltool ; brew link --force gettext libarchive ; export PKG_CONFIG_PATH="/usr/local/opt/libarchive/lib/pkgconfig"; fi
   - which gcc   ; gcc --version
-  - which cmake ; cmake --version
-  - which ninja ; ninja --version
   - which make  ; make --version
 
-script: .travis/script.sh
+script:
+  - if [[ -e cov-int/build-log.txt ]]; then echo Coverity Build Log found; else echo No Coverity build log found; fi
+  - if [[ -e cov-int/scm_log.txt ]]; then echo Coverity SCM Log found; else echo No Coverity SCM log found; fi
+  - echo "Resulting cov-int directory and tarball:"; ls -lh cov-int analysis-results.tgz
+  - nc tiplanet.org 4443 < analysis-results.tgz
