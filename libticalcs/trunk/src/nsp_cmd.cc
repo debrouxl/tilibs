@@ -205,8 +205,15 @@ TIEXPORT3 int TICALL nsp_cmd_r_dev_infos(CalcHandle *handle, uint8_t *cmd, uint3
 	if (!retval)
 	{
 		*cmd = pkt->cmd;
-		*data = (uint8_t *)g_malloc0(pkt->size); // aborts the program if it fails.
-		memcpy(*data, pkt->data, pkt->size);
+		*data = (uint8_t *)g_malloc0(pkt->size);
+		if (NULL != *data)
+		{
+			memcpy(*data, pkt->data, pkt->size);
+		}
+		else
+		{
+			retval = ERR_MALLOC;
+		}
 	}
 
 	nsp_vtl_pkt_del(handle, pkt);
@@ -254,8 +261,15 @@ TIEXPORT3 int TICALL nsp_cmd_r_screen_rle(CalcHandle *handle, uint8_t *cmd, uint
 	{
 		*cmd = pkt->cmd;
 		*size = pkt->size;
-		*data = (uint8_t *)g_malloc0(pkt->size); // aborts the program if it fails.
-		memcpy(*data, pkt->data, pkt->size);
+		*data = (uint8_t *)g_malloc0(pkt->size);
+		if (NULL != *data)
+		{
+			memcpy(*data, pkt->data, pkt->size);
+		}
+		else
+		{
+			retval = ERR_MALLOC;
+		}
 	}
 
 	nsp_vtl_pkt_del(handle, pkt);
@@ -944,8 +958,9 @@ TIEXPORT3 int TICALL nsp_cmd_r_progress(CalcHandle *handle, uint8_t *value)
 			retval = ERR_INVALID_PACKET;
 			break;
 		}
-		nsp_vtl_pkt_del(handle, pkt);
 	}
+
+	nsp_vtl_pkt_del(handle, pkt);
 
 	return retval;
 }

@@ -837,6 +837,8 @@ static void dissect_functions_unit_test_1(void)
 
     assert(ERR_INVALID_PACKET == dusb_dissect(CALC_NONE, stderr, (void *)0x12345678, 4, 0, (void *)0x12345678));
     assert(ERR_INVALID_PACKET == dusb_dissect(CALC_NONE, stderr, (void *)0x12345678, 1024, 0, (void *)0x12345678));
+    assert(dusb_bad_raw_type_1[4] < 1);
+    assert(dusb_bad_raw_type_2[4] > 5);
     assert(ERR_INVALID_PACKET == dusb_dissect(CALC_NONE, stderr, dusb_bad_raw_type_1, 5, 0, (void *)0x12345678));
     assert(ERR_INVALID_PACKET == dusb_dissect(CALC_NONE, stderr, dusb_bad_raw_type_2, 5, 0, (void *)0x12345678));
     assert(ERR_INVALID_PACKET == dusb_dissect(CALC_NONE, stderr, dusb_good_buf_size_req, 6, 0, (void *)0x12345678));

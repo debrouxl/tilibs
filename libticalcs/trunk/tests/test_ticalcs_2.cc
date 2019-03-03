@@ -1025,6 +1025,7 @@ static int dusb_set_param_id(CalcHandle * h)
 	ret = scanf("%i", &param_id);
 	if (ret < 1)
 	{
+		dusb_cp_free_data(data);
 		return 0;
 	}
 
@@ -1033,6 +1034,7 @@ static int dusb_set_param_id(CalcHandle * h)
 	ret = scanf("%4096[^\x04]", buffer);
 	if (ret < 1)
 	{
+		dusb_cp_free_data(data);
 		return 0;
 	}
 
@@ -1052,6 +1054,7 @@ static int dusb_set_param_id(CalcHandle * h)
 	}
 	else
 	{
+		dusb_cp_free_data(data);
 		printf("Failed to build raw data, not sent\n");
 	}
 

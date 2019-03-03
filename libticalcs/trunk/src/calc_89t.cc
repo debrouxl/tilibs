@@ -220,6 +220,11 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				ve->folder[0] = 0;
 
 				folder = dirlist_create_append_node(ve, vars);
+				if (!folder)
+				{
+					ret = ERR_MALLOC;
+					break;
+				}
 			}
 			else
 			{
@@ -244,12 +249,15 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				ve->attr,
 				ve->size);
 	*/
-			u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name, -1);
-			u2 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-			ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Parsing %s/%s"), u1, u2);
-			ticonv_utf8_free(u2);
-			ticonv_utf8_free(u1);
-			ticalcs_update_label(handle);
+			if (NULL != folder)
+			{
+				u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name, -1);
+				u2 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+				ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Parsing %s/%s"), u1, u2);
+				ticonv_utf8_free(u2);
+				ticonv_utf8_free(u1);
+				ticalcs_update_label(handle);
+			}
 		}
 	}
 

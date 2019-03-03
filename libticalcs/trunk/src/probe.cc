@@ -44,8 +44,8 @@
 */
 static int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
 {
-	uint8_t host, cmd;
-	uint16_t length;
+	uint8_t host = 0, cmd = 0;
+	uint16_t length = 0;
 	uint8_t buffer[5];
 	int ret;
 
@@ -256,8 +256,8 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
  **/
 static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 {
-	uint8_t host, cmd;
-	uint16_t status;
+	uint8_t host = 0, cmd = 0;
+	uint16_t status = 1;
 	uint8_t buffer[256];
 	int i, ret;
 
