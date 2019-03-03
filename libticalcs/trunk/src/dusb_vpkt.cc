@@ -98,16 +98,19 @@ TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uin
 
 	if (ticalcs_validate_handle(handle))
 	{
-		//GList * vtl_pkt_list;
+		vtl = (DUSBVirtualPacket *)g_malloc0(sizeof(DUSBVirtualPacket));
 
-		vtl = (DUSBVirtualPacket *)g_malloc0(sizeof(DUSBVirtualPacket)); // aborts the program if it fails.
+		if (NULL != vtl)
+		{
+			//GList * vtl_pkt_list;
 
-		vtl->size = size;
-		vtl->type = type;
-		vtl->data = data;
+			vtl->size = size;
+			vtl->type = type;
+			vtl->data = data;
 
-		//vtl_pkt_list = g_list_append((GList *)(handle->priv.dusb_vtl_pkt_list), vtl);
-		//handle->priv.dusb_vtl_pkt_list = (void *)vtl_pkt_list;
+			//vtl_pkt_list = g_list_append((GList *)(handle->priv.dusb_vtl_pkt_list), vtl);
+			//handle->priv.dusb_vtl_pkt_list = (void *)vtl_pkt_list;
+		}
 	}
 	else
 	{

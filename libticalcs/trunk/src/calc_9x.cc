@@ -336,6 +336,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		return ret;
 	}
 
+	// First step: list of folders, and FlashApps on some OS versions.
 	for (j = 4; j < (int)block_size;)
 	{
 		VarEntry *fe = tifiles_ve_create();
@@ -361,13 +362,14 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			node = dirlist_create_append_node(fe, vars);
 			if (!node)
 			{
+				tifiles_ve_delete(fe);
 				break;
 			}
 		}
-		else if (fe->type == TI89_APPL)
+		else /*if (fe->type == TI89_APPL)*/
 		{
-			// AMS<2.08 returns FLASH apps
-			continue;
+			// AMS < 2.08 returns FlashApps; also, get rid of all other types.
+			tifiles_ve_delete(fe);
 		}
 	}
 
@@ -858,6 +860,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	content->model = handle->model;
 	ve = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
+	ve->data = NULL;
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 	ticonv_varname_to_utf8_sn(handle->model, varname, handle->updat->text, sizeof(handle->updat->text), vr->type);
@@ -911,6 +914,11 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 				}
 			}
 		}
+	}
+
+	if (ret)
+	{
+		tifiles_ve_delete(ve);
 	}
 
 	return ret;

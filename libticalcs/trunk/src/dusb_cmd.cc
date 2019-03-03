@@ -129,7 +129,7 @@ TIEXPORT3 const char* TICALL dusb_cmd_param_type2name(uint16_t id)
 
 TIEXPORT3 DUSBCalcParam* TICALL dusb_cp_new(CalcHandle * handle, uint16_t id, uint16_t size)
 {
-	return dusb_cp_new_ex(handle, id, size, (uint8_t *)g_malloc0(size)); // aborts the program if it fails.
+	return dusb_cp_new_ex(handle, id, size, (uint8_t *)g_malloc0(size));
 }
 
 TIEXPORT3 DUSBCalcParam* TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data)
@@ -138,16 +138,19 @@ TIEXPORT3 DUSBCalcParam* TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id,
 
 	if (ticalcs_validate_handle(handle))
 	{
-		//GList * cpca_list;
+		cp = (DUSBCalcParam *)g_malloc0(sizeof(DUSBCalcParam));
 
-		cp = (DUSBCalcParam *)g_malloc0(sizeof(DUSBCalcParam)); // aborts the program if it fails.
+		if (NULL != cp)
+		{
+			//GList * cpca_list;
 
-		cp->id = id;
-		cp->size = size;
-		cp->data = data;
+			cp->id = id;
+			cp->size = size;
+			cp->data = data;
 
-		//cpca_list = g_list_append((GList *)(handle->priv.dusb_cpca_list), cp);
-		//handle->priv.dusb_cpca_list = (void *)cpca_list;
+			//cpca_list = g_list_append((GList *)(handle->priv.dusb_cpca_list), cp);
+			//handle->priv.dusb_cpca_list = (void *)cpca_list;
+		}
 	}
 	else
 	{
@@ -201,7 +204,7 @@ TIEXPORT3 DUSBCalcParam ** TICALL dusb_cp_new_array(CalcHandle * handle, unsigne
 
 	if (ticalcs_validate_handle(handle))
 	{
-		array = (DUSBCalcParam **)g_malloc0((size+1) * sizeof(DUSBCalcParam *)); // aborts the program if it fails.
+		array = (DUSBCalcParam **)g_malloc0((size+1) * sizeof(DUSBCalcParam *));
 	}
 	else
 	{
@@ -244,11 +247,18 @@ TIEXPORT3 DUSBCalcParam * TICALL dusb_cp_realloc_data(DUSBCalcParam* cp, uint16_
 	if (cp != NULL)
 	{
 		uint8_t * data = (uint8_t *)g_realloc(cp->data, size);
-		if (size > cp->size)
+		if (NULL != data)
 		{
-			memset(data + cp->size, 0x00, size - cp->size);
+			if (size > cp->size)
+			{
+				memset(data + cp->size, 0x00, size - cp->size);
+			}
+			cp->data = data;
 		}
-		cp->data = data;
+		else
+		{
+			return NULL;
+		}
 	}
 
 	return cp;
@@ -263,7 +273,7 @@ TIEXPORT3 void TICALL dusb_cp_free_data(void * data)
 
 TIEXPORT3 DUSBCalcAttr* TICALL dusb_ca_new(CalcHandle * handle, uint16_t id, uint16_t size)
 {
-	return dusb_ca_new_ex(handle, id, size, (uint8_t *)g_malloc0(size)); // aborts the program if it fails.
+	return dusb_ca_new_ex(handle, id, size, (uint8_t *)g_malloc0(size));
 }
 
 TIEXPORT3 DUSBCalcAttr* TICALL dusb_ca_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data)
@@ -272,16 +282,19 @@ TIEXPORT3 DUSBCalcAttr* TICALL dusb_ca_new_ex(CalcHandle * handle, uint16_t id, 
 
 	if (ticalcs_validate_handle(handle))
 	{
-		//GList * cpca_list;
+		ca = (DUSBCalcAttr *)g_malloc0(sizeof(DUSBCalcAttr));
 
-		ca = (DUSBCalcAttr *)g_malloc0(sizeof(DUSBCalcAttr)); // aborts the program if it fails.
+		if (NULL != ca)
+		{
+			//GList * cpca_list;
 
-		ca->id = id;
-		ca->size = size;
-		ca->data = data;
+			ca->id = id;
+			ca->size = size;
+			ca->data = data;
 
-		//cpca_list = g_list_append((GList *)(handle->priv.dusb_cpca_list), ca);
-		//handle->priv.dusb_cpca_list = (void *)cpca_list;
+			//cpca_list = g_list_append((GList *)(handle->priv.dusb_cpca_list), ca);
+			//handle->priv.dusb_cpca_list = (void *)cpca_list;
+		}
 	}
 	else
 	{
@@ -335,7 +348,7 @@ TIEXPORT3 DUSBCalcAttr ** TICALL dusb_ca_new_array(CalcHandle * handle, unsigned
 
 	if (ticalcs_validate_handle(handle))
 	{
-		array = (DUSBCalcAttr **)g_malloc0((size+1) * sizeof(DUSBCalcAttr *)); // aborts the program if it fails.
+		array = (DUSBCalcAttr **)g_malloc0((size+1) * sizeof(DUSBCalcAttr *));
 	}
 	else
 	{
@@ -378,11 +391,18 @@ TIEXPORT3 DUSBCalcParam * TICALL dusb_ca_realloc_data(DUSBCalcParam* ca, uint16_
 	if (ca != NULL)
 	{
 		uint8_t * data = (uint8_t *)g_realloc(ca->data, size);
-		if (size > ca->size)
+		if (NULL != data)
 		{
-			memset(data + ca->size, 0x00, size - ca->size);
+			if (size > ca->size)
+			{
+				memset(data + ca->size, 0x00, size - ca->size);
+			}
+			ca->data = data;
 		}
-		ca->data = data;
+		else
+		{
+			return NULL;
+		}
 	}
 
 	return ca;
