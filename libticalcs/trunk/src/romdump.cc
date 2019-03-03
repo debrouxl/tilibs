@@ -233,7 +233,7 @@ static int rom_send_RDY(CalcHandle* handle)
 
 static int rom_recv_RDY(CalcHandle* handle)
 {
-	uint16_t cmd, len;
+	uint16_t cmd = 0, len = 0;
 	int ret;
 
 	ret = recv_pkt(handle, &cmd, &len, NULL);
@@ -250,7 +250,7 @@ static int rom_send_EXIT(CalcHandle* handle)
 
 static int rom_recv_EXIT(CalcHandle* handle)
 {
-	uint16_t cmd, len;
+	uint16_t cmd = 0, len = 0;
 	int ret;
 
 	ret = recv_pkt(handle, &cmd, &len, NULL);
@@ -267,7 +267,7 @@ static int rom_send_SIZE(CalcHandle* handle)
 
 static int rom_recv_SIZE(CalcHandle* handle, uint32_t* size)
 {
-	uint16_t cmd, len;
+	uint16_t cmd = 0, len = 0;
 	int ret;
 
 	ret = recv_pkt(handle, &cmd, &len, (uint8_t *)size);
@@ -284,8 +284,7 @@ static int rom_send_DATA(CalcHandle* handle, uint32_t addr)
 
 static int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 {
-	uint16_t cmd;
-	uint16_t rpt;
+	uint16_t cmd = 0, rpt;
 	int ret;
 
 	ret = recv_pkt(handle, &cmd, size, data);

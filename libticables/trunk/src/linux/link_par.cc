@@ -83,6 +83,10 @@ static int par_open(CableHandle *h)
 	{
 		h->priv = GINT_TO_POINTER(fd);
 	}
+	else
+	{
+		close(fd);
+	}
 
 	return ret;
 }
