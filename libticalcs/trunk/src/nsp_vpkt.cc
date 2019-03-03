@@ -57,14 +57,17 @@ TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint3
 
 	if (ticalcs_validate_handle(handle))
 	{
-		//GList * vtl_pkt_list;
+		vtl = (NSPVirtualPacket *)g_malloc0(sizeof(NSPVirtualPacket));
 
-		vtl = (NSPVirtualPacket *)g_malloc0(sizeof(NSPVirtualPacket)); // aborts the program if it fails.
+		if (NULL != vtl)
+		{
+			//GList * vtl_pkt_list;
 
-		nsp_vtl_pkt_fill(vtl, size, src_addr, src_port, dst_addr, dst_port, cmd, data); // aborts the program if it fails.
+			nsp_vtl_pkt_fill(vtl, size, src_addr, src_port, dst_addr, dst_port, cmd, data);
 
-		//vtl_pkt_list = g_list_append((GList *)(handle->priv.nsp_vtl_pkt_list), vtl);
-		//handle->priv.nsp_vtl_pkt_list = (void *)vtl_pkt_list;
+			//vtl_pkt_list = g_list_append((GList *)(handle->priv.nsp_vtl_pkt_list), vtl);
+			//handle->priv.nsp_vtl_pkt_list = (void *)vtl_pkt_list;
+		}
 	}
 	else
 	{
@@ -127,13 +130,20 @@ TIEXPORT3 NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(NSPVirtualPacket* v
 		if (size + 1 > size)
 		{
 			uint8_t * data = (uint8_t *)g_realloc(vtl->data, size + 1);
-			if (size > vtl->size)
+			if (NULL != data)
 			{
-				// The previous time, vtl->size + 1 bytes were allocated and initialized.
-				// This time, we've allocated size + 1 bytes, so we need to initialize size - vtl->size extra bytes.
-				memset(data + vtl->size + 1, 0x00, size - vtl->size);
+				if (size > vtl->size)
+				{
+					// The previous time, vtl->size + 1 bytes were allocated and initialized.
+					// This time, we've allocated size + 1 bytes, so we need to initialize size - vtl->size extra bytes.
+					memset(data + vtl->size + 1, 0x00, size - vtl->size);
+				}
+				vtl->data = data;
 			}
-			vtl->data = data;
+			else
+			{
+				return NULL;
+			}
 		}
 		else
 		{

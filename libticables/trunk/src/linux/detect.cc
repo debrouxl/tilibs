@@ -55,12 +55,9 @@
 /*
   Returns mode string from mode value.
 */
-static const char *get_attributes(mode_t attrib)
+static const char *get_attributes(char s[13], mode_t attrib)
 {
-    static const char *i = " ---------- ";
-    static char s[13];
-
-    strcpy(s, i);
+    strcpy(s, " ---------- ");
 
     if (attrib & S_IRUSR)
         s[2] = 'r';
@@ -228,8 +225,9 @@ static int check_for_node_usability(const char *pathname)
 
     if(!stat(pathname, &st)) 
     {
+        char s[13];
         ticables_info(_("    permissions/user/group:%s%s %s"),
-                      get_attributes(st.st_mode),
+                      get_attributes(s, st.st_mode),
                       get_user_name(st.st_uid),
                       get_group_name(st.st_gid));
     } 

@@ -162,7 +162,7 @@ TIEXPORT1 int TICALL ticables_probing_do(int ***result, unsigned int timeout, Pr
 	if ((method & PROBE_FIRST) && found)
 	{
 		*result = array;
-		return found ? 0 : ERR_NO_CABLE;
+		return 0;
 	}
 
 	// look for DBUS devices (slower)
