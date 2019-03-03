@@ -615,9 +615,9 @@ TIEXPORT3 int TICALL ti73_send_SID(CalcHandle* handle, uint8_t * data)
 
 TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr, uint8_t * version)
 {
-	uint8_t host, cmd;
+	uint8_t host = 0, cmd = 0;
 	uint8_t *buffer;
-	uint16_t length;
+	uint16_t length = 0;
 	char trans[127];
 	int ret;
 
@@ -671,9 +671,9 @@ TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8
 
 TIEXPORT3 int TICALL ti82_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname)
 {
-	uint8_t host, cmd;
+	uint8_t host = 0, cmd = 0;
 	uint8_t *buffer;
-	uint16_t length;
+	uint16_t length = 0;
 	char trans[127];
 	int ret;
 
@@ -722,9 +722,9 @@ TIEXPORT3 int TICALL ti82_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8
 
 TIEXPORT3 int TICALL ti85_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname)
 {
-	uint8_t host, cmd;
+	uint8_t host = 0, cmd = 0;
 	uint8_t *buffer;
-	uint16_t length;
+	uint16_t length = 0;
 	char trans[127];
 	int ret;
 
@@ -784,9 +784,9 @@ TIEXPORT3 int TICALL ti85_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8
 /* FLASH (special var header: size, id, flag, offset, page) */
 TIEXPORT3 int TICALL ti73_recv_VAR2(CalcHandle* handle, uint16_t * length, uint8_t * type, char *name, uint16_t * offset, uint16_t * page)
 {
-	uint8_t host, cmd;
+	uint8_t host = 0, cmd = 0;
 	uint8_t *buffer;
-	uint16_t len;
+	uint16_t len = 0;
 	int ret;
 
 	VALIDATE_HANDLE(handle);
@@ -838,8 +838,8 @@ TIEXPORT3 int TICALL ti73_recv_VAR2(CalcHandle* handle, uint16_t * length, uint8
 
 TIEXPORT3 int TICALL tiz80_recv_CTS(CalcHandle* handle, uint16_t length)
 {
-	uint8_t host, cmd;
-	uint16_t len;
+	uint8_t host = 0, cmd = 0;
+	uint16_t len = 0;
 	uint8_t *buffer;
 	int ret;
 
@@ -873,8 +873,8 @@ TIEXPORT3 int TICALL tiz80_recv_CTS(CalcHandle* handle, uint16_t length)
 
 TIEXPORT3 int TICALL tiz80_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 {
-	uint8_t host, cmd;
-	uint16_t length;
+	uint8_t host = 0, cmd = 0;
+	uint16_t length = 0;
 	uint8_t *buffer;
 	int ret;
 
@@ -908,7 +908,7 @@ TIEXPORT3 int TICALL tiz80_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 
 static int tiz80_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data, uint8_t is_73)
 {
-	uint8_t host, cmd;
+	uint8_t host = 0, cmd = 0;
 	int ret;
 
 	VALIDATE_HANDLE(handle);
@@ -956,7 +956,7 @@ TIEXPORT3 int TICALL ti80_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_
 
 TIEXPORT3 int TICALL ti73_recv_SID(CalcHandle* handle, uint16_t * length, uint8_t * data)
 {
-	uint8_t host, cmd;
+	uint8_t host = 0, cmd = 0;
 	int ret;
 
 	ret = dbus_recv(handle, &host, &cmd, length, data);
@@ -987,8 +987,8 @@ TIEXPORT3 int TICALL ti73_recv_SID(CalcHandle* handle, uint16_t * length, uint8_
 */
 TIEXPORT3 int TICALL tiz80_recv_ACK(CalcHandle* handle, uint16_t * status)
 {
-	uint8_t host, cmd;
-	uint16_t length;
+	uint8_t host = 0, cmd = 0;
+	uint16_t length = 0;
 	uint8_t *buffer;
 	int ret;
 
@@ -1022,8 +1022,8 @@ TIEXPORT3 int TICALL tiz80_recv_ACK(CalcHandle* handle, uint16_t * status)
 
 TIEXPORT3 int TICALL ti82_recv_ERR(CalcHandle* handle, uint16_t * status)
 {
-	uint8_t host, cmd;
-	uint16_t sts;
+	uint8_t host = 0, cmd = 0;
+	uint16_t sts = 0;
 	int ret;
 
 	VALIDATE_HANDLE(handle);
@@ -1051,7 +1051,7 @@ TIEXPORT3 int TICALL ti82_recv_ERR(CalcHandle* handle, uint16_t * status)
 
 TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr, uint8_t * version)
 {
-	uint8_t host, cmd;
+	uint8_t host = 0, cmd = 0;
 	uint8_t *buffer;
 	char trans[127];
 	int ret;
@@ -1096,7 +1096,7 @@ TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8
 
 TIEXPORT3 int TICALL ti82_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname)
 {
-	uint8_t host, cmd;
+	uint8_t host = 0, cmd = 0;
 	uint8_t *buffer;
 	char trans[127];
 	int ret;
@@ -1131,7 +1131,7 @@ TIEXPORT3 int TICALL ti82_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8
 
 TIEXPORT3 int TICALL ti85_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname)
 {
-	uint8_t host, cmd;
+	uint8_t host = 0, cmd = 0;
 	uint8_t *buffer;
 	char trans[127];
 	uint8_t strl;

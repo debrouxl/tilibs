@@ -169,10 +169,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	int ret;
-	uint8_t *buffer = (uint8_t *)handle->buffer2;
-	uint8_t *data = NULL;
-
-	data = (uint8_t *)ticalcs_alloc_screen(65537U);
+	uint8_t *data = (uint8_t *)ticalcs_alloc_screen(65542U);
 	if (data == NULL)
 	{
 		return ERR_MALLOC;
@@ -214,7 +211,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 						while (1)
 						{
-							ret = RECV_XDP(handle, &pktsize, buffer);
+							ret = RECV_XDP(handle, &pktsize, (uint8_t *)handle->buffer2);
 							if (ret == ERR_EOT)
 							{
 								ret = SEND_ACK(handle);
@@ -225,7 +222,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 							if (*bitmap != NULL)
 							{
 								data = *bitmap;
-								memcpy(data + size, buffer, pktsize);
+								memcpy(data + size, handle->buffer2, pktsize);
 								size += pktsize;
 
 								ret = SEND_ACK(handle);
@@ -259,7 +256,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 	if (ret)
 	{
-		ticalcs_free_screen(*bitmap);
+		ticalcs_free_screen(data);
 		*bitmap = NULL;
 	}
 
@@ -805,7 +802,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos);
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
-	int ret;
+	int ret = 0;
 	FlashContent *ptr;
 	unsigned int i, j;
 	uint16_t size;

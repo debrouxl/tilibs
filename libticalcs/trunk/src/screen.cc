@@ -272,7 +272,7 @@ TIEXPORT3 int TICALL ticalcs_screen_convert_native_to_rgb888(CalcPixelFormat for
  */
 TIEXPORT3 int TICALL ticalcs_screen_nspire_rle_uncompress(CalcPixelFormat format, const uint8_t *src, uint32_t input_size, uint8_t * dst, uint32_t max_output_size)
 {
-	int ret;
+	int ret = 0;
 
 	VALIDATE_NONNULL(src);
 	VALIDATE_NONNULL(dst);
@@ -319,8 +319,6 @@ TIEXPORT3 int TICALL ticalcs_screen_nspire_rle_uncompress(CalcPixelFormat format
 					j += cnt;
 				}
 			}
-
-			ret = 0;
 		}
 		break;
 
@@ -370,8 +368,6 @@ TIEXPORT3 int TICALL ticalcs_screen_nspire_rle_uncompress(CalcPixelFormat format
 					j += cnt * 4;
 				}
 			}
-
-			ret = 0;
 		}
 		break;
 
