@@ -42,22 +42,23 @@ extern "C" {
 #define NSP_PORT_ECHO           0x4002
 #define NSP_PORT_ADDR_REQUEST   0x4003
 #define NSP_PORT_ADDR_ASSIGN    0x4003
-
 #define NSP_PORT_DEV_INFOS      0x4020
 #define NSP_PORT_SCREENSHOT     0x4021
+#define NSP_PORT_EVENT          0x4022
+#define NSP_PORT_SHUTDOWN       0x4023
 #define NSP_PORT_SCREEN_RLE     0x4024
-
+#define NSP_PORT_ACTIVITY       0x4041
 #define NSP_PORT_KEYPRESSES     0x4042
-
+#define NSP_PORT_RPC            0x4043
 #define NSP_PORT_LOGIN          0x4050
 #define NSP_PORT_MESSAGES       0x4051
-
+#define NSP_PORT_HUB_CONNECTION 0x4054
 #define NSP_PORT_FILE_MGMT      0x4060
 #define NSP_PORT_TIROBOT        0x4070
 #define NSP_PORT_OS_INSTALL     0x4080
 #define NSP_PORT_REMOTE_MGMT    0x4090
-
 #define NSP_PORT_DISCONNECT     0x40DE
+#define NSP_PORT_EXTECHO        0x5000
 
 // Functions
 
