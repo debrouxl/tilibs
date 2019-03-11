@@ -31,23 +31,25 @@ extern "C" {
 // Services IDs
 #define NSP_SID_NULL                    0x4001
 #define NSP_SID_ECHO                    0x4002
-
+#define NSP_SID_ADDR_REQUEST            0x4003
+#define NSP_SID_ADDR_ASSIGN             0x4003
 #define NSP_SID_DEV_INFOS               0x4020
 #define NSP_SID_SCREENSHOT              0x4021
+#define NSP_SID_EVENT                   0x4022
+#define NSP_SID_SHUTDOWN                0x4023
 #define NSP_SID_SCREEN_RLE              0x4024
-
+#define NSP_SID_ACTIVITY                0x4041
 #define NSP_SID_KEYPRESSES              0x4042
-
+#define NSP_SID_RPC                     0x4043
 #define NSP_SID_LOGIN                   0x4050
 #define NSP_SID_MESSAGES                0x4051
-
+#define NSP_SID_HUB_CONNECTION          0x4054
 #define NSP_SID_FILE_MGMT               0x4060
-
 #define NSP_SID_TIROBOT                 0x4070
-
 #define NSP_SID_OS_INSTALL              0x4080
-
 #define NSP_SID_REMOTE_MGMT             0x4090
+#define NSP_SID_DISCONNECT              0x40DE
+#define NSP_SID_EXTECHO                 0x5000
 
 // Errors
 #define NSP_ERR_OK                      0x00
