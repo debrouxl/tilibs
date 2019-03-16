@@ -536,6 +536,8 @@ TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *sr
 	case CALC_TI89T_USB:
 		return g_strdup(src);
 	case CALC_NSPIRE:
+	case CALC_NSPIRE_CRADLE:
+	case CALC_NSPIRE_CXII:
 		return g_strdup(src);
 	default:
 		return g_strdup("________");

@@ -197,6 +197,8 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
 			case CALC_TI84PT_USB: return ticonv_utf16_to_ti84pusb(utf16, ti); break;
 			case CALC_TI89T_USB: return ticonv_utf16_to_ti89tusb(utf16, ti); break;
 			case CALC_NSPIRE:
+			case CALC_NSPIRE_CRADLE:
+			case CALC_NSPIRE_CXII:
 			{
 				char *tmp = ticonv_utf16_to_utf8(utf16);
 				strcpy(ti, tmp);
@@ -299,6 +301,8 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
 			case CALC_TI84PT_USB: return ticonv_ti84pusb_to_utf16(ti, utf16); break;
 			case CALC_TI89T_USB: return ticonv_ti89tusb_to_utf16(ti, utf16); break;
 			case CALC_NSPIRE:
+			case CALC_NSPIRE_CRADLE:
+			case CALC_NSPIRE_CXII:
 			{
 				unsigned short *tmp = ticonv_utf8_to_utf16(ti);
 				memcpy(utf16, tmp, 2*ticonv_utf16_strlen(tmp));
@@ -1005,7 +1009,9 @@ TIEXPORT4 int TICALL ticonv_model_is_ti68k(CalcModel model)
 TIEXPORT4 int TICALL ticonv_model_is_tinspire(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
-	        &&*/ (model == CALC_NSPIRE));
+	        &&*/ ( model == CALC_NSPIRE
+	            || model == CALC_NSPIRE_CRADLE
+	            || model == CALC_NSPIRE_CXII));
 }
 
 /**
@@ -1053,7 +1059,9 @@ TIEXPORT4 int TICALL ticonv_model_has_usb_ioport(CalcModel model)
 	            || model == CALC_TI83PCE_USB
 	            || model == CALC_TI84PCE_USB
 	            || model == CALC_TI82A_USB
-	            || model == CALC_TI84PT_USB));
+	            || model == CALC_TI84PT_USB
+	            || model == CALC_NSPIRE_CRADLE
+	            || model == CALC_NSPIRE_CXII));
 }
 
 /**
@@ -1089,7 +1097,7 @@ TIEXPORT4 int TICALL ticonv_model_has_flash_memory(CalcModel model)
 TIEXPORT4 int TICALL ticonv_model_has_real_screen(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
-	        &&*/ 1); // All models currently handled by libti* have a real physical screen.
+	        &&*/ (model != CALC_NSPIRE_CRADLE));
 }
 
 /**
@@ -1138,5 +1146,6 @@ TIEXPORT4 int TICALL ticonv_model_has_color_screen(CalcModel model)
 	            || model == CALC_TI84PC
 	            || model == CALC_TI84PC_USB
 	            || model == CALC_TI83PCE_USB
-	            || model == CALC_TI84PCE_USB));
+	            || model == CALC_TI84PCE_USB
+	            || model == CALC_NSPIRE_CXII));
 }

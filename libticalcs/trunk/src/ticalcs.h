@@ -178,7 +178,7 @@ typedef enum
 	PRODUCT_ID_TI84P = 0x0A,
 	PRODUCT_ID_TI82A = 0x0B,
 	PRODUCT_ID_NSPIRE_CAS = 0x0C, // The Nspire CAS+ prototypes also uses 0x0C, but libti*/tilp do not handle their unique communication protocol.
-	PRODUCT_ID_LABCRADLE = 0x0D, // Included for completeness, not handled by libticalcs.
+	PRODUCT_ID_LABCRADLE = 0x0D,
 	PRODUCT_ID_NSPIRE_NONCAS = 0x0E,
 	PRODUCT_ID_NSPIRE_CX_CAS = 0x0F, // Yes, two completely different models use ID 0x0F.
 	PRODUCT_ID_TI84PCSE = 0x0F,
@@ -187,7 +187,11 @@ typedef enum
 	PRODUCT_ID_NSPIRE_CM_NONCAS = 0x12,
 	PRODUCT_ID_TI83PCE = 0x13, // These two similar models use the same ID as well.
 	PRODUCT_ID_TI84PCE = 0x13,
-	PRODUCT_ID_TI84PT = 0x1B
+	// No known calculators use 0x14-0x1A.
+	PRODUCT_ID_TI84PT = 0x1B,
+	PRODUCT_ID_NSPIRE_CXII_CAS = 0x1C,
+	PRODUCT_ID_NSPIRE_CXII_NONCAS = 0x1D,
+	PRODUCT_ID_NSPIRE_CXII_T = 0x1E
 } CalcProductIDs;
 
 /**
@@ -352,7 +356,7 @@ typedef struct
 /**
  * DUSBRawPacket:
  *
- * Raw packet for the DUSB / CARS (84+(SE), 89T) protocol.
+ * Raw packet for the DUSB / CARS (84+(SE), 89T) protocol, version with pre-allocated data.
  **/
 typedef struct
 {
@@ -361,6 +365,19 @@ typedef struct
 
 	uint8_t  data[1023]; ///< raw packet data
 } DUSBRawPacket;
+
+/**
+ * DUSBRawPacketA:
+ *
+ * Raw packet for the DUSB / CARS (84+(SE), 89T) protocol, version with externally allocated packet data.
+ **/
+typedef struct
+{
+	uint32_t size;       ///< raw packet size
+	uint8_t  type;       ///< raw packet type
+
+	uint8_t *data;       ///< raw packet data
+} DUSBRawPacketA;
 
 /**
  * DUSBVirtualPacket:
@@ -383,7 +400,7 @@ typedef struct
 /**
  * NSPRawPacket:
  *
- * Raw packet for the Nspire NavNet protocol.
+ * Raw packet for the Nspire NavNet protocol, version with pre-allocated packet data.
  **/
 typedef struct
 {
@@ -400,6 +417,27 @@ typedef struct
 
 	uint8_t   data[NSP_DATA_SIZE];
 } NSPRawPacket;
+
+/**
+ * NSPRawPacketA:
+ *
+ * Raw packet for the Nspire NavNet protocol, version with externally allocated packet data.
+ **/
+typedef struct
+{
+	uint16_t  unused;
+	uint16_t  src_addr;
+	uint16_t  src_port;
+	uint16_t  dst_addr;
+	uint16_t  dst_port;
+	uint16_t  data_sum;
+	uint8_t   data_size;
+	uint8_t   ack;
+	uint8_t   seq;
+	uint8_t   hdr_sum;
+
+	uint8_t * data;
+} NSPRawPacketA;
 
 /**
  * NSPVirtualPacket:
@@ -804,28 +842,9 @@ typedef struct
 		void * ptrval;
 		const void * cptrval;
 		DBUSPacket dbus_pkt;
-		struct
-		{
-			uint32_t  size;
-			uint8_t   type;
-
-			uint8_t * data;
-		} dusb_rpkt;
+		DUSBRawPacketA dusb_rpkt;
 		DUSBVirtualPacket dusb_vpkt;
-		struct
-		{
-			uint16_t  src_addr;
-			uint16_t  src_port;
-			uint16_t  dst_addr;
-			uint16_t  dst_port;
-			uint16_t  data_sum;
-			uint8_t   data_size;
-			uint8_t   ack;
-			uint8_t   seq;
-			uint8_t   hdr_sum;
-
-			uint8_t * data;
-		} nsp_rpkt;
+		NSPRawPacketA nsp_rpkt;
 		NSPVirtualPacket nsp_vpkt;
 		ROMDumpPacket romdump_pkt;
 		struct
