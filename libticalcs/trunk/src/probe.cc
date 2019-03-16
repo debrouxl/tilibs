@@ -627,12 +627,28 @@ TIEXPORT3 CalcModel TICALL ticalcs_device_info_to_model(const CableDeviceInfo *i
 		else if (info->family == CABLE_FAMILY_USB_NSPIRE)
 		{
 			// This cable family has a single corresponding calc model.
-			if (info->variant != CABLE_VARIANT_NSPIRE)
+			if (info->variant == CABLE_VARIANT_NSPIRE)
 			{
-				ticalcs_warning("Unexpected variant for Nspire USB cable");
+				model = CALC_NSPIRE;
 			}
-			model = CALC_NSPIRE;
+			else if (info->variant == CABLE_VARIANT_NSPIRE_CRADLE)
+			{
+				model = CALC_NSPIRE_CRADLE;
+			}
+			else
+			{
+				ticalcs_warning("Unexpected variant for Nspire (Cradle) USB cable");
+			}
 		}
+		/*else if (info->family == CABLE_FAMILY_USB_NSPIRE_CXII)
+		{
+			// This cable family has a single corresponding calc model.
+			if (info->variant != CABLE_VARIANT_NSPIRE_CXII)
+			{
+				ticalcs_warning("Unexpected variant for Nspire CX II USB cable");
+			}
+			model = CALC_NSPIRE_CXII;
+		}*/
 		else
 		{
 			ticalcs_critical("Unexpected cable family");

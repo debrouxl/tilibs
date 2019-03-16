@@ -95,12 +95,14 @@ typedef struct
 // list of known devices
 static usb_infos tigl_infos[] =
 {
-	{VID_TI, PID_TIGLUSB,  "TI-GRAPH LINK USB",           NULL},
-	{VID_TI, PID_TI84P,    "TI-84 Plus Hand-Held",        NULL},
-	{VID_TI, PID_TI89TM,   "TI-89 Titanium Hand-Held",    NULL},
-	{VID_TI, PID_TI84P_SE, "TI-84 Plus Silver Hand-Held", NULL},
-	{VID_TI, PID_NSPIRE,   "TI-Nspire Hand-Held",         NULL},
-	{0,      0,            NULL,                          NULL}
+	{VID_TI, PID_TIGLUSB,       "TI-GRAPH LINK USB",           NULL},
+	{VID_TI, PID_TI84P,         "TI-84 Plus Hand-Held",        NULL},
+	{VID_TI, PID_TI89TM,        "TI-89 Titanium Hand-Held",    NULL},
+	{VID_TI, PID_TI84P_SE,      "TI-84 Plus Silver Hand-Held", NULL},
+	{VID_TI, PID_NSPIRE,        "TI-Nspire Hand-Held",         NULL},
+	{VID_TI, PID_NSPIRE_CRADLE, "TI-Nspire Cradle",            NULL},
+	//{VID_TI, PID_NSPIRE_CXII,   "TI-Nspire CX II Hand-Held",   NULL},
+	{0,      0,                 NULL,                          NULL}
 };
 
 // list of devices found
@@ -115,7 +117,7 @@ typedef struct
 
 	USBCableInfo cable_info;
 	int      nBytesRead;
-	uint8_t  rBuf[64];
+	uint8_t  rBuf[512];
 	uint8_t* rBufPtr;
 	int      in_endpoint;
 	int      out_endpoint;
@@ -389,6 +391,11 @@ static int slv_open(CableHandle *h)
 	interface = &(interface_->altsetting[0]);
 	endpoint = &(interface->endpoint[0]);
 	max_ps = endpoint->wMaxPacketSize;
+	if (max_ps > sizeof(rBuf))
+	{
+		ticables_critical("Reducing max packet size to maximum supported by library, expect communication issues");
+		max_ps = sizeof(rBuf);
+	}
 
 	// Enumerate endpoints.
 	for (i = 0; i < interface->bNumEndpoints; i++)
@@ -503,7 +510,8 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
 		return ERR_WRITE_ERROR;
 	}
 
-	if (tigl_devices[h->address].pid == PID_NSPIRE && length % max_ps == 0)
+	// FIXME do Nspire CX II calculators also need this ?
+	if ((tigl_devices[h->address].pid == PID_NSPIRE || tigl_devices[h->address].pid == PID_NSPIRE_CRADLE) && length % max_ps == 0)
 	{
 		ticables_info("XXX triggering an extra bulk write");
 		ret = libusb_bulk_transfer(uHdl, uOutEnd, (unsigned char*)data, 0, &tmp, to);
@@ -624,7 +632,7 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 	int len = 0;
 	tiTIME clk;
 
-	/* Read up to 32/64 bytes and store them in a buffer for subsequent accesses */
+	/* Read up to max_ps bytes and store them in a buffer for subsequent accesses */
 	if (nBytesRead <= 0)
 	{
 		TO_START(clk);
@@ -690,7 +698,8 @@ static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
 
 	if (!ret && was_max_ps != 0 && nBytesRead == 0)
 	{
-		if (   tigl_devices[h->address].pid == PID_NSPIRE
+		// FIXME do Nspire CX II calculators also need this ?
+		if (   (tigl_devices[h->address].pid == PID_NSPIRE || tigl_devices[h->address].pid == PID_NSPIRE_CRADLE)
 		    || len == 0 && (   tigl_devices[h->address].pid == PID_TI89TM
 		                    || tigl_devices[h->address].pid == PID_TI84P
 		                    || tigl_devices[h->address].pid == PID_TI84P_SE
@@ -756,7 +765,9 @@ static int raw_probe(CableHandle *h)
 		if (tigl_devices[h->address].pid == PID_TI89TM ||
 		    tigl_devices[h->address].pid == PID_TI84P ||
 		    tigl_devices[h->address].pid == PID_TI84P_SE ||
-		    tigl_devices[h->address].pid == PID_NSPIRE)
+		    tigl_devices[h->address].pid == PID_NSPIRE ||
+		    tigl_devices[h->address].pid == PID_NSPIRE_CRADLE /*||
+		    tigl_devices[h->address].pid == PID_NSPIRE_CXII*/)
 		{
 			return 0;
 		}
