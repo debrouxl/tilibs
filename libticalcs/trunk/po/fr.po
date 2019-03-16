@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2019-10-12 16:46+0200\n"
+"POT-Creation-Date: 2019-10-12 16:51+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -253,6 +253,14 @@ msgstr "Listage du dossier dans <%s>...\n"
 #: src/calc_nsp.cc:1061
 msgid "Nspire thru DirectLink"
 msgstr "Nspire via DirectLink"
+
+#: src/calc_nsp.cc:1131
+msgid "Nspire cradle thru DirectLink"
+msgstr "Nspire cradle via DirectLink"
+
+#: src/calc_nsp.cc:1201
+msgid "Nspire CX II thru DirectLink"
+msgstr "Nspire CX II via DirectLink"
 
 #: src/calc_xx.cc:91
 msgid "Checking hand-held status:"
@@ -841,16 +849,16 @@ msgstr " Type de calculatrice: %s"
 msgid "Unknown pixel format %d\n"
 msgstr "Format de pixel %d inconnu\n"
 
-#: src/ticalcs.cc:238
+#: src/ticalcs.cc:250
 #, c-format
 msgid "ticalcs library version %s"
 msgstr "librairie ticalcs version %s"
 
-#: src/ticalcs.cc:542
+#: src/ticalcs.cc:554
 msgid "Link calc handle details:"
 msgstr "Détails du descripteur de calculatrice:"
 
-#: src/ticalcs.cc:543
+#: src/ticalcs.cc:555
 #, c-format
 msgid "  model   : %s"
 msgstr "  modèle  : %s"

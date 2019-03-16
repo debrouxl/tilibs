@@ -201,7 +201,7 @@ TIEXPORT2 int tifiles_file_read_regular(const char *filename, FileContent *conte
 	}
 	else
 #endif
-	if (content->model == CALC_NSPIRE)
+	if (ticonv_model_is_tinspire(content->model))
 	{
 		return tnsp_file_read_regular(filename, (FileContent *)content);
 	}
@@ -247,7 +247,7 @@ TIEXPORT2 int tifiles_file_write_regular(const char *filename, FileContent *cont
 	}
 	else
 #endif
-	if (content->model == CALC_NSPIRE)
+	if (ticonv_model_is_tinspire(content->model))
 	{
 		return tnsp_file_write_regular(filename, (FileContent *)content, real_fname);
 	}
@@ -292,7 +292,7 @@ TIEXPORT2 int TICALL tifiles_file_display_regular(FileContent *content)
 	}
 	else
 #endif
-	if (content->model == CALC_NSPIRE)
+	if (ticonv_model_is_tinspire(content->model))
 	{
 		tifiles_info("FileContent for TI-Nspire: %p", content);
 	}
@@ -718,7 +718,7 @@ TIEXPORT2 int tifiles_file_read_flash(const char *filename, FlashContent *conten
 	}
 	else
 #endif
-	if (content->model == CALC_NSPIRE)
+	if (ticonv_model_is_tinspire(content->model))
 	{
 		return tnsp_file_read_flash(filename, content);
 	}
