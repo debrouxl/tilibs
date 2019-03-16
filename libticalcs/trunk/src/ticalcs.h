@@ -159,38 +159,6 @@ typedef enum
 } CalcShellType;
 
 /**
- * CalcProductIDs:
- *
- * An enumeration which contains the product IDs used by TI graphing calculators:
- **/
-typedef enum
-{
-	PRODUCT_ID_NONE = 0x00,
-	PRODUCT_ID_TI92P = 0x01,
-	PRODUCT_ID_TI73 = 0x02,
-	PRODUCT_ID_TI89 = 0x03,
-	PRODUCT_ID_TI83P = 0x04,
-	// No known calculator uses 0x05
-	// No known calculator uses 0x06
-	// No known calculator uses 0x07
-	PRODUCT_ID_TIV200 = 0x08,
-	PRODUCT_ID_TI89T = 0x09,
-	PRODUCT_ID_TI84P = 0x0A,
-	PRODUCT_ID_TI82A = 0x0B,
-	PRODUCT_ID_NSPIRE_CAS = 0x0C, // The Nspire CAS+ prototypes also uses 0x0C, but libti*/tilp do not handle their unique communication protocol.
-	PRODUCT_ID_LABCRADLE = 0x0D, // Included for completeness, not handled by libticalcs.
-	PRODUCT_ID_NSPIRE_NONCAS = 0x0E,
-	PRODUCT_ID_NSPIRE_CX_CAS = 0x0F, // Yes, two completely different models use ID 0x0F.
-	PRODUCT_ID_TI84PCSE = 0x0F,
-	PRODUCT_ID_NSPIRE_CX_NONCAS = 0x10,
-	PRODUCT_ID_NSPIRE_CM_CAS = 0x11,
-	PRODUCT_ID_NSPIRE_CM_NONCAS = 0x12,
-	PRODUCT_ID_TI83PCE = 0x13, // These two similar models use the same ID as well.
-	PRODUCT_ID_TI84PCE = 0x13,
-	PRODUCT_ID_TI84PT = 0x1B
-} CalcProductIDs;
-
-/**
  * CalcOperations:
  *
  * An enumeration which contains the different supported operations:
@@ -377,7 +345,7 @@ typedef struct
 /**
  * DUSBRawPacket:
  *
- * Raw packet for the DUSB / CARS (84+(SE), 89T) protocol.
+ * Raw packet for the DUSB / CARS (84+(SE), 89T) protocol, version with pre-allocated data.
  **/
 typedef struct
 {
@@ -386,6 +354,19 @@ typedef struct
 
 	uint8_t  data[DUSB_DATA_SIZE]; ///< raw packet data
 } DUSBRawPacket;
+
+/**
+ * DUSBRawPacketA:
+ *
+ * Raw packet for the DUSB / CARS (84+(SE), 89T) protocol, version with externally allocated packet data.
+ **/
+typedef struct
+{
+	uint32_t size;       ///< raw packet size
+	uint8_t  type;       ///< raw packet type
+
+	uint8_t *data;       ///< raw packet data
+} DUSBRawPacketA;
 
 /**
  * DUSBVirtualPacket:
@@ -408,7 +389,7 @@ typedef struct
 /**
  * NSPRawPacket:
  *
- * Raw packet for the Nspire NavNet protocol.
+ * Raw packet for the Nspire NavNet protocol, version with pre-allocated packet data.
  **/
 typedef struct
 {
@@ -425,6 +406,27 @@ typedef struct
 
 	uint8_t   data[NSP_DATA_SIZE];
 } NSPRawPacket;
+
+/**
+ * NSPRawPacketA:
+ *
+ * Raw packet for the Nspire NavNet protocol, version with externally allocated packet data.
+ **/
+typedef struct
+{
+	uint16_t  unused;
+	uint16_t  src_addr;
+	uint16_t  src_port;
+	uint16_t  dst_addr;
+	uint16_t  dst_port;
+	uint16_t  data_sum;
+	uint8_t   data_size;
+	uint8_t   ack;
+	uint8_t   seq;
+	uint8_t   hdr_sum;
+
+	uint8_t * data;
+} NSPRawPacketA;
 
 /**
  * NSPVirtualPacket:
@@ -660,13 +662,7 @@ typedef struct
 } CalcInfos;
 
 /**
- * CalcFncts:
- * @model: link cable model (CalcModel).
- * @name: name of hand-held like "TI89"
- * @fullname: complete name of hand-held like "TI-89"
- * @description: description of hand-held like "TI89 calculator"
- * @features: supported operations (CalcOperations)
- * @counters: defines which CalcUpdate counters have to be refreshed (indexed by CalcFnctsIdx)
+ * CalcFnctPtrs:
  * @is_ready: check whether calculator is ready
  * @send_key: send key value
  * @execute: remotely execute a program or application
@@ -695,19 +691,11 @@ typedef struct
  * @send_all_vars_backup: send a fake backup (set of files and FlashApps)
  * @recv_all_vars_backup: request a fake backup (set of files and FlashApps)
  *
- * A structure used for handling a hand-held.
+ * A structure containing pointers to functions implementing the various operations (potentially) supported by a hand-held.
  * !!! This structure is for private use !!!
  **/
-struct _CalcFncts
+struct _CalcFnctPtrs
 {
-	const int		model;
-	const char*		name;
-	const char*		fullname;
-	const char*		description;
-	const int		features;
-	const CalcProductIDs	product_id;
-	const char*		counters[CALC_FNCT_LAST];
-
 	int		(*is_ready)		(CalcHandle*);
 
 	int		(*send_key)		(CalcHandle*, uint32_t);
@@ -753,6 +741,58 @@ struct _CalcFncts
 	int		(*send_all_vars_backup)	(CalcHandle*, FileContent*);
 	int		(*recv_all_vars_backup)	(CalcHandle*, FileContent*);
 
+};
+
+/**
+ * CalcFncts:
+ * @model: link cable model (CalcModel).
+ * @name: name of hand-held like "TI89"
+ * @fullname: complete name of hand-held like "TI-89"
+ * @description: description of hand-held like "TI89 calculator"
+ * @features: supported operations (CalcOperations)
+ * @counters: defines which CalcUpdate counters have to be refreshed (indexed by CalcFnctsIdx)
+ * @is_ready: check whether calculator is ready
+ * @send_key: send key value
+ * @execute: remotely execute a program or application
+ * @recv_screen: request a screendump
+ * @get_dirlist: request a listing of variables, folders (if any) and apps (if any)
+ * @send_backup: send a backup
+ * @recv_backup: request a backup
+ * @send_var: send a variable (silent mode)
+ * @recv_var: request a variable silent mode)
+ * @send_var_ns: send a variable (non-silent mode)
+ * @recv_var_ns: receive a variable (non-silent mode)
+ * @send_flash: send a FLASH app/os
+ * @recv_flash: request a FLASH app/os
+ * @recv_idlist: request hand-held IDLIST
+ * @dump_rom_1: dump the hand-held ROM: send dumper (if any)
+ * @dump_rom_2: dump the hand-held ROM: launch dumper
+ * @set_clock: set date/time
+ * @get_clock: get date/time
+ * @del_var: delete variable
+ * @new_fld: create new folder (if supported)
+ * @get_version: returns Boot code & OS version
+ * @send_cert: send certificate stuff
+ * @recv_cert: receive certificate stuff
+ * @rename_var: rename a variable
+ * @change_attr: change attributes of a variable
+ * @send_all_vars_backup: send a fake backup (set of files and FlashApps)
+ * @recv_all_vars_backup: request a fake backup (set of files and FlashApps)
+ *
+ * A structure used for handling a hand-held.
+ * !!! This structure is for private use !!!
+ **/
+struct _CalcFncts
+{
+	const int			model;
+	const char*			name;
+	const char*			fullname;
+	const char*			description;
+	const int			features;
+	const CalcProductIDs		product_id;
+	const char*			counters[CALC_FNCT_LAST];
+
+	const struct _CalcFnctPtrs	fncts;
 };
 
 /**
@@ -831,28 +871,9 @@ typedef struct
 		void * ptrval;
 		const void * cptrval;
 		DBUSPacket dbus_pkt;
-		struct
-		{
-			uint32_t  size;
-			uint8_t   type;
-
-			uint8_t * data;
-		} dusb_rpkt;
+		DUSBRawPacketA dusb_rpkt;
 		DUSBVirtualPacket dusb_vpkt;
-		struct
-		{
-			uint16_t  src_addr;
-			uint16_t  src_port;
-			uint16_t  dst_addr;
-			uint16_t  dst_port;
-			uint16_t  data_sum;
-			uint8_t   data_size;
-			uint8_t   ack;
-			uint8_t   seq;
-			uint8_t   hdr_sum;
-
-			uint8_t * data;
-		} nsp_rpkt;
+		NSPRawPacketA nsp_rpkt;
 		NSPVirtualPacket nsp_vpkt;
 		ROMDumpPacket romdump_pkt;
 		struct

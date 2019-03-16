@@ -87,9 +87,22 @@ const char *TICALL tifiles_vartype2string(CalcModel model, uint8_t data)
     return ti92p_byte2type(data);
   case CALC_V200:
     return v200_byte2type(data);
-  case CALC_NSPIRE:
-    return tixx_byte2type(NSP_CONST, NSP_MAXTYPES, data);
 #endif
+  case CALC_NSPIRE:
+  case CALC_NSPIRE_CRADLE:
+  case CALC_NSPIRE_CLICKPAD:
+  case CALC_NSPIRE_CLICKPAD_CAS:
+  case CALC_NSPIRE_TOUCHPAD:
+  case CALC_NSPIRE_TOUCHPAD_CAS:
+  case CALC_NSPIRE_CX:
+  case CALC_NSPIRE_CX_CAS:
+  case CALC_NSPIRE_CMC:
+  case CALC_NSPIRE_CMC_CAS:
+  case CALC_NSPIRE_CXII:
+  case CALC_NSPIRE_CXII_CAS:
+  case CALC_NSPIRE_CXIIT:
+  case CALC_NSPIRE_CXIIT_CAS:
+    return tixx_byte2type(NSP_CONST, NSP_MAXTYPES, data);
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
@@ -155,9 +168,22 @@ uint8_t TICALL tifiles_string2vartype(CalcModel model, const char *s)
     return ti92p_type2byte(s);
   case CALC_V200:
     return v200_type2byte(s);
-  case CALC_NSPIRE:
-    return tixx_type2byte(NSP_CONST, NSP_MAXTYPES, s);
 #endif
+  case CALC_NSPIRE:
+  case CALC_NSPIRE_CRADLE:
+  case CALC_NSPIRE_CLICKPAD:
+  case CALC_NSPIRE_CLICKPAD_CAS:
+  case CALC_NSPIRE_TOUCHPAD:
+  case CALC_NSPIRE_TOUCHPAD_CAS:
+  case CALC_NSPIRE_CX:
+  case CALC_NSPIRE_CX_CAS:
+  case CALC_NSPIRE_CMC:
+  case CALC_NSPIRE_CMC_CAS:
+  case CALC_NSPIRE_CXII:
+  case CALC_NSPIRE_CXII_CAS:
+  case CALC_NSPIRE_CXIIT:
+  case CALC_NSPIRE_CXIIT_CAS:
+    return tixx_type2byte(NSP_CONST, NSP_MAXTYPES, s);
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return 0;
@@ -217,9 +243,22 @@ const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
     return ti92p_byte2fext(data);
   case CALC_V200:
     return v200_byte2fext(data);
-  case CALC_NSPIRE:
-    return tixx_byte2fext(NSP_CONST, NSP_MAXTYPES, data, "tn?");
 #endif
+  case CALC_NSPIRE:
+  case CALC_NSPIRE_CRADLE:
+  case CALC_NSPIRE_CLICKPAD:
+  case CALC_NSPIRE_CLICKPAD_CAS:
+  case CALC_NSPIRE_TOUCHPAD:
+  case CALC_NSPIRE_TOUCHPAD_CAS:
+  case CALC_NSPIRE_CX:
+  case CALC_NSPIRE_CX_CAS:
+  case CALC_NSPIRE_CMC:
+  case CALC_NSPIRE_CMC_CAS:
+  case CALC_NSPIRE_CXII:
+  case CALC_NSPIRE_CXII_CAS:
+  case CALC_NSPIRE_CXIIT:
+  case CALC_NSPIRE_CXIIT_CAS:
+    return tixx_byte2fext(NSP_CONST, NSP_MAXTYPES, data, "tn?");
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
@@ -285,9 +324,22 @@ uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
     return ti92p_fext2byte(s);
   case CALC_V200:
     return v200_fext2byte(s);
-  case CALC_NSPIRE:
-    return tixx_fext2byte(NSP_CONST, NSP_MAXTYPES, s);
 #endif
+  case CALC_NSPIRE:
+  case CALC_NSPIRE_CRADLE:
+  case CALC_NSPIRE_CLICKPAD:
+  case CALC_NSPIRE_CLICKPAD_CAS:
+  case CALC_NSPIRE_TOUCHPAD:
+  case CALC_NSPIRE_TOUCHPAD_CAS:
+  case CALC_NSPIRE_CX:
+  case CALC_NSPIRE_CX_CAS:
+  case CALC_NSPIRE_CMC:
+  case CALC_NSPIRE_CMC_CAS:
+  case CALC_NSPIRE_CXII:
+  case CALC_NSPIRE_CXII_CAS:
+  case CALC_NSPIRE_CXIIT:
+  case CALC_NSPIRE_CXIIT_CAS:
+    return tixx_fext2byte(NSP_CONST, NSP_MAXTYPES, s);
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return 0;
@@ -348,9 +400,22 @@ const char *TICALL tifiles_vartype2type(CalcModel model, uint8_t vartype)
     return ti92p_byte2desc(vartype);
   case CALC_V200:
     return v200_byte2desc(vartype);
-  case CALC_NSPIRE:
-    return tixx_byte2desc(NSP_CONST, NSP_MAXTYPES, vartype);
 #endif
+  case CALC_NSPIRE:
+  case CALC_NSPIRE_CRADLE:
+  case CALC_NSPIRE_CLICKPAD:
+  case CALC_NSPIRE_CLICKPAD_CAS:
+  case CALC_NSPIRE_TOUCHPAD:
+  case CALC_NSPIRE_TOUCHPAD_CAS:
+  case CALC_NSPIRE_CX:
+  case CALC_NSPIRE_CX_CAS:
+  case CALC_NSPIRE_CMC:
+  case CALC_NSPIRE_CMC_CAS:
+  case CALC_NSPIRE_CXII:
+  case CALC_NSPIRE_CXII_CAS:
+  case CALC_NSPIRE_CXIIT:
+  case CALC_NSPIRE_CXIIT_CAS:
+    return tixx_byte2desc(NSP_CONST, NSP_MAXTYPES, vartype);
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
@@ -411,9 +476,22 @@ const char *TICALL tifiles_vartype2icon(CalcModel model, uint8_t vartype)
     return ti92p_byte2icon(vartype);
   case CALC_V200:
     return v200_byte2icon(vartype);
-  case CALC_NSPIRE:
-    return tixx_byte2icon(NSP_CONST, NSP_MAXTYPES, vartype);
 #endif
+  case CALC_NSPIRE:
+  case CALC_NSPIRE_CRADLE:
+  case CALC_NSPIRE_CLICKPAD:
+  case CALC_NSPIRE_CLICKPAD_CAS:
+  case CALC_NSPIRE_TOUCHPAD:
+  case CALC_NSPIRE_TOUCHPAD_CAS:
+  case CALC_NSPIRE_CX:
+  case CALC_NSPIRE_CX_CAS:
+  case CALC_NSPIRE_CMC:
+  case CALC_NSPIRE_CMC_CAS:
+  case CALC_NSPIRE_CXII:
+  case CALC_NSPIRE_CXII_CAS:
+  case CALC_NSPIRE_CXIIT:
+  case CALC_NSPIRE_CXIIT_CAS:
+    return tixx_byte2icon(NSP_CONST, NSP_MAXTYPES, vartype);
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
@@ -438,6 +516,7 @@ uint8_t TICALL tifiles_folder_type(CalcModel model)
   {
   case CALC_NONE:
     return -1;
+#ifndef DISABLE_TI8X
   case CALC_TI73:
     return TI73_DIR;
   case CALC_TI80:
@@ -460,6 +539,8 @@ uint8_t TICALL tifiles_folder_type(CalcModel model)
     return -1;
   case CALC_TI86:
     return TI86_DIR;
+#endif
+#ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
   case CALC_TI89T_USB:
@@ -470,7 +551,21 @@ uint8_t TICALL tifiles_folder_type(CalcModel model)
     return TI92p_DIR;
   case CALC_V200:
     return V200_DIR;
+#endif
   case CALC_NSPIRE:
+  case CALC_NSPIRE_CRADLE:
+  case CALC_NSPIRE_CLICKPAD:
+  case CALC_NSPIRE_CLICKPAD_CAS:
+  case CALC_NSPIRE_TOUCHPAD:
+  case CALC_NSPIRE_TOUCHPAD_CAS:
+  case CALC_NSPIRE_CX:
+  case CALC_NSPIRE_CX_CAS:
+  case CALC_NSPIRE_CMC:
+  case CALC_NSPIRE_CMC_CAS:
+  case CALC_NSPIRE_CXII:
+  case CALC_NSPIRE_CXII_CAS:
+  case CALC_NSPIRE_CXIIT:
+  case CALC_NSPIRE_CXIIT_CAS:
     return NSP_DIR;
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
@@ -494,6 +589,7 @@ uint8_t TICALL tifiles_flash_type(CalcModel model)
   {
   case CALC_NONE:
     return -1;
+#ifndef DISABLE_TI8X
   case CALC_TI73:
     return TI73_APPL;
   case CALC_TI80:
@@ -517,6 +613,8 @@ uint8_t TICALL tifiles_flash_type(CalcModel model)
     return -1;
   case CALC_TI86:
     return -1;
+#endif
+#ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
   case CALC_TI89T_USB:
@@ -527,7 +625,21 @@ uint8_t TICALL tifiles_flash_type(CalcModel model)
     return TI92p_APPL;
   case CALC_V200:
     return V200_APPL;
+#endif
   case CALC_NSPIRE:
+  case CALC_NSPIRE_CRADLE:
+  case CALC_NSPIRE_CLICKPAD:
+  case CALC_NSPIRE_CLICKPAD_CAS:
+  case CALC_NSPIRE_TOUCHPAD:
+  case CALC_NSPIRE_TOUCHPAD_CAS:
+  case CALC_NSPIRE_CX:
+  case CALC_NSPIRE_CX_CAS:
+  case CALC_NSPIRE_CMC:
+  case CALC_NSPIRE_CMC_CAS:
+  case CALC_NSPIRE_CXII:
+  case CALC_NSPIRE_CXII_CAS:
+  case CALC_NSPIRE_CXIIT:
+  case CALC_NSPIRE_CXIIT_CAS:
     return -1;
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
@@ -551,6 +663,7 @@ uint8_t TICALL tifiles_idlist_type(CalcModel model)
   {
   case CALC_NONE:
     return -1;
+#ifndef DISABLE_TI8X
   case CALC_TI73:
     return TI73_IDLIST;
   case CALC_TI80:
@@ -573,6 +686,8 @@ uint8_t TICALL tifiles_idlist_type(CalcModel model)
     return -1;
   case CALC_TI86:
     return -1;
+#endif
+#ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
   case CALC_TI89T_USB:
@@ -583,7 +698,21 @@ uint8_t TICALL tifiles_idlist_type(CalcModel model)
     return TI92p_IDLIST;
   case CALC_V200:
     return V200_IDLIST;
+#endif
   case CALC_NSPIRE:
+  case CALC_NSPIRE_CRADLE:
+  case CALC_NSPIRE_CLICKPAD:
+  case CALC_NSPIRE_CLICKPAD_CAS:
+  case CALC_NSPIRE_TOUCHPAD:
+  case CALC_NSPIRE_TOUCHPAD_CAS:
+  case CALC_NSPIRE_CX:
+  case CALC_NSPIRE_CX_CAS:
+  case CALC_NSPIRE_CMC:
+  case CALC_NSPIRE_CMC_CAS:
+  case CALC_NSPIRE_CXII:
+  case CALC_NSPIRE_CXII_CAS:
+  case CALC_NSPIRE_CXIIT:
+  case CALC_NSPIRE_CXIIT_CAS:
     return -1;
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
@@ -612,6 +741,7 @@ const char *TICALL tifiles_calctype2signature(CalcModel model)
   {
   case CALC_NONE:
     return "**TI??**";
+#ifndef DISABLE_TI8X
   case CALC_TI73:
     return "**TI73**";
   case CALC_TI82:
@@ -632,6 +762,8 @@ const char *TICALL tifiles_calctype2signature(CalcModel model)
     return "**TI85**";
   case CALC_TI86:
     return "**TI86**";
+#endif
+#ifndef DISABLE_TI9X
   case CALC_TI89:
     return "**TI89**";
   case CALC_TI89T:
@@ -642,7 +774,21 @@ const char *TICALL tifiles_calctype2signature(CalcModel model)
   case CALC_TI92P:
   case CALC_V200:
     return "**TI92P*";
+#endif
   case CALC_NSPIRE:
+  case CALC_NSPIRE_CRADLE:
+  case CALC_NSPIRE_CLICKPAD:
+  case CALC_NSPIRE_CLICKPAD_CAS:
+  case CALC_NSPIRE_TOUCHPAD:
+  case CALC_NSPIRE_TOUCHPAD_CAS:
+  case CALC_NSPIRE_CX:
+  case CALC_NSPIRE_CX_CAS:
+  case CALC_NSPIRE_CMC:
+  case CALC_NSPIRE_CMC_CAS:
+  case CALC_NSPIRE_CXII:
+  case CALC_NSPIRE_CXII_CAS:
+  case CALC_NSPIRE_CXIIT:
+  case CALC_NSPIRE_CXIIT_CAS:
     return "";
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);

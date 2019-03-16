@@ -87,12 +87,14 @@ typedef enum
  **/
 typedef enum
 {
-	PID_UNKNOWN		= 0,
-	PID_TIGLUSB     = 0xE001,
-	PID_TI89TM		= 0xE004,
-	PID_TI84P		= 0xE003,
-	PID_TI84P_SE    = 0xE008,
-	PID_NSPIRE      = 0xE012,
+	PID_UNKNOWN       = 0,
+	PID_TIGLUSB       = 0xE001,
+	PID_TI89TM        = 0xE004,
+	PID_TI84P         = 0xE003,
+	PID_TI84P_SE      = 0xE008,
+	PID_NSPIRE        = 0xE012,
+	PID_NSPIRE_CRADLE = 0xE01C,
+	PID_NSPIRE_CXII   = 0xE022,
 } UsbPid;
 
 /**
@@ -158,10 +160,12 @@ typedef enum
 typedef enum
 {
 	CABLE_FAMILY_UNKNOWN = 0,
-	CABLE_FAMILY_DBUS,          /* Traditional TI link protocol */
-	CABLE_FAMILY_USB_TI8X,      /* Direct USB for TI-84 Plus, CSE, CE, etc. */
-	CABLE_FAMILY_USB_TI9X,      /* Direct USB for TI-89 Titanium */
-	CABLE_FAMILY_USB_NSPIRE     /* Direct USB for TI-Nspire series */
+	CABLE_FAMILY_DBUS,              /* Traditional TI link protocol */
+	CABLE_FAMILY_USB_TI8X,          /* Direct USB for TI-84 Plus, CSE, CE, etc. */
+	CABLE_FAMILY_USB_TI9X,          /* Direct USB for TI-89 Titanium */
+	CABLE_FAMILY_USB_NSPIRE,        /* Direct USB for TI-Nspire series */
+	CABLE_FAMILY_USB_NSPIRE_CRADLE, /* Direct USB for TI-Nspire Lab / DataTracker Cradle */
+	CABLE_FAMILY_USB_NSPIRE_CXII    /* Direct USB for TI-Nspire CX II */
 } CableFamily;
 
 /**
@@ -173,16 +177,22 @@ typedef enum
 typedef enum
 {
 	CABLE_VARIANT_UNKNOWN = 0,
-	CABLE_VARIANT_TIGLUSB,      /* CABLE_FAMILY_DBUS */
-	CABLE_VARIANT_TI84P,        /* CABLE_FAMILY_USB_TI8X */
-	CABLE_VARIANT_TI84PSE,      /* CABLE_FAMILY_USB_TI8X */
-	CABLE_VARIANT_TI84PCSE,     /* CABLE_FAMILY_USB_TI8X */
-	CABLE_VARIANT_TI84PCE,      /* CABLE_FAMILY_USB_TI8X */
-	CABLE_VARIANT_TI83PCE,      /* CABLE_FAMILY_USB_TI8X */
-	CABLE_VARIANT_TI82A,        /* CABLE_FAMILY_USB_TI8X */
-	CABLE_VARIANT_TI89TM,       /* CABLE_FAMILY_USB_TI9X */
-	CABLE_VARIANT_NSPIRE,       /* CABLE_FAMILY_USB_NSPIRE */
-	CABLE_VARIANT_TI84PT        /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_TIGLUSB,            /* CABLE_FAMILY_DBUS */
+	CABLE_VARIANT_TI84P,              /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_TI84PSE,            /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_TI84PCSE,           /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_TI84PCE,            /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_TI83PCE,            /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_TI82A,              /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_TI89TM,             /* CABLE_FAMILY_USB_TI9X */
+// For Nspire Clickpad / Touchpad / CM-C / CX I calculators, CAS vs. non-CAS is all that we can hope to detect at the USB level.
+// That's not even reliable, e.g. some OS versions for the Nspire Clickpad CAS fail to present them as CAS.
+	CABLE_VARIANT_NSPIRE,             /* CABLE_FAMILY_USB_NSPIRE */
+	CABLE_VARIANT_TI84PT,             /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_NSPIRE_CAS,         /* CABLE_FAMILY_USB_NSPIRE */
+	CABLE_VARIANT_NSPIRE_CRADLE,      /* CABLE_FAMILY_USB_NSPIRE_CRADLE */
+// The CX II series doesn't seem to make it possible to distinguish its four members (three product IDs and OS versions) at the USB level.
+	CABLE_VARIANT_NSPIRE_CXII        /* CABLE_FAMILY_USB_NSPIRE_CXII */
 } CableVariant;
 
 /**
@@ -216,7 +226,7 @@ typedef struct
 	tiTIME	stop;
 } DataRate;
 
-typedef struct _CableFncts	 CableFncts;
+typedef struct _CableFncts   CableFncts;
 typedef struct _CableHandle  CableHandle;
 
 /**
@@ -381,7 +391,7 @@ struct _CableHandle
 	CableFncts*		cable;
 	DataRate		rate;
 
-	// TODO for next gen struct {
+	// TODO for next gen: struct {
 	void*			priv;
 	void*			priv2;
 	void*			priv3;

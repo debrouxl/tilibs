@@ -342,7 +342,6 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 		{
 			VarEntry *fe;
 			GNode *node;
-			char *ext;
 			uint32_t varsize;
 			uint8_t vartype;
 
@@ -370,23 +369,24 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 			fe->type = vartype;
 			fe->attr = ATTRB_NONE;
 
-			ext = tifiles_fext_get(varname);
-			// Just a sanity check
-			if (ext)
+			// We might have to remove some extensions.
+			if (fe->type == NSP_TNS)
 			{
-				// Did the file name have any non-empty extension ?
-				if (*ext)
+				char * ext = tifiles_fext_get(varname);
+				// Just a sanity check
+				if (ext)
 				{
-					// Do we know about this file type ?
-					if (fe->type < NSP_MAXTYPES)
+					// Did the file name have any non-empty extension ?
+					if (*ext)
 					{
 						// Then we can remove the exension.
 						*(ext-1) = '\0';
 					}
-					// else don't remove the extension.
+					// else there is no extension to remove.
 				}
 				// else there is no extension to remove.
 			}
+			// else don't remove the extension.
 			ticalcs_strlcpy(fe->name, varname, sizeof(fe->name));
 
 			node = dirlist_create_append_node(fe, vars);
@@ -427,7 +427,7 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 				uint8_t vartype = ((VarEntry *)(folder->data))->type;
 
 				// Don't recurse into regular files (type 0, TNS or e.g. themes.csv on OS 3.0+).
-				if (vartype == 0)
+				if (vartype == NSP_TNS)
 				{
 					ticalcs_info(_("Not enumerating documents in %s because it's not a folder\n"), ((VarEntry *)(folder->data))->name);
 					continue;
@@ -949,7 +949,11 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			break;
 		}
 
-		infos->model = CALC_NSPIRE;
+		if (size < 110)
+		{
+			ret = ERR_INVALID_PACKET;
+			break;
+		}
 
 		infos->flash_free = (  (((uint64_t)data[ 0]) << 56)
 		                     | (((uint64_t)data[ 1]) << 48)
@@ -1036,6 +1040,60 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		strncpy(infos->product_id, (char*)(data + 82), 28);
 		infos_mask |= INFOS_PRODUCT_ID;
 
+		infos->model = CALC_NONE;
+		if (infos->product_id[0] == '0')
+		{
+			if (infos->product_id[1] == 'C')
+			{
+				infos->model = CALC_NSPIRE_TOUCHPAD_CAS; // Could also be CALC_NSPIRE_CLICKPAD_CAS.
+			}
+			else if (infos->product_id[1] == 'D')
+			{
+				infos->model = CALC_NSPIRE_CRADLE;
+			}
+			else if (infos->product_id[1] == 'E')
+			{
+				infos->model = CALC_NSPIRE_TOUCHPAD; // Could also be CALC_NSPIRE_CLICKPAD.
+			}
+			else if (infos->product_id[1] == 'F')
+			{
+				infos->model = CALC_NSPIRE_CX_CAS;
+			}
+		}
+		else if (infos->product_id[1] == '1')
+		{
+			if (infos->product_id[1] == '0')
+			{
+				infos->model = CALC_NSPIRE_CX;
+			}
+			else if (infos->product_id[1] == '1')
+			{
+				infos->model = CALC_NSPIRE_CMC_CAS;
+			}
+			else if (infos->product_id[1] == '2')
+			{
+				infos->model = CALC_NSPIRE_CMC;
+			}
+			else if (infos->product_id[1] == 'C')
+			{
+				infos->model = CALC_NSPIRE_CXII_CAS;
+			}
+			else if (infos->product_id[1] == 'D')
+			{
+				infos->model = CALC_NSPIRE_CXII;
+			}
+			else if (infos->product_id[1] == 'E')
+			{
+				infos->model = CALC_NSPIRE_CXIIT;
+			}
+		}
+
+		if (infos->model == CALC_NONE)
+		{
+			ticalcs_warning("Unknown Nspire product ID %c%c - setting generic model", infos->product_id[0], infos->product_id[1]);
+			infos->model = CALC_NSPIRE;
+		}
+
 		infos->mask = (InfosMask)infos_mask;
 
 		g_free(data);
@@ -1080,72 +1138,264 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	return ret;
 }
 
+#define CALC_NSP_COMMON_COUNTERS \
+{ \
+	"",     /* is_ready */ \
+	"",     /* send_key */ \
+	"",     /* execute */ \
+	"1P",   /* recv_screen */ \
+	"1L",   /* get_dirlist */ \
+	"",     /* get_memfree */ \
+	"",     /* send_backup */ \
+	"",     /* recv_backup */ \
+	"2P1L", /* send_var */ \
+	"1P1L", /* recv_var */ \
+	"2P1L", /* send_var_ns */ \
+	"1P1L", /* recv_var_ns */ \
+	"2P1L", /* send_app */ \
+	"2P1L", /* recv_app */ \
+	"2P",   /* send_os */ \
+	"1L",   /* recv_idlist */ \
+	"2P",   /* dump_rom_1 */ \
+	"2P",   /* dump_rom_2 */ \
+	"",     /* set_clock */ \
+	"",     /* get_clock */ \
+	"1L",   /* del_var */ \
+	"1L",   /* new_folder */ \
+	"",     /* get_version */ \
+	"1L",   /* send_cert */ \
+	"1L",   /* recv_cert */ \
+	"",     /* rename */ \
+	"",     /* chattr */ \
+	"2P1L", /* send_all_vars_backup */ \
+	"2P1L"  /* recv_all_vars_backup */ \
+}
+
+#define CALC_NSP_COMMON_FPTRS \
+{ \
+	&is_ready, \
+	&send_key, \
+	&noop_execute, \
+	&recv_screen, \
+	&get_dirlist, \
+	&get_memfree, \
+	&noop_send_backup, \
+	&noop_recv_backup, \
+	&send_var, \
+	&recv_var, \
+	&noop_send_var_ns, \
+	&noop_recv_var_ns, \
+	&noop_send_flash, \
+	&noop_recv_flash, \
+	&send_os, \
+	&recv_idlist, \
+	&dump_rom_1, \
+	&dump_rom_2, \
+	&noop_set_clock, \
+	&noop_get_clock, \
+	&del_var, \
+	&new_folder, \
+	&get_version, \
+	&noop_send_cert, \
+	&noop_recv_cert, \
+	&rename_var, \
+	&noop_change_attr, \
+	&noop_send_all_vars_backup, \
+	&tixx_recv_all_vars_backup \
+}
+
 extern const CalcFncts calc_nsp = 
 {
 	CALC_NSPIRE,
-	"Nspire",
+	"Nspire (generic)",
 	"Nspire handheld",
 	N_("Nspire thru DirectLink"),
 	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
 	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
 	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
 	PRODUCT_ID_NSPIRE_CAS, // FIXME the Nspire series spans multiple product IDs.
-	{"",     /* is_ready */
-	 "",     /* send_key */
-	 "",     /* execute */
-	 "1P",   /* recv_screen */
-	 "1L",   /* get_dirlist */
-	 "",     /* get_memfree */
-	 "",     /* send_backup */
-	 "",     /* recv_backup */
-	 "2P1L", /* send_var */
-	 "1P1L", /* recv_var */
-	 "2P1L", /* send_var_ns */
-	 "1P1L", /* recv_var_ns */
-	 "2P1L", /* send_app */
-	 "2P1L", /* recv_app */
-	 "2P",   /* send_os */
-	 "1L",   /* recv_idlist */
-	 "2P",   /* dump_rom_1 */
-	 "2P",   /* dump_rom_2 */
-	 "",     /* set_clock */
-	 "",     /* get_clock */
-	 "1L",   /* del_var */
-	 "1L",   /* new_folder */
-	 "",     /* get_version */
-	 "1L",   /* send_cert */
-	 "1L",   /* recv_cert */
-	 "",     /* rename */
-	 "",     /* chattr */
-	 "2P1L", /* send_all_vars_backup */
-	 "2P1L"  /* recv_all_vars_backup */ },
-	&is_ready,
-	&send_key,
-	&noop_execute,
-	&recv_screen,
-	&get_dirlist,
-	&get_memfree,
-	&noop_send_backup,
-	&noop_recv_backup,
-	&send_var,
-	&recv_var,
-	&noop_send_var_ns,
-	&noop_recv_var_ns,
-	&noop_send_flash,
-	&noop_recv_flash,
-	&send_os,
-	&recv_idlist,
-	&dump_rom_1,
-	&dump_rom_2,
-	&noop_set_clock,
-	&noop_get_clock,
-	&del_var,
-	&new_folder,
-	&get_version,
-	&noop_send_cert,
-	&noop_recv_cert,
-	&rename_var,
-	&noop_change_attr,
-	&noop_send_all_vars_backup,
-	&tixx_recv_all_vars_backup,
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
+};
+
+extern const CalcFncts calc_nsp_cradle = 
+{
+	CALC_NSPIRE_CRADLE,
+	"Nspire Cradle",
+	"Nspire Cradle",
+	N_("Nspire Cradle thru DirectLink"),
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_LABCRADLE,
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
+};
+
+extern const CalcFncts calc_nsp_clickpad = 
+{
+	CALC_NSPIRE_CLICKPAD,
+	"Nspire Clickpad",
+	"Nspire Clickpad handheld",
+	N_("Nspire Clickpad thru DirectLink"),
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_NSPIRE,
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
+};
+
+extern const CalcFncts calc_nsp_clickpad_cas = 
+{
+	CALC_NSPIRE_CLICKPAD_CAS,
+	"Nspire Clickpad CAS",
+	"Nspire Clickpad CAS handheld",
+	N_("Nspire Clickpad CAS thru DirectLink"),
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_NSPIRE_CAS,
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
+};
+
+extern const CalcFncts calc_nsp_touchpad = 
+{
+	CALC_NSPIRE_TOUCHPAD,
+	"Nspire Touchpad",
+	"Nspire Touchpad handheld",
+	N_("Nspire Touchpad thru DirectLink"),
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_NSPIRE,
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
+};
+
+extern const CalcFncts calc_nsp_touchpad_cas = 
+{
+	CALC_NSPIRE_TOUCHPAD_CAS,
+	"Nspire Touchpad CAS",
+	"Nspire Touchpad CAS handheld",
+	N_("Nspire Touchpad CAS thru DirectLink"),
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_NSPIRE_CAS,
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
+};
+
+extern const CalcFncts calc_nsp_cx = 
+{
+	CALC_NSPIRE_CX,
+	"Nspire CX",
+	"Nspire CX handheld",
+	N_("Nspire CX thru DirectLink"),
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_NSPIRE_CX,
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
+};
+
+extern const CalcFncts calc_nsp_cx_cas = 
+{
+	CALC_NSPIRE_CX_CAS,
+	"Nspire CX CAS",
+	"Nspire CX CAS handheld",
+	N_("Nspire CX CAS thru DirectLink"),
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_NSPIRE_CX_CAS,
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
+};
+
+extern const CalcFncts calc_nsp_cmc = 
+{
+	CALC_NSPIRE_CMC,
+	"Nspire CM-C",
+	"Nspire CM-C handheld",
+	N_("Nspire CM-C thru DirectLink"),
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_NSPIRE_CMC,
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
+};
+
+extern const CalcFncts calc_nsp_cmc_cas = 
+{
+	CALC_NSPIRE_CMC_CAS,
+	"Nspire CM-C CAS",
+	"Nspire CM-C CAS handheld",
+	N_("Nspire CM-C CAS thru DirectLink"),
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_NSPIRE_CMC_CAS,
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
+};
+
+extern const CalcFncts calc_nsp_cxii = 
+{
+	CALC_NSPIRE_CXII,
+	"Nspire CX II",
+	"Nspire CX II handheld",
+	N_("Nspire CX II thru DirectLink"),
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_NSPIRE_CXII,
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
+};
+
+extern const CalcFncts calc_nsp_cxii_cas = 
+{
+	CALC_NSPIRE_CXII_CAS,
+	"Nspire CX II CAS",
+	"Nspire CX II CAS handheld",
+	N_("Nspire CX II CAS thru DirectLink"),
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_NSPIRE_CXII_CAS,
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
+};
+
+extern const CalcFncts calc_nsp_cxiit = 
+{
+	CALC_NSPIRE_CXIIT,
+	"Nspire CX II-T",
+	"Nspire CX II-T handheld",
+	N_("Nspire CX II-T thru DirectLink"),
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_NSPIRE_CXIIT,
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
+};
+
+extern const CalcFncts calc_nsp_cxiit_cas = 
+{
+	CALC_NSPIRE_CXIIT_CAS,
+	"Nspire CX II-T CAS",
+	"Nspire CX II-T CAS handheld",
+	N_("Nspire CX II-T CAS thru DirectLink"),
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_NSPIRE_CXII_CAS, // The CX II CAS and the CX II-T CAS use the same product ID.
+	CALC_NSP_COMMON_COUNTERS,
+	CALC_NSP_COMMON_FPTRS
 };

@@ -60,6 +60,19 @@ const char * TICALL ticonv_model_to_string(CalcModel model)
 	case CALC_TI84PCE_USB: return "TI84+CE USB";
 	case CALC_TI82A_USB: return "TI82A USB";
 	case CALC_TI84PT_USB: return "TI84+T USB";
+	case CALC_NSPIRE_CRADLE: return "Nspire Cradle";
+	case CALC_NSPIRE_CLICKPAD: return "Nspire Clickpad";
+	case CALC_NSPIRE_CLICKPAD_CAS: return "Nspire Clickpad CAS";
+	case CALC_NSPIRE_TOUCHPAD: return "Nspire Touchpad";
+	case CALC_NSPIRE_TOUCHPAD_CAS: return "Nspire Touchpad CAS";
+	case CALC_NSPIRE_CX: return "Nspire CX";
+	case CALC_NSPIRE_CX_CAS: return "Nspire CX CAS";
+	case CALC_NSPIRE_CMC: return "Nspire CM-C";
+	case CALC_NSPIRE_CMC_CAS: return "Nspire CM-C CAS";
+	case CALC_NSPIRE_CXII: return "Nspire CX II";
+	case CALC_NSPIRE_CXII_CAS: return "Nspire CX II CAS";
+	case CALC_NSPIRE_CXIIT: return "Nspire CX II-T";
+	case CALC_NSPIRE_CXIIT_CAS: return "Nspire CX II-T CAS";
 	default: return "unknown";
 	}
 }
@@ -153,10 +166,10 @@ CalcModel TICALL ticonv_string_to_model(const char *str)
 		         || !g_ascii_strcasecmp(str, "89T USB")
 		        )
 			return CALC_TI89T_USB;
-		else if (   !g_ascii_strncasecmp(str, "TI-Nspire", 9)
-		         || !g_ascii_strncasecmp(str, "TI Nspire", 9)
-		         || !g_ascii_strncasecmp(str, "Nspire", 6)
-		         || !g_ascii_strncasecmp(str, "Nsp", 3)
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire")
+		         || !g_ascii_strcasecmp(str, "TI Nspire")
+		         || !g_ascii_strcasecmp(str, "Nspire")
+		         || !g_ascii_strcasecmp(str, "Nsp")
 		        )
 			return CALC_NSPIRE;
 		else if (   !g_ascii_strcasecmp(str, "TI-80")
@@ -224,6 +237,125 @@ CalcModel TICALL ticonv_string_to_model(const char *str)
 		         || !g_ascii_strcasecmp(str, "84PT")
 		        )
 			return CALC_TI84PT_USB;
+		else if (   !g_ascii_strcasecmp(str, "Nspire Cradle")
+		         || !g_ascii_strcasecmp(str, "NspireCradle")
+		         || !g_ascii_strcasecmp(str, "NspCradle")
+		        )
+			return CALC_NSPIRE_CRADLE;
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire Clickpad")
+		         || !g_ascii_strcasecmp(str, "TI Nspire Clickpad")
+		         || !g_ascii_strcasecmp(str, "Nspire Clickpad")
+		         || !g_ascii_strcasecmp(str, "NspireClickpad")
+		         || !g_ascii_strcasecmp(str, "Clickpad")
+		        )
+			return CALC_NSPIRE_CLICKPAD;
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire Clickpad CAS")
+		         || !g_ascii_strcasecmp(str, "TI Nspire Clickpad CAS")
+		         || !g_ascii_strcasecmp(str, "Nspire Clickpad CAS")
+		         || !g_ascii_strcasecmp(str, "NspireClickpadCAS")
+		         || !g_ascii_strcasecmp(str, "Clickpad CAS")
+		         || !g_ascii_strcasecmp(str, "ClickpadCAS")
+		        )
+			return CALC_NSPIRE_CLICKPAD_CAS;
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire Touchpad")
+		         || !g_ascii_strcasecmp(str, "TI Nspire Touchpad")
+		         || !g_ascii_strcasecmp(str, "Nspire Touchpad")
+		         || !g_ascii_strcasecmp(str, "NspireTouchpad")
+		         || !g_ascii_strcasecmp(str, "Touchpad")
+		        )
+			return CALC_NSPIRE_TOUCHPAD;
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire Touchpad CAS")
+		         || !g_ascii_strcasecmp(str, "TI Nspire Touchpad CAS")
+		         || !g_ascii_strcasecmp(str, "Nspire Touchpad CAS")
+		         || !g_ascii_strcasecmp(str, "NspireTouchpadCAS")
+		         || !g_ascii_strcasecmp(str, "Touchpad CAS")
+		         || !g_ascii_strcasecmp(str, "TouchpadCAS")
+		        )
+			return CALC_NSPIRE_TOUCHPAD_CAS;
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire CX")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CX")
+		         || !g_ascii_strcasecmp(str, "Nspire CX")
+		         || !g_ascii_strcasecmp(str, "NspireCX")
+		         || !g_ascii_strcasecmp(str, "CX")
+		        )
+			return CALC_NSPIRE_CX;
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire CX CAS")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CX CAS")
+		         || !g_ascii_strcasecmp(str, "Nspire CX CAS")
+		         || !g_ascii_strcasecmp(str, "NspireCXCAS")
+		         || !g_ascii_strcasecmp(str, "CX CAS")
+		         || !g_ascii_strcasecmp(str, "CXCAS")
+		        )
+			return CALC_NSPIRE_CX_CAS;
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire CM-C")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CM-C")
+		         || !g_ascii_strcasecmp(str, "Nspire CM-C")
+		         || !g_ascii_strcasecmp(str, "NspireCMC")
+		         || !g_ascii_strcasecmp(str, "CM-C")
+		         || !g_ascii_strcasecmp(str, "CMC")
+		        )
+			return CALC_NSPIRE_CMC;
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire CM-C CAS")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CM-C CAS")
+		         || !g_ascii_strcasecmp(str, "Nspire CM-C CAS")
+		         || !g_ascii_strcasecmp(str, "NspireCMCCAS")
+		         || !g_ascii_strcasecmp(str, "CM-C CAS")
+		         || !g_ascii_strcasecmp(str, "CM-CCAS")
+		         || !g_ascii_strcasecmp(str, "CMCCAS")
+		        )
+			return CALC_NSPIRE_CMC_CAS;
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire CX II")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CX II")
+		         || !g_ascii_strcasecmp(str, "TI-Nspire CXII")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CXII")
+		         || !g_ascii_strcasecmp(str, "Nspire CX II")
+		         || !g_ascii_strcasecmp(str, "Nspire CXII")
+		         || !g_ascii_strcasecmp(str, "NspireCXII")
+		         || !g_ascii_strcasecmp(str, "CX II")
+		         || !g_ascii_strcasecmp(str, "CXII")
+		        )
+			return CALC_NSPIRE_CXII;
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire CX II CAS")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CX II CAS")
+		         || !g_ascii_strcasecmp(str, "TI-Nspire CXII CAS")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CXII CAS")
+		         || !g_ascii_strcasecmp(str, "TI-Nspire CXIICAS")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CXIICAS")
+		         || !g_ascii_strcasecmp(str, "Nspire CX II CAS")
+		         || !g_ascii_strcasecmp(str, "Nspire CXII CAS")
+		         || !g_ascii_strcasecmp(str, "Nspire CXIICAS")
+		         || !g_ascii_strcasecmp(str, "NspireCXIICAS")
+		         || !g_ascii_strcasecmp(str, "CX II CAS")
+		         || !g_ascii_strcasecmp(str, "CXII CAS")
+		         || !g_ascii_strcasecmp(str, "CXIICAS")
+		        )
+			return CALC_NSPIRE_CXII_CAS;
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire CX II-T")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CX II-T")
+		         || !g_ascii_strcasecmp(str, "TI-Nspire CXII-T")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CXII-T")
+		         || !g_ascii_strcasecmp(str, "Nspire CX II-T")
+		         || !g_ascii_strcasecmp(str, "Nspire CXII-T")
+		         || !g_ascii_strcasecmp(str, "NspireCXIIT")
+		         || !g_ascii_strcasecmp(str, "CX II-T")
+		         || !g_ascii_strcasecmp(str, "CXIIT")
+		        )
+			return CALC_NSPIRE_CXIIT;
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire CX II-T CAS")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CX II-T CAS")
+		         || !g_ascii_strcasecmp(str, "TI-Nspire CXIIT CAS")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CXIIT CAS")
+		         || !g_ascii_strcasecmp(str, "TI-Nspire CXIITCAS")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CXIITCAS")
+		         || !g_ascii_strcasecmp(str, "Nspire CX II-T CAS")
+		         || !g_ascii_strcasecmp(str, "Nspire CXIIT CAS")
+		         || !g_ascii_strcasecmp(str, "Nspire CXIITCAS")
+		         || !g_ascii_strcasecmp(str, "NspireCXIITCAS")
+		         || !g_ascii_strcasecmp(str, "CX II-T CAS")
+		         || !g_ascii_strcasecmp(str, "CXIIT CAS")
+		         || !g_ascii_strcasecmp(str, "CXIITCAS")
+		        )
+			return CALC_NSPIRE_CXIIT_CAS;
 	}
 
 	return CALC_NONE;

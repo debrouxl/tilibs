@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.3.6\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-09-13 22:35+0200\n"
+"POT-Creation-Date: 2023-09-13 22:39+0200\n"
 "PO-Revision-Date: 2019-10-29 13:55+0100\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
 "Language-Team: <debian-l10n-german@lists.debian.org>\n"
@@ -616,37 +616,37 @@ msgstr "TiEmu"
 msgid "Virtual link for TiEmu"
 msgstr "Virtueller Link für TiEmu"
 
-#: src/linux/link_usb1.cc:213
+#: src/linux/link_usb1.cc:215
 #, c-format
 msgid " found %s on #%i, version <%x.%02x>\n"
 msgstr " %s on #%i, version <%x.%02x> gefunden\n"
 
-#: src/linux/link_usb1.cc:240 src/linux/link_usb.cc:380
+#: src/linux/link_usb1.cc:242 src/linux/link_usb.cc:382
 msgid "no devices found!\n"
 msgstr "kein Gerät gefunden!\n"
 
-#: src/linux/link_usb1.cc:878 src/linux/link_usb.cc:1148
+#: src/linux/link_usb1.cc:893 src/linux/link_usb.cc:1163
 msgid "SilverLink"
 msgstr "SilverLink"
 
-#: src/linux/link_usb1.cc:879 src/linux/link_usb.cc:1149
+#: src/linux/link_usb1.cc:894 src/linux/link_usb.cc:1164
 msgid "SilverLink (TI-GRAPH LINK USB) cable"
 msgstr "SilverLink (TI-GRAPH LINK USB) Kabel"
 
-#: src/linux/link_usb1.cc:895 src/linux/link_usb.cc:1165
+#: src/linux/link_usb1.cc:910 src/linux/link_usb.cc:1180
 msgid "DirectLink"
 msgstr "DirectLink"
 
-#: src/linux/link_usb1.cc:896 src/linux/link_usb.cc:1166
+#: src/linux/link_usb1.cc:911 src/linux/link_usb.cc:1181
 msgid "DirectLink (DIRECT USB) cable"
 msgstr "DirectLink- (DIRECT USB) Kabel"
 
-#: src/linux/link_usb.cc:364
+#: src/linux/link_usb.cc:366
 #, c-format
 msgid "usb_find_busses (%s).\n"
 msgstr "usb_find_busses (%s).\n"
 
-#: src/linux/link_usb.cc:372
+#: src/linux/link_usb.cc:374
 #, c-format
 msgid "usb_find_devices (%s).\n"
 msgstr "usb_find_devices (%s).\n"
