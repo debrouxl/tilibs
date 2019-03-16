@@ -23,6 +23,8 @@
 #  include <config.h>
 #endif
 
+#define __STDC_FORMAT_MACROS
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -114,6 +116,45 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_TI84PT_USB
 	&calc_84pt_usb,
 #endif
+#ifndef NO_NSPIRE_CRADLE
+	&calc_nsp_cradle,
+#endif
+#ifndef NO_NSPIRE_CLICKPAD
+	&calc_nsp_clickpad,
+#endif
+#ifndef NO_NSPIRE_CLICKPAD_CAS
+	&calc_nsp_clickpad_cas,
+#endif
+#ifndef NO_NSPIRE_TOUCHPAD
+	&calc_nsp_touchpad,
+#endif
+#ifndef NO_NSPIRE_TOUCHPAD_CAS
+	&calc_nsp_touchpad_cas,
+#endif
+#ifndef NO_NSPIRE_CX
+	&calc_nsp_cx,
+#endif
+#ifndef NO_NSPIRE_CX_CAS
+	&calc_nsp_cx_cas,
+#endif
+#ifndef NO_NSPIRE_CMC
+	&calc_nsp_cmc,
+#endif
+#ifndef NO_NSPIRE_CMC_CAS
+	&calc_nsp_cmc_cas,
+#endif
+#ifndef NO_NSPIRE_CXII
+	&calc_nsp_cxii,
+#endif
+#ifndef NO_NSPIRE_CXII_CAS
+	&calc_nsp_cxii_cas,
+#endif
+#ifndef NO_NSPIRE_CXIIT
+	&calc_nsp_cxiit,
+#endif
+#ifndef NO_NSPIRE_CXIIT_CAS
+	&calc_nsp_cxiit_cas,
+#endif
 	NULL
 };
 
@@ -184,6 +225,45 @@ static const uint64_t supported_calcs =
 #endif
 #ifndef NO_TI84PT_USB
 	| (UINT64_C(1) << CALC_TI84PT_USB)
+#endif
+#ifndef NO_NSPIRE_CRADLE
+	| (UINT64_C(1) << CALC_NSPIRE_CRADLE)
+#endif
+#ifndef NO_NSPIRE_CLICKPAD
+	| (UINT64_C(1) << CALC_NSPIRE_CLICKPAD)
+#endif
+#ifndef NO_NSPIRE_CLICKPAD_CAS
+	| (UINT64_C(1) << CALC_NSPIRE_CLICKPAD_CAS)
+#endif
+#ifndef NO_NSPIRE_TOUCHPAD
+	| (UINT64_C(1) << CALC_NSPIRE_TOUCHPAD)
+#endif
+#ifndef NO_NSPIRE_TOUCHPAD_CAS
+	| (UINT64_C(1) << CALC_NSPIRE_TOUCHPAD_CAS)
+#endif
+#ifndef NO_NSPIRE_CX
+	| (UINT64_C(1) << CALC_NSPIRE_CX)
+#endif
+#ifndef NO_NSPIRE_CX_CAS
+	| (UINT64_C(1) << CALC_NSPIRE_CX_CAS)
+#endif
+#ifndef NO_NSPIRE_CMC
+	| (UINT64_C(1) << CALC_NSPIRE_CMC)
+#endif
+#ifndef NO_NSPIRE_CMC_CAS
+	| (UINT64_C(1) << CALC_NSPIRE_CMC_CAS)
+#endif
+#ifndef NO_NSPIRE_CXII
+	| (UINT64_C(1) << CALC_NSPIRE_CXII)
+#endif
+#ifndef NO_NSPIRE_CXII_CAS
+	| (UINT64_C(1) << CALC_NSPIRE_CXII_CAS)
+#endif
+#ifndef NO_NSPIRE_CXIIT
+	| (UINT64_C(1) << CALC_NSPIRE_CXIIT)
+#endif
+#ifndef NO_NSPIRE_CXIIT_CAS
+	| (UINT64_C(1) << CALC_NSPIRE_CXIIT_CAS)
 #endif
 ;
 
@@ -763,8 +843,7 @@ int TICALL ticalcs_model_supports_dusb(CalcModel model)
  */
 int TICALL ticalcs_model_supports_nsp(CalcModel model)
 {
-	return (   /*model <  CALC_MAX
-	        &&*/ ( model == CALC_NSPIRE));
+	return ticonv_model_is_tinspire(model) /*&& model < CALC_NSPIRE_CXII*/; // FIXME is that right for all CX II OS versions ?
 }
 
 /**
@@ -778,9 +857,9 @@ int TICALL ticalcs_model_supports_nsp(CalcModel model)
  */
 int TICALL ticalcs_model_supports_installing_flashapps(CalcModel model)
 {
-	return ticonv_model_has_flash_memory(model) && !(   model == CALC_NSPIRE
-	                                                 || model == CALC_TI82A_USB
-	                                                 || model == CALC_TI84PT_USB);
+	return ticonv_model_has_flash_memory(model) && !(   model == CALC_TI82A_USB
+	                                                 || model == CALC_TI84PT_USB
+	                                                 || ticonv_model_is_tinspire(model));
 }
 
 /**

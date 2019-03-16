@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-01-29 22:27+0100\n"
+"POT-Creation-Date: 2023-08-07 21:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -102,20 +102,20 @@ msgid ""
 "Cause: the program which uses this library is buggy. Fire-up the developer!"
 msgstr ""
 
-#: src/filetypes.cc:1426 src/filetypes.cc:1530 src/types68k.cc:74
+#: src/filetypes.cc:1630 src/filetypes.cc:1752 src/types68k.cc:74
 #: src/types83p.cc:70 src/typesoldz80.cc:75
 msgid "OS upgrade"
 msgstr ""
 
-#: src/filetypes.cc:1436 src/filetypes.cc:1540
+#: src/filetypes.cc:1641 src/filetypes.cc:1763
 msgid "TIGroup"
 msgstr ""
 
-#: src/filetypes.cc:1448 src/filetypes.cc:1552
+#: src/filetypes.cc:1654 src/filetypes.cc:1776
 msgid "Group/Backup"
 msgstr ""
 
-#: src/filetypes.cc:1450 src/filetypes.cc:1554
+#: src/filetypes.cc:1657 src/filetypes.cc:1779
 msgid "Group"
 msgstr ""
 

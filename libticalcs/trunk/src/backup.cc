@@ -56,7 +56,7 @@ int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content)
 	VALIDATE_CALCFNCTS(handle->calc);
 
 	// Do a directory list and check for something to backup
-	ret = handle->calc->get_dirlist(handle, &vars, &apps);
+	ret = handle->calc->fncts.get_dirlist(handle, &vars, &apps);
 	if (ret)
 	{
 		return ret;
@@ -95,13 +95,13 @@ int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content)
 			ticalcs_update_pbar(handle);
 
 			// we need to group files !
-			ret = handle->calc->is_ready(handle);
+			ret = handle->calc->fncts.is_ready(handle);
 			if (ret)
 			{
 				goto end;
 			}
 			group[k] = tifiles_content_create_regular(handle->model);
-			ret = handle->calc->recv_var(handle, MODE_NORMAL, group[k++], ve);
+			ret = handle->calc->fncts.recv_var(handle, MODE_NORMAL, group[k++], ve);
 			if (ret)
 			{
 				goto end;
@@ -166,7 +166,7 @@ int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, Ti
 	}
 	VALIDATE_CALCFNCTS(handle->calc);
 
-	ret = handle->calc->get_dirlist(handle, &vars, &apps);
+	ret = handle->calc->fncts.get_dirlist(handle, &vars, &apps);
 	if (ret)
 	{
 		return ret;
@@ -233,7 +233,7 @@ int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, Ti
 					continue;
 				}
 
-				ret = handle->calc->send_var(handle, MODE_BACKUP, te->content.regular);
+				ret = handle->calc->fncts.send_var(handle, MODE_BACKUP, te->content.regular);
 				if (ret)
 				{
 					break;
@@ -243,7 +243,7 @@ int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, Ti
 
 		if (!ret)
 		{
-			ret = handle->calc->is_ready(handle);
+			ret = handle->calc->fncts.is_ready(handle);
 			if (!ret)
 			{
 				// Send apps
@@ -262,7 +262,7 @@ int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, Ti
 						ticalcs_strlcpy(ve.name, te->content.flash->name, sizeof(ve.name));
 						if (!ticalcs_dirlist_ve_exist(apps, &ve))
 						{
-							ret = handle->calc->send_app(handle, te->content.flash);
+							ret = handle->calc->fncts.send_app(handle, te->content.flash);
 							if (ret)
 							{
 								break;
@@ -311,7 +311,7 @@ int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, Ti
 	ticalcs_update_pbar(handle);
 
 	// Do a directory list and check for something to backup
-	ret = handle->calc->get_dirlist(handle, &vars, &apps);
+	ret = handle->calc->fncts.get_dirlist(handle, &vars, &apps);
 	if (ret)
 	{
 		return ret;
@@ -356,7 +356,7 @@ int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, Ti
 				TigEntry *te;
 
 				PAUSE(100);
-				ret = handle->calc->is_ready(handle);
+				ret = handle->calc->fncts.is_ready(handle);
 				if (ret)
 				{
 					goto end;
@@ -387,7 +387,7 @@ int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, Ti
 					g_free(filename);
 					if (te != NULL)
 					{
-						ret = handle->calc->recv_var(handle, MODE_NORMAL, te->content.regular, ve);
+						ret = handle->calc->fncts.recv_var(handle, MODE_NORMAL, te->content.regular, ve);
 						if (ret)
 						{
 							tifiles_te_delete(te);
@@ -422,7 +422,7 @@ int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, Ti
 				char *filename;
 				char *basename;
 
-				ret = handle->calc->is_ready(handle);
+				ret = handle->calc->fncts.is_ready(handle);
 				if (ret)
 				{
 					goto end;
@@ -439,7 +439,7 @@ int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, Ti
 				g_free(filename);
 				if (te != NULL)
 				{
-					ret = handle->calc->recv_app(handle, te->content.flash, ve);
+					ret = handle->calc->fncts.recv_app(handle, te->content.flash, ve);
 					if (ret)
 					{
 						tifiles_te_delete(te);

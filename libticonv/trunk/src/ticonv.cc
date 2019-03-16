@@ -197,6 +197,19 @@ char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short 
 			case CALC_TI84PT_USB: return ticonv_utf16_to_ti84pusb(utf16, ti); break;
 			case CALC_TI89T_USB: return ticonv_utf16_to_ti89tusb(utf16, ti); break;
 			case CALC_NSPIRE:
+			case CALC_NSPIRE_CRADLE:
+			case CALC_NSPIRE_CLICKPAD:
+			case CALC_NSPIRE_CLICKPAD_CAS:
+			case CALC_NSPIRE_TOUCHPAD:
+			case CALC_NSPIRE_TOUCHPAD_CAS:
+			case CALC_NSPIRE_CX:
+			case CALC_NSPIRE_CX_CAS:
+			case CALC_NSPIRE_CMC:
+			case CALC_NSPIRE_CMC_CAS:
+			case CALC_NSPIRE_CXII:
+			case CALC_NSPIRE_CXII_CAS:
+			case CALC_NSPIRE_CXIIT:
+			case CALC_NSPIRE_CXIIT_CAS:
 			{
 				char *tmp = ticonv_utf16_to_utf8(utf16);
 				strcpy(ti, tmp);
@@ -299,6 +312,19 @@ unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char 
 			case CALC_TI84PT_USB: return ticonv_ti84pusb_to_utf16(ti, utf16); break;
 			case CALC_TI89T_USB: return ticonv_ti89tusb_to_utf16(ti, utf16); break;
 			case CALC_NSPIRE:
+			case CALC_NSPIRE_CRADLE:
+			case CALC_NSPIRE_CLICKPAD:
+			case CALC_NSPIRE_CLICKPAD_CAS:
+			case CALC_NSPIRE_TOUCHPAD:
+			case CALC_NSPIRE_TOUCHPAD_CAS:
+			case CALC_NSPIRE_CX:
+			case CALC_NSPIRE_CX_CAS:
+			case CALC_NSPIRE_CMC:
+			case CALC_NSPIRE_CMC_CAS:
+			case CALC_NSPIRE_CXII:
+			case CALC_NSPIRE_CXII_CAS:
+			case CALC_NSPIRE_CXIIT:
+			case CALC_NSPIRE_CXIIT_CAS:
 			{
 				unsigned short *tmp = ticonv_utf8_to_utf16(ti);
 				memcpy(utf16, tmp, 2*ticonv_utf16_strlen(tmp));
@@ -1005,7 +1031,8 @@ int TICALL ticonv_model_is_ti68k(CalcModel model)
 int TICALL ticonv_model_is_tinspire(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
-	        &&*/ (model == CALC_NSPIRE));
+	        &&*/ ( model == CALC_NSPIRE
+	            || (model >= CALC_NSPIRE_CRADLE && model <= CALC_NSPIRE_CXIIT_CAS)));
 }
 
 /**
@@ -1048,12 +1075,12 @@ int TICALL ticonv_model_has_usb_ioport(CalcModel model)
 	return (   /*model <  CALC_MAX
 	        &&*/ ( model == CALC_TI84P_USB
 	            || model == CALC_TI89T_USB
-	            || model == CALC_NSPIRE
 	            || model == CALC_TI84PC_USB
 	            || model == CALC_TI83PCE_USB
 	            || model == CALC_TI84PCE_USB
 	            || model == CALC_TI82A_USB
-	            || model == CALC_TI84PT_USB));
+	            || model == CALC_TI84PT_USB
+	            || ticonv_model_is_tinspire(model)));
 }
 
 /**
@@ -1089,7 +1116,7 @@ int TICALL ticonv_model_has_flash_memory(CalcModel model)
 int TICALL ticonv_model_has_real_screen(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
-	        &&*/ 1); // All models currently handled by libti* have a real physical screen.
+	        &&*/ (model != CALC_NSPIRE_CRADLE));
 }
 
 /**
@@ -1120,7 +1147,11 @@ int TICALL ticonv_model_has_monochrome_screen(CalcModel model)
 	            || model == CALC_NSPIRE    // Some Nspire models have monochrome screens
 	            || model == CALC_TI80
 	            || model == CALC_TI82A_USB
-	            || model == CALC_TI84PT_USB));
+	            || model == CALC_TI84PT_USB
+	            || model == CALC_NSPIRE_CLICKPAD
+	            || model == CALC_NSPIRE_CLICKPAD_CAS
+	            || model == CALC_NSPIRE_TOUCHPAD
+	            || model == CALC_NSPIRE_TOUCHPAD_CAS));
 }
 
 /**
@@ -1138,5 +1169,57 @@ int TICALL ticonv_model_has_color_screen(CalcModel model)
 	            || model == CALC_TI84PC
 	            || model == CALC_TI84PC_USB
 	            || model == CALC_TI83PCE_USB
-	            || model == CALC_TI84PCE_USB));
+	            || model == CALC_TI84PCE_USB
+	            || (model >= CALC_NSPIRE_CX && model <= CALC_NSPIRE_CXIIT_CAS)));
+}
+
+/**
+ * ticonv_model_to_product_id:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns a list of Product IDs corresponding to the given calculator model.
+ *
+ * Return value: a value from enum CalcProductIDs.
+ */
+TIEXPORT4 CalcProductIDs TICALL ticonv_model_to_product_id(CalcModel model)
+{
+	switch (model)
+	{
+		case CALC_TI73:                return PRODUCT_ID_TI73;
+		case CALC_TI82:                return PRODUCT_ID_NONE;
+		case CALC_TI83:                return PRODUCT_ID_NONE;
+		case CALC_TI83P:               return PRODUCT_ID_TI83P;
+		case CALC_TI84P:               return PRODUCT_ID_TI84P;
+		case CALC_TI85:                return PRODUCT_ID_NONE;
+		case CALC_TI86:                return PRODUCT_ID_NONE;
+		case CALC_TI89:                return PRODUCT_ID_TI89;
+		case CALC_TI89T:               return PRODUCT_ID_TI89T;
+		case CALC_TI92:                return PRODUCT_ID_NONE;
+		case CALC_TI92P:               return PRODUCT_ID_TI92P;
+		case CALC_V200:                return PRODUCT_ID_TIV200;
+		case CALC_TI84P_USB:           return PRODUCT_ID_TI84P;
+		case CALC_TI89T_USB:           return PRODUCT_ID_TI89T;
+		case CALC_NSPIRE:              return PRODUCT_ID_NSPIRE_CX; // Generic Nspire can correspond to multiple models
+		case CALC_TI80:                return PRODUCT_ID_NONE;
+		case CALC_TI84PC:              return PRODUCT_ID_TI84PCSE;
+		case CALC_TI84PC_USB:          return PRODUCT_ID_TI84PCSE;
+		case CALC_TI83PCE_USB:         return PRODUCT_ID_TI83PCE;
+		case CALC_TI84PCE_USB:         return PRODUCT_ID_TI84PCE;
+		case CALC_TI82A_USB:           return PRODUCT_ID_TI82A;
+		case CALC_TI84PT_USB:          return PRODUCT_ID_TI84PT;
+		case CALC_NSPIRE_CRADLE:       return PRODUCT_ID_LABCRADLE;
+		case CALC_NSPIRE_CLICKPAD:     return PRODUCT_ID_NSPIRE;
+		case CALC_NSPIRE_CLICKPAD_CAS: return PRODUCT_ID_NSPIRE_CAS;
+		case CALC_NSPIRE_TOUCHPAD:     return PRODUCT_ID_NSPIRE;
+		case CALC_NSPIRE_TOUCHPAD_CAS: return PRODUCT_ID_NSPIRE_CAS;
+		case CALC_NSPIRE_CX:           return PRODUCT_ID_NSPIRE_CX;
+		case CALC_NSPIRE_CX_CAS:       return PRODUCT_ID_NSPIRE_CX_CAS;
+		case CALC_NSPIRE_CMC:          return PRODUCT_ID_NSPIRE_CMC;
+		case CALC_NSPIRE_CMC_CAS:      return PRODUCT_ID_NSPIRE_CMC_CAS;
+		case CALC_NSPIRE_CXII:         return PRODUCT_ID_NSPIRE_CXII;
+		case CALC_NSPIRE_CXII_CAS:     return PRODUCT_ID_NSPIRE_CXII_CAS;
+		case CALC_NSPIRE_CXIIT:        return PRODUCT_ID_NSPIRE_CXIIT;
+		case CALC_NSPIRE_CXIIT_CAS:    return PRODUCT_ID_NSPIRE_CXII_CAS;
+		default:                       return PRODUCT_ID_NONE;
+	}
 }

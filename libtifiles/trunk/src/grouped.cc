@@ -113,7 +113,7 @@ int TICALL tifiles_group_contents(FileContent **src_contents, FileContent **dst_
 
 	for (n = 0; src_contents[n] != NULL; n++)
 	{
-		if (src_contents[n]->model == CALC_NSPIRE)
+		if (ticonv_model_is_tinspire(src_contents[n]->model))
 		{
 			return ERR_BAD_CALC;
 		}
@@ -173,7 +173,7 @@ int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***dest)
 		return ERR_INVALID_FILE;
 	}
 
-	if (src->model == CALC_NSPIRE)
+	if (ticonv_model_is_tinspire(src->model))
 	{
 		return ERR_BAD_CALC;
 	}
@@ -245,7 +245,7 @@ int TICALL tifiles_group_files(char **src_filenames, const char *dst_filename)
 		{
 			return ERR_INVALID_FILE;
 		}
-		if (tifiles_file_get_model(src_filenames[n]) == CALC_NSPIRE)
+		if (ticonv_model_is_tinspire(tifiles_file_get_model(src_filenames[n])))
 		{
 			return ERR_BAD_CALC;
 		}
@@ -328,7 +328,7 @@ int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames)
 		return ERR_INVALID_FILE;
 	}
 
-	if (tifiles_file_get_model(src_filename) == CALC_NSPIRE)
+	if (ticonv_model_is_tinspire(tifiles_file_get_model(src_filename)))
 	{
 		return ERR_BAD_CALC;
 	}

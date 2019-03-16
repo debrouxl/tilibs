@@ -389,7 +389,28 @@ void translate_usb_device_info(CableDeviceInfo *info, const USBCableInfo *usbinf
 	else if (usbinfo->pid == PID_NSPIRE)
 	{
 		info->family = CABLE_FAMILY_USB_NSPIRE;
-		info->variant = CABLE_VARIANT_NSPIRE;
+		if (!strcmp(usbinfo->product_str, "TI-Nspire(tm) Handheld"))
+		{
+			info->variant = CABLE_VARIANT_NSPIRE;
+		}
+		else if (!strcmp(usbinfo->product_str, "TI-Nspire(tm) CAS Handheld"))
+		{
+			info->variant = CABLE_VARIANT_NSPIRE_CAS;
+		}
+		else
+		{
+			info->variant = CABLE_VARIANT_UNKNOWN;
+		}
+	}
+	else if (usbinfo->pid == PID_NSPIRE_CRADLE)
+	{
+		info->family = CABLE_FAMILY_USB_NSPIRE_CRADLE;
+		info->variant = CABLE_VARIANT_NSPIRE_CRADLE;
+	}
+	else if (usbinfo->pid == PID_NSPIRE_CXII)
+	{
+		info->family = CABLE_FAMILY_USB_NSPIRE_CXII;
+		info->variant = CABLE_VARIANT_NSPIRE_CXII;
 	}
 	else
 	{

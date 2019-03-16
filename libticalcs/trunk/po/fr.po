@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-02-02 19:18+0100\n"
+"POT-Creation-Date: 2023-08-07 21:47+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -216,7 +216,7 @@ msgstr "Création de %s..."
 msgid "V200 Personal Learning Tool"
 msgstr "V200 Personal Learning Tool"
 
-#: src/calc_89t.cc:1011 src/calc_nsp.cc:1054
+#: src/calc_89t.cc:1011 src/calc_nsp.cc:1112
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr "Renommage de %s en %s..."
@@ -250,9 +250,61 @@ msgstr "N'énumère pas les documents dans %s car ce n'est pas un répertoire\n"
 msgid "Directory listing in <%s>...\n"
 msgstr "Listage du dossier dans <%s>...\n"
 
-#: src/calc_nsp.cc:1077
+#: src/calc_nsp.cc:1201
 msgid "Nspire thru DirectLink"
 msgstr "Nspire via DirectLink"
+
+#: src/calc_nsp.cc:1215
+msgid "Nspire Cradle thru DirectLink"
+msgstr "Nspire Cradle via DirectLink"
+
+#: src/calc_nsp.cc:1229
+msgid "Nspire Clickpad thru DirectLink"
+msgstr "Nspire Clickpad via DirectLink"
+
+#: src/calc_nsp.cc:1243
+msgid "Nspire Clickpad CAS thru DirectLink"
+msgstr "Nspire Clickpad CAS via DirectLink"
+
+#: src/calc_nsp.cc:1257
+msgid "Nspire Touchpad thru DirectLink"
+msgstr "Nspire Touchpad via DirectLink"
+
+#: src/calc_nsp.cc:1271
+msgid "Nspire Touchpad CAS thru DirectLink"
+msgstr "Nspire Touchpad CAS via DirectLink"
+
+#: src/calc_nsp.cc:1285
+msgid "Nspire CX thru DirectLink"
+msgstr "Nspire CX via DirectLink"
+
+#: src/calc_nsp.cc:1299
+msgid "Nspire CX CAS thru DirectLink"
+msgstr "Nspire CX CAS via DirectLink"
+
+#: src/calc_nsp.cc:1313
+msgid "Nspire CM-C thru DirectLink"
+msgstr "Nspire CM-C via DirectLink"
+
+#: src/calc_nsp.cc:1327
+msgid "Nspire CM-C CAS thru DirectLink"
+msgstr "Nspire CM-C CAS via DirectLink"
+
+#: src/calc_nsp.cc:1341
+msgid "Nspire CX II thru DirectLink"
+msgstr "Nspire CX II via DirectLink"
+
+#: src/calc_nsp.cc:1355
+msgid "Nspire CX II CAS thru DirectLink"
+msgstr "Nspire CX II CAS via DirectLink"
+
+#: src/calc_nsp.cc:1369
+msgid "Nspire CX II-T thru DirectLink"
+msgstr "Nspire CX II-T via DirectLink"
+
+#: src/calc_nsp.cc:1383
+msgid "Nspire CX II-T CAS thru DirectLink"
+msgstr "Nspire CX II-T CAS via DirectLink"
 
 #: src/calc_xx.cc:91
 msgid "Checking hand-held status:"
@@ -853,16 +905,16 @@ msgstr " Type de calculatrice: %s"
 msgid "Unknown pixel format %d\n"
 msgstr "Format de pixel %d inconnu\n"
 
-#: src/ticalcs.cc:238
+#: src/ticalcs.cc:318
 #, c-format
 msgid "ticalcs library version %s"
 msgstr "librairie ticalcs version %s"
 
-#: src/ticalcs.cc:554
+#: src/ticalcs.cc:634
 msgid "Link calc handle details:"
 msgstr "Détails du descripteur de calculatrice:"
 
-#: src/ticalcs.cc:555
+#: src/ticalcs.cc:635
 #, c-format
 msgid "  model   : %s"
 msgstr "  modèle  : %s"
