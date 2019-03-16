@@ -71,11 +71,52 @@ extern "C" {
 typedef enum 
 {
 	CALC_NONE = 0,
-	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
-	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
-	CALC_TI84P_USB, CALC_TI89T_USB, CALC_NSPIRE, CALC_TI80,
-	CALC_TI84PC, CALC_TI84PC_USB, CALC_TI83PCE_USB, CALC_TI84PCE_USB, CALC_TI82A_USB, CALC_TI84PT_USB, CALC_MAX
+	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86, // 7,
+	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200, // 12
+	CALC_TI84P_USB, CALC_TI89T_USB, CALC_NSPIRE, CALC_TI80, // 16
+	CALC_TI84PC, CALC_TI84PC_USB, CALC_TI83PCE_USB, CALC_TI84PCE_USB, CALC_TI82A_USB, CALC_TI84PT_USB, // 22
+	CALC_NSPIRE_CRADLE, // 23
+	CALC_NSPIRE_CLICKPAD, CALC_NSPIRE_CLICKPAD_CAS, CALC_NSPIRE_TOUCHPAD, CALC_NSPIRE_TOUCHPAD_CAS, // 27
+	CALC_NSPIRE_CX, CALC_NSPIRE_CX_CAS, CALC_NSPIRE_CMC, CALC_NSPIRE_CMC_CAS, // 31
+	CALC_NSPIRE_CXII, CALC_NSPIRE_CXII_CAS, CALC_NSPIRE_CXIIT, CALC_NSPIRE_CXIIT_CAS, // 35
+	CALC_MAX
 } CalcModel;
+
+/**
+ * CalcProductIDs:
+ *
+ * An enumeration which contains the product IDs used by TI graphing calculators and companion equipment.
+ **/
+typedef enum
+{
+        PRODUCT_ID_NONE = 0x00,
+        PRODUCT_ID_TI92P = 0x01,
+        PRODUCT_ID_TI73 = 0x02,
+        PRODUCT_ID_TI89 = 0x03,
+        PRODUCT_ID_TI83P = 0x04,
+        PRODUCT_ID_CBL2 = 0x05,
+        PRODUCT_ID_LABPRO = 0x06,
+        PRODUCT_ID_TIPRESENTER = 0x07,
+        PRODUCT_ID_TIV200 = 0x08,
+        PRODUCT_ID_TI89T = 0x09,
+        PRODUCT_ID_TI84P = 0x0A,
+        PRODUCT_ID_TI82A = 0x0B,
+        PRODUCT_ID_NSPIRE_CAS = 0x0C, // The abandoned Nspire CAS+ prototypes also use 0x0C, but libti*/tilp do not handle their unique communication protocol.
+        PRODUCT_ID_LABCRADLE = 0x0D,
+        PRODUCT_ID_NSPIRE = 0x0E,
+        PRODUCT_ID_NSPIRE_CX_CAS = 0x0F, // Yes, two completely different models use ID 0x0F.
+        PRODUCT_ID_TI84PCSE = 0x0F,
+        PRODUCT_ID_NSPIRE_CX = 0x10,
+        PRODUCT_ID_NSPIRE_CMC_CAS = 0x11,
+        PRODUCT_ID_NSPIRE_CMC = 0x12,
+        PRODUCT_ID_TI83PCE = 0x13, // These two similar models use the same ID as well.
+        PRODUCT_ID_TI84PCE = 0x13,
+        // No known calculators or lab equipments use 0x14-0x1A.
+        PRODUCT_ID_TI84PT = 0x1B,
+        PRODUCT_ID_NSPIRE_CXII_CAS = 0x1C,
+        PRODUCT_ID_NSPIRE_CXII = 0x1D,
+        PRODUCT_ID_NSPIRE_CXIIT = 0x1E
+} CalcProductIDs;
 
 /**
  * ticonv_iconv_t:
@@ -149,6 +190,7 @@ typedef struct
 	TIEXPORT4 int TICALL ticonv_model_has_real_screen(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_has_monochrome_screen(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_has_color_screen(CalcModel model);
+	TIEXPORT4 CalcProductIDs TICALL ticonv_model_to_product_id(CalcModel model);
 
 	// TODO TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_sn(CalcModel model, const char *src, unsigned short *dst, uint32_t maxlen, unsigned char type);
 	/* TODO TILIBS_DEPRECATED */ TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned char type);

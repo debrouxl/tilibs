@@ -620,7 +620,7 @@ CalcModel TICALL ticalcs_device_info_to_model(const CableDeviceInfo *info)
 			}
 			else
 			{
-				ticalcs_warning("Unexpected variant for TI-(e)Z80 USB cable, assuming 84+CE");
+				ticalcs_warning("Unexpected variant %d for TI-(e)Z80 USB cable, assuming 84+CE", info->variant);
 				model = CALC_TI84PCE_USB;
 			}
 		}
@@ -629,22 +629,49 @@ CalcModel TICALL ticalcs_device_info_to_model(const CableDeviceInfo *info)
 			// This cable family has a single corresponding calc model.
 			if (info->variant != CABLE_VARIANT_TI89TM)
 			{
-				ticalcs_warning("Unexpected variant for TI-68k USB cable");
+				ticalcs_warning("Unexpected variant %d for TI-68k USB cable", info->variant);
 			}
 			model = CALC_TI89T_USB;
 		}
 		else if (info->family == CABLE_FAMILY_USB_NSPIRE)
 		{
-			// This cable family has a single corresponding calc model.
-			if (info->variant != CABLE_VARIANT_NSPIRE)
+			// This cable family has multiple corresponding calc models, but they can't be accurately distinguished at the USB level...
+			if (info->variant == CABLE_VARIANT_NSPIRE)
 			{
-				ticalcs_warning("Unexpected variant for Nspire USB cable");
+				model = CALC_NSPIRE_CX;
 			}
-			model = CALC_NSPIRE;
+			else if (info->variant == CABLE_VARIANT_NSPIRE_CAS)
+			{
+				model = CALC_NSPIRE_CX_CAS;
+			}
+			else
+			{
+				ticalcs_warning("Unexpected variant %d for Nspire USB cable", info->variant);
+			}
+		}
+		else if (info->family == CABLE_FAMILY_USB_NSPIRE_CRADLE)
+		{
+			if (info->variant == CABLE_VARIANT_NSPIRE_CRADLE)
+			{
+				model = CALC_NSPIRE_CRADLE;
+			}
+			else
+			{
+				ticalcs_warning("Unexpected variant %d for Nspire Cradle USB cable", info->variant);
+			}
+		}
+		else if (info->family == CABLE_FAMILY_USB_NSPIRE_CXII)
+		{
+			// This cable family has multiple corresponding calc models, but they can't be distinguished at the USB level.
+			if (info->variant != CABLE_VARIANT_NSPIRE_CXII)
+			{
+				ticalcs_warning("Unexpected variant %d for Nspire CX II USB cable", info->variant);
+			}
+			model = CALC_NSPIRE_CXII;
 		}
 		else
 		{
-			ticalcs_critical("Unexpected cable family");
+			ticalcs_critical("Unexpected cable family %d", info->family);
 			// Fall through.
 		}
 	}

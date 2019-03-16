@@ -92,6 +92,10 @@ SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e004", ENV{ID_PDA}="
 SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", ENV{ID_PDA}="1"
 # TI-Nspire DirectLink
 SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e012", ENV{ID_PDA}="1"
+# Lab Cradle / DataTracker Cradle
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e01c", ENV{ID_PDA}="1"
+# TI-Nspire CX II
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e022", ENV{ID_PDA}="1"
 
 LABEL="libticables_end"
 
@@ -126,6 +130,12 @@ ATTR{idProduct}=="e008", MODE="0660", GROUP="plugdev"
 # TI-Nspire DirectLink
 ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
 ATTR{idProduct}=="e012", MODE="0660", GROUP="plugdev"
+# Lab Cradle / DataTracker Cradle
+ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
+ATTR{idProduct}=="e01c", MODE="0660", GROUP="plugdev"
+# TI-Nspire CX II
+ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
+ATTR{idProduct}=="e022", MODE="0660", GROUP="plugdev"
 
 The template relies on a group called 'plugdev'. If it doesn't exist, you will
 have to create it or choose another group which matches better your system.

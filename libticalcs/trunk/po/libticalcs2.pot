@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2026-08-30 20:30+0200\n"
+"POT-Creation-Date: 2026-08-30 20:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -210,7 +210,7 @@ msgstr ""
 msgid "V200 Personal Learning Tool"
 msgstr ""
 
-#: src/calc_89t.cc:1011 src/calc_nsp.cc:1065
+#: src/calc_89t.cc:1011 src/calc_nsp.cc:1123
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr ""
@@ -244,8 +244,60 @@ msgstr ""
 msgid "Directory listing in <%s>...\n"
 msgstr ""
 
-#: src/calc_nsp.cc:1088
+#: src/calc_nsp.cc:1212
 msgid "Nspire thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1226
+msgid "Nspire Cradle thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1240
+msgid "Nspire Clickpad thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1254
+msgid "Nspire Clickpad CAS thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1268
+msgid "Nspire Touchpad thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1282
+msgid "Nspire Touchpad CAS thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1296
+msgid "Nspire CX thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1310
+msgid "Nspire CX CAS thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1324
+msgid "Nspire CM-C thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1338
+msgid "Nspire CM-C CAS thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1352
+msgid "Nspire CX II thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1366
+msgid "Nspire CX II CAS thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1380
+msgid "Nspire CX II-T thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1394
+msgid "Nspire CX II-T CAS thru DirectLink"
 msgstr ""
 
 #: src/calc_xx.cc:91
@@ -817,16 +869,16 @@ msgstr ""
 msgid "Unknown pixel format %d\n"
 msgstr ""
 
-#: src/ticalcs.cc:245
+#: src/ticalcs.cc:325
 #, c-format
 msgid "ticalcs library version %s"
 msgstr ""
 
-#: src/ticalcs.cc:574
+#: src/ticalcs.cc:654
 msgid "Link calc handle details:"
 msgstr ""
 
-#: src/ticalcs.cc:575
+#: src/ticalcs.cc:655
 #, c-format
 msgid "  model   : %s"
 msgstr ""

@@ -206,6 +206,7 @@ int TICALL nsp_cmd_r_dev_infos(CalcHandle *handle, uint8_t *cmd, uint32_t *size,
 	{
 		*cmd = pkt->cmd;
 		*data = (uint8_t *)g_malloc0(pkt->size);
+		*size = pkt->size;
 		if (NULL != *data)
 		{
 			memcpy(*data, pkt->data, pkt->size);

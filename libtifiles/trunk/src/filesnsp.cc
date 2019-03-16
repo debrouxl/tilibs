@@ -107,7 +107,7 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 		if (fseek(f, 0, SEEK_SET) < 0) goto tfrr;
 
 		// The Nspire series' members have at best 128 MB of Flash (TODO: modify this code if this no longer holds).
-		// Regular files larger than that size are insane.
+		// Regular files larger than that size (and even several MBs smaller than that size) are therefore insane.
 		if (cur_pos >= (128L << 20))
 		{
 			ret = ERR_INVALID_FILE;
@@ -177,7 +177,7 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	if (cur_pos < 0) goto tfrf;
 	if (fseek(f, 0, SEEK_SET) < 0) goto tfrf;
 	// The Nspire series' members have at best 128 MB of Flash (TODO: modify this code if this no longer holds).
-	// Flash files larger than that size are insane.
+	// Flash files larger than that size (and even several MBs smaller than that size) are insane.
 	if (cur_pos >= (128L << 20))
 	{
 		ret = ERR_INVALID_FILE;
@@ -185,6 +185,7 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	}
 	file_size = (uint32_t)cur_pos;
 
+	// FIXME this does no longer hold true now that there are multiple calcs for Nspire series members.
 	content->model = CALC_NSPIRE;
 
 	// Skip chars.
