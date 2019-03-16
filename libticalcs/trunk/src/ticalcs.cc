@@ -23,6 +23,8 @@
 #  include <config.h>
 #endif
 
+#define __STDC_FORMAT_MACROS
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -114,77 +116,155 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_TI84PT_USB
 	&calc_84pt_usb,
 #endif
+#ifndef NO_NSPIRE_CRADLE
+	&calc_nsp_cradle,
+#endif
+#ifndef NO_NSPIRE_CLICKPAD
+	&calc_nsp_clickpad,
+#endif
+#ifndef NO_NSPIRE_CLICKPAD_CAS
+	&calc_nsp_clickpad_cas,
+#endif
+#ifndef NO_NSPIRE_TOUCHPAD
+	&calc_nsp_touchpad,
+#endif
+#ifndef NO_NSPIRE_TOUCHPAD_CAS
+	&calc_nsp_touchpad_cas,
+#endif
+#ifndef NO_NSPIRE_CX
+	&calc_nsp_cx,
+#endif
+#ifndef NO_NSPIRE_CX_CAS
+	&calc_nsp_cx_cas,
+#endif
+#ifndef NO_NSPIRE_CMC
+	&calc_nsp_cmc,
+#endif
+#ifndef NO_NSPIRE_CMC_CAS
+	&calc_nsp_cmc_cas,
+#endif
+/*#ifndef NO_NSPIRE_CXII
+	&calc_nsp_cxii,
+#endif
+#ifndef NO_NSPIRE_CXII_CAS
+	&calc_nsp_cxii_cas,
+#endif
+#ifndef NO_NSPIRE_CXIIT
+	&calc_nsp_cxiit,
+#endif
+#ifndef NO_NSPIRE_CXIIT_CAS
+	&calc_nsp_cxiit_cas,
+#endif*/
 	NULL
 };
 
-static const uint32_t supported_calcs =
-	  (1U << CALC_NONE)
+static const uint64_t supported_calcs =
+	  (UINT64_C(1) << CALC_NONE)
 #ifndef NO_TI73
-	| (1U << CALC_TI73)
+	| (UINT64_C(1) << CALC_TI73)
 #endif
 #ifndef NO_TI82
-	| (1U << CALC_TI82)
+	| (UINT64_C(1) << CALC_TI82)
 #endif
 #ifndef NO_TI83
-	| (1U << CALC_TI83)
+	| (UINT64_C(1) << CALC_TI83)
 #endif
 #ifndef NO_TI83P
-	| (1U << CALC_TI83P)
+	| (UINT64_C(1) << CALC_TI83P)
 #endif
 #ifndef NO_TI84P
-	| (1U << CALC_TI84P)
+	| (UINT64_C(1) << CALC_TI84P)
 #endif
 #ifndef NO_TI85
-	| (1U << CALC_TI85)
+	| (UINT64_C(1) << CALC_TI85)
 #endif
 #ifndef NO_TI86
-	| (1U << CALC_TI86)
+	| (UINT64_C(1) << CALC_TI86)
 #endif
 #ifndef NO_TI89
-	| (1U << CALC_TI89)
+	| (UINT64_C(1) << CALC_TI89)
 #endif
 #ifndef NO_TI89T
-	| (1U << CALC_TI89T)
+	| (UINT64_C(1) << CALC_TI89T)
 #endif
 #ifndef NO_TI92
-	| (1U << CALC_TI92)
+	| (UINT64_C(1) << CALC_TI92)
 #endif
 #ifndef NO_TI92P
-	| (1U << CALC_TI92P)
+	| (UINT64_C(1) << CALC_TI92P)
 #endif
 #ifndef NO_V200
-	| (1U << CALC_V200)
+	| (UINT64_C(1) << CALC_V200)
 #endif
 #ifndef NO_TI84P_USB
-	| (1U << CALC_TI84P_USB)
+	| (UINT64_C(1) << CALC_TI84P_USB)
 #endif
 #ifndef NO_TI89T_USB
-	| (1U << CALC_TI89T_USB)
+	| (UINT64_C(1) << CALC_TI89T_USB)
 #endif
 #ifndef NO_NSPIRE
-	| (1U << CALC_NSPIRE)
+	| (UINT64_C(1) << CALC_NSPIRE)
 #endif
 #ifndef NO_TI80
-	| (1U << CALC_TI80)
+	| (UINT64_C(1) << CALC_TI80)
 #endif
 #ifndef NO_TI84PC
-	| (1U << CALC_TI84PC)
+	| (UINT64_C(1) << CALC_TI84PC)
 #endif
 #ifndef NO_TI84PC_USB
-	| (1U << CALC_TI84PC_USB)
+	| (UINT64_C(1) << CALC_TI84PC_USB)
 #endif
 #ifndef NO_TI83PCE_USB
-	| (1U << CALC_TI83PCE_USB)
+	| (UINT64_C(1) << CALC_TI83PCE_USB)
 #endif
 #ifndef NO_TI84PCE_USB
-	| (1U << CALC_TI84PCE_USB)
+	| (UINT64_C(1) << CALC_TI84PCE_USB)
 #endif
 #ifndef NO_TI82A_USB
-	| (1U << CALC_TI82A_USB)
+	| (UINT64_C(1) << CALC_TI82A_USB)
 #endif
 #ifndef NO_TI84PT_USB
-	| (1U << CALC_TI84PT_USB)
+	| (UINT64_C(1) << CALC_TI84PT_USB)
 #endif
+#ifndef NO_NSPIRE_CRADLE
+	| (UINT64_C(1) << CALC_NSPIRE_CRADLE)
+#endif
+#ifndef NO_NSPIRE_CLICKPAD
+	| (UINT64_C(1) << CALC_NSPIRE_CLICKPAD)
+#endif
+#ifndef NO_NSPIRE_CLICKPAD_CAS
+	| (UINT64_C(1) << CALC_NSPIRE_CLICKPAD_CAS)
+#endif
+#ifndef NO_NSPIRE_TOUCHPAD
+	| (UINT64_C(1) << CALC_NSPIRE_TOUCHPAD)
+#endif
+#ifndef NO_NSPIRE_TOUCHPAD_CAS
+	| (UINT64_C(1) << CALC_NSPIRE_TOUCHPAD_CAS)
+#endif
+#ifndef NO_NSPIRE_CX
+	| (UINT64_C(1) << CALC_NSPIRE_CX)
+#endif
+#ifndef NO_NSPIRE_CX_CAS
+	| (UINT64_C(1) << CALC_NSPIRE_CX_CAS)
+#endif
+#ifndef NO_NSPIRE_CMC
+	| (UINT64_C(1) << CALC_NSPIRE_CMC)
+#endif
+#ifndef NO_NSPIRE_CMC_CAS
+	| (UINT64_C(1) << CALC_NSPIRE_CMC_CAS)
+#endif
+/*#ifndef NO_NSPIRE_CXII
+	| (UINT64_C(1) << CALC_NSPIRE_CXII)
+#endif
+#ifndef NO_NSPIRE_CXII_CAS
+	| (UINT64_C(1) << CALC_NSPIRE_CXII_CAS)
+#endif
+#ifndef NO_NSPIRE_CXIIT
+	| (UINT64_C(1) << CALC_NSPIRE_CXIIT)
+#endif
+#ifndef NO_NSPIRE_CXIIT_CAS
+	| (UINT64_C(1) << CALC_NSPIRE_CXIIT_CAS)
+#endif*/
 ;
 
 /****************/
@@ -285,7 +365,7 @@ TIEXPORT3 const char *TICALL ticalcs_version_get(void)
  * Return value: an integer containing a binary OR of (1 << CALC_*) values,
  * where CALC_* values are defined in enum CalcModel.
  **/
-TIEXPORT3 uint32_t TICALL ticalcs_supported_calcs (void)
+TIEXPORT3 uint64_t TICALL ticalcs_supported_calcs (void)
 {
 	return supported_calcs;
 }
@@ -731,8 +811,7 @@ TIEXPORT3 int TICALL ticalcs_model_supports_dusb(CalcModel model)
  */
 TIEXPORT3 int TICALL ticalcs_model_supports_nsp(CalcModel model)
 {
-	return (   /*model <  CALC_MAX
-	        &&*/ ( model == CALC_NSPIRE));
+	return ticonv_model_is_tinspire(model) && model < CALC_NSPIRE_CXII;
 }
 
 /**
@@ -746,9 +825,9 @@ TIEXPORT3 int TICALL ticalcs_model_supports_nsp(CalcModel model)
  */
 TIEXPORT3 int TICALL ticalcs_model_supports_installing_flashapps(CalcModel model)
 {
-	return ticonv_model_has_flash_memory(model) && !(   model == CALC_NSPIRE
-	                                                 || model == CALC_TI82A_USB
-	                                                 || model == CALC_TI84PT_USB);
+	return ticonv_model_has_flash_memory(model) && !(   model == CALC_TI82A_USB
+	                                                 || model == CALC_TI84PT_USB
+	                                                 || ticonv_model_is_tinspire(model));
 }
 
 /**
