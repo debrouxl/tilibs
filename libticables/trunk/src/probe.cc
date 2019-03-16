@@ -387,6 +387,16 @@ void translate_usb_device_info(CableDeviceInfo *info, const USBCableInfo *usbinf
 		info->family = CABLE_FAMILY_USB_NSPIRE;
 		info->variant = CABLE_VARIANT_NSPIRE;
 	}
+	else if (usbinfo->pid == PID_NSPIRE_CRADLE)
+	{
+		info->family = CABLE_FAMILY_USB_NSPIRE;
+		info->variant = CABLE_VARIANT_NSPIRE_CRADLE;
+	}
+	else if (usbinfo->pid == PID_NSPIRE_CXII)
+	{
+		info->family = CABLE_FAMILY_USB_NSPIRE_CXII;
+		info->variant = CABLE_VARIANT_NSPIRE_CXII;
+	}
 	else
 	{
 		ticables_critical("unknown PID %x", usbinfo->pid);

@@ -60,6 +60,8 @@ TIEXPORT4 const char * TICALL ticonv_model_to_string(CalcModel model)
 	case CALC_TI84PCE_USB: return "TI84+CE USB";
 	case CALC_TI82A_USB: return "TI82A USB";
 	case CALC_TI84PT_USB: return "TI84+T USB";
+	case CALC_NSPIRE_CRADLE: return "Nspire Cradle";
+	case CALC_NSPIRE_CXII: return "Nspire CX II";
 	default: return "unknown";
 	}
 }
@@ -153,10 +155,10 @@ TIEXPORT4 CalcModel TICALL ticonv_string_to_model(const char *str)
 		         || !g_ascii_strcasecmp(str, "89T USB")
 		        )
 			return CALC_TI89T_USB;
-		else if (   !g_ascii_strncasecmp(str, "TI-Nspire", 9)
-		         || !g_ascii_strncasecmp(str, "TI Nspire", 9)
-		         || !g_ascii_strncasecmp(str, "Nspire", 6)
-		         || !g_ascii_strncasecmp(str, "Nsp", 3)
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire")
+		         || !g_ascii_strcasecmp(str, "TI Nspire")
+		         || !g_ascii_strcasecmp(str, "Nspire")
+		         || !g_ascii_strcasecmp(str, "Nsp")
 		        )
 			return CALC_NSPIRE;
 		else if (   !g_ascii_strcasecmp(str, "TI-80")
@@ -224,6 +226,21 @@ TIEXPORT4 CalcModel TICALL ticonv_string_to_model(const char *str)
 		         || !g_ascii_strcasecmp(str, "84PT")
 		        )
 			return CALC_TI84PT_USB;
+		else if (   !g_ascii_strcasecmp(str, "Nspire Cradle")
+		         || !g_ascii_strcasecmp(str, "NspireCradle")
+		         || !g_ascii_strcasecmp(str, "NspCradle")
+		        )
+			return CALC_NSPIRE_CRADLE;
+		else if (   !g_ascii_strcasecmp(str, "TI-Nspire CX II")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CX II")
+		         || !g_ascii_strcasecmp(str, "TI-Nspire CXII")
+		         || !g_ascii_strcasecmp(str, "TI Nspire CXII")
+		         || !g_ascii_strcasecmp(str, "Nspire CX II")
+		         || !g_ascii_strcasecmp(str, "Nspire CXII")
+		         || !g_ascii_strcasecmp(str, "CX II")
+		         || !g_ascii_strcasecmp(str, "CXII")
+		        )
+			return CALC_NSPIRE_CXII;
 	}
 
 	return CALC_NONE;
