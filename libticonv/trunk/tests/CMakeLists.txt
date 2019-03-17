@@ -1,21 +1,25 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(libticonv-tests
-        LANGUAGES   C)
+        LANGUAGES   C CXX)
 
 add_executable(torture_ticonv torture_ticonv.c)
-add_dependencies(torture_ticonv ticonv_shared)
+add_executable(test_ticonv test_ticonv.cc)
 
 pkg_check_modules(DEPS REQUIRED glib-2.0)
 
-target_compile_options(torture_ticonv PRIVATE ${DEPS_CFLAGS})
-
-target_include_directories(torture_ticonv PRIVATE
-    ${CMAKE_SOURCE_DIR}/libticonv/trunk/src)
-
 set(internal_libdir "-L${CMAKE_BINARY_DIR}/libticonv/trunk")
 
-target_link_libraries(torture_ticonv "${internal_libdir}" ticonv "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
+foreach(tar torture_ticonv test_ticonv)
+    add_dependencies(${tar} ticonv_shared)
+
+    target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
+
+    target_include_directories(${tar} PRIVATE
+        ${CMAKE_SOURCE_DIR}/libticonv/trunk/src)
+
+    target_link_libraries(${tar} "${internal_libdir}" ticonv "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
+endforeach()
 
 set(builddirlibpaths "${CMAKE_BINARY_DIR}/libticonv/trunk")
 
