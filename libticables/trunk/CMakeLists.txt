@@ -39,7 +39,7 @@ set(PUBLIC_HEADERS
         src/timeout.h)
 
 # external deps lookup
-pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0)
+pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16)
 
 # auto-creation of all targets with flags etc., alongside with internal deps
 create_targets_both_lib_types(ticables2)
@@ -49,7 +49,7 @@ i18n_mo_from_po_pot()
 add_dependencies(ticables2_objlib potfiles_2)
 
 # additional internal defines
-target_compile_definitions(ticables2_objlib PUBLIC HAVE_LIBUSB_1_0=1 HAVE_TERMIOS_H=1)
+target_compile_definitions(ticables2_objlib PUBLIC HAVE_LIBUSB_1_0=1 HAVE_LIBUSB10_STRERROR=1 HAVE_TERMIOS_H=1)
 
 # public export define
 target_compile_definitions(ticables2_objlib PUBLIC TICABLES_EXPORTS)
