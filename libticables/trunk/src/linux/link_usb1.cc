@@ -141,7 +141,7 @@ static int completed = 0;
 #define uOutEnd    (((usb_struct *)(h->priv2))->out_endpoint)
 
 #if !HAVE_LIBUSB10_STRERROR
-#error Please use a version of libusb 1.0 which provides libusb_strerror().
+#error Please use a version of libusb 1.0 which provides libusb_strerror() (>= 1.0.16).
 #endif
 
 static void tigl_get_product(char * string, size_t maxlen, struct libusb_device *dev)
