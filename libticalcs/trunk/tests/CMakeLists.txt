@@ -1,27 +1,31 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(libticalcs2-tests
-        LANGUAGES   C)
+        LANGUAGES   C CXX)
 
 add_executable(torture_ticalcs torture_ticalcs.c)
-add_dependencies(torture_ticalcs ticalcs2_shared)
+add_executable(test_ticalcs_2 test_ticalcs_2.cc)
 
 pkg_check_modules(DEPS REQUIRED glib-2.0)
-
-target_compile_options(torture_ticalcs PRIVATE ${DEPS_CFLAGS})
-
-target_include_directories(torture_ticalcs PRIVATE
-    ${CMAKE_SOURCE_DIR}/libticonv/trunk/src
-    ${CMAKE_SOURCE_DIR}/libtifiles/trunk/src
-    ${CMAKE_SOURCE_DIR}/libticables/trunk/src
-    ${CMAKE_SOURCE_DIR}/libticalcs/trunk/src)
 
 set(internal_libdir "-L${CMAKE_BINARY_DIR}/libticonv/trunk \
                      -L${CMAKE_BINARY_DIR}/libtifiles/trunk \
                      -L${CMAKE_BINARY_DIR}/libticables/trunk \
                      -L${CMAKE_BINARY_DIR}/libticalcs/trunk")
 
-target_link_libraries(torture_ticalcs "${internal_libdir}" ticonv tifiles2 ticables2 ticalcs2 "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
+foreach(tar torture_ticalcs test_ticalcs_2)
+    add_dependencies(${tar} ticalcs2_shared)
+
+    target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
+
+    target_include_directories(${tar} PRIVATE
+        ${CMAKE_SOURCE_DIR}/libticonv/trunk/src
+        ${CMAKE_SOURCE_DIR}/libtifiles/trunk/src
+        ${CMAKE_SOURCE_DIR}/libticables/trunk/src
+        ${CMAKE_SOURCE_DIR}/libticalcs/trunk/src)
+
+    target_link_libraries(${tar} "${internal_libdir}" ticonv tifiles2 ticables2 ticalcs2 "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
+endforeach()
 
 set(builddirlibpaths "${CMAKE_BINARY_DIR}/libticonv/trunk:${CMAKE_BINARY_DIR}/libtifiles/trunk:${CMAKE_BINARY_DIR}/libticables/trunk:${CMAKE_BINARY_DIR}/libticalcs/trunk")
 
