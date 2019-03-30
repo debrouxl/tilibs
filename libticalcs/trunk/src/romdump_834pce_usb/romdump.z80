@@ -181,7 +181,9 @@ cmdReqBlk:
 	call	nz, abort
 
 	ld	bc, $FFFF
-	ld	de, (buffer + 4)
+	ld	hl, buffer + 4
+	ld	de, (hl)
+	push	hl
 	ld	hl, $400000
 	sbc	hl, de
 	sbc	hl, bc
@@ -192,11 +194,17 @@ _:	add	hl, bc
 	ld	c, e
 	ld	b, d
 	call	repBlkLen
-	inc	b
-	ld	hl, buffer + 4
+	pop	hl
+	ex	de, hl
+	or	a, a
+	sbc	hl, bc
+	inc	h
+	dec	h
 	jr	nz, resRepBlk
-	ld	c, e
-	ld	b, d
+	add	hl, bc
+	ld	c, l
+	ld	b, h
+	ex	de, hl
 	ld	de, (hl)
 	ex	de, hl
 	push	bc
@@ -207,6 +215,7 @@ sendRes:
 	call	pktSend
 	jr	cmdLoop
 resRepBlk:
+	ex	de, hl
 	ld	(hl), de
 	inc	hl
 	inc	hl
