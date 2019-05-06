@@ -109,7 +109,7 @@ extern "C" {
 #define DUSB_PID_OS_BUILD_NUMBER        0x0048
 #define DUSB_PID_BOOT_BUILD_NUMBER      0x0049
 // 0x004A (read-only): 83PCE replies 00 (OS 5.1.0.0110, 5.1.1.0112, 5.1.5.0019, 5.2.0.0035)
-#define DUSB_PID_EXACT_MATH             0x004B
+#define DUSB_PID_MATH_CAPABILITIES      0x004B
 // 0x004C (read-only): 83PCE replies with 0x20 (32) bytes of data, no clear pattern: boot code SHA-256 hash.
 // boot 5.0.0.0089: D6 98 7E 21 90 54 2F 1C 32 75 F5 EC A1 AF DF B5
 //                  B2 20 14 A2 D3 E7 65 04 52 B1 D1 BD 3D 9D 1D 18
@@ -151,6 +151,7 @@ extern "C" {
 // 0x005C (read-only): 83PCE OS 5.2.0.0035 replies 4 bytes. Fast up-counter, which runs only when stopwatch is started, not reset by reads.
 #define DUSB_PID_STOPWATCH_VALUE2       0x005C
 // 0x005D-0x008F (no access): 83PCE (OS 5.1.0.0110, 5.1.1.0112, 5.1.5.0019, 5.2.0.0035) refuses being requested these parameter IDs; writes yield a 0004 error code.
+#define DUSB_PID_PYTHON_ON_BOARD        0x005D
 
 
 // Attributes IDs

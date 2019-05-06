@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2019-10-12 16:51+0200\n"
+"POT-Creation-Date: 2019-10-12 18:04+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -632,7 +632,7 @@ msgstr ""
 msgid "Msg: hand-held returned an error."
 msgstr "Msg: la calculatrice a retourné une erreur."
 
-#: src/error.cc:271 src/error.cc:307 src/error.cc:391
+#: src/error.cc:271 src/error.cc:307 src/error.cc:395
 msgid "Cause: hand-held returned an uncaught error. Please report log."
 msgstr ""
 "Cause: la calculatrice a retourné une erreur non prise en charge. Veuillez "
@@ -662,11 +662,11 @@ msgstr "Msg: application rejetée (mauvaise calculatrice)."
 msgid "Msg: malformed RTS packet (AMS version conflict)."
 msgstr "Msg: paquet RTS incorrect (conflit de version sur AMS)."
 
-#: src/error.cc:300 src/error.cc:380
+#: src/error.cc:300 src/error.cc:384
 msgid "Msg: FLASH application rejected (signature does not match)."
 msgstr "Msg: application rejetée (la signature ne correspond pas)."
 
-#: src/error.cc:305 src/error.cc:389
+#: src/error.cc:305 src/error.cc:393
 msgid "Msg: hand-held returned an error (not caught)."
 msgstr "Msg: la calculatrice a retourné une erreur (non prise en charge)."
 
@@ -690,7 +690,7 @@ msgstr ""
 "Msg: utilisation du mode de base alors que la calculatrice est en mode boot "
 "(dégradé)."
 
-#: src/error.cc:328 src/error.cc:396
+#: src/error.cc:328 src/error.cc:400
 msgid "Msg: out of memory."
 msgstr "Msg: plus de mémoire."
 
@@ -703,95 +703,99 @@ msgid "Msg: busy?"
 msgstr "Msg: occupé ?"
 
 #: src/error.cc:344
+msgid "Msg: variable too large."
+msgstr "Msg: variable trop grande."
+
+#: src/error.cc:348
 msgid "Msg: can't overwrite, variable is locked."
 msgstr "Msg: ne peut pas écraser la variable (verrouillée)."
 
-#: src/error.cc:348
+#: src/error.cc:352
 msgid "Msg: mode token too small."
 msgstr "Msg: valeur du mode trop petite."
 
-#: src/error.cc:352
+#: src/error.cc:356
 msgid "Msg: mode token too large."
 msgstr "Msg: valeur du mode trop grande."
 
-#: src/error.cc:356
+#: src/error.cc:360
 msgid "Msg: wrong size for parameter."
 msgstr "Msg: taille incorrecte pour le paramètre."
 
-#: src/error.cc:360
+#: src/error.cc:364
 msgid "Msg: invalid parameter ID."
 msgstr "Msg: identifiant de paramètre invalide."
 
-#: src/error.cc:364
+#: src/error.cc:368
 msgid "Msg: read-only parameter."
 msgstr "Msg: paramètre en lecture seule."
 
-#: src/error.cc:368
+#: src/error.cc:372
 msgid "Msg: wrong modify request?"
 msgstr "Msg: requête de modification incorrecte?"
 
-#: src/error.cc:372
+#: src/error.cc:376
 msgid "Msg: remote control?"
 msgstr "Msg: contrôle à distance ?"
 
-#: src/error.cc:376
+#: src/error.cc:380
 msgid "Msg: battery low."
 msgstr "Msg: batterie faible."
 
-#: src/error.cc:384
+#: src/error.cc:388
 msgid "Msg: hand-held is busy (set your calculator to HOME screen)."
 msgstr "Msg: calculatrice occupée (mettez la calculatrice sur HOME)."
 
-#: src/error.cc:400
+#: src/error.cc:404
 msgid "Msg: OS installation failed. File is corrupted/wrong."
 msgstr ""
 "Msg: l'installation de l'OS a échoué. Le fichier est corrompu ou invalide."
 
-#: src/error.cc:405
+#: src/error.cc:409
 msgid "Msg: packet too large."
 msgstr "Msg: paquet trop grand."
 
-#: src/error.cc:409
+#: src/error.cc:413
 msgid "Msg: the variable or directory does not exist."
 msgstr "Msg: la variable ou le répertoire n'existe pas."
 
-#: src/error.cc:413
+#: src/error.cc:417
 msgid "Msg: the directory name is invalid."
 msgstr "Msg: le nom de répertoire est invalide."
 
-#: src/error.cc:417
+#: src/error.cc:421
 msgid "Msg: not currently listing a directory."
 msgstr "Msg: pas en train de lister un répertoire."
 
-#: src/error.cc:421
+#: src/error.cc:425
 msgid "Msg: no more files to list."
 msgstr "Msg: valeur du mode trop petite."
 
-#: src/error.cc:425
+#: src/error.cc:429
 msgid "Msg: the directory name already exists."
 msgstr "Msg: le nom de répertoire existe déjà."
 
-#: src/error.cc:430
+#: src/error.cc:434
 msgid "Msg: the destination (folder or file) path is too long."
 msgstr "Msg: le chemin de destination (répertoire ou fichier) est invalide."
 
-#: src/error.cc:434
+#: src/error.cc:438
 msgid "Msg: the file name is invalid."
 msgstr "Msg: le nom de fichier est invalide."
 
-#: src/error.cc:438
+#: src/error.cc:442
 msgid "Msg: no file extension."
 msgstr "Msg: pas d'extension de fichier."
 
-#: src/error.cc:442
+#: src/error.cc:446
 msgid "Msg: forbidden characters in folder name."
 msgstr "Msg: caractères interdits dans le nom de dossier."
 
-#: src/error.cc:452
+#: src/error.cc:456
 msgid "Msg: OS upgrade type not recognized."
 msgstr "Msg: type de mise à jour de l'OS non reconnu."
 
-#: src/error.cc:456
+#: src/error.cc:460
 msgid "Msg: anti-downgrade protection refuses this OS version."
 msgstr "Msg: la protection anti-retour refuse cette version d'OS"
 
