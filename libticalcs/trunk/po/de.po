@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2019-10-12 16:51+0200\n"
+"POT-Creation-Date: 2020-12-31 17:26+0100\n"
 "PO-Revision-Date: 2016-11-18 19:30+0300\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
@@ -61,7 +61,7 @@ msgstr "Hole Zeit..."
 
 #: src/calc_73.cc:1409 src/calc_84p.cc:1640 src/calc_8x.cc:1254
 #: src/calc_9x.cc:1563 src/calc_9x.cc:1595 src/calc_89t.cc:980
-#: src/calc_nsp.cc:836
+#: src/calc_nsp.cc:852
 #, c-format
 msgid "Deleting %s..."
 msgstr "Lösche %s..."
@@ -86,11 +86,11 @@ msgstr "  HW: %i"
 msgid "  Battery: %s"
 msgstr " Batterie: %s"
 
-#: src/calc_73.cc:1486 src/type2str.cc:340
+#: src/calc_73.cc:1486 src/type2str.cc:343
 msgid "good"
 msgstr "gut"
 
-#: src/calc_73.cc:1486 src/type2str.cc:340
+#: src/calc_73.cc:1486 src/type2str.cc:343
 msgid "low"
 msgstr "niedrig"
 
@@ -142,37 +142,37 @@ msgstr ""
 msgid "Getting version..."
 msgstr "Hole Versionsnummer..."
 
-#: src/calc_84p.cc:1774
+#: src/calc_84p.cc:1775
 msgid "That's odd, product ID and calc ID do not match ?"
 msgstr "Komisch, Produkt-ID und Rechner-ID stimmen nicht überein?"
 
-#: src/calc_84p.cc:1985 src/calc_84p.cc:1994 src/calc_84p.cc:2003
-#: src/calc_84p.cc:2019 src/calc_84p.cc:2027
+#: src/calc_84p.cc:1993 src/calc_84p.cc:2002 src/calc_84p.cc:2011
+#: src/calc_84p.cc:2027 src/calc_84p.cc:2035
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr "Unbekanntes 84+ Familienmitglied mit product_id=%d hw_version=%d"
 
-#: src/calc_84p.cc:2045
+#: src/calc_84p.cc:2053
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus mittels DirectLink"
 
-#: src/calc_84p.cc:2116
+#: src/calc_84p.cc:2124
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr "TI-84 Plus C Silver Edition mittels DirectLink"
 
-#: src/calc_84p.cc:2187
+#: src/calc_84p.cc:2195
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr "TI-83 Premium CE mittels DirectLink"
 
-#: src/calc_84p.cc:2258
+#: src/calc_84p.cc:2266
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr "TI-84 Plus CE mittels DirectLink"
 
-#: src/calc_84p.cc:2329
+#: src/calc_84p.cc:2337
 msgid "TI-82 Advanced thru DirectLink"
 msgstr "TI-82 Advanced mittels DirectLink"
 
-#: src/calc_84p.cc:2400
+#: src/calc_84p.cc:2408
 msgid "TI-84 Plus T thru DirectLink"
 msgstr "TI-84 Plus T mittels DirectLink"
 
@@ -208,7 +208,7 @@ msgstr "Lese und analysiere %s/%s"
 msgid "Block #%2i"
 msgstr "Block #%2i"
 
-#: src/calc_9x.cc:1625 src/calc_89t.cc:1076 src/calc_nsp.cc:866
+#: src/calc_9x.cc:1625 src/calc_89t.cc:1076 src/calc_nsp.cc:882
 #, c-format
 msgid "Creating %s..."
 msgstr "Erzeuge %s..."
@@ -217,7 +217,7 @@ msgstr "Erzeuge %s..."
 msgid "V200 Personal Learning Tool"
 msgstr "V200 Persönliches Lernwerkzeug"
 
-#: src/calc_89t.cc:1011 src/calc_nsp.cc:1038
+#: src/calc_89t.cc:1011 src/calc_nsp.cc:1112
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr "Benenne %s in %s um..."
@@ -227,7 +227,7 @@ msgstr "Benenne %s in %s um..."
 msgid "Changing attributes of %s..."
 msgstr "Ändere die Attribute von %s..."
 
-#: src/calc_89t.cc:1399
+#: src/calc_89t.cc:1400
 msgid "TI-89 Titanium thru DirectLink"
 msgstr "TI-89 Titanium mittels DirectLink"
 
@@ -251,17 +251,61 @@ msgstr "Nummeriere die Dokumente in %s nicht, weil es kein Verzeichnis ist\n"
 msgid "Directory listing in <%s>...\n"
 msgstr "Verzeichnisliste in <%s>...\n"
 
-#: src/calc_nsp.cc:1061
+#: src/calc_nsp.cc:1201
 msgid "Nspire thru DirectLink"
 msgstr "Nspire mittels DirectLink"
 
-#: src/calc_nsp.cc:1131
-msgid "Nspire cradle thru DirectLink"
-msgstr "Nspire cradle mittels DirectLink"
+#: src/calc_nsp.cc:1215
+msgid "Nspire Cradle thru DirectLink"
+msgstr "Nspire Cradle mittels DirectLink"
 
-#: src/calc_nsp.cc:1201
+#: src/calc_nsp.cc:1229
+msgid "Nspire Clickpad thru DirectLink"
+msgstr "Nspire Clickpad mittels DirectLink"
+
+#: src/calc_nsp.cc:1243
+msgid "Nspire Clickpad CAS thru DirectLink"
+msgstr "Nspire Clickpad CAS mittels DirectLink"
+
+#: src/calc_nsp.cc:1257
+msgid "Nspire Touchpad thru DirectLink"
+msgstr "Nspire Touchpad mittels DirectLink"
+
+#: src/calc_nsp.cc:1271
+msgid "Nspire Touchpad CAS thru DirectLink"
+msgstr "Nspire Touchpad CAS mittels DirectLink"
+
+#: src/calc_nsp.cc:1285
+msgid "Nspire CX thru DirectLink"
+msgstr "Nspire CX mittels DirectLink"
+
+#: src/calc_nsp.cc:1299
+msgid "Nspire CX CAS thru DirectLink"
+msgstr "Nspire CX CAS mittels DirectLink"
+
+#: src/calc_nsp.cc:1313
+msgid "Nspire CM-C thru DirectLink"
+msgstr "Nspire CM-C mittels DirectLink"
+
+#: src/calc_nsp.cc:1327
+msgid "Nspire CM-C CAS thru DirectLink"
+msgstr "Nspire CM-C CAS mittels DirectLink"
+
+#: src/calc_nsp.cc:1341
 msgid "Nspire CX II thru DirectLink"
 msgstr "Nspire CX II mittels DirectLink"
+
+#: src/calc_nsp.cc:1355
+msgid "Nspire CX II CAS thru DirectLink"
+msgstr "Nspire CX II CAS mittels DirectLink"
+
+#: src/calc_nsp.cc:1369
+msgid "Nspire CX II-T thru DirectLink"
+msgstr "Nspire CX II-T mittels DirectLink"
+
+#: src/calc_nsp.cc:1383
+msgid "Nspire CX II-T CAS thru DirectLink"
+msgstr "Nspire CX II-T CAS mittels DirectLink"
 
 #: src/calc_xx.cc:91
 msgid "Checking hand-held status:"
@@ -297,97 +341,97 @@ msgstr "Sende Backup:"
 msgid "Requesting backup:"
 msgstr "Fordere Backup an:"
 
-#: src/calc_xx.cc:523
+#: src/calc_xx.cc:519
 msgid "Sending one or more variables:"
 msgstr "Sende eine oder mehrere Variablen:"
 
-#: src/calc_xx.cc:571
+#: src/calc_xx.cc:586
 #, c-format
 msgid "Requesting variable '%s':"
 msgstr "Fordere Variable '%s' an:"
 
-#: src/calc_xx.cc:618
+#: src/calc_xx.cc:633
 msgid "Sending variable (non-silent mode):"
 msgstr "Sende Variable (non-silent modus):"
 
-#: src/calc_xx.cc:666
+#: src/calc_xx.cc:681
 msgid "Receiving variable (non-silent mode):"
 msgstr "Erhalte Variable (non-silent modus):"
 
-#: src/calc_xx.cc:711
+#: src/calc_xx.cc:726
 msgid "Sending FLASH application:"
 msgstr "Sende FLASH Applikation:"
 
-#: src/calc_xx.cc:758
+#: src/calc_xx.cc:773
 msgid "Requesting receiving of FLASH application:"
 msgstr "Fordere den Erhalt der FLASH Applikation an:"
 
-#: src/calc_xx.cc:803
+#: src/calc_xx.cc:818
 msgid "Sending FLASH os:"
 msgstr "Sende FLASH os:"
 
-#: src/calc_xx.cc:848
+#: src/calc_xx.cc:863
 msgid "Requesting ID-LIST:"
 msgstr "Fordere ID-LIST:"
 
-#: src/calc_xx.cc:891
+#: src/calc_xx.cc:906
 msgid "Sending ROM dumper:"
 msgstr "Sende ROM dumper:"
 
-#: src/calc_xx.cc:932
+#: src/calc_xx.cc:947
 msgid "Dumping ROM:"
 msgstr "Dumping ROM:"
 
-#: src/calc_xx.cc:972
+#: src/calc_xx.cc:987
 msgid "Setting clock:"
 msgstr "Stelle Uhr:"
 
-#: src/calc_xx.cc:1017
+#: src/calc_xx.cc:1032
 msgid "Getting clock:"
 msgstr "Hole Uhr:"
 
-#: src/calc_xx.cc:1062
+#: src/calc_xx.cc:1077
 #, c-format
 msgid "Deleting variable '%s':"
 msgstr "Lösche Variable '%s':"
 
-#: src/calc_xx.cc:1107
+#: src/calc_xx.cc:1122
 #, c-format
 msgid "Creating folder '%s':"
 msgstr "Erzeuge Verzeichnis '%s':"
 
-#: src/calc_xx.cc:1152
+#: src/calc_xx.cc:1167
 msgid "Requesting version info:"
 msgstr "Fordere Versionsinformation an:"
 
-#: src/calc_xx.cc:1197
+#: src/calc_xx.cc:1212
 msgid "Sending certificate:"
 msgstr "Sende Zertifikat:"
 
-#: src/calc_xx.cc:1242
+#: src/calc_xx.cc:1257
 msgid "Requesting receiving of certificate:"
 msgstr "Fordere den Empfang des Zertifikats an:"
 
-#: src/calc_xx.cc:1291
+#: src/calc_xx.cc:1306
 #, c-format
 msgid "Renaming variable '%s/%s' to '%s/%s':"
 msgstr "Benenne die Variable '%s/%s' in '%s/%s' um:"
 
-#: src/calc_xx.cc:1295
+#: src/calc_xx.cc:1310
 #, c-format
 msgid "Renaming variable '%s' to '%s':"
 msgstr "Benenne die Variable '%s' in '%s' um:"
 
-#: src/calc_xx.cc:1343
+#: src/calc_xx.cc:1358
 #, c-format
 msgid "Setting variable '%s' to %s:"
 msgstr "Setze Variable '%s' auf %s:"
 
-#: src/calc_xx.cc:1390
+#: src/calc_xx.cc:1405
 msgid "Sending fake (all vars) backup:"
 msgstr "Sende fake (all vars) Backup:"
 
-#: src/calc_xx.cc:1435
+#: src/calc_xx.cc:1450
 msgid "Requesting fake (all vars) backup:"
 msgstr "Fordere fake (all vars) Backup an:"
 
@@ -638,7 +682,7 @@ msgstr ""
 msgid "Msg: hand-held returned an error."
 msgstr "Msg: Hand-Held gab einen Fehler zurück."
 
-#: src/error.cc:271 src/error.cc:307 src/error.cc:391
+#: src/error.cc:271 src/error.cc:307 src/error.cc:411
 msgid "Cause: hand-held returned an uncaught error. Please report log."
 msgstr ""
 "Grund: Hand-Held gab einen nicht abgefangenen Fehler zurück. Bitte melde Log."
@@ -667,11 +711,11 @@ msgstr "Msg: FLASH Applikation abgelehnt (falsches Ziel-Modell)."
 msgid "Msg: malformed RTS packet (AMS version conflict)."
 msgstr "Msg: Fehlerhaftes RTS Paket (AMS Versionskonflikt)."
 
-#: src/error.cc:300 src/error.cc:380
+#: src/error.cc:300 src/error.cc:392
 msgid "Msg: FLASH application rejected (signature does not match)."
 msgstr "Msg: FLASH Applikation abgelehnt (Signatur passt nicht)."
 
-#: src/error.cc:305 src/error.cc:389
+#: src/error.cc:305 src/error.cc:409
 msgid "Msg: hand-held returned an error (not caught)."
 msgstr "Msg: Hand-Held gab einen Fehler zurück (nicht abgefangen)."
 
@@ -691,7 +735,7 @@ msgstr "Msg: Transmissionsfehler."
 msgid "Msg: using basic mode while being in boot mode."
 msgstr "Msg: Verwende Basic Mode während Boot Modus."
 
-#: src/error.cc:328 src/error.cc:396
+#: src/error.cc:328 src/error.cc:416
 msgid "Msg: out of memory."
 msgstr "Msg: Kein Speicher mehr verfügbar."
 
@@ -708,91 +752,111 @@ msgid "Msg: can't overwrite, variable is locked."
 msgstr "Msg: Kann nicht überschreiben, Variable ist gesperrt."
 
 #: src/error.cc:348
+msgid "Msg: variable too large."
+msgstr "Msg: Variable zu große."
+
+#: src/error.cc:352
 msgid "Msg: mode token too small."
 msgstr "Msg: Mode Token zu klein."
 
-#: src/error.cc:352
+#: src/error.cc:356
 msgid "Msg: mode token too large."
 msgstr "Msg: Mode Token zu groß."
 
-#: src/error.cc:356
+#: src/error.cc:360
 msgid "Msg: wrong size for parameter."
 msgstr "Msg: Falsche Parameter-Größe."
 
-#: src/error.cc:360
+#: src/error.cc:364
 msgid "Msg: invalid parameter ID."
 msgstr "Msg: Ungültige Parameter-ID."
 
-#: src/error.cc:364
+#: src/error.cc:368
 msgid "Msg: read-only parameter."
 msgstr "Msg: read-only Parameter."
 
-#: src/error.cc:368
+#: src/error.cc:372
 msgid "Msg: wrong modify request?"
 msgstr "Msg: Falsche Änderungsanforderung?"
 
-#: src/error.cc:372
+#: src/error.cc:376
 msgid "Msg: remote control?"
 msgstr "Msg: Remote Control?"
 
-#: src/error.cc:376
+#: src/error.cc:380
 msgid "Msg: battery low."
 msgstr "Msg: Batteriespannung niedrig."
 
 #: src/error.cc:384
+msgid "Msg: FLASH application rejected (e.g. TI-68k FL_addCert 6)."
+msgstr "Msg: FLASH Applikation abgelehnt (TI-68k FL_addCert 6)."
+
+#: src/error.cc:388
+msgid "Msg: FLASH application rejected (e.g. TI-68k FL_addCert 7)."
+msgstr "Msg: FLASH Applikation abgelehnt (TI-68k FL_addCert 7)."
+
+#: src/error.cc:396
+msgid "Msg: FLASH application rejected (e.g. TI-68k FL_addCert 9)."
+msgstr "Msg: FLASH Applikation abgelehnt (TI-68k FL_addCert 9)."
+
+#: src/error.cc:400
+msgid "Msg: FLASH application rejected (e.g. TI-68k FL_addCert A)."
+msgstr "Msg: FLASH Applikation abgelehnt (TI-68k FL_addCert A)."
+
+#: src/error.cc:404
 msgid "Msg: hand-held is busy (set your calculator to HOME screen)."
 msgstr ""
 "Msg: Hand-Held ist beschäftigt (setze den Rechner auf die HOME-Screen)."
 
-#: src/error.cc:400
+#: src/error.cc:420
 msgid "Msg: OS installation failed. File is corrupted/wrong."
 msgstr "Msg: OS Installation fehlgeschlagen. Datei ist fehlerhaft/falsch."
 
-#: src/error.cc:405
+#: src/error.cc:425
 msgid "Msg: packet too large."
 msgstr "Msg: Paket zu groß."
 
-#: src/error.cc:409
+#: src/error.cc:429
 msgid "Msg: the variable or directory does not exist."
 msgstr "Msg: Die Variable oder das Verzeichnis existiert nicht."
 
-#: src/error.cc:413
+#: src/error.cc:433
 msgid "Msg: the directory name is invalid."
 msgstr "Msg: Der Verzeichnisname ist ungültig."
 
-#: src/error.cc:417
+#: src/error.cc:437
 msgid "Msg: not currently listing a directory."
 msgstr "Msg: Zeige derzeit kein Verzeichnis an."
 
-#: src/error.cc:421
+#: src/error.cc:441
 msgid "Msg: no more files to list."
 msgstr "Msg: Keine weiteren Dateien anzuzeigen."
 
-#: src/error.cc:425
+#: src/error.cc:445
 msgid "Msg: the directory name already exists."
 msgstr "Msg: Der Verzeichnisname existiert bereits."
 
-#: src/error.cc:430
+#: src/error.cc:450
 msgid "Msg: the destination (folder or file) path is too long."
 msgstr "Msg: Der Ziel-Pfad (Verzeichnis oder Datei) ist zu lang."
 
-#: src/error.cc:434
+#: src/error.cc:454
 msgid "Msg: the file name is invalid."
 msgstr "Msg: Der Dateiname ist ungültig."
 
-#: src/error.cc:438
+#: src/error.cc:458
 msgid "Msg: no file extension."
 msgstr "Msg: Keine Dateinamen-Erweiterung."
 
-#: src/error.cc:442
+#: src/error.cc:462
 msgid "Msg: forbidden characters in folder name."
 msgstr "Msg: Unerlaubte Zeichen im Verzeichnisnamen."
 
-#: src/error.cc:452
+#: src/error.cc:472
 msgid "Msg: OS upgrade type not recognized."
 msgstr "Msg: OS Upgrade-Typ nicht erkannt."
 
-#: src/error.cc:456
+#: src/error.cc:476
 msgid "Msg: anti-downgrade protection refuses this OS version."
 msgstr "Msg: Anti-Downgrade Protektion verhindert diese OS-Version."
 
@@ -850,16 +914,16 @@ msgstr "Rechner Typ: %s"
 msgid "Unknown pixel format %d\n"
 msgstr "Unbekanntes Pixel Format %d\n"
 
-#: src/ticalcs.cc:250
+#: src/ticalcs.cc:318
 #, c-format
 msgid "ticalcs library version %s"
 msgstr "ticalcs Library Version %s"
 
-#: src/ticalcs.cc:554
+#: src/ticalcs.cc:622
 msgid "Link calc handle details:"
 msgstr "Verbindungs-Details:"
 
-#: src/ticalcs.cc:555
+#: src/ticalcs.cc:623
 #, c-format
 msgid "  model   : %s"
 msgstr "  Modell  : %s"
@@ -908,78 +972,82 @@ msgstr "Geräte-Typ: "
 msgid "Hardware Version: "
 msgstr "Hardware-Version: "
 
-#: src/type2str.cc:304
+#: src/type2str.cc:305
 msgid "Boot Version: "
 msgstr "Boot-Version: "
 
-#: src/type2str.cc:306
+#: src/type2str.cc:307
 msgid "Boot2 Version: "
 msgstr "Boot2-Version: "
 
-#: src/type2str.cc:308
+#: src/type2str.cc:309
 msgid "OS Version: "
 msgstr "OS-Version: "
 
-#: src/type2str.cc:310
+#: src/type2str.cc:311
 msgid "Run level: "
 msgstr "Run level: "
 
-#: src/type2str.cc:312
+#: src/type2str.cc:313
 msgid "Clock speed: "
 msgstr "Taktfrequenz: "
 
-#: src/type2str.cc:314
+#: src/type2str.cc:315
 msgid "Exact math engine: "
 msgstr "Genauer Math-Engine: "
 
-#: src/type2str.cc:315
+#: src/type2str.cc:316 src/type2str.cc:318
 msgid "Yes"
 msgstr "Ja"
 
-#: src/type2str.cc:315
+#: src/type2str.cc:316 src/type2str.cc:318
 msgid "No"
 msgstr "Nein"
 
 #: src/type2str.cc:317
+msgid "Python on board: "
+msgstr ""
+
+#: src/type2str.cc:320
 msgid "LCD width: "
 msgstr "LCD Breite: "
 
-#: src/type2str.cc:319
+#: src/type2str.cc:322
 msgid "LCD height: "
 msgstr "LCD Höhe: "
 
-#: src/type2str.cc:321
+#: src/type2str.cc:324
 msgid "Bits per pixel: "
 msgstr "Bits pro Pixel: "
 
-#: src/type2str.cc:323
+#: src/type2str.cc:326
 msgid "Color screen: "
 msgstr "Farb-Screen: "
 
-#: src/type2str.cc:326
+#: src/type2str.cc:329
 msgid "Physical RAM: "
 msgstr "Physikalischer RAM: "
 
-#: src/type2str.cc:328
+#: src/type2str.cc:331
 msgid "User RAM: "
 msgstr "Benutzer-RAM: "
 
-#: src/type2str.cc:330
+#: src/type2str.cc:333
 msgid "Free RAM: "
 msgstr "Freier RAM: "
 
-#: src/type2str.cc:332
+#: src/type2str.cc:335
 msgid "Physical Flash: "
 msgstr "Physikalischer Flash: "
 
-#: src/type2str.cc:334
+#: src/type2str.cc:337
 msgid "User Flash: "
 msgstr "Benutzer-Flash: "
 
-#: src/type2str.cc:336
+#: src/type2str.cc:339
 msgid "Free Flash: "
 msgstr "Freier Flash: "
 
-#: src/type2str.cc:339
+#: src/type2str.cc:342
 msgid "Battery: "
 msgstr " Batterie: "
