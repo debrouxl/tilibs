@@ -301,6 +301,7 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 			device_type,
 			(infos->mask & INFOS_HW_VERSION) ? _("Hardware Version: ") : "",
 			hw_version,
+
 			(infos->mask & INFOS_BOOT_VERSION) ? _("Boot Version: ") : "",
 			(infos->mask & INFOS_BOOT_VERSION) ? infos->boot_version : "",
 			(infos->mask & INFOS_BOOT2_VERSION) ? _("Boot2 Version: ") : "",
@@ -313,6 +314,8 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 			clock_speed,
 			(infos->mask & INFOS_EXACT_MATH) ? _("Exact math engine: ") : "",
 			(infos->mask & INFOS_EXACT_MATH) ? ((infos->exact_math) ? _("Yes") : _("No")) : "",
+			(infos->mask & INFOS_PYTHON_ON_BOARD) ? _("Python on board: ") : "",
+			(infos->mask & INFOS_PYTHON_ON_BOARD) ? ((infos->python_on_board) ? _("Yes") : _("No")) : "",
 
 			(infos->mask & INFOS_LCD_WIDTH) ? _("LCD width: ") : "",
 			lcd_width,

@@ -54,7 +54,7 @@ extern "C" {
 #define DUSB_PID_HAS_SCREEN             0x0019
 // 0x001A (read-only): 84+SE OS 2.43, 84+CSE OS 4.0 and 83PCE (OS 5.1.0.0110, 5.1.1.0112, 5.1.5.0019, 5.2.0.0035) reply 00, 89T AMS 3.10 refuses being requested this parameter ID.
 #define DUSB_PID_COLOR_AVAILABLE        0x001B
-// 0x001C (read-only): 84+SE OS 2.43 replies 01, 84+CSE OS 4.0 and 83PCE (OS 5.1.0.0110, 5.1.1.0112, 5.1.5.0019, 5.2.0.0035) reply 10, 89T AMS 3.10 refuses being requested this parameter ID.
+#define DUSB_PID_COLOR_DEPTH            0x001C // 0x001C (read-only): 84+SE OS 2.43 replies 01, 84+CSE OS 4.0 and 83PCE (OS 5.1.0.0110, 5.1.1.0112, 5.1.5.0019, 5.2.0.0035) reply 10, 89T AMS 3.10 refuses being requested this parameter ID.
 #define DUSB_PID_BITS_PER_PIXEL         0x001D
 #define DUSB_PID_LCD_WIDTH              0x001E
 #define DUSB_PID_LCD_HEIGHT             0x001F
@@ -65,7 +65,7 @@ extern "C" {
 #define DUSB_PID_CLASSIC_CLK_SUPPORT    0x0023
 #define DUSB_PID_CLK_ON                 0x0024
 #define DUSB_PID_CLK_SEC_SINCE_1997     0x0025
-// 0x0026 (read-write): 84+SE OS 2.43 and 84+CSE OS 4.0 refuse being requested or set this parameter ID, 83PCE (OS 5.1.0.0110, 5.1.1.0112, 5.1.5.0019, 5.2.0.0035) and 89T AMS 3.10 reply 00 00.
+#define DUSB_PID_CLK_TZ                 0x0026 // 0x0026 (read-write): 84+SE OS 2.43 and 84+CSE OS 4.0 refuse being requested or set this parameter ID, 83PCE (OS 5.1.0.0110, 5.1.1.0112, 5.1.5.0019, 5.2.0.0035) and 89T AMS 3.10 reply 00 00.
 #define DUSB_PID_CLK_DATE_FMT           0x0027
 #define DUSB_PID_CLK_TIME_FMT           0x0028
 // 0x0029 (read-only): 84+SE OS 2.43 replies 00, 84+CSE OS 4.0 and 83PCE (OS 5.1.0.0110, 5.1.1.0112, 5.1.5.0019, 5.2.0.0035) reply 01, 89T AMS 3.10 refuses being requested this parameter ID.
@@ -79,8 +79,7 @@ extern "C" {
 // Data does not survive RAM clear. DUSB counterpart of DBUS RID + SID pair.
 // 84+SE OS 2.43 reacts oddly to writes: written data does not necessarily read back ?
 #define DUSB_PID_USER_DATA_1            0x0030
-// 0x0031 (read-only): 83PCE (OS 5.1.5.0019, 5.2.0.0035) and 89T AMS 3.10 reply with a subset of FlashApp headers. 84+SE and 84+CSE perform a lengthy operation.
-#define DUSB_PID_FLASHAPPS              0x0031
+#define DUSB_PID_FLASHAPPS              0x0031 // 0x0031 (read-only): 83PCE (OS 5.1.5.0019, 5.2.0.0035) and 89T AMS 3.10 reply with a subset of FlashApp headers. 84+SE and 84+CSE perform a lengthy operation.
 // 0x0032 (read-only): 84+SE OS 2.43, 84+CSE OS 4.0 and 83PCE (OS 5.1.0.0110, 5.1.1.0112, 5.1.5.0019, 5.2.0.0035) reply 00, 89T AMS 3.10 refuses being requested this parameter ID.
 // 0x0033-0x0034 (no access): 84+SE OS 2.43, 84+CSE OS 4.0, 83PCE (OS 5.1.0.0110, 5.1.1.0112, 5.1.5.0019, 5.2.0.0035) and 89T AMS 3.10 refuse being requested these parameter IDs.
 // 0x0035 (read-write): 83PCE (OS 5.1.0.0110, 5.1.1.0112, 5.1.5.0019, 5.2.0.0035) replies with 0x0A (10) bytes of data, initially all zeros. 84+SE OS 2.43, 84+CSE OS 4.0 and 89T AMS 3.10 refuse being requested this parameter ID.
@@ -109,7 +108,7 @@ extern "C" {
 #define DUSB_PID_OS_BUILD_NUMBER        0x0048
 #define DUSB_PID_BOOT_BUILD_NUMBER      0x0049
 // 0x004A (read-only): 83PCE replies 00 (OS 5.1.0.0110, 5.1.1.0112, 5.1.5.0019, 5.2.0.0035)
-#define DUSB_PID_EXACT_MATH             0x004B
+#define DUSB_PID_MATH_CAPABILITIES      0x004B
 // 0x004C (read-only): 83PCE replies with 0x20 (32) bytes of data, no clear pattern: boot code SHA-256 hash.
 // boot 5.0.0.0089: D6 98 7E 21 90 54 2F 1C 32 75 F5 EC A1 AF DF B5
 //                  B2 20 14 A2 D3 E7 65 04 52 B1 D1 BD 3D 9D 1D 18
@@ -151,6 +150,7 @@ extern "C" {
 // 0x005C (read-only): 83PCE OS 5.2.0.0035 replies 4 bytes. Fast up-counter, which runs only when stopwatch is started, not reset by reads.
 #define DUSB_PID_STOPWATCH_VALUE2       0x005C
 // 0x005D-0x008F (no access): 83PCE (OS 5.1.0.0110, 5.1.1.0112, 5.1.5.0019, 5.2.0.0035) refuses being requested these parameter IDs; writes yield a 0004 error code.
+#define DUSB_PID_PYTHON_ON_BOARD        0x005D
 
 
 // Attributes IDs
