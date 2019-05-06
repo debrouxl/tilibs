@@ -69,6 +69,7 @@ static const DUSBCmdParamInfo param_types[] =
 	{ DUSB_PID_FREE_PAGES, "Free pages" }, // 0x0013
 	{ DUSB_PID_HAS_SCREEN, "Has screen" }, // 0x0019
 	{ DUSB_PID_COLOR_AVAILABLE, "Color is available" }, // 0x001B
+	{ DUSB_PID_COLOR_DEPTH, "Color depth" }, // 0x001C
 	{ DUSB_PID_BITS_PER_PIXEL, "Bits per pixel" }, // 0x001D
 	{ DUSB_PID_LCD_WIDTH, "LCD width" },
 	{ DUSB_PID_LCD_HEIGHT, "LCD height" }, // 0x001F
@@ -76,6 +77,7 @@ static const DUSBCmdParamInfo param_types[] =
 	{ DUSB_PID_CLASSIC_CLK_SUPPORT, "Classic clock supported" },
 	{ DUSB_PID_CLK_ON, "Clock ON" },
 	{ DUSB_PID_CLK_SEC_SINCE_1997, "Clock sec since 1997" }, // 0x0025
+	{ DUSB_PID_CLK_TZ, "Clock timezone" }, // 0x0026
 	{ DUSB_PID_CLK_DATE_FMT, "Clock date format" }, // 0x0027
 	{ DUSB_PID_CLK_TIME_FMT, "Clock time format" }, // 0x0028
 	{ DUSB_PID_BATTERY, "Battery level" }, // 0x002D
@@ -96,7 +98,7 @@ static const DUSBCmdParamInfo param_types[] =
 	{ DUSB_PID_ANS, "Ans contents" }, // 0x0046
 	{ DUSB_PID_OS_BUILD_NUMBER, "OS build number" }, // 0x0048
 	{ DUSB_PID_BOOT_BUILD_NUMBER, "Boot build number" }, // 0x0049
-	{ DUSB_PID_EXACT_MATH, "Exact math engine" }, // 0x004B
+	{ DUSB_PID_MATH_CAPABILITIES, "Math engine capabilities" }, // 0x004B
 	{ DUSB_PID_BOOT_HASH, "Boot hash" }, // 0x004C
 	{ DUSB_PID_OS_HASH, "OS hash" }, // 0x004D
 	{ DUSB_PID_PTT_MODE_SET, "PTT mode set" }, // 0x004F
@@ -107,6 +109,7 @@ static const DUSBCmdParamInfo param_types[] =
 	{ DUSB_PID_STOPWATCH_START, "Stopwatch start" }, // 0x0059
 	{ DUSB_PID_STOPWATCH_VALUE1, "Stopwatch value 1" }, // 0x005B
 	{ DUSB_PID_STOPWATCH_VALUE2, "Stopwatch value 2" }, // 0x005C
+	{ DUSB_PID_PYTHON_ON_BOARD, "Python On Board" }, // 0x005D
 	{ 0xFFFF, NULL}
 };
 
@@ -446,8 +449,8 @@ static void byteswap(uint8_t *data, uint32_t len)
 
 static const uint16_t usb_errors[] = {
 	0x0004, 0x0006, 0x0008, 0x0009, 0x000c, 0x000d, 0x000e,
-	0x0011, 0x0012, 0x001c, 0x001d, 0x0021, 0x0022, 0x0023,
-	0x0027, 0x0029, 0x002b, 0x002e, 0x0034
+	0x0011, 0x0012, 0x001b, 0x001c, 0x001d, 0x0021, 0x0022,
+	0x0023, 0x0027, 0x0029, 0x002a, 0x002b, 0x002e, 0x0034
 };
 
 static int err_code(uint16_t code)
