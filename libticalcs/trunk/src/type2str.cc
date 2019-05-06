@@ -241,53 +241,57 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 		}
 
 		ticalcs_slprintf(str, maxlen,
-			"%s"
+			"%s"   // INFOS_PRODUCT_NAME
 			"%s\n"
-			"%s"
+			"%s"   // INFOS_PRODUCT_ID
 			"%s\n"
-			"%s"
+			"%s"   // INFOS_LANG_ID
 			"%s\n"
-			"\n"
-			"%s"
-			"%s\n"
-			"%s"
-			"%s\n"
-			"%s"
-			"%s\n"
-			"%s"
-			"%s\n"
-			"%s"
-			"%s\n"
-			"%s"
-			"%s\n"
-			"%s"
-			"%s\n"
-			"%s"
+			"%s"   // INFOS_USER_DEFINED_ID
 			"%s\n"
 			"\n"
-			"%s"
+			"%s"   // INFOS_DEVICE_TYPE
 			"%s\n"
-			"%s"
+			"%s"   // INFOS_HW_VERSION
 			"%s\n"
-			"%s"
+			"%s"   // INFOS_BOOT_VERSION
 			"%s\n"
-			"%s"
+			"%s"   // INFOS_BOOT2_VERSION
 			"%s\n"
-			"\n"
-			"%s"
+			"%s"   // INFOS_OS_VERSION
 			"%s\n"
-			"%s"
+			"%s"   // INFOS_RUN_LEVEL
 			"%s\n"
-			"%s"
+			"%s"   // INFOS_CLOCK_SPEED
 			"%s\n"
-			"%s"
+			"%s"   // INFOS_MATH_CAPABILITIES
 			"%s\n"
-			"%s"
-			"%s\n"
-			"%s"
+			"%s"   // INFOS_PYTHON_ON_BOARD
 			"%s\n"
 			"\n"
-			"%s"
+			"%s"   // INFOS_LCD_WIDTH
+			"%s\n"
+			"%s"   // INFOS_LCD_HEIGHT
+			"%s\n"
+			"%s"   // INFOS_BPP
+			"%s\n"
+			"%s"   // INFOS_COLOR_SCREEN
+			"%s\n"
+			"\n"
+			"%s"   // INFOS_RAM_PHYS
+			"%s\n"
+			"%s"   // INFOS_RAM_USER
+			"%s\n"
+			"%s"   // INFOS_RAM_FREE
+			"%s\n"
+			"%s"   // INFOS_FLASH_PHYS
+			"%s\n"
+			"%s"   // INFOS_FLASH_USER
+			"%s\n"
+			"%s"   // INFOS_FLASH_FREE
+			"%s\n"
+			"\n"
+			"%s"   // INFOS_BATTERY_ENOUGH
 			"%s\n",
 
 			(infos->mask & INFOS_PRODUCT_NAME) ? _("Product Name: ") : "",
@@ -296,11 +300,14 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 			(infos->mask & INFOS_PRODUCT_ID) ? infos->product_id : "",
 			(infos->mask & INFOS_LANG_ID) ? _("Language ID: ") : "",
 			language_ids,
+			(infos->mask & INFOS_USER_DEFINED_ID) ? _("User-defined ID: ") : "",
+			(infos->mask & INFOS_USER_DEFINED_ID) ? infos->user_defined_id : "",
 
 			(infos->mask & INFOS_DEVICE_TYPE) ? _("Device Type: ") : "",
 			device_type,
 			(infos->mask & INFOS_HW_VERSION) ? _("Hardware Version: ") : "",
 			hw_version,
+
 			(infos->mask & INFOS_BOOT_VERSION) ? _("Boot Version: ") : "",
 			(infos->mask & INFOS_BOOT_VERSION) ? infos->boot_version : "",
 			(infos->mask & INFOS_BOOT2_VERSION) ? _("Boot2 Version: ") : "",
@@ -311,8 +318,10 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 			(infos->mask & INFOS_RUN_LEVEL) ? ((infos->run_level == 2) ? "OS" : "boot") : "",
 			(infos->mask & INFOS_CLOCK_SPEED) ? _("Clock speed: ") : "",
 			clock_speed,
-			(infos->mask & INFOS_EXACT_MATH) ? _("Exact math engine: ") : "",
-			(infos->mask & INFOS_EXACT_MATH) ? ((infos->exact_math) ? _("Yes") : _("No")) : "",
+			(infos->mask & INFOS_MATH_CAPABILITIES) ? _("Math capabilities (exact math engine): ") : "",
+			(infos->mask & INFOS_MATH_CAPABILITIES) ? ((infos->exact_math) ? _("Yes") : _("No")) : "",
+			(infos->mask & INFOS_PYTHON_ON_BOARD) ? _("Python on board: ") : "",
+			(infos->mask & INFOS_PYTHON_ON_BOARD) ? ((infos->python_on_board) ? _("Yes") : _("No")) : "",
 
 			(infos->mask & INFOS_LCD_WIDTH) ? _("LCD width: ") : "",
 			lcd_width,
@@ -336,8 +345,8 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 			(infos->mask & INFOS_FLASH_FREE) ? _("Free Flash: ") : "",
 			flash_free,
 
-			(infos->mask & INFOS_BATTERY) ? _("Battery: ") : "",
-			(infos->mask & INFOS_BATTERY) ? (infos->battery ? _("good") : _("low")) : "");
+			(infos->mask & INFOS_BATTERY_ENOUGH) ? _("Battery: ") : "",
+			(infos->mask & INFOS_BATTERY_ENOUGH) ? (infos->battery ? _("good") : _("low")) : "");
 		return 0;
 	}
 	else

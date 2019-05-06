@@ -981,7 +981,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		infos_mask |= INFOS_RAM_PHYS;
 
 		infos->battery = (data[32] == 0x01) ? 0 : 1;
-		infos_mask |= INFOS_BATTERY;
+		infos_mask |= INFOS_BATTERY_ENOUGH;
 
 		infos->clock_speed = data[35];
 		infos_mask |= INFOS_CLOCK_SPEED;

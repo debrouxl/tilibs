@@ -1157,7 +1157,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		DUSB_PID_LCD_WIDTH, DUSB_PID_LCD_HEIGHT,
 	};
 	static const uint16_t pids2[] = {
-		DUSB_PID_BITS_PER_PIXEL, DUSB_PID_BATTERY, DUSB_PID_OS_MODE, DUSB_PID_CLASSIC_CLK_SUPPORT
+		DUSB_PID_BITS_PER_PIXEL, DUSB_PID_BATTERY_ENOUGH, DUSB_PID_OS_MODE, DUSB_PID_CLASSIC_CLK_SUPPORT
 	};	// Titanium can't manage more than 16 parameters at a time
 	const int size1 = sizeof(pids1) / sizeof(uint16_t);
 	const int size2 = sizeof(pids2) / sizeof(uint16_t);
@@ -1363,7 +1363,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		if (params2[i]->ok && params2[i]->size == 1)
 		{
 			infos->battery = params2[i]->data[0];
-			infos_mask |= INFOS_BATTERY;
+			infos_mask |= INFOS_BATTERY_ENOUGH;
 		}
 		i++;
 

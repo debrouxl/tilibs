@@ -1477,7 +1477,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		}
 		infos->language_id = buffer[6];
 		infos->sub_lang_id = buffer[7];
-		infos->mask = (InfosMask)(INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID);
+		infos->mask = (InfosMask)(INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY_ENOUGH | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID);
 
 		tifiles_hexdump(buffer, length);
 		ticalcs_info(_("  OS: %s"), infos->os_version);

@@ -1713,7 +1713,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		DUSB_PID_PHYS_RAM, DUSB_PID_USER_RAM, DUSB_PID_FREE_RAM,
 		DUSB_PID_PHYS_FLASH, DUSB_PID_USER_FLASH, DUSB_PID_FREE_FLASH,
 		DUSB_PID_LCD_WIDTH, DUSB_PID_LCD_HEIGHT, DUSB_PID_BITS_PER_PIXEL, DUSB_PID_COLOR_AVAILABLE,
-		DUSB_PID_BATTERY, DUSB_PID_EXACT_MATH, DUSB_PID_CLASSIC_CLK_SUPPORT
+		DUSB_PID_BATTERY_ENOUGH, DUSB_PID_MATH_CAPABILITIES, DUSB_PID_PYTHON_ON_BOARD, DUSB_PID_CLASSIC_CLK_SUPPORT
 	};
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	DUSBCalcParam **params;
@@ -1965,14 +1965,21 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			if (params[i]->ok && params[i]->size == 1)
 			{
 				infos->battery = params[i]->data[0];
-				infos_mask |= INFOS_BATTERY;
+				infos_mask |= INFOS_BATTERY_ENOUGH;
 			}
 			i++;
 
 			if (params[i]->ok && params[i]->size == 1)
 			{
 				infos->exact_math = params[i]->data[0];
-				infos_mask |= INFOS_EXACT_MATH;
+				infos_mask |= INFOS_MATH_CAPABILITIES;
+			}
+			i++;
+
+			if (params[i]->ok && params[i]->size == 1)
+			{
+				infos->python_on_board = params[i]->data[0];
+				infos_mask |= INFOS_PYTHON_ON_BOARD;
 			}
 			i++;
 
