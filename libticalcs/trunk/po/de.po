@@ -436,24 +436,16 @@ msgid "Requesting fake (all vars) backup:"
 msgstr "Fordere fake (all vars) Backup an:"
 
 #: src/dirlist.cc:194
-#, c-format
 msgid "| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"
 msgstr "| B. Name          | T. Name  |Attr|Typ | Größe    | Ordner   |\n"
 
 #: src/dirlist.cc:204
-#, c-format
 msgid "| No variables     |\n"
 msgstr "| Keine Variablen  |\n"
 
 #: src/dirlist.cc:208
-#, c-format
 msgid "| No applications  |\n"
 msgstr "| Kein Programm    |\n"
-
-#: src/dirlist.cc:212
-#, c-format
-msgid "+------------------+----------+----+----+----------+----------+"
-msgstr "+------------------+----------+----+----+----------+----------+"
 
 #: src/error.cc:72
 msgid "Msg: transfer aborted."

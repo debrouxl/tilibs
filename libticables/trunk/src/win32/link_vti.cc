@@ -105,8 +105,8 @@ static int vti_open(CableHandle *h)
 
 	if (!Handle)
 	{
-		ticables_critical(_("FATAL ERROR: unable to get an handle on the ticables-2 library."));
-		ticables_critical(_("Did you rename the library ?!"));
+		ticables_critical("%s", _("FATAL ERROR: unable to get an handle on the ticables-2 library."));
+		ticables_critical("%s", _("Did you rename the library ?!"));
 		return ERR_NO_LIBRARY;
 	}
 

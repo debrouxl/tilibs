@@ -549,7 +549,7 @@ TIEXPORT1 int TICALL ticables_handle_show(CableHandle* handle)
 {
 	if (handle != NULL)
 	{
-		ticables_info(_("Link cable handle details:"));
+		ticables_info("%s", _("Link cable handle details:"));
 		ticables_info(_("  model   : %s"), ticables_model_to_string(handle->model));
 		ticables_info(_("  port    : %s"), ticables_port_to_string(handle->port));
 		ticables_info(_("  timeout : %2.1fs"), (float)handle->timeout / 10);

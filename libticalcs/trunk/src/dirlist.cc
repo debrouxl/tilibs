@@ -191,7 +191,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode* tree)
 	}
 
 	printf(  "+------------------+----------+----+----+----------+----------+\n");
-	printf(_("| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"));
+	printf("%s", _("| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"));
 	printf(  "+------------------+----------+----+----+----------+----------+\n");
 
 	i = (int)g_node_n_children(vars);
@@ -201,16 +201,15 @@ TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode* tree)
 	{
 		if (!strcmp(info->type, VAR_NODE_NAME))
 		{
-			printf(_("| No variables     |\n"));
+			printf("%s", _("| No variables     |\n"));
 		}
 		else if (!strcmp(info->type, APP_NODE_NAME))
 		{
-			printf(_("| No applications  |\n"));
+			printf("%s", _("| No applications  |\n"));
 		}
 	}
 
-	printf(_("+------------------+----------+----+----+----------+----------+"));
-	printf("\n");
+	printf(  "+------------------+----------+----+----+----------+----------+\n");
 }
 
 /**
