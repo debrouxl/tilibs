@@ -619,7 +619,7 @@ TIEXPORT3 int TICALL ticalcs_handle_show(CalcHandle* handle)
 {
 	VALIDATE_HANDLE(handle);
 
-	ticalcs_info(_("Link calc handle details:"));
+	ticalcs_info("%s", _("Link calc handle details:"));
 	ticalcs_info(_("  model   : %s"), ticalcs_model_to_string(handle->model));
 
 	return 0;
