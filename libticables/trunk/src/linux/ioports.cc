@@ -68,14 +68,14 @@ int par_io_open(const char *dev_name, int *dev_fd)
     // Ask for exclusive access
     if (ioctl(*dev_fd, PPEXCL) == -1)
     {
-        ticables_warning(_("ioctl failed on parallel device: can't claim exclusive access."));
-	ticables_warning("we will do without that.");
+        ticables_warning("%s", _("ioctl failed on parallel device: can't claim exclusive access."));
+	ticables_warning("%s", _("we will do without that."));
     }
 
     // Claim access
     if (ioctl(*dev_fd, PPCLAIM) == -1)
     {
-	ticables_warning(_("ioctl failed on parallel device: can't claim parport."));
+	ticables_warning("%s", _("ioctl failed on parallel device: can't claim parport."));
 	return ERR_PPT_IOCTL;
     }
 
@@ -84,7 +84,7 @@ int par_io_open(const char *dev_name, int *dev_fd)
     mode = IEEE1284_MODE_COMPAT;
     if (ioctl(*dev_fd, PPSETMODE, &mode) == -1)
     {
-	ticables_warning(_("ioctl failed on parallel device: can't change transfer mode."));
+	ticables_warning("%s", _("ioctl failed on parallel device: can't change transfer mode."));
 	return ERR_PPT_IOCTL;
     }
 
@@ -96,7 +96,7 @@ int par_io_close(int dev_fd)
     // release access
     if (ioctl(dev_fd, PPRELEASE) == -1)
     {
-        ticables_warning(_("ioctl failed on parallel device: can't release parport."));
+        ticables_warning("%s", _("ioctl failed on parallel device: can't release parport."));
         return ERR_PPT_IOCTL;
     }
 
@@ -110,7 +110,7 @@ int par_io_rd(int dev_fd)
 
     if (ioctl(dev_fd, PPRSTATUS, &data) == -1)
     {
-        ticables_warning(_("ioctl failed on parallel device: can't read status lines."));
+        ticables_warning("%s", _("ioctl failed on parallel device: can't read status lines."));
         return ERR_PPT_IOCTL;
     }
 
@@ -121,7 +121,7 @@ int par_io_wr(int dev_fd, uint8_t data)
 {
     if(ioctl (dev_fd, PPWDATA, &data) == -1)
     {
-	ticables_warning(_("ioctl failed on parallel device: can't write on data lines."));
+	ticables_warning("%s", _("ioctl failed on parallel device: can't write on data lines."));
 	return ERR_WRITE_ERROR;
     }
 
@@ -160,7 +160,7 @@ int ser_io_rd(int dev_fd)
 
     if (ioctl(dev_fd, TIOCMGET, &flags) == -1)
     {
-	ticables_warning(_("ioctl failed on serial device."));
+	ticables_warning("%s", _("ioctl failed on serial device."));
 	return ERR_TTY_IOCTL;
     }
 
@@ -176,7 +176,7 @@ int ser_io_wr(int dev_fd, uint8_t data)
 
     if (ioctl(dev_fd, TIOCMSET, &flags) == -1)
     {
-	ticables_warning(_("ioctl failed on serial device."));
+	ticables_warning("%s", _("ioctl failed on serial device."));
         return ERR_TTY_IOCTL;
     }
 

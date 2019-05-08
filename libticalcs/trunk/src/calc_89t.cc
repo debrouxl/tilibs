@@ -912,7 +912,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 						uint8_t * data = params[2]->data;
 						uint32_t calc_time = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (data[3] <<  0);
 
-						ticalcs_info(_("Found valid classic clock"));
+						ticalcs_info("%s", _("Found valid classic clock"));
 
 						time(&now);	// retrieve current DST setting
 						memcpy(&ref, localtime(&now), sizeof(struct tm));

@@ -848,7 +848,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 		if (!infos.battery)
 		{
-			ticalcs_info(_("Battery low, stopping flash app transfer"));
+			ticalcs_info("%s", _("Battery low, stopping flash app transfer"));
 			return -1;
 		}
 	}
@@ -1543,7 +1543,7 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 		if (!ret)
 		{
 			ret = SEND_EOT(handle);
-			ticalcs_info(_("Header sent completely."));
+			ticalcs_info("%s", _("Header sent completely."));
 		}
 	}
 

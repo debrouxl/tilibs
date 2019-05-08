@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.3.6\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2019-03-17 09:20+0100\n"
+"POT-Creation-Date: 2019-05-08 19:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,105 +17,105 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/bsd/detect.cc:138 src/linux/detect.cc:176 src/macos/detect.cc:138
+#: src/bsd/detect.cc:135 src/linux/detect.cc:176 src/macos/detect.cc:138
 #, c-format
 msgid "can't open '%s'."
 msgstr ""
 
-#: src/bsd/detect.cc:172 src/linux/detect.cc:210 src/macos/detect.cc:172
+#: src/bsd/detect.cc:169 src/linux/detect.cc:210 src/macos/detect.cc:172
 #, c-format
 msgid "    node %s: exists"
 msgstr ""
 
-#: src/bsd/detect.cc:176 src/linux/detect.cc:214 src/macos/detect.cc:176
+#: src/bsd/detect.cc:173 src/linux/detect.cc:214 src/macos/detect.cc:176
 #, c-format
 msgid "    node %s: does not exist"
 msgstr ""
 
-#: src/bsd/detect.cc:177 src/linux/detect.cc:215 src/macos/detect.cc:177
+#: src/bsd/detect.cc:174 src/linux/detect.cc:215 src/macos/detect.cc:177
 msgid "    => you will have to create the node."
 msgstr ""
 
-#: src/bsd/detect.cc:184 src/linux/detect.cc:222
+#: src/bsd/detect.cc:181 src/linux/detect.cc:222
 #, c-format
 msgid "    node %s: accessible"
 msgstr ""
 
-#: src/bsd/detect.cc:190 src/linux/detect.cc:229 src/macos/detect.cc:184
+#: src/bsd/detect.cc:188 src/linux/detect.cc:229 src/macos/detect.cc:184
 #, c-format
 msgid "    permissions/user/group:%s%s %s"
 msgstr ""
 
-#: src/bsd/detect.cc:203 src/linux/detect.cc:242 src/macos/detect.cc:197
+#: src/bsd/detect.cc:201 src/linux/detect.cc:242 src/macos/detect.cc:197
 msgid "    user can r/w on device: yes"
 msgstr ""
 
-#: src/bsd/detect.cc:204 src/bsd/detect.cc:245 src/linux/detect.cc:243
+#: src/bsd/detect.cc:202 src/bsd/detect.cc:243 src/linux/detect.cc:243
 #: src/linux/detect.cc:284
 msgid "    => device is inaccessible for unknown reasons"
 msgstr ""
 
-#: src/bsd/detect.cc:209 src/linux/detect.cc:248 src/macos/detect.cc:202
+#: src/bsd/detect.cc:207 src/linux/detect.cc:248 src/macos/detect.cc:202
 msgid "    user can r/w on device: no"
 msgstr ""
 
-#: src/bsd/detect.cc:214 src/linux/detect.cc:253 src/macos/detect.cc:207
+#: src/bsd/detect.cc:212 src/linux/detect.cc:253 src/macos/detect.cc:207
 msgid "    others can r/w on device: yes"
 msgstr ""
 
-#: src/bsd/detect.cc:220 src/linux/detect.cc:259 src/macos/detect.cc:213
+#: src/bsd/detect.cc:218 src/linux/detect.cc:259 src/macos/detect.cc:213
 msgid "    others can r/w on device: no"
 msgstr ""
 
-#: src/bsd/detect.cc:227 src/linux/detect.cc:266 src/macos/detect.cc:220
+#: src/bsd/detect.cc:225 src/linux/detect.cc:266 src/macos/detect.cc:220
 #, c-format
 msgid "    is the user '%s' in the group '%s': yes"
 msgstr ""
 
-#: src/bsd/detect.cc:232 src/linux/detect.cc:271 src/macos/detect.cc:225
+#: src/bsd/detect.cc:230 src/linux/detect.cc:271 src/macos/detect.cc:225
 #, c-format
 msgid "    is the user '%s' in the group '%s': no"
 msgstr ""
 
-#: src/bsd/detect.cc:233 src/linux/detect.cc:272 src/macos/detect.cc:226
+#: src/bsd/detect.cc:231 src/linux/detect.cc:272 src/macos/detect.cc:226
 #, c-format
 msgid "    => you should add your username at the group '%s' in '/etc/group'"
 msgstr ""
 
-#: src/bsd/detect.cc:234 src/linux/detect.cc:273 src/macos/detect.cc:227
+#: src/bsd/detect.cc:232 src/linux/detect.cc:273 src/macos/detect.cc:227
 msgid "    => you will have to restart your session, too"
 msgstr ""
 
-#: src/bsd/detect.cc:253 src/linux/detect.cc:292 src/macos/detect.cc:245
+#: src/bsd/detect.cc:251 src/linux/detect.cc:292 src/macos/detect.cc:245
 #, c-format
 msgid "Check for super-user access: %s"
 msgstr ""
 
-#: src/bsd/detect.cc:263 src/linux/detect.cc:306
+#: src/bsd/detect.cc:261 src/linux/detect.cc:306
 msgid "Check for tty support:"
 msgstr ""
 
-#: src/bsd/detect.cc:264 src/linux/detect.cc:308
+#: src/bsd/detect.cc:262 src/linux/detect.cc:308
 msgid "    tty support: available."
 msgstr ""
 
-#: src/bsd/detect.cc:267 src/linux/detect.cc:315 src/macos/detect.cc:253
+#: src/bsd/detect.cc:265 src/linux/detect.cc:315 src/macos/detect.cc:253
 msgid "Check for tty usability:"
 msgstr ""
 
-#: src/bsd/detect.cc:279 src/linux/detect.cc:346 src/linux/detect.cc:386
-msgid "    is useable: yes"
+#: src/bsd/detect.cc:277 src/linux/detect.cc:346 src/linux/detect.cc:386
+msgid "    is usable: yes"
 msgstr ""
 
-#: src/bsd/detect.cc:292 src/linux/detect.cc:404 src/macos/detect.cc:267
+#: src/bsd/detect.cc:290 src/linux/detect.cc:404 src/macos/detect.cc:267
 msgid "Check for libusb support:"
 msgstr ""
 
-#: src/bsd/detect.cc:294 src/linux/detect.cc:406 src/macos/detect.cc:269
+#: src/bsd/detect.cc:292 src/linux/detect.cc:406 src/macos/detect.cc:269
 msgid "    usb support: available."
 msgstr ""
 
-#: src/bsd/detect.cc:297 src/linux/detect.cc:408 src/macos/detect.cc:272
+#: src/bsd/detect.cc:295 src/linux/detect.cc:408 src/macos/detect.cc:272
 msgid "    usb support: not compiled."
 msgstr ""
 
@@ -395,7 +395,7 @@ msgid "Error running TIOCGSERIAL ioctl on device %s - %s"
 msgstr ""
 
 #: src/linux/detect.cc:341 src/linux/detect.cc:381
-msgid "    is useable: no"
+msgid "    is usable: no"
 msgstr ""
 
 #: src/linux/detect.cc:357
@@ -439,6 +439,10 @@ msgstr ""
 
 #: src/linux/ioports.cc:71
 msgid "ioctl failed on parallel device: can't claim exclusive access."
+msgstr ""
+
+#: src/linux/ioports.cc:72
+msgid "we will do without that."
 msgstr ""
 
 #: src/linux/ioports.cc:78
@@ -544,8 +548,8 @@ msgstr ""
 msgid " found %s on #%i, version <%x.%02x>\n"
 msgstr ""
 
-#: src/linux/link_usb1.cc:242
-msgid " no devices found!\n"
+#: src/linux/link_usb1.cc:242 src/linux/link_usb.cc:380
+msgid "no devices found!\n"
 msgstr ""
 
 #: src/linux/link_usb1.cc:866 src/linux/link_usb.cc:1134
@@ -572,10 +576,6 @@ msgstr ""
 #: src/linux/link_usb.cc:372
 #, c-format
 msgid "usb_find_devices (%s).\n"
-msgstr ""
-
-#: src/linux/link_usb.cc:380
-msgid "no devices found!\n"
 msgstr ""
 
 #: src/linux/link_vti.cc:241 src/win32/link_vti.cc:331
