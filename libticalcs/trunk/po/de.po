@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2019-10-12 16:46+0200\n"
+"POT-Creation-Date: 2023-01-29 14:29+0100\n"
 "PO-Revision-Date: 2016-11-18 19:30+0300\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
@@ -61,7 +61,7 @@ msgstr "Hole Zeit..."
 
 #: src/calc_73.cc:1409 src/calc_84p.cc:1640 src/calc_8x.cc:1254
 #: src/calc_9x.cc:1563 src/calc_9x.cc:1595 src/calc_89t.cc:980
-#: src/calc_nsp.cc:836
+#: src/calc_nsp.cc:852
 #, c-format
 msgid "Deleting %s..."
 msgstr "Lösche %s..."
@@ -142,37 +142,37 @@ msgstr ""
 msgid "Getting version..."
 msgstr "Hole Versionsnummer..."
 
-#: src/calc_84p.cc:1774
+#: src/calc_84p.cc:1775
 msgid "That's odd, product ID and calc ID do not match ?"
 msgstr ""
 
-#: src/calc_84p.cc:1985 src/calc_84p.cc:1994 src/calc_84p.cc:2003
-#: src/calc_84p.cc:2019 src/calc_84p.cc:2027
+#: src/calc_84p.cc:1986 src/calc_84p.cc:1995 src/calc_84p.cc:2004
+#: src/calc_84p.cc:2020 src/calc_84p.cc:2028
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr "Unbekanntes 84+ Familienmitglied mit product_id=%d hw_version=%d"
 
-#: src/calc_84p.cc:2045
+#: src/calc_84p.cc:2046
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus mittels DirectLink"
 
-#: src/calc_84p.cc:2116
+#: src/calc_84p.cc:2117
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr "TI-84 Plus C Silver Edition mittels DirectLink"
 
-#: src/calc_84p.cc:2187
+#: src/calc_84p.cc:2188
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr "TI-83 Premium CE mittels DirectLink"
 
-#: src/calc_84p.cc:2258
+#: src/calc_84p.cc:2259
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr "TI-84 Plus CE mittels DirectLink"
 
-#: src/calc_84p.cc:2329
+#: src/calc_84p.cc:2330
 msgid "TI-82 Advanced thru DirectLink"
 msgstr "TI-82 Advanced mittels DirectLink"
 
-#: src/calc_84p.cc:2400
+#: src/calc_84p.cc:2401
 msgid "TI-84 Plus T thru DirectLink"
 msgstr "TI-84 Plus T mittels DirectLink"
 
@@ -208,7 +208,7 @@ msgstr "Lese und analysiere %s/%s"
 msgid "Block #%2i"
 msgstr "Block #%2i"
 
-#: src/calc_9x.cc:1625 src/calc_89t.cc:1076 src/calc_nsp.cc:866
+#: src/calc_9x.cc:1625 src/calc_89t.cc:1076 src/calc_nsp.cc:882
 #, c-format
 msgid "Creating %s..."
 msgstr "Erzeuge %s..."
@@ -217,7 +217,7 @@ msgstr "Erzeuge %s..."
 msgid "V200 Personal Learning Tool"
 msgstr "V200 Persönliches Lernwerkzeug"
 
-#: src/calc_89t.cc:1011 src/calc_nsp.cc:1038
+#: src/calc_89t.cc:1011 src/calc_nsp.cc:1054
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr "Benenne %s in %s um..."
@@ -227,7 +227,7 @@ msgstr "Benenne %s in %s um..."
 msgid "Changing attributes of %s..."
 msgstr "Ändere die Attribute von %s..."
 
-#: src/calc_89t.cc:1399
+#: src/calc_89t.cc:1400
 msgid "TI-89 Titanium thru DirectLink"
 msgstr "TI-89 Titanium mittels DirectLink"
 
@@ -251,7 +251,7 @@ msgstr "Nummeriere die Dokumente in %s nicht, weil es kein Verzeichnis ist\n"
 msgid "Directory listing in <%s>...\n"
 msgstr "Verzeichnisliste in <%s>...\n"
 
-#: src/calc_nsp.cc:1061
+#: src/calc_nsp.cc:1077
 msgid "Nspire thru DirectLink"
 msgstr "Nspire mittels DirectLink"
 
@@ -384,24 +384,16 @@ msgid "Requesting fake (all vars) backup:"
 msgstr "Fordere fake (all vars) Backup an:"
 
 #: src/dirlist.cc:194
-#, c-format
 msgid "| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"
 msgstr "| B. Name          | T. Name  |Attr|Typ | Größe    | Ordner   |\n"
 
 #: src/dirlist.cc:204
-#, c-format
 msgid "| No variables     |\n"
 msgstr "| Keine Variablen  |\n"
 
 #: src/dirlist.cc:208
-#, c-format
 msgid "| No applications  |\n"
 msgstr "| Kein Programm    |\n"
-
-#: src/dirlist.cc:212
-#, c-format
-msgid "+------------------+----------+----+----+----------+----------+"
-msgstr "+------------------+----------+----+----+----------+----------+"
 
 #: src/error.cc:72
 msgid "Msg: transfer aborted."

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2019-10-12 16:46+0200\n"
+"POT-Creation-Date: 2023-01-29 14:29+0100\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -58,7 +58,7 @@ msgstr "Réception de l'horloge..."
 
 #: src/calc_73.cc:1409 src/calc_84p.cc:1640 src/calc_8x.cc:1254
 #: src/calc_9x.cc:1563 src/calc_9x.cc:1595 src/calc_89t.cc:980
-#: src/calc_nsp.cc:836
+#: src/calc_nsp.cc:852
 #, c-format
 msgid "Deleting %s..."
 msgstr "Suppression de %s..."
@@ -139,39 +139,39 @@ msgstr ""
 msgid "Getting version..."
 msgstr "Récupération de la version..."
 
-#: src/calc_84p.cc:1774
+#: src/calc_84p.cc:1775
 msgid "That's odd, product ID and calc ID do not match ?"
 msgstr ""
 "C'est bizarre, le numéro de produit et le numéro de calculatrice ne "
 "correspondent pas ?"
 
-#: src/calc_84p.cc:1985 src/calc_84p.cc:1994 src/calc_84p.cc:2003
-#: src/calc_84p.cc:2019 src/calc_84p.cc:2027
+#: src/calc_84p.cc:1986 src/calc_84p.cc:1995 src/calc_84p.cc:2004
+#: src/calc_84p.cc:2020 src/calc_84p.cc:2028
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr "Membre inconnu de la famille 84+ avec product_id=%d hw_version=%d"
 
-#: src/calc_84p.cc:2045
+#: src/calc_84p.cc:2046
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus via DirectLink"
 
-#: src/calc_84p.cc:2116
+#: src/calc_84p.cc:2117
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr "TI-84 Plus C Silver Edition via DirectLink"
 
-#: src/calc_84p.cc:2187
+#: src/calc_84p.cc:2188
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr "TI-83 Premium CE via DirectLink"
 
-#: src/calc_84p.cc:2258
+#: src/calc_84p.cc:2259
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr "TI-84 Plus CE via DirectLink"
 
-#: src/calc_84p.cc:2329
+#: src/calc_84p.cc:2330
 msgid "TI-82 Advanced thru DirectLink"
 msgstr "TI-82 Advanced via DirectLink"
 
-#: src/calc_84p.cc:2400
+#: src/calc_84p.cc:2401
 msgid "TI-84 Plus T thru DirectLink"
 msgstr "TI-84 Plus T via DirectLink"
 
@@ -207,7 +207,7 @@ msgstr "Lecture de %s/%s"
 msgid "Block #%2i"
 msgstr "Bloc n°%2i"
 
-#: src/calc_9x.cc:1625 src/calc_89t.cc:1076 src/calc_nsp.cc:866
+#: src/calc_9x.cc:1625 src/calc_89t.cc:1076 src/calc_nsp.cc:882
 #, c-format
 msgid "Creating %s..."
 msgstr "Création de %s..."
@@ -216,7 +216,7 @@ msgstr "Création de %s..."
 msgid "V200 Personal Learning Tool"
 msgstr "V200 Personal Learning Tool"
 
-#: src/calc_89t.cc:1011 src/calc_nsp.cc:1038
+#: src/calc_89t.cc:1011 src/calc_nsp.cc:1054
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr "Renommage de %s en %s..."
@@ -226,7 +226,7 @@ msgstr "Renommage de %s en %s..."
 msgid "Changing attributes of %s..."
 msgstr "Changement des attributs de %s..."
 
-#: src/calc_89t.cc:1399
+#: src/calc_89t.cc:1400
 msgid "TI-89 Titanium thru DirectLink"
 msgstr "TI-89 Titanium via DirectLink"
 
@@ -250,7 +250,7 @@ msgstr "N'énumère pas les documents dans %s car ce n'est pas un répertoire\n"
 msgid "Directory listing in <%s>...\n"
 msgstr "Listage du dossier dans <%s>...\n"
 
-#: src/calc_nsp.cc:1061
+#: src/calc_nsp.cc:1077
 msgid "Nspire thru DirectLink"
 msgstr "Nspire via DirectLink"
 
@@ -383,24 +383,16 @@ msgid "Requesting fake (all vars) backup:"
 msgstr "Réception fausse sauvegarde (toutes les variables):"
 
 #: src/dirlist.cc:194
-#, c-format
 msgid "| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"
 msgstr "|Nom Bin.          |Nom Trad. |Attr|Type| Taille   | Parent   |\n"
 
 #: src/dirlist.cc:204
-#, c-format
 msgid "| No variables     |\n"
 msgstr "| Pas de variable  |\n"
 
 #: src/dirlist.cc:208
-#, c-format
 msgid "| No applications  |\n"
 msgstr "| Pas d'application|\n"
-
-#: src/dirlist.cc:212
-#, c-format
-msgid "+------------------+----------+----+----+----------+----------+"
-msgstr "+------------------+----------+----+----+----------+----------+"
 
 #: src/error.cc:72
 msgid "Msg: transfer aborted."

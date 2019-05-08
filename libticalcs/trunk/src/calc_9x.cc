@@ -1234,7 +1234,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			if (!ret)
 			{
 				ret = RECV_ACK(handle, NULL);
-				ticalcs_info(_("Header sent completely."));
+				ticalcs_info("%s", _("Header sent completely."));
 			}
 		}
 	}

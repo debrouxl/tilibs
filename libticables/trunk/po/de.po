@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.3.6\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2019-10-12 12:09+0200\n"
+"POT-Creation-Date: 2023-01-29 14:29+0100\n"
 "PO-Revision-Date: 2019-10-29 13:55+0100\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
 "Language-Team: <debian-l10n-german@lists.debian.org>\n"
@@ -17,107 +17,107 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/bsd/detect.cc:138 src/linux/detect.cc:176 src/macos/detect.cc:138
+#: src/bsd/detect.cc:135 src/linux/detect.cc:176 src/macos/detect.cc:135
 #, c-format
 msgid "can't open '%s'."
 msgstr "kann '%s' nicht öffnen."
 
-#: src/bsd/detect.cc:172 src/linux/detect.cc:210 src/macos/detect.cc:172
+#: src/bsd/detect.cc:169 src/linux/detect.cc:210 src/macos/detect.cc:169
 #, c-format
 msgid "    node %s: exists"
 msgstr "    Knoten %s: existiert"
 
-#: src/bsd/detect.cc:176 src/linux/detect.cc:214 src/macos/detect.cc:176
+#: src/bsd/detect.cc:173 src/linux/detect.cc:214 src/macos/detect.cc:173
 #, c-format
 msgid "    node %s: does not exist"
 msgstr "    Knoten %s: existiert nicht"
 
-#: src/bsd/detect.cc:177 src/linux/detect.cc:215 src/macos/detect.cc:177
+#: src/bsd/detect.cc:174 src/linux/detect.cc:215 src/macos/detect.cc:174
 msgid "    => you will have to create the node."
 msgstr "    => Sie müssen den Knoten erzeugen."
 
-#: src/bsd/detect.cc:184 src/linux/detect.cc:222
+#: src/bsd/detect.cc:181 src/linux/detect.cc:222
 #, c-format
 msgid "    node %s: accessible"
 msgstr "    Knoten %s: erreichbar"
 
-#: src/bsd/detect.cc:190 src/linux/detect.cc:229 src/macos/detect.cc:184
+#: src/bsd/detect.cc:188 src/linux/detect.cc:229 src/macos/detect.cc:182
 #, c-format
 msgid "    permissions/user/group:%s%s %s"
 msgstr "    Benutzerrechte/Benutzer/Gruppe:%s%s %s"
 
-#: src/bsd/detect.cc:203 src/linux/detect.cc:242 src/macos/detect.cc:197
+#: src/bsd/detect.cc:201 src/linux/detect.cc:242 src/macos/detect.cc:195
 msgid "    user can r/w on device: yes"
 msgstr "    Benutzer kann auf Gerät schreiben/lesen: ja"
 
-#: src/bsd/detect.cc:204 src/bsd/detect.cc:245 src/linux/detect.cc:243
+#: src/bsd/detect.cc:202 src/bsd/detect.cc:243 src/linux/detect.cc:243
 #: src/linux/detect.cc:284
 msgid "    => device is inaccessible for unknown reasons"
 msgstr "    => Gerät ist aus unbekanntem Grund unerreichbar"
 
-#: src/bsd/detect.cc:209 src/linux/detect.cc:248 src/macos/detect.cc:202
+#: src/bsd/detect.cc:207 src/linux/detect.cc:248 src/macos/detect.cc:200
 msgid "    user can r/w on device: no"
 msgstr "    Benutzer kann auf Gerät schreiben/lesen: nein"
 
-#: src/bsd/detect.cc:214 src/linux/detect.cc:253 src/macos/detect.cc:207
+#: src/bsd/detect.cc:212 src/linux/detect.cc:253 src/macos/detect.cc:205
 msgid "    others can r/w on device: yes"
 msgstr "    andere können auf Gerät schreiben/lesen: ja"
 
-#: src/bsd/detect.cc:220 src/linux/detect.cc:259 src/macos/detect.cc:213
+#: src/bsd/detect.cc:218 src/linux/detect.cc:259 src/macos/detect.cc:211
 msgid "    others can r/w on device: no"
 msgstr "    andere können auf Gerät schreiben/lesen: nein"
 
-#: src/bsd/detect.cc:227 src/linux/detect.cc:266 src/macos/detect.cc:220
+#: src/bsd/detect.cc:225 src/linux/detect.cc:266 src/macos/detect.cc:218
 #, c-format
 msgid "    is the user '%s' in the group '%s': yes"
 msgstr "    Ist der Benutzer »%s« in der Gruppe »%s«: ja"
 
-#: src/bsd/detect.cc:232 src/linux/detect.cc:271 src/macos/detect.cc:225
+#: src/bsd/detect.cc:230 src/linux/detect.cc:271 src/macos/detect.cc:223
 #, c-format
 msgid "    is the user '%s' in the group '%s': no"
 msgstr "    Ist der Benutzer »%s« in der Gruppe »%s«: nein"
 
-#: src/bsd/detect.cc:233 src/linux/detect.cc:272 src/macos/detect.cc:226
+#: src/bsd/detect.cc:231 src/linux/detect.cc:272 src/macos/detect.cc:224
 #, c-format
 msgid "    => you should add your username at the group '%s' in '/etc/group'"
 msgstr ""
 "    => Sie sollten Ihren Benutzernamen zur Gruppe »%s« in »/etc/group« "
 "hinzufügen"
 
-#: src/bsd/detect.cc:234 src/linux/detect.cc:273 src/macos/detect.cc:227
+#: src/bsd/detect.cc:232 src/linux/detect.cc:273 src/macos/detect.cc:225
 msgid "    => you will have to restart your session, too"
 msgstr "    => Sie müssen sich zusätzlich neu anmelden"
 
-#: src/bsd/detect.cc:253 src/linux/detect.cc:292 src/macos/detect.cc:245
+#: src/bsd/detect.cc:251 src/linux/detect.cc:292 src/macos/detect.cc:243
 #, c-format
 msgid "Check for super-user access: %s"
 msgstr "Prüfe Administrator-Zugang: %s"
 
-#: src/bsd/detect.cc:263 src/linux/detect.cc:306
+#: src/bsd/detect.cc:261 src/linux/detect.cc:306
 msgid "Check for tty support:"
 msgstr "Prüfe TTY-Unterstützung:"
 
-#: src/bsd/detect.cc:264 src/linux/detect.cc:308
+#: src/bsd/detect.cc:262 src/linux/detect.cc:308
 msgid "    tty support: available."
 msgstr "    TTY-Unterstützung: verfügbar."
 
-#: src/bsd/detect.cc:267 src/linux/detect.cc:315 src/macos/detect.cc:253
+#: src/bsd/detect.cc:265 src/linux/detect.cc:315 src/macos/detect.cc:251
 msgid "Check for tty usability:"
 msgstr "Prüfe TTY-Verfügbarkeit:"
 
-#: src/bsd/detect.cc:279 src/linux/detect.cc:346 src/linux/detect.cc:386
-msgid "    is useable: yes"
+#: src/bsd/detect.cc:277 src/linux/detect.cc:346 src/linux/detect.cc:386
+msgid "    is usable: yes"
 msgstr "    benutzbar: ja"
 
-#: src/bsd/detect.cc:292 src/linux/detect.cc:404 src/macos/detect.cc:267
+#: src/bsd/detect.cc:290 src/linux/detect.cc:404 src/macos/detect.cc:265
 msgid "Check for libusb support:"
 msgstr "Prüfe libusb-Unterstützung:"
 
-#: src/bsd/detect.cc:294 src/linux/detect.cc:406 src/macos/detect.cc:269
+#: src/bsd/detect.cc:292 src/linux/detect.cc:406 src/macos/detect.cc:267
 msgid "    usb support: available."
 msgstr "    USB-Unterstützung: verfügbar."
 
-#: src/bsd/detect.cc:297 src/linux/detect.cc:408 src/macos/detect.cc:272
+#: src/bsd/detect.cc:295 src/linux/detect.cc:408 src/macos/detect.cc:270
 msgid "    usb support: not compiled."
 msgstr "USB-Unterstützung: nicht kompiliert."
 
@@ -446,8 +446,8 @@ msgid "Error running TIOCGSERIAL ioctl on device %s - %s"
 msgstr "Fehler TIOCGSERIAL-Ioctl auf Gerät %s - %s auszuführen"
 
 #: src/linux/detect.cc:341 src/linux/detect.cc:381
-msgid "    is useable: no"
-msgstr "    ist verwendbar: nein"
+msgid "    is usable: no"
+msgstr "    ist benutzbar: nein"
 
 #: src/linux/detect.cc:357
 msgid "Check for parport support:"
@@ -491,6 +491,10 @@ msgstr "    => schauen Sie in die Datei ticables2/CONFIG."
 #: src/linux/ioports.cc:71
 msgid "ioctl failed on parallel device: can't claim exclusive access."
 msgstr "ioctl auf paralleles Gerät fehlgeschlagen: kein exklusiver Zugriff."
+
+#: src/linux/ioports.cc:72
+msgid "we will do without that."
+msgstr ""
 
 #: src/linux/ioports.cc:78
 msgid "ioctl failed on parallel device: can't claim parport."
@@ -602,9 +606,9 @@ msgstr "Virtueller Link für TiEmu"
 msgid " found %s on #%i, version <%x.%02x>\n"
 msgstr " %s on #%i, version <%x.%02x> gefunden\n"
 
-#: src/linux/link_usb1.cc:240
-msgid " no devices found!\n"
-msgstr " kein Gerät gefunden!\n"
+#: src/linux/link_usb1.cc:240 src/linux/link_usb.cc:380
+msgid "no devices found!\n"
+msgstr "kein Gerät gefunden!\n"
 
 #: src/linux/link_usb1.cc:855 src/linux/link_usb.cc:1125
 msgid "SilverLink"
@@ -631,10 +635,6 @@ msgstr "usb_find_busses (%s).\n"
 #, c-format
 msgid "usb_find_devices (%s).\n"
 msgstr "usb_find_devices (%s).\n"
-
-#: src/linux/link_usb.cc:380
-msgid "no devices found!\n"
-msgstr "kein Gerät gefunden!\n"
 
 #: src/linux/link_vti.cc:241 src/win32/link_vti.cc:331
 msgid "Virtual TI"

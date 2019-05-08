@@ -237,7 +237,7 @@ static int tigl_enum(void)
 	ret = tigl_find();
 	if (ret == 0)
 	{
-		ticables_warning(_(" no devices found!\n"));
+		ticables_warning("%s", _("no devices found!\n"));
 		return ERR_LIBUSB_OPEN;
 	}
 

@@ -88,7 +88,7 @@ TIEXPORT3 int TICALL ticalcs_calc_isready(CalcHandle* handle)
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Checking hand-held status:"));
+	ticalcs_info("%s", _("Checking hand-held status:"));
 	handle->busy = 1;
 	if (calc->is_ready)
 	{
@@ -221,7 +221,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoor
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Requesting screenshot:"));
+	ticalcs_info("%s", _("Requesting screenshot:"));
 	handle->busy = 1;
 	if (calc->recv_screen)
 	{
@@ -329,7 +329,7 @@ TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, 
 	*vars = NULL;
 	*apps = NULL;
 
-	ticalcs_info(_("Requesting folder & vars & apps listing:"));
+	ticalcs_info("%s", _("Requesting folder & vars & apps listing:"));
 	handle->busy = 1;
 	if (calc->get_dirlist)
 	{
@@ -388,7 +388,7 @@ TIEXPORT3 int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram,
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Requesting RAM & FLASH free"));
+	ticalcs_info("%s", _("Requesting RAM & FLASH free"));
 	handle->busy = 1;
 	if (calc->get_memfree)
 	{
@@ -428,7 +428,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent*
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Sending backup:"));
+	ticalcs_info("%s", _("Sending backup:"));
 	handle->busy = 1;
 	if (calc->send_backup)
 	{
@@ -473,7 +473,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent*
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Requesting backup:"));
+	ticalcs_info("%s", _("Requesting backup:"));
 	handle->busy = 1;
 	if (calc->recv_backup)
 	{
@@ -520,7 +520,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode, Fi
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Sending one or more variables:"));
+	ticalcs_info("%s", _("Sending one or more variables:"));
 	handle->busy = 1;
 	if (calc->send_var)
 	{
@@ -615,7 +615,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Sending variable (non-silent mode):"));
+	ticalcs_info("%s", _("Sending variable (non-silent mode):"));
 	handle->busy = 1;
 	if (calc->send_var_ns)
 	{
@@ -663,7 +663,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Receiving variable (non-silent mode):"));
+	ticalcs_info("%s", _("Receiving variable (non-silent mode):"));
 	handle->busy = 1;
 	if (calc->recv_var_ns)
 	{
@@ -708,7 +708,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* con
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Sending FLASH application:"));
+	ticalcs_info("%s", _("Sending FLASH application:"));
 	handle->busy = 1;
 	if (calc->send_app)
 	{
@@ -755,7 +755,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* con
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Requesting receiving of FLASH application:"));
+	ticalcs_info("%s", _("Requesting receiving of FLASH application:"));
 	handle->busy = 1;
 	if (calc->recv_app)
 	{
@@ -800,7 +800,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* cont
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Sending FLASH os:"));
+	ticalcs_info("%s", _("Sending FLASH os:"));
 	handle->busy = 1;
 	if (calc->send_os)
 	{
@@ -845,7 +845,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlis
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Requesting ID-LIST:"));
+	ticalcs_info("%s", _("Requesting ID-LIST:"));
 	handle->busy = 1;
 	if (calc->recv_idlist)
 	{
@@ -888,7 +888,7 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Sending ROM dumper:"));
+	ticalcs_info("%s", _("Sending ROM dumper:"));
 	handle->busy = 1;
 	if (calc->dump_rom_1)
 	{
@@ -929,7 +929,7 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize si
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Dumping ROM:"));
+	ticalcs_info("%s", _("Dumping ROM:"));
 	handle->busy = 1;
 	if (calc->dump_rom_2)
 	{
@@ -969,7 +969,7 @@ TIEXPORT3 int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* _cloc
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Setting clock:"));
+	ticalcs_info("%s", _("Setting clock:"));
 	handle->busy = 1;
 	if (calc->set_clock)
 	{
@@ -1014,7 +1014,7 @@ TIEXPORT3 int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* _cloc
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Getting clock:"));
+	ticalcs_info("%s", _("Getting clock:"));
 	handle->busy = 1;
 	if (calc->get_clock)
 	{
@@ -1149,7 +1149,7 @@ TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* inf
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Requesting version info:"));
+	ticalcs_info("%s", _("Requesting version info:"));
 	handle->busy = 1;
 	if (calc->get_version)
 	{
@@ -1194,7 +1194,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* co
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Sending certificate:"));
+	ticalcs_info("%s", _("Sending certificate:"));
 	handle->busy = 1;
 	if (calc->send_cert)
 	{
@@ -1239,7 +1239,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* co
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Requesting receiving of certificate:"));
+	ticalcs_info("%s", _("Requesting receiving of certificate:"));
 	handle->busy = 1;
 	if (calc->recv_cert)
 	{
@@ -1387,7 +1387,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_all_vars_backup(CalcHandle* handle, FileC
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Sending fake (all vars) backup:"));
+	ticalcs_info("%s", _("Sending fake (all vars) backup:"));
 	handle->busy = 1;
 	if (calc->send_all_vars_backup)
 	{
@@ -1432,7 +1432,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_all_vars_backup(CalcHandle* handle, FileC
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Requesting fake (all vars) backup:"));
+	ticalcs_info("%s", _("Requesting fake (all vars) backup:"));
 	handle->busy = 1;
 	if (calc->recv_all_vars_backup)
 	{
