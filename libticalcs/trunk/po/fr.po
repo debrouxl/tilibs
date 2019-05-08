@@ -391,24 +391,16 @@ msgid "Requesting fake (all vars) backup:"
 msgstr "Réception fausse sauvegarde (toutes les variables):"
 
 #: src/dirlist.cc:194
-#, c-format
 msgid "| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"
 msgstr "|Nom Bin.          |Nom Trad. |Attr|Type| Taille   | Parent   |\n"
 
 #: src/dirlist.cc:204
-#, c-format
 msgid "| No variables     |\n"
 msgstr "| Pas de variable  |\n"
 
 #: src/dirlist.cc:208
-#, c-format
 msgid "| No applications  |\n"
 msgstr "| Pas d'application|\n"
-
-#: src/dirlist.cc:212
-#, c-format
-msgid "+------------------+----------+----+----+----------+----------+"
-msgstr "+------------------+----------+----+----+----------+----------+"
 
 #: src/error.cc:72
 msgid "Msg: transfer aborted."

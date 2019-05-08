@@ -385,23 +385,15 @@ msgid "Requesting fake (all vars) backup:"
 msgstr ""
 
 #: src/dirlist.cc:194
-#, c-format
 msgid "| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"
 msgstr ""
 
 #: src/dirlist.cc:204
-#, c-format
 msgid "| No variables     |\n"
 msgstr ""
 
 #: src/dirlist.cc:208
-#, c-format
 msgid "| No applications  |\n"
-msgstr ""
-
-#: src/dirlist.cc:212
-#, c-format
-msgid "+------------------+----------+----+----+----------+----------+"
 msgstr ""
 
 #: src/error.cc:72

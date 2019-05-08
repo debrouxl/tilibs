@@ -45,12 +45,9 @@
 /*
   Returns mode string from mode value.
 */
-static const char *get_attributes(mode_t attrib)
+static const char *get_attributes(char s[13], mode_t attrib)
 {
-    const char *i = " ---------- ";
-    static char s[13];
-
-    strcpy(s, i);
+    strcpy(s, " ---------- ");
 
     if (attrib & S_IRUSR)
 	s[2] = 'r';
@@ -174,15 +171,16 @@ static int check_for_node_usability(const char *pathname)
     else
     {
 	ticables_info(_("    node %s: does not exist"), pathname);
-	ticables_info(_("    => you will have to create the node."));
+	ticables_info("%s", _("    => you will have to create the node."));
 
 	return -1;
     }
 
     if(!stat(pathname, &st))
     {
+	char s[13];
 	ticables_info(_("    permissions/user/group:%s%s %s"),
-		      get_attributes(st.st_mode),
+		      get_attributes(s, st.st_mode),
 		      get_user_name(st.st_uid),
 		      get_group_name(st.st_gid));
     }
@@ -194,23 +192,23 @@ static int check_for_node_usability(const char *pathname)
 
     if(getuid() == st.st_uid)
     {
-	ticables_info(_("    user can r/w on device: yes"));
+	ticables_info("%s", _("    user can r/w on device: yes"));
 	return 0;
     }
     else
     {
-	ticables_info(_("    user can r/w on device: no"));
+	ticables_info("%s", _("    user can r/w on device: no"));
     }
 
     if((st.st_mode & S_IROTH) && (st.st_mode & S_IWOTH))
     {
-	ticables_info(_("    others can r/w on device: yes"));
+	ticables_info("%s", _("    others can r/w on device: yes"));
     }
     else
     {
 	char *user, *group;
 
-	ticables_info(_("    others can r/w on device: no"));
+	ticables_info("%s", _("    others can r/w on device: no"));
 
 	user = strdup(get_user_name(getuid()));
 	group = strdup(get_group_name(st.st_gid));
@@ -224,7 +222,7 @@ static int check_for_node_usability(const char *pathname)
 	{
 	    ticables_info(_("    is the user '%s' in the group '%s': no"), user, group);
 	    ticables_info(_("    => you should add your username at the group '%s' in '/etc/group'"), group);
-	    ticables_info(_("    => you will have to restart your session, too"));
+	    ticables_info("%s", _("    => you will have to restart your session, too"));
 	    free(user);
 	    free(group);
 
@@ -250,7 +248,7 @@ int macosx_check_root(void)
 
 int macosx_check_tty(const char *devname)
 {
-    ticables_info(_("Check for tty usability:"));
+    ticables_info("%s", _("Check for tty usability:"));
     if(check_for_node_usability(devname) == -1)
 	return ERR_TTDEV;
 
@@ -264,12 +262,12 @@ int macosx_check_parport(const char *devname)
 
 int macosx_check_libusb(void)
 {
-	ticables_info(_("Check for libusb support:"));
+	ticables_info("%s", _("Check for libusb support:"));
 #if defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0)
-	ticables_info(_("    usb support: available."));
+	ticables_info("%s", _("    usb support: available."));
 	return 0;
 #else
-	ticables_info(_("    usb support: not compiled."));
+	ticables_info("%s", _("    usb support: not compiled."));
 	return ERR_USBFS;
 #endif
 }
