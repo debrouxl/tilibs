@@ -1391,7 +1391,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 				time_t r, c, now;
 				uint8_t data[4];
 
-				ticalcs_info(_("Will set classic clock"));
+				ticalcs_info("%s", _("Will set classic clock"));
 
 				time(&now);
 #ifdef HAVE_LOCALTIME_R
@@ -1450,7 +1450,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 			{
 				uint8_t data[4];
 
-				ticalcs_info(_("Will set new clock"));
+				ticalcs_info("%s", _("Will set new clock"));
 
 				ticalcs_strlcpy(handle->updat->text, _("Setting clock..."), sizeof(handle->updat->text));
 				ticalcs_update_label(handle);
@@ -1546,7 +1546,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 					uint8_t * data = params[3]->data;
 					uint32_t calc_time = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (data[3] << 0);
 
-					ticalcs_info(_("Found valid classic clock"));
+					ticalcs_info("%s", _("Found valid classic clock"));
 
 					time(&now);	// retrieve current DST setting
 #ifdef HAVE_LOCALTIME_R
@@ -1603,7 +1603,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 				{
 					uint8_t * data = params[11]->data;
 
-					ticalcs_info(_("Found valid new clock"));
+					ticalcs_info("%s", _("Found valid new clock"));
 
 					_clock->year = (((uint16_t)data[0]) << 8) | (data[1] << 0);
 					_clock->month = params[10]->data[0];
@@ -1771,7 +1771,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			{
 				if ((infos_mask & INFOS_PRODUCT_ID) && product_id != params[i]->data[0])
 				{
-					ticalcs_warning(_("That's odd, product ID and calc ID do not match ?"));
+					ticalcs_warning("%s", _("That's odd, product ID and calc ID do not match ?"));
 					// Nevertheless, we'll trust the product ID information (which tends to be hard-coded)
 					// instead of the calc ID information (which is normally extracted from the cert memory).
 				}

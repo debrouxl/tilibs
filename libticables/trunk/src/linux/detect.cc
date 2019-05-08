@@ -212,7 +212,7 @@ static int check_for_node_usability(const char *pathname)
     else 
     {
         ticables_info(_("    node %s: does not exist"), pathname);
-        ticables_info(_("    => you will have to create the node."));
+        ticables_info("%s", _("    => you will have to create the node."));
 
         return -1;
     }
@@ -239,24 +239,24 @@ static int check_for_node_usability(const char *pathname)
 
     if(getuid() == st.st_uid) 
     {
-        ticables_info(_("    user can r/w on device: yes"));
-        ticables_info(_("    => device is inaccessible for unknown reasons"));
+        ticables_info("%s", _("    user can r/w on device: yes"));
+        ticables_info("%s", _("    => device is inaccessible for unknown reasons"));
         return -1;
     }
     else 
     {
-        ticables_info(_("    user can r/w on device: no"));
+        ticables_info("%s", _("    user can r/w on device: no"));
     }
 
     if((st.st_mode & S_IROTH) && (st.st_mode & S_IWOTH))
     {
-        ticables_info(_("    others can r/w on device: yes"));
+        ticables_info("%s", _("    others can r/w on device: yes"));
     }
     else 
     {
         char *user, *group;
 
-        ticables_info(_("    others can r/w on device: no"));
+        ticables_info("%s", _("    others can r/w on device: no"));
 
         user = strdup(get_user_name(getuid()));
         group = strdup(get_group_name(st.st_gid));
@@ -270,7 +270,7 @@ static int check_for_node_usability(const char *pathname)
         {
             ticables_info(_("    is the user '%s' in the group '%s': no"), user, group);
             ticables_info(_("    => you should add your username at the group '%s' in '/etc/group'"), group);
-            ticables_info(_("    => you will have to restart your session, too"));
+            ticables_info("%s", _("    => you will have to restart your session, too"));
             free(user);
             free(group);
 
@@ -281,7 +281,7 @@ static int check_for_node_usability(const char *pathname)
         free(group);
     }
 
-    ticables_info(_("    => device is inaccessible for unknown reasons"));
+    ticables_info("%s", _("    => device is inaccessible for unknown reasons"));
     return -1;
 }
 
@@ -303,19 +303,19 @@ int linux_check_tty(const char *devname)
 
     memset(&serinfo, 0, sizeof(serinfo));
 #endif
-    ticables_info(_("Check for tty support:"));
+    ticables_info("%s", _("Check for tty support:"));
 #ifdef HAVE_LINUX_SERIAL_H
-    ticables_info(_("    tty support: available."));
+    ticables_info("%s", _("    tty support: available."));
 #else
-    ticables_info(_("    tty support: not compiled."));
+    ticables_info("%s", _("    tty support: not compiled."));
     return ERR_TTDEV;
 #endif
 
     // check for node usability
-    ticables_info(_("Check for tty usability:"));
+    ticables_info("%s", _("Check for tty usability:"));
     if(check_for_node_usability(devname) == -1)
     {
-        ticables_warning(_("not usable"));
+        ticables_warning("%s", _("not usable"));
         return ERR_TTDEV;
     }
 
@@ -338,12 +338,12 @@ int linux_check_tty(const char *devname)
 
     if(serinfo.type == PORT_UNKNOWN || serinfo.type == PORT_MAX)
     {
-        ticables_info(_("    is useable: no"));
+        ticables_info("%s", _("    is usable: no"));
         close(fd);
         return ERR_TTDEV;
     }
 
-    ticables_info(_("    is useable: yes"));
+    ticables_info("%s", _("    is usable: yes"));
     close(fd);
 #endif
 
@@ -354,16 +354,16 @@ int linux_check_parport(const char *devname)
 {
     int fd;
 
-    ticables_info(_("Check for parport support:"));
+    ticables_info("%s", _("Check for parport support:"));
 #ifdef HAVE_LINUX_PARPORT_H    
-    ticables_info(_("    parport support: available."));
+    ticables_info("%s", _("    parport support: available."));
 #else
-    ticables_info(_("    parport support: not compiled."));
+    ticables_info("%s", _("    parport support: not compiled."));
     return ERR_PPDEV;
 #endif
 
     // check for node usability
-    ticables_info(_("Check for parport usability:"));
+    ticables_info("%s", _("Check for parport usability:"));
     if(check_for_node_usability(devname) == -1)
         return ERR_PPDEV;
 
@@ -378,12 +378,12 @@ int linux_check_parport(const char *devname)
 
     if (ioctl(fd, PPCLAIM) == -1)
     {
-        ticables_info(_("    is useable: no"));
+        ticables_info("%s", _("    is usable: no"));
         close(fd);
         return ERR_PPDEV;
     }
 
-    ticables_info(_("    is useable: yes"));
+    ticables_info("%s", _("    is usable: yes"));
 
     if (ioctl(fd, PPRELEASE) == -1)
     {
@@ -401,15 +401,15 @@ int linux_check_parport(const char *devname)
 
 int linux_check_libusb(void)
 {
-    ticables_info(_("Check for libusb support:"));
+    ticables_info("%s", _("Check for libusb support:"));
 #if defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0)
-    ticables_info(_("    usb support: available."));
+    ticables_info("%s", _("    usb support: available."));
 #else
-    ticables_info(_("    usb support: not compiled."));
+    ticables_info("%s", _("    usb support: not compiled."));
     return ERR_USBFS;
 #endif
 
-    ticables_info(_("Check for libusb usability:"));
+    ticables_info("%s", _("Check for libusb usability:"));
 
     if(!access(DEVFS, F_OK))
     {
@@ -442,8 +442,8 @@ int linux_check_libusb(void)
     else
     {
         ticables_info(_("    usb filesystem (/[proc|dev]/bus/usb): %s"), "not present");
-        ticables_info(_("    => you must have udev or usbfs support."));
-        ticables_info(_("    => take a look at the ticables2/CONFIG file."));
+        ticables_info("%s", _("    => you must have udev or usbfs support."));
+        ticables_info("%s", _("    => take a look at the ticables2/CONFIG file."));
 
         return ERR_USBFS;
     }

@@ -111,7 +111,7 @@ TIEXPORT1 int TICALL ticables_probing_do(int ***result, unsigned int timeout, Pr
 	}
 	*result = NULL;
 
-	ticables_info(_("Link cable probing:"));
+	ticables_info("%s", _("Link cable probing:"));
 
 	array = (int **)calloc(CABLE_MAX + 1, sizeof(int *));
 	if (array == NULL)

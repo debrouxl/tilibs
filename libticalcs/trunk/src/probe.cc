@@ -88,11 +88,11 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 	do
 	{
-		ticalcs_info(_("Probing calculator...\n"));
+		ticalcs_info("%s", _("Probing calculator...\n"));
 		*model = CALC_NONE;
 
 		/* Test for a TI86 before a TI85 */
-		ticalcs_info(_("Check for TI86... "));
+		ticalcs_info("%s", _("Check for TI86... "));
 		err = dbus_send(handle, DBUS_MID_PC_TI86, DBUS_CMD_SCR, 2, NULL);
 		if (err)
 		{
@@ -116,7 +116,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 		}
 
 		/* Test for a TI85 */
-		ticalcs_info(_("Check for TI85... "));
+		ticalcs_info("%s", _("Check for TI85... "));
 		err = dbus_send(handle, DBUS_MID_PC_TI85, DBUS_CMD_SCR, 2, NULL);
 		if (err)
 		{
@@ -140,7 +140,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 		}
 
 		/* Test for a TI73 before a TI83 */
-		ticalcs_info(_("Check for TI73... "));
+		ticalcs_info("%s", _("Check for TI73... "));
 		err = dbus_send(handle, DBUS_MID_PC_TI73, DBUS_CMD_SCR, 2, NULL);
 		if (err)
 		{
@@ -164,7 +164,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 		}
 
 		/* Test for a TI83 before a TI82 */
-		ticalcs_info(_("Check for TI83... "));
+		ticalcs_info("%s", _("Check for TI83... "));
 		err = dbus_send(handle, DBUS_MID_PC_TI83, DBUS_CMD_SCR, 2, NULL);
 		if (err)
 		{
@@ -188,7 +188,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 		}
 
 		/* Test for a TI82 */
-		ticalcs_info(_("Check for TI82... "));
+		ticalcs_info("%s", _("Check for TI82... "));
 		err = dbus_send(handle, DBUS_MID_PC_TI83, DBUS_CMD_SCR, 2, NULL);
 		if (err)
 		{
@@ -214,7 +214,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 #if 0
 		/* Test for a TI80 */
 #warning TI-80 DETECTION FAILS
-		ticalcs_info(_("Check for TI80... "));
+		ticalcs_info("%s", _("Check for TI80... "));
 		err = dbus_send(handle, DBUS_MID_PC_TI80, DBUS_CMD_SCR, 0, NULL);
 		if (err)
 		{
@@ -270,7 +270,7 @@ static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 
 		// test for FLASH hand-helds (00 68 00 00 -> XX 56 00 00)
 		// where XX is 0x98: TI89/89t, 0x88: TI92+/V200, 0x73: TI83+/84+, 0x74: TI73
-		ticalcs_info(_("Check for TIXX... "));
+		ticalcs_info("%s", _("Check for TIXX... "));
 		for (i = 0; i < 2; i++)
 		{
 			ticalcs_info(" PC->TI: RDY?");
@@ -308,7 +308,7 @@ static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 		// test for TI92 (09 68 00 00 -> 89 56 00 00)
 		else if (ret)
 		{
-			ticalcs_info(_("Check for TI92... "));
+			ticalcs_info("%s", _("Check for TI92... "));
 			ticables_cable_reset(handle->cable);
 			PAUSE(DEAD_TIME);	// needed !
 
@@ -352,7 +352,7 @@ static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 		// test for TI9x FLASH hand-helds again (request version and analyze HW_ID)
 		if(!ret && (host != DBUS_MID_TI73_PC) && (host != DBUS_MID_TI83p_PC))
 		{
-			ticalcs_info(_("Check for TI9X... "));
+			ticalcs_info("%s", _("Check for TI9X... "));
 
 			handle->model = CALC_TI89;
 			handle->calc = (CalcFncts *)&calc_89;
@@ -367,7 +367,7 @@ static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 		}
 		else
 		{
-			ticalcs_info(_("Check for TI8X... "));
+			ticalcs_info("%s", _("Check for TI8X... "));
 
 			handle->model = CALC_TI83P;
 			handle->calc = (CalcFncts *)&calc_83p;
