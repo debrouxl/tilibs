@@ -1,8 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: packets.h 1179 2005-06-06 14:42:32Z roms $ */
 
-/*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+/*  libticalcs - TI Calculator library, a part of the TILP project
+ *  Copyright (C) 2004-2009  Romain Liévin
+ *  Copyright (C) 2009-2019  Lionel Debroux
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

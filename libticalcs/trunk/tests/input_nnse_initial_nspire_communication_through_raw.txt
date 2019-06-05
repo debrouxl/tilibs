@@ -1,0 +1,18 @@
+version 0
+raw_recv_data 12
+buffer_peek_data be16 6 r1
+reg_sub 12 r1
+raw_recv_data r1
+raw_send_data
+00  01  01  fe  00  00 000d 0000 00f0
+01
+
+raw_send_data
+00  01  01  fe  00  00 000d 0001 81ee
+80 
+
+raw_recv_data 12
+buffer_peek_data be16 6 r1
+reg_sub 12 r1
+raw_recv_data r1
+exit

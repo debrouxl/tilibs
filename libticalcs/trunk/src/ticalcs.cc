@@ -1,8 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
 
-/*  libticalcs2 - hand-helds support library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+/*  libticalcs - TI Calculator library, a part of the TILP project
+ *  Copyright (C) 1999-2009  Romain Liévin
+ *  Copyright (C) 2009-2019  Lionel Debroux
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -785,6 +785,21 @@ TIEXPORT3 int TICALL ticalcs_model_supports_nsp(CalcModel model)
 	return (   /*model <  CALC_MAX
 	        &&*/ ( model == CALC_NSPIRE
 	            || model == CALC_NSPIRE_CRADLE));
+}
+
+/**
+ * ticalcs_model_supports_nnse:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given calculator model supports the NavNet SE protocol.
+ * That is, the standard protocol used by TI-Nspire CX II calculators and the NWB over the USB port.
+ *
+ * Return value: nonzero if the calculator supports the NNSE protocol, zero if it doesn't.
+ */
+TIEXPORT3 int TICALL ticalcs_model_supports_nnse(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ ( model == CALC_NSPIRE_CXII));
 }
 
 /**
