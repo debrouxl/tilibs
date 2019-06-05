@@ -1,8 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: packets.c 1404 2005-07-20 20:39:39Z roms $ */
 
-/*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 2007 Romain Liévin
+/*  libticalcs - TI Calculator library, a part of the TILP project
+ *  Copyright (C) 2007-2009  Romain LiÃ©vin
+ *  Copyright (C) 2009-2019  Lionel Debroux
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -190,8 +190,6 @@ static int hexdump(uint8_t *data, uint32_t size)
 
 TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 {
-	uint8_t buf[sizeof(NSPRawPacket)] = { 0 };
-	uint32_t size;
 	int ret;
 	CalcEventData event;
 
@@ -200,12 +198,13 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_NSP_RPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_nsp_rpkt(&event, /* src_addr */ pkt->src_addr, /* src_port */ pkt->src_port, /* dst_addr */ pkt->dst_addr, /* dst_port */ pkt->dst_port,
-	                            /* data_sum */ pkt->data_sum, /* data_size */ pkt->data_size, /* ack */ pkt->ack, /* seq */ pkt->seq, /* hdr_sum */ pkt->hdr_sum, /* data */ pkt->data);
+	                            /* data_sum */ pkt->data_sum, /* data_size */ (uint32_t)pkt->data_size, /* ack */ pkt->ack, /* seq */ pkt->seq, /* hdr_sum */ pkt->hdr_sum, /* data */ pkt->data);
 	ret = ticalcs_event_send(handle, &event);
 
 	if (!ret)
 	{
-		size = pkt->data_size + NSP_HEADER_SIZE;
+		uint8_t buf[sizeof(NSPRawPacket)] = { 0 };
+		uint32_t size = pkt->data_size + NSP_HEADER_SIZE;
 		pkt->data_sum = compute_crc(pkt->data, pkt->data_size);
 
 		if (pkt->src_port == 0x00fe || pkt->src_port == 0x00ff || pkt->src_port == 0x00d3)
@@ -267,7 +266,7 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_SEND_NSP_RPKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_nsp_rpkt(&event, /* src_addr */ pkt->src_addr, /* src_port */ pkt->src_port, /* dst_addr */ pkt->dst_addr, /* dst_port */ pkt->dst_port,
-	                            /* data_sum */ pkt->data_sum, /* data_size */ pkt->data_size, /* ack */ pkt->ack, /* seq */ pkt->seq, /* hdr_sum */ pkt->hdr_sum, /* data */ pkt->data);
+	                            /* data_sum */ pkt->data_sum, /* data_size */ (uint32_t)pkt->data_size, /* ack */ pkt->ack, /* seq */ pkt->seq, /* hdr_sum */ pkt->hdr_sum, /* data */ pkt->data);
 	ret = ticalcs_event_send(handle, &event);
 
 	return ret;
@@ -275,7 +274,6 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 
 TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 {
-	uint8_t buf[NSP_HEADER_SIZE];
 	int ret;
 	CalcEventData event;
 
@@ -289,6 +287,7 @@ TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 
 	if (!ret)
 	{
+		uint8_t buf[NSP_HEADER_SIZE];
 		ticables_progress_reset(handle->cable);
 		ret = ticables_cable_recv(handle->cable, buf, NSP_HEADER_SIZE);
 		while (!ret)
@@ -348,7 +347,7 @@ TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_RECV_NSP_RPKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_nsp_rpkt(&event, /* src_addr */ pkt->src_addr, /* src_port */ pkt->src_port, /* dst_addr */ pkt->dst_addr, /* dst_port */ pkt->dst_port,
-	                            /* data_sum */ pkt->data_sum, /* data_size */ pkt->data_size, /* ack */ pkt->ack, /* seq */ pkt->seq, /* hdr_sum */ pkt->hdr_sum, /* data */ pkt->data);
+	                            /* data_sum */ pkt->data_sum, /* data_size */ (uint32_t)pkt->data_size, /* ack */ pkt->ack, /* seq */ pkt->seq, /* hdr_sum */ pkt->hdr_sum, /* data */ pkt->data);
 	ret = ticalcs_event_send(handle, &event);
 
 	return ret;
@@ -370,7 +369,7 @@ static const char* ep_way(uint8_t ep)
 	}
 }
 
-TIEXPORT3 int TICALL nsp_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len, uint8_t ep)
+TIEXPORT3 int TICALL nn_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len, uint8_t ep)
 {
 	int ret = 0;
 	uint16_t unused;
@@ -379,7 +378,7 @@ TIEXPORT3 int TICALL nsp_dissect(CalcModel model, FILE * f, const uint8_t * data
 	uint16_t dst_addr;
 	uint16_t dst_port;
 	uint16_t data_sum;
-	uint8_t data_size;
+	uint32_t data_size;
 	uint8_t ack;
 	uint8_t seq;
 	uint8_t hdr_sum;
@@ -391,9 +390,9 @@ TIEXPORT3 int TICALL nsp_dissect(CalcModel model, FILE * f, const uint8_t * data
 	VALIDATE_NONNULL(f);
 	VALIDATE_NONNULL(data);
 
-	if (len < NSP_HEADER_SIZE + 1 || len > NSP_HEADER_SIZE + 1 + NSP_DATA_SIZE) // 1 is the cmd byte.
+	if (len < NSP_HEADER_SIZE + 1 || len > NNSE_DATA_SIZE - NNSE_HEADER_SIZE) // 1 is the cmd byte.
 	{
-		ticalcs_critical("Length %lu (%lX) is too small or too large for a valid NSP raw packet", (unsigned long)len, (unsigned long)len);
+		ticalcs_critical("Length %lu (%lX) is too small or too large for a valid NavNet raw packet", (unsigned long)len, (unsigned long)len);
 		return ERR_INVALID_PACKET;
 	}
 
@@ -416,14 +415,24 @@ TIEXPORT3 int TICALL nsp_dissect(CalcModel model, FILE * f, const uint8_t * data
 	           unused, ack, seq, hdr_sum, data_sum, data_size);
 	fprintf(f, "\t  cmd=%02X\n", cmd);
 
-	if (data_size > NSP_DATA_SIZE)
+	if (data_size == 0xFF)
 	{
-		ticalcs_critical("Data size %u (%X) is too large for a valid NSP raw packet", data_size, data_size);
-		return ERR_INVALID_PACKET;
+		if (len < NSP_HEADER_SIZE + 1 + 4)
+		{
+			ticalcs_critical("Length %lu (%lX) is too small for a valid NavNet raw packet with larger size info", (unsigned long)len, (unsigned long)len);
+			return ERR_INVALID_PACKET;
+		}
+		data_size = (((uint32_t)data[16]) << 24) | (((uint32_t)data[17]) << 16) | (((uint32_t)data[18]) << 8) | data[19];
+		cmd = data[20];
+		if (data_size > NNSE_DATA_SIZE - NNSE_HEADER_SIZE - NSP_HEADER_SIZE)
+		{
+			ticalcs_critical("Data size %u (%X) is too large for a valid NavNet raw packet with larger size info", data_size, data_size);
+			return ERR_INVALID_PACKET;
+		}
 	}
 	if (len != (uint32_t)data_size + NSP_HEADER_SIZE)
 	{
-		ticalcs_critical("Data size %u (%X) is incoherent with given NSP raw packet length %lu (%lX)", data_size, data_size, (unsigned long)len, (unsigned long)len);
+		ticalcs_critical("Data size %u (%X) is incoherent with given NavNet raw packet length %lu (%lX)", data_size, data_size, (unsigned long)len, (unsigned long)len);
 		return ERR_INVALID_PACKET;
 	}
 
