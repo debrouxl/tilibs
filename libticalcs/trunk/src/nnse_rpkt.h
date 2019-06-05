@@ -1,8 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
 
 /*  libticalcs - TI Calculator library, a part of the TILP project
- *  Copyright (C) 2007-2009  Romain Liévin
- *  Copyright (C) 2009-2019  Lionel Debroux
+ *  Copyright (C) 2019  Lionel Debroux
+ *  Copyright (C) 2019  Fabian Vogt
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
 
 // /!\ NOTE: for this file, backwards compatibility will not necessarily be maintained as strongly as it is for ticalcs.h !
 
-#ifndef __NSP_RPKT__
-#define __NSP_RPKT__
+#ifndef __NNSE_RPKT__
+#define __NNSE_RPKT__
 
 #include <stdio.h>
 
@@ -30,9 +30,9 @@
 extern "C" {
 #endif
 
-TIEXPORT3 const char* TICALL nsp_addr2name(uint16_t id);
-TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id);
-TIEXPORT3 int TICALL nn_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len, uint8_t ep);
+TIEXPORT3 const char* TICALL nnse_addr2name(uint8_t id);
+TIEXPORT3 const char* TICALL nnse_sid2name(uint8_t id);
+TIEXPORT3 int TICALL nnse_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len, uint8_t ep);
 
 #ifdef __cplusplus
 }

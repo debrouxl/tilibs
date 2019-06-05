@@ -11,7 +11,7 @@ libticalcsinclude_HEADERS = \
 	ticalcs.h export3.h \
 	keys73.h keys83.h keys83p.h keys86.h keys89.h keys92p.h \
 	dbus_pkt.h dusb_rpkt.h dusb_vpkt.h dusb_cmd.h nsp_rpkt.h nsp_vpkt.h nsp_cmd.h \
-	cmdz80.h cmd68k.h romdump.h calclabequipmentdata.h
+	nnse_rpkt.h nnse_vpkt.h nnse_cmd.h cmdz80.h cmd68k.h romdump.h calclabequipmentdata.h
 
 # build instructions
 libticalcs2_la_CPPFLAGS = -I$(top_srcdir)/intl \
@@ -28,13 +28,14 @@ libticalcs2_la_SOURCES = *.h \
 	calc_nsp.cc \
 	calclabequipmentdata.cc \
 	clock.cc \
-	cmdz80.cc cmd68k.cc dusb_cmd.cc nsp_cmd.cc \
+	cmdz80.cc cmd68k.cc dusb_cmd.cc nsp_cmd.cc nnse_cmd.cc \
 	dirlist.cc \
 	error.cc \
 	keys73.cc keys83.cc keys83p.cc keys86.cc keys89.cc keys92p.cc \
 	dbus_pkt.cc \
 	dusb_rpkt.cc dusb_vpkt.cc \
 	nsp_rpkt.cc nsp_vpkt.cc \
+	nnse_rpkt.cc nnse_vpkt.cc \
 	probe.cc \
 	romdump.cc \
 	screen.cc \

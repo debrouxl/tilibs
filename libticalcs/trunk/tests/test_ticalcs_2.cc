@@ -1,4 +1,4 @@
-/* $Id$ */
+/* Hey EMACS -*- linux-c -*- */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
  *  Copyright (C) 1999-2009  Romain Lievin
@@ -60,6 +60,7 @@
 #include "../src/dusb_cmd.h"
 #include "../src/keysnsp.h"
 #include "../src/nsp_rpkt.h"
+#include "../src/nnse_rpkt.h"
 #include "../src/romdump.h"
 #include "../src/error.h"
 
@@ -1791,6 +1792,24 @@ static int nsp_recv_rpkt(CalcHandle * h, int, char *)
 	return ret;
 }
 
+static int nnse_send_rpkt(CalcHandle * h, int, char *)
+{
+	int ret = -1;
+
+	fputs("Not implemented\n", stderr);
+
+	return ret;
+}
+
+static int nnse_recv_rpkt(CalcHandle * h, int, char *)
+{
+	int ret = -1;
+
+	fputs("Not implemented\n", stderr);
+
+	return ret;
+}
+
 static int rdmp_send_dumper(CalcHandle * h, int, char * input)
 {
 	int ret;
@@ -1905,7 +1924,31 @@ static int nsp_dissect_rpkt(CalcHandle * h, int, char * input)
 	ret = get_hex_input(inbuf, sizeof(inbuf), pktdata2, sizeof(((NSPRawPacket *)0)->data), &length, "raw NSP packet", xstr(INBUF_DATA_SIZE));
 	if (!ret)
 	{
-		ret = nsp_dissect((CalcModel)model, stderr, pktdata2, length, ep);
+		ret = nn_dissect((CalcModel)model, stderr, pktdata2, length, ep);
+	}
+
+	return ret;
+}
+
+static int nnse_dissect_rpkt(CalcHandle * h, int, char * input)
+{
+	int ret;
+	uint8_t ep = 2; // Assume PC -> TI.
+	uint32_t length = 0;
+	int model;
+
+	printf("Enter calc model (usually 24): ");
+	ret = scan_print_output_1(input, "%d", "%d", &model, model);
+	if (ret < 1)
+	{
+		fputs("Missing parameters\n", stderr);
+		return 1;
+	}
+
+	ret = get_hex_input(inbuf, sizeof(inbuf), pktdata2, sizeof(((NNSERawPacket *)0)->data), &length, "raw NNSE packet", xstr(INBUF_DATA_SIZE));
+	if (!ret)
+	{
+		ret = nnse_dissect((CalcModel)model, stderr, pktdata2, length, ep);
 	}
 
 	return ret;
@@ -2408,26 +2451,30 @@ static menu_entry fnct_menu[] =
 	DEFINE_MENU_ENTRY("RDMP Check whether ready", rdmp_is_ready),
 	DEFINE_MENU_ENTRY("RDMP Read ROM dump", rdmp_read_dump),
 	NULL_ENTRY,
+	DEFINE_MENU_ENTRY("NNSE Send raw packet", nnse_send_rpkt),                                 // 65
+	DEFINE_MENU_ENTRY("NNSE Recv raw packet", nnse_recv_rpkt),
+	NULL_ENTRY,
 	// Front-ends for dissection functions.
-	DEFINE_MENU_ENTRY("DIS  Dissect DBUS raw packet", dbus_dissect_pkt),                       // 65
+	DEFINE_MENU_ENTRY("DIS  Dissect DBUS raw packet", dbus_dissect_pkt),
 	DEFINE_MENU_ENTRY("DIS  Dissect DUSB raw packet", dusb_dissect_rpkt),
 	DEFINE_MENU_ENTRY("DIS  Dissect NSP raw packet", nsp_dissect_rpkt),
+	DEFINE_MENU_ENTRY("DIS  Dissect NNSE raw packet", nnse_dissect_rpkt),                      // 70
 	NULL_ENTRY,
 	// Front-ends for protocol-specific capabilities.
 	DEFINE_MENU_ENTRY("DBUS 83+ Memory dump", ti83p_dump),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("DBUS 83+ Enable key echo", ti83p_eke),
-	DEFINE_MENU_ENTRY("DBUS 83+ Disable key echo", ti83p_dke),                                 // 70
+	DEFINE_MENU_ENTRY("DBUS 83+ Disable key echo", ti83p_dke),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("DBUS 83+ Enable lockdown", ti83p_eld),
-	DEFINE_MENU_ENTRY("DBUS 83+ Disable lockdown", ti83p_dld),
+	DEFINE_MENU_ENTRY("DBUS 83+ Disable lockdown", ti83p_dld),                                 // 75
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("DBUS 83+ Get standard calculator ID", ti83p_gid),
 	DEFINE_MENU_ENTRY("DBUS 83+ Get some 32-byte memory area", ti83p_rid),
-	DEFINE_MENU_ENTRY("DBUS 83+ Set some 32-byte memory area", ti83p_sid),                     // 75
+	DEFINE_MENU_ENTRY("DBUS 83+ Set some 32-byte memory area", ti83p_sid),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("DUSB Get parameter IDs", dusb_get_param_ids),
-	DEFINE_MENU_ENTRY("DUSB Set parameter ID", dusb_set_param_id),
+	DEFINE_MENU_ENTRY("DUSB Set parameter ID", dusb_set_param_id),                             // 80
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("NSP  Send key (specific and generic)", nsp_send_key),
 	NULL_ENTRY,

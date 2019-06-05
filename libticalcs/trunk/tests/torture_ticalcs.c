@@ -4,6 +4,9 @@
 #include <nsp_rpkt.h>
 #include <nsp_vpkt.h>
 #include <nsp_cmd.h>
+#include <nnse_rpkt.h>
+#include <nnse_vpkt.h>
+#include <nnse_cmd.h>
 #include <dusb_rpkt.h>
 #include <dusb_vpkt.h>
 #include <dusb_cmd.h>
@@ -51,6 +54,7 @@ static void torture_ticalcs(void)
     PRINTF(ticalcs_model_supports_dbus, INT, CALC_NONE);
     PRINTF(ticalcs_model_supports_dusb, INT, CALC_NONE);
     PRINTF(ticalcs_model_supports_nsp, INT, CALC_NONE);
+    PRINTF(ticalcs_model_supports_nnse, INT, CALC_NONE);
     PRINTF(ticalcs_model_supports_installing_flashapps, INT, CALC_NONE);
     PRINTF(ticalcs_calc_get_event_hook, PTR, NULL);
     PRINTF(ticalcs_calc_set_event_hook, PTR, NULL, (void *)0x12345678);
@@ -267,6 +271,12 @@ static void torture_ticalcs(void)
 
     PRINTF(nsp_recv, INT, NULL, (void *)0x12345678);
     PRINTF(nsp_recv, INT, (void *)0x12345678, NULL);
+// nnse_rpkt.c
+    PRINTF(nnse_send, INT, NULL, (void *)0x12345678);
+
+    PRINTF(nnse_send, INT, (void *)0x12345678, NULL);
+    PRINTF(nnse_recv, INT, NULL, (void *)0x12345678);
+    PRINTF(nnse_recv, INT, (void *)0x12345678, NULL);
 }
 
 static void torture_nsp(void)
@@ -276,12 +286,12 @@ static void torture_nsp(void)
 // nsp_rpkt.c
     PRINTF(nsp_addr2name, STR, 0);
     PRINTF(nsp_sid2name, STR, 0);
-    PRINTF(nsp_dissect, INT, CALC_NONE, NULL, (void *)0x12345678, 8, 2);
-    PRINTF(nsp_dissect, INT, CALC_NONE, (void *)0x12345678, NULL, 8, 2);
+    PRINTF(nn_dissect, INT, CALC_NONE, NULL, (void *)0x12345678, 8, 2);
+    PRINTF(nn_dissect, INT, CALC_NONE, (void *)0x12345678, NULL, 8, 2);
 // nsp_vpkt.c
     PRINTF(nsp_vtl_pkt_new, PTR, NULL);
     PRINTF(nsp_vtl_pkt_new_ex, PTR, NULL, 0x12345678, 0x1234, 0x1234, 0x1234, 0x1234, 0x12, (void *)0x12345678);
-    PRINTFVOID(nsp_vtl_pkt_fill, NULL, 0x12345678, 0x1234, 0x1234, 0x1234, 0x1234, 0x12, NULL);
+    PRINTFVOID(nsp_vtl_pkt_fill, NULL, 0x1234, 0x1234, 0x1234, 0x1234, 0x12, 0x12345678, NULL);
     PRINTFVOID(nsp_vtl_pkt_del, NULL, (void *)0x12345678);
     PRINTFVOID(nsp_vtl_pkt_del, (void *)0x12345678, NULL);
     ptr = nsp_vtl_pkt_alloc_data(NULL, 0);
@@ -384,6 +394,116 @@ static void torture_nsp(void)
     PRINTF(nsp_cmd_r_echo, INT, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(nsp_cmd_s_keypress_event, INT, NULL, (void *)0x12345678);
     PRINTF(nsp_cmd_s_keypress_event, INT, (void *)0x12345678, NULL);
+}
+
+static void torture_nnse(void)
+{
+    void * ptr;
+
+// nnse_rpkt.c
+    PRINTF(nnse_addr2name, STR, 0);
+    PRINTF(nnse_sid2name, STR, 0);
+    PRINTF(nnse_dissect, INT, CALC_NONE, NULL, (void *)0x12345678, 8, 2);
+    PRINTF(nnse_dissect, INT, CALC_NONE, (void *)0x12345678, NULL, 8, 2);
+// nnse_vpkt.c
+    PRINTF(nnse_vtl_pkt_new, PTR, NULL);
+    PRINTF(nnse_vtl_pkt_new_ex, PTR, NULL, 0x12345678, 0x12, 0x12, 0x12, (void *)0x12345678);
+    PRINTFVOID(nnse_vtl_pkt_fill, NULL, 0x12345678, 0x12, 0x12, 0x12, NULL);
+    PRINTFVOID(nnse_vtl_pkt_del, NULL, (void *)0x12345678);
+    PRINTFVOID(nnse_vtl_pkt_del, (void *)0x12345678, NULL);
+    ptr = nnse_vtl_pkt_alloc_data(0);
+    PRINTF(, PTR, ptr);
+    nnse_vtl_pkt_free_data(ptr);
+
+    ptr = nnse_vtl_pkt_realloc_data(NULL, 1);
+    PRINTF(, PTR, ptr);
+    nnse_vtl_pkt_free_data(ptr);
+    PRINTFVOID(nnse_vtl_pkt_free_data, NULL);
+    PRINTF(nnse_addr_request, INT, NULL);
+    PRINTF(nnse_addr_assign, INT, NULL, 0);
+    PRINTF(nnse_send_ack, INT, NULL);
+    PRINTF(nnse_recv_ack, INT, NULL);
+
+    PRINTF(nnse_send_data, INT, NULL, (void *)0x12345678);
+    PRINTF(nnse_send_data, INT, (void *)0x12345678, NULL);
+    PRINTF(nnse_recv_data, INT, NULL, (void *)0x12345678);
+    PRINTF(nnse_recv_data, INT, (void *)0x12345678, NULL);
+// nnse_cmd.c
+#if 0
+    PRINTF(nsp_cmd_r_login, INT, NULL);
+    PRINTF(nsp_cmd_s_status, INT, NULL, 0);
+    PRINTF(nsp_cmd_r_status, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_dev_infos, INT, NULL, 0);
+
+    PRINTF(nsp_cmd_r_dev_infos, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_dev_infos, INT, (void *)0x12345678, (void *)0x12345678, NULL, NULL);
+    PRINTF(nsp_cmd_r_dev_infos, INT, (void *)0x12345678, NULL, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_dev_infos, INT, (void *)0x12345678, NULL, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_screen_rle, INT, NULL, 0);
+    PRINTF(nsp_cmd_r_screen_rle, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_screen_rle, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_screen_rle, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_screen_rle, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_s_dir_attributes, INT, NULL, (void *)0x12345678);
+
+    PRINTF(nsp_cmd_s_dir_attributes, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_dir_attributes, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_dir_enum_init, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_dir_enum_init, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_dir_enum_init, INT, NULL);
+    PRINTF(nsp_cmd_s_dir_enum_next, INT, NULL);
+    PRINTF(nsp_cmd_r_dir_enum_next, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_dir_enum_next, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_dir_enum_done, INT, NULL);
+    PRINTF(nsp_cmd_r_dir_enum_done, INT, NULL);
+
+    PRINTF(nsp_cmd_s_put_file, INT, NULL, (void *)0x12345678, 0);
+    PRINTF(nsp_cmd_s_put_file, INT, (void *)0x12345678, NULL, 0);
+    PRINTF(nsp_cmd_r_put_file, INT, NULL);
+    PRINTF(nsp_cmd_s_get_file, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_get_file, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_get_file, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_del_file, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_del_file, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_del_file, INT, NULL);
+    PRINTF(nsp_cmd_s_new_folder, INT, NULL, (void *)0x12345678);
+
+    PRINTF(nsp_cmd_s_new_folder, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_new_folder, INT, NULL);
+    PRINTF(nsp_cmd_s_del_folder, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_del_folder, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_del_folder, INT, NULL);
+    PRINTF(nsp_cmd_s_copy_file, INT, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_copy_file, INT, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_copy_file, INT, (void *)0x12345678, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_copy_file, INT, NULL);
+    PRINTF(nsp_cmd_s_rename_file, INT, NULL, (void *)0x12345678, (void *)0x12345678);
+
+    PRINTF(nsp_cmd_s_rename_file, INT, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_rename_file, INT, (void *)0x12345678, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_rename_file, INT, NULL);
+    PRINTF(nsp_cmd_s_file_ok, INT, NULL);
+    PRINTF(nsp_cmd_r_file_ok, INT, NULL);
+    PRINTF(nsp_cmd_s_file_contents, INT, NULL, 0, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_file_contents, INT, (void *)0x12345678, 0, NULL);
+    PRINTF(nsp_cmd_r_file_contents, INT, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_file_contents, INT, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_file_contents, INT, (void *)0x12345678, (void *)0x12345678, NULL);
+
+    PRINTF(nsp_cmd_s_os_install, INT, NULL, 0);
+    PRINTF(nsp_cmd_r_os_install, INT, NULL);
+    PRINTF(nsp_cmd_s_os_contents, INT, NULL, 0, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_os_contents, INT, (void *)0x12345678, 0, NULL);
+    PRINTF(nsp_cmd_r_progress, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_progress, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_s_generic_data, INT, NULL, 0, (void *)0x12345678, 0, 0);
+    PRINTF(nsp_cmd_r_generic_data, INT, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_echo, INT, NULL, 0, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_echo, INT, NULL, (void *)0x12345678, (void *)0x12345678);
+
+    PRINTF(nsp_cmd_s_keypress_event, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_keypress_event, INT, (void *)0x12345678, NULL);
+#endif
 }
 
 static void torture_dusb(void)
@@ -962,12 +1082,12 @@ static const uint8_t nsp_good_keypress_home[] = {
 
 static void dissect_functions_unit_test_3(void)
 {
-    assert(ERR_INVALID_PACKET == nsp_dissect(CALC_NONE, stderr, (void *)0x12345678, 16, 0));
-    assert(ERR_INVALID_PACKET == nsp_dissect(CALC_NONE, stderr, (void *)0x12345678, 272, 0));
-    assert(ERR_INVALID_PACKET == nsp_dissect(CALC_NONE, stderr, nsp_bad_device_address_request, sizeof(nsp_bad_device_address_request), 0));
-    assert(ERR_INVALID_PACKET == nsp_dissect(CALC_NONE, stderr, nsp_bad_device_address_request_2, sizeof(nsp_bad_device_address_request_2), 0));
-    assert(0 == nsp_dissect(CALC_NONE, stderr, nsp_good_device_address_request, sizeof(nsp_good_device_address_request), 0));
-    assert(0 == nsp_dissect(CALC_NONE, stderr, nsp_good_keypress_home, sizeof(nsp_good_keypress_home), 0));
+    assert(ERR_INVALID_PACKET == nn_dissect(CALC_NONE, stderr, (void *)0x12345678, 16, 0));
+    assert(ERR_INVALID_PACKET == nn_dissect(CALC_NONE, stderr, (void *)0x12345678, NNSE_DATA_SIZE + 1, 0));
+    assert(ERR_INVALID_PACKET == nn_dissect(CALC_NONE, stderr, nsp_bad_device_address_request, sizeof(nsp_bad_device_address_request), 0));
+    assert(ERR_INVALID_PACKET == nn_dissect(CALC_NONE, stderr, nsp_bad_device_address_request_2, sizeof(nsp_bad_device_address_request_2), 0));
+    assert(0 == nn_dissect(CALC_NONE, stderr, nsp_good_device_address_request, sizeof(nsp_good_device_address_request), 0));
+    assert(0 == nn_dissect(CALC_NONE, stderr, nsp_good_keypress_home, sizeof(nsp_good_keypress_home), 0));
 }
 
 int main(int argc, char **argv)
@@ -976,6 +1096,7 @@ int main(int argc, char **argv)
 
     torture_ticalcs();
     torture_nsp();
+    torture_nnse();
     torture_dusb();
     torture_dbus();
     torture_cmdz80();
