@@ -1,8 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
 
 /*  libticalcs2 - hand-helds support library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+ *  Copyright (C) 1999-2009  Romain Liévin
+ *  Copyright (C) 2009-2019  Lionel Debroux
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -362,14 +362,20 @@ typedef struct
 } DUSBVirtualPacket;
 
 //! Size of the header of a \a NSPRawPacket
-#define NSP_HEADER_SIZE (16)
+#define NSP_HEADER_SIZE  (16)
 //! Size of the data contained in \a NSPRawPacket
-#define NSP_DATA_SIZE   (254)
+#define NSP_DATA_SIZE    (254)
+
+//! Size of the header of a \a NNSERawPacket
+#define NNSE_HEADER_SIZE (12)
+//! Size of the data contained in \a NNSERawPacket
+#define NNSE_DATA_SIZE   (0x5C0)
 
 /**
  * NSPRawPacket:
  *
- * Raw packet for the Nspire NavNet protocol, version with pre-allocated packet data.
+ * Raw packet for the Nspire NavNet protocol, now supporting > 254 bytes of data.
+ * This structure contains pre-allocated storage for packet data.
  **/
 typedef struct
 {
@@ -384,13 +390,24 @@ typedef struct
 	uint8_t   seq;
 	uint8_t   hdr_sum;
 
-	uint8_t   data[NSP_DATA_SIZE];
+	union
+	{
+		//! Used when data_size <= NSP_DATA_SIZE.
+		uint8_t data[NSP_DATA_SIZE];
+		//! Used otherwise, with data_size == 0xFF.
+		struct
+		{
+			uint32_t real_size;
+			uint8_t  large_data[NNSE_DATA_SIZE - NNSE_HEADER_SIZE - NSP_HEADER_SIZE - sizeof(uint32_t)];
+		};
+	};
 } NSPRawPacket;
 
 /**
  * NSPRawPacketA:
  *
- * Raw packet for the Nspire NavNet protocol, version with externally allocated packet data.
+ * Raw packet for the Nspire NavNet protocol, supporting > 254 bytes of data.
+ * This structure references externally allocated packet data.
  **/
 typedef struct
 {
@@ -400,7 +417,7 @@ typedef struct
 	uint16_t  dst_addr;
 	uint16_t  dst_port;
 	uint16_t  data_sum;
-	uint8_t   data_size;
+	uint32_t  data_size;
 	uint8_t   ack;
 	uint8_t   seq;
 	uint8_t   hdr_sum;
@@ -415,6 +432,13 @@ typedef struct
  **/
 typedef struct
 {
+#ifdef __cplusplus
+	/*NSPVirtualPacket() : src_addr(0), src_port(0), dst_addr(0), dst_port(0), cmd(0), size(0), data(nullptr) {}
+	NSPVirtualPacket(uint16_t src_addr_, uint16_t src_port_, uint16_t dst_addr_, uint16_t dst_port_, uint8_t cmd_, uint32_t size_, uint8_t * data_) :
+		src_addr(src_addr_), src_port(src_port_), dst_addr(dst_addr_), dst_port(dst_port_), cmd(cmd_), size(size_), data(data_) {}
+	// Keep synchronized with nsp_vtl_pkt_free_data() !
+	~NSPVirtualPacket() { g_free(data); data = nullptr; }*/
+#endif
 	uint16_t  src_addr;
 	uint16_t  src_port;
 	uint16_t  dst_addr;
@@ -425,6 +449,81 @@ typedef struct
 	uint32_t  size;
 	uint8_t  *data;
 } NSPVirtualPacket;
+
+/**
+ * NNSERawPacket:
+ *
+ * Raw packet for the NavNet SE (NWB / CX II) protocol.
+ * This structure contains pre-allocated storage for packet data.
+ **/
+typedef struct
+{
+	uint8_t   unused1;   ///< Unused?
+	uint8_t   service;   ///< Service number. If bit 7 set, an ACK
+	uint8_t   src_addr;  ///< Address of the source
+	uint8_t   dst_addr;  ///< Address of the destination
+	uint8_t   unknown2;  ///< No idea
+	uint8_t   req_ack;   ///< Whether an ack is expected
+	uint16_t  size;      ///< Length of the packet, including this header
+	uint16_t  seq;       ///< Sequence number. Increases by one for every non-ACK packet.
+	uint16_t  csum;      ///< Checksum. Inverse of the 16-bit modular sum with carry added.
+
+	union
+	{
+		//! Used when there's no NavNet payload.
+		uint8_t data[NNSE_DATA_SIZE - NNSE_HEADER_SIZE];
+		NSPRawPacket pkt;
+	};
+} NNSERawPacket;
+
+//static_assert(sizeof(NNSERawPacket::data) == sizeof(NNSERawPacket::rpkt), "Sizes don't match");
+
+/**
+ * NNSERawPacketA:
+ *
+ * Raw packet for the NavNet SE (NWB / CX II) protocol.
+ * This structure references externally allocated packet data.
+ **/
+typedef struct
+{
+	uint8_t   unused1;   ///< Unused?
+	uint8_t   service;   ///< Service number. If bit 7 set, an ACK
+	uint8_t   src_addr;  ///< Address of the source
+	uint8_t   dst_addr;  ///< Address of the destination
+	uint8_t   unknown2;  ///< No idea
+	uint8_t   req_ack;   ///< Whether an ack is expected
+	uint16_t  size;      ///< Length of the packet, including this header
+	uint16_t  seq;       ///< Sequence number. Increases by one for every non-ACK packet.
+	uint16_t  csum;      ///< Checksum. Inverse of the 16bit modular sum with carry added.
+
+	union
+	{
+		uint8_t * data;
+		NSPRawPacket * pkt;
+	};
+} NNSERawPacketA;
+
+/**
+ * NNSEVirtualPacket:
+ *
+ * Virtual packet for the NavNet SE (NWB / CX II) protocol.
+ **/
+typedef struct
+{
+	uint8_t   service;        ///< Service number. If bit 7 set, an ACK
+	uint8_t   src_addr;       ///< Address of the source
+	uint8_t   dst_addr;       ///< Address of the destination
+	uint8_t   wraps_nsp_vpkt; ///< Whether the union wraps a NN VPKT.
+	union
+	{
+		struct
+		{
+			uint32_t  size;
+			uint8_t  *data;
+		};
+		NSPVirtualPacket pkt;
+	};
+} NNSEVirtualPacket;
 
 /**
  * ROMDumpRawPacket:
@@ -849,6 +948,16 @@ typedef enum
 	CALC_EVENT_TYPE_BEFORE_RECV_NSP_VPKT,
 	CALC_EVENT_TYPE_AFTER_RECV_NSP_VPKT,
 
+	CALC_EVENT_TYPE_BEFORE_SEND_NNSE_RPKT,
+	CALC_EVENT_TYPE_AFTER_SEND_NNSE_RPKT,
+	CALC_EVENT_TYPE_BEFORE_RECV_NNSE_RPKT,
+	CALC_EVENT_TYPE_AFTER_RECV_NNSE_RPKT,
+
+	CALC_EVENT_TYPE_BEFORE_SEND_NNSE_VPKT,
+	CALC_EVENT_TYPE_AFTER_SEND_NNSE_VPKT,
+	CALC_EVENT_TYPE_BEFORE_RECV_NNSE_VPKT,
+	CALC_EVENT_TYPE_AFTER_RECV_NNSE_VPKT,
+
 	CALC_EVENT_TYPE_BEFORE_SEND_ROMDUMP_PKT,
 	CALC_EVENT_TYPE_AFTER_SEND_ROMDUMP_PKT,
 	CALC_EVENT_TYPE_BEFORE_RECV_ROMDUMP_PKT,
@@ -889,7 +998,9 @@ typedef struct
 		DUSBRawPacketA dusb_rpkt;
 		DUSBVirtualPacket dusb_vpkt;
 		NSPRawPacketA nsp_rpkt;
+		NNSERawPacketA nnse_rpkt;
 		NSPVirtualPacket nsp_vpkt;
+		NNSEVirtualPacket nnse_vpkt;
 		ROMDumpPacket romdump_pkt;
 		CalcLabEquipmentData labeq_data;
 		struct
@@ -951,10 +1062,13 @@ struct _CalcHandle
 		//void * dusb_vtl_pkt_list;
 		//void * dusb_cpca_list;
 		//void * nsp_vtl_pkt_list;
+		//void * nnse_vtl_pkt_list;
 		uint8_t nsp_seq_pc;
 		uint8_t nsp_seq;
 		uint16_t nsp_src_port;
 		uint16_t nsp_dst_port;
+		uint16_t nnse_seq_pc;
+		uint16_t nnse_seq;
 	} priv;
 };
 
@@ -1010,6 +1124,7 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_model_supports_dbus(CalcModel model);
 	TIEXPORT3 int TICALL ticalcs_model_supports_dusb(CalcModel model);
 	TIEXPORT3 int TICALL ticalcs_model_supports_nsp(CalcModel model);
+	TIEXPORT3 int TICALL ticalcs_model_supports_nnse(CalcModel model);
 	TIEXPORT3 int TICALL ticalcs_model_supports_installing_flashapps(CalcModel model);
 
 	TIEXPORT3 ticalcs_event_hook_type TICALL ticalcs_calc_get_event_hook(CalcHandle *handle);
@@ -1176,6 +1291,10 @@ typedef struct
 	// nsp_rpkt.c
 	TIEXPORT3 int TICALL nsp_send(CalcHandle *handle, NSPRawPacket* pkt);
 	TIEXPORT3 int TICALL nsp_recv(CalcHandle *handle, NSPRawPacket* pkt);
+
+	// nnse_rpkt.c
+	TIEXPORT3 int TICALL nnse_send(CalcHandle *handle, NNSERawPacket* pkt);
+	TIEXPORT3 int TICALL nnse_recv(CalcHandle *handle, NNSERawPacket* pkt);
 
 	/************************/
 	/* Deprecated functions */

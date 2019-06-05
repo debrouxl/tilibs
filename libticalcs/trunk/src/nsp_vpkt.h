@@ -1,8 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
 
-/*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+/*  libticalcs - TI Calculator library, a part of the TILP project
+ *  Copyright (C) 2007-2009  Romain LiÃ©vin
+ *  Copyright (C) 2009-2019  Lionel Debroux
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
  *  along with this program; if not, write to the Free Software Foundation,
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 
 // /!\ NOTE: for this file, backwards compatibility will not necessarily be maintained as strongly as it is for ticalcs.h !
 
@@ -64,7 +63,7 @@ extern "C" {
 
 TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new(CalcHandle *handle);
 TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle *handle, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data);
-TIEXPORT3 void TICALL nsp_vtl_pkt_fill(NSPVirtualPacket* vtl, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data);
+TIEXPORT3 void TICALL nsp_vtl_pkt_fill(NSPVirtualPacket* vtl, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint32_t size, uint8_t * data);
 TIEXPORT3 void TICALL nsp_vtl_pkt_del(CalcHandle *handle, NSPVirtualPacket* vtl);
 TIEXPORT3 void * TICALL nsp_vtl_pkt_alloc_data(CalcHandle * handle, size_t size);
 TIEXPORT3 NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(CalcHandle * handle, NSPVirtualPacket* vtl, size_t size);

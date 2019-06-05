@@ -32,6 +32,9 @@ set(SRC_FILES
         src/keys86.cc
         src/keys89.cc
         src/keys92p.cc
+        src/nnse_cmd.cc
+        src/nnse_rpkt.cc
+        src/nnse_vpkt.cc
         src/nsp_cmd.cc
         src/nsp_rpkt.cc
         src/nsp_vpkt.cc
@@ -56,6 +59,9 @@ set(PUBLIC_HEADERS
         src/dusb_rpkt.h
         src/dusb_vpkt.h
         src/dusb_cmd.h
+        src/nnse_rpkt.h
+        src/nnse_vpkt.h
+        src/nnse_cmd.h
         src/nsp_rpkt.h
         src/nsp_vpkt.h
         src/nsp_cmd.h
