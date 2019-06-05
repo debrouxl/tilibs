@@ -1,8 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: cmd84p.c 2077 2006-03-31 21:16:19Z roms $ */
 
-/*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+/*  libticalcs - TI Calculator library, a part of the TILP project
+ *  Copyright (C) 2007-2009  Romain LiÃ©vin
+ *  Copyright (C) 2009-2019  Lionel Debroux
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint3
 
 	if (ticalcs_validate_handle(handle))
 	{
-		vtl = (NSPVirtualPacket *)g_malloc0(sizeof(NSPVirtualPacket));
+		vtl = (NSPVirtualPacket *)g_malloc0(sizeof(*vtl));
 
 		if (NULL != vtl)
 		{
@@ -77,7 +77,7 @@ TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint3
 	return vtl;
 }
 
-TIEXPORT3 void TICALL nsp_vtl_pkt_fill(NSPVirtualPacket* vtl, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data)
+TIEXPORT3 void TICALL nsp_vtl_pkt_fill(NSPVirtualPacket* vtl, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint32_t size, uint8_t * data)
 {
 	if (vtl != NULL)
 	{
@@ -156,6 +156,7 @@ TIEXPORT3 NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(NSPVirtualPacket* v
 
 TIEXPORT3 void TICALL nsp_vtl_pkt_free_data(void * data)
 {
+	// Keep synchronized with ~NSPVirtualPacket() !
 	return g_free(data);
 }
 

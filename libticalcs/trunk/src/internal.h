@@ -1,6 +1,6 @@
-/*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2012  Romain Liévin
- *  Copyright (C) 2012       Lionel Debroux
+/*  libticalcs - TI Calculator library, a part of the TILP project
+ *  Copyright (C) 1999-2009  Romain Liévin
+ *  Copyright (C) 2009-2019  Lionel Debroux
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -309,7 +309,7 @@ static inline void ticalcs_event_fill_dusb_vpkt(CalcEventData * event, uint32_t 
 	event->data.dusb_vpkt.data = data;
 }
 
-static inline void ticalcs_event_fill_nsp_rpkt(CalcEventData * event, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint16_t data_sum, uint8_t data_size, uint8_t ack, uint8_t seq, uint8_t hdr_sum, uint8_t * data)
+static inline void ticalcs_event_fill_nsp_rpkt(CalcEventData * event, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint16_t data_sum, uint32_t data_size, uint8_t ack, uint8_t seq, uint8_t hdr_sum, uint8_t * data)
 {
 	event->data.nsp_rpkt.src_addr = src_addr;
 	event->data.nsp_rpkt.src_port = src_port;
@@ -323,6 +323,20 @@ static inline void ticalcs_event_fill_nsp_rpkt(CalcEventData * event, uint16_t s
 	event->data.nsp_rpkt.data = data;
 }
 
+static inline void ticalcs_event_fill_nnse_rpkt(CalcEventData * event, uint8_t unused1, uint8_t service, uint8_t src_addr, uint8_t dst_addr, uint8_t unknown2, uint8_t req_ack, uint16_t size, uint16_t seq, uint16_t csum, uint8_t * data)
+{
+	event->data.nnse_rpkt.unused1 = unused1;
+	event->data.nnse_rpkt.service = service;
+	event->data.nnse_rpkt.src_addr = src_addr;
+	event->data.nnse_rpkt.dst_addr = dst_addr;
+	event->data.nnse_rpkt.unknown2 = unknown2;
+	event->data.nnse_rpkt.req_ack = req_ack;
+	event->data.nnse_rpkt.size = size;
+	event->data.nnse_rpkt.seq = seq;
+	event->data.nnse_rpkt.csum = csum;
+	event->data.nnse_rpkt.data = data;
+}
+
 static inline void ticalcs_event_fill_nsp_vpkt(CalcEventData * event, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint32_t size, uint8_t * data)
 {
 	event->data.nsp_vpkt.src_addr = src_addr;
@@ -332,6 +346,15 @@ static inline void ticalcs_event_fill_nsp_vpkt(CalcEventData * event, uint16_t s
 	event->data.nsp_vpkt.cmd = cmd;
 	event->data.nsp_vpkt.size = size;
 	event->data.nsp_vpkt.data = data;
+}
+
+static inline void ticalcs_event_fill_nnse_vpkt(CalcEventData * event, uint8_t service, uint8_t src_addr, uint8_t dst_addr, uint32_t size, uint8_t * data)
+{
+	event->data.nnse_vpkt.service = service;
+	event->data.nnse_vpkt.src_addr = src_addr;
+	event->data.nnse_vpkt.dst_addr = dst_addr;
+	event->data.nnse_vpkt.size = size;
+	event->data.nnse_vpkt.data = data;
 }
 
 static inline void ticalcs_event_fill_romdump_pkt(CalcEventData * event, uint16_t length, uint16_t cmd, uint8_t * data)
