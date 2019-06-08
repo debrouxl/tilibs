@@ -120,82 +120,118 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_NSPIRE_CXII
 	&calc_nsp_cxii,
 #endif
+#ifndef NO_CBL
+	&calc_cbl,
+#endif
+#ifndef NO_CBR
+	&calc_cbr,
+#endif
+#ifndef NO_CBL2
+	&calc_cbl2,
+#endif
+#ifndef NO_CBR2
+	&calc_cbr2,
+#endif
+#ifndef NO_LABPRO
+	&calc_labpro,
+#endif
+#ifndef NO_TIPRESENTER
+	&calc_tipresenter,
+#endif
 	NULL
 };
 
-static const uint32_t supported_calcs =
-	  (1U << CALC_NONE)
+static const uint64_t supported_calcs =
+	  (UINT64_C(1) << CALC_NONE)
 #ifndef NO_TI73
-	| (1U << CALC_TI73)
+	| (UINT64_C(1) << CALC_TI73)
 #endif
 #ifndef NO_TI82
-	| (1U << CALC_TI82)
+	| (UINT64_C(1) << CALC_TI82)
 #endif
 #ifndef NO_TI83
-	| (1U << CALC_TI83)
+	| (UINT64_C(1) << CALC_TI83)
 #endif
 #ifndef NO_TI83P
-	| (1U << CALC_TI83P)
+	| (UINT64_C(1) << CALC_TI83P)
 #endif
 #ifndef NO_TI84P
-	| (1U << CALC_TI84P)
+	| (UINT64_C(1) << CALC_TI84P)
 #endif
 #ifndef NO_TI85
-	| (1U << CALC_TI85)
+	| (UINT64_C(1) << CALC_TI85)
 #endif
 #ifndef NO_TI86
-	| (1U << CALC_TI86)
+	| (UINT64_C(1) << CALC_TI86)
 #endif
 #ifndef NO_TI89
-	| (1U << CALC_TI89)
+	| (UINT64_C(1) << CALC_TI89)
 #endif
 #ifndef NO_TI89T
-	| (1U << CALC_TI89T)
+	| (UINT64_C(1) << CALC_TI89T)
 #endif
 #ifndef NO_TI92
-	| (1U << CALC_TI92)
+	| (UINT64_C(1) << CALC_TI92)
 #endif
 #ifndef NO_TI92P
-	| (1U << CALC_TI92P)
+	| (UINT64_C(1) << CALC_TI92P)
 #endif
 #ifndef NO_V200
-	| (1U << CALC_V200)
+	| (UINT64_C(1) << CALC_V200)
 #endif
 #ifndef NO_TI84P_USB
-	| (1U << CALC_TI84P_USB)
+	| (UINT64_C(1) << CALC_TI84P_USB)
 #endif
 #ifndef NO_TI89T_USB
-	| (1U << CALC_TI89T_USB)
+	| (UINT64_C(1) << CALC_TI89T_USB)
 #endif
 #ifndef NO_NSPIRE
-	| (1U << CALC_NSPIRE)
+	| (UINT64_C(1) << CALC_NSPIRE)
 #endif
 #ifndef NO_TI80
-	| (1U << CALC_TI80)
+	| (UINT64_C(1) << CALC_TI80)
 #endif
 #ifndef NO_TI84PC
-	| (1U << CALC_TI84PC)
+	| (UINT64_C(1) << CALC_TI84PC)
 #endif
 #ifndef NO_TI84PC_USB
-	| (1U << CALC_TI84PC_USB)
+	| (UINT64_C(1) << CALC_TI84PC_USB)
 #endif
 #ifndef NO_TI83PCE_USB
-	| (1U << CALC_TI83PCE_USB)
+	| (UINT64_C(1) << CALC_TI83PCE_USB)
 #endif
 #ifndef NO_TI84PCE_USB
-	| (1U << CALC_TI84PCE_USB)
+	| (UINT64_C(1) << CALC_TI84PCE_USB)
 #endif
 #ifndef NO_TI82A_USB
-	| (1U << CALC_TI82A_USB)
+	| (UINT64_C(1) << CALC_TI82A_USB)
 #endif
 #ifndef NO_TI84PT_USB
-	| (1U << CALC_TI84PT_USB)
+	| (UINT64_C(1) << CALC_TI84PT_USB)
 #endif
 #ifndef NO_NSPIRE_CRADLE
-	| (1U << CALC_NSPIRE_CRADLE)
+	| (UINT64_C(1) << CALC_NSPIRE_CRADLE)
 #endif
 #ifndef NO_NSPIRE_CXII
-	| (1U << CALC_NSPIRE_CXII)
+	| (UINT64_C(1) << CALC_NSPIRE_CXII)
+#endif
+#ifndef NO_CBL
+	| (UINT64_C(1) << CALC_CBL)
+#endif
+#ifndef NO_CBR
+	| (UINT64_C(1) << CALC_CBR)
+#endif
+#ifndef NO_CBL2
+	| (UINT64_C(1) << CALC_CBL2)
+#endif
+#ifndef NO_CBR2
+	| (UINT64_C(1) << CALC_CBR2)
+#endif
+#ifndef NO_LABPRO
+	| (UINT64_C(1) << CALC_LABPRO)
+#endif
+#ifndef NO_TIPRESENTER
+	| (UINT64_C(1) << CALC_TIPRESENTER)
 #endif
 ;
 
@@ -297,12 +333,12 @@ TIEXPORT3 const char *TICALL ticalcs_version_get(void)
  * Return value: an integer containing a binary OR of (1 << CALC_*) values,
  * where CALC_* values are defined in enum CalcModel.
  **/
-TIEXPORT3 uint32_t TICALL ticalcs_supported_calcs (void)
+TIEXPORT3 uint64_t TICALL ticalcs_supported_calcs (void)
 {
 	return supported_calcs;
 }
 
-static int default_event_hook(CalcHandle * handle, uint32_t event_count, const CalcEventData * event, void * user_pointer)
+int ticalcs_default_event_hook(CalcHandle * handle, uint32_t event_count, const CalcEventData * event, void * user_pointer)
 {
 	(void)user_pointer;
 	const char * calcstr = ticalcs_model_to_string(ticalcs_get_model(handle));
@@ -326,7 +362,7 @@ static int default_event_hook(CalcHandle * handle, uint32_t event_count, const C
 		case CALC_EVENT_TYPE_BEFORE_CABLE_DETACH: break;
 		case CALC_EVENT_TYPE_AFTER_CABLE_DETACH:
 		{
-			ticalcs_info("Cable %s port %s detached", cablestr, portstr);
+			ticalcs_info("Cable %s port %s detached, retval %d", cablestr, portstr, event->retval);
 			break;
 		}
 
@@ -335,6 +371,7 @@ static int default_event_hook(CalcHandle * handle, uint32_t event_count, const C
 			if (pkt_debug)
 			{
 				ticalcs_info("Before PC->TI DBUS PKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+				ticalcs_info("DBUS PKT: target %u, cmd %u, length %u", event->data.dbus_pkt.id, event->data.dbus_pkt.cmd, event->data.dbus_pkt.length);
 			}
 			break;
 		}
@@ -344,7 +381,9 @@ static int default_event_hook(CalcHandle * handle, uint32_t event_count, const C
 		{
 			if (pkt_debug)
 			{
-				ticalcs_info("After TI->PC DBUS PKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+				ticalcs_info("After TI->PC DBUS PKT operation %d for calc %s cable %s port %s, retval %d", event->type, calcstr, cablestr, portstr, event->retval);
+				ticalcs_info("DBUS PKT: target %u, cmd %u, length %u", event->data.dbus_pkt.id, event->data.dbus_pkt.cmd, event->data.dbus_pkt.length);
+				tifiles_hexdump(event->data.dbus_pkt.data, event->data.dbus_pkt.length);
 			}
 			break;
 		}
@@ -482,7 +521,7 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 			handle->priv.nsp_src_port = 0x8001;
 			handle->priv.nsp_dst_port = 0x4003; // NSP_PORT_ADDR_REQUEST
 
-			handle->event_hook = default_event_hook;
+			handle->event_hook = ticalcs_default_event_hook;
 			//handle->event_count = 0;
 
 			handle->buffer = (uint8_t *)g_malloc(65536 + 6);
@@ -763,7 +802,11 @@ TIEXPORT3 int TICALL ticalcs_model_supports_installing_flashapps(CalcModel model
 	                                                 || model == CALC_TI82A_USB
 	                                                 || model == CALC_TI84PT_USB
 	                                                 || model == CALC_NSPIRE_CRADLE
-	                                                 || model == CALC_NSPIRE_CXII);
+	                                                 || model == CALC_NSPIRE_CXII
+	                                                 || model == CALC_CBL2
+	                                                 || model == CALC_CBR2
+	                                                 || model == CALC_LABPRO
+	                                                 || model == CALC_TIPRESENTER);
 }
 
 /**

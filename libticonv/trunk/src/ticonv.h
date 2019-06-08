@@ -67,7 +67,8 @@ typedef enum
 	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
 	CALC_TI84P_USB, CALC_TI89T_USB, CALC_NSPIRE, CALC_TI80,
-	CALC_TI84PC, CALC_TI84PC_USB, CALC_TI83PCE_USB, CALC_TI84PCE_USB, CALC_TI82A_USB, CALC_TI84PT_USB, CALC_NSPIRE_CRADLE, CALC_NSPIRE_CXII, CALC_MAX
+	CALC_TI84PC, CALC_TI84PC_USB, CALC_TI83PCE_USB, CALC_TI84PCE_USB, CALC_TI82A_USB, CALC_TI84PT_USB, CALC_NSPIRE_CRADLE, CALC_NSPIRE_CXII,
+	CALC_CBL, CALC_CBR, CALC_CBL2, CALC_CBR2, CALC_LABPRO, CALC_TIPRESENTER, CALC_MAX
 } CalcModel;
 
 /**
@@ -136,6 +137,7 @@ typedef struct
 	TIEXPORT4 int TICALL ticonv_model_is_tiez80(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_is_ti68k(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_is_tinspire(CalcModel model);
+	TIEXPORT4 int TICALL ticonv_model_is_lab_equipment(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_has_legacy_ioport(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_has_usb_ioport(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_has_flash_memory(CalcModel model);

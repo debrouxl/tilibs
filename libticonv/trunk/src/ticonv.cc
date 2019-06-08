@@ -178,10 +178,15 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
 			case CALC_TI73: return ticonv_utf16_to_ti73(utf16, ti); break;
 			case CALC_TI80: return ticonv_utf16_to_ti80(utf16, ti); break;
 			case CALC_TI82: return ticonv_utf16_to_ti82(utf16, ti); break;
-			case CALC_TI83: return ticonv_utf16_to_ti83(utf16, ti); break;
+			case CALC_TI83:
+			case CALC_CBL:
+			case CALC_CBR: return ticonv_utf16_to_ti83(utf16, ti); break;
 			case CALC_TI83P:
 			case CALC_TI84P:
-			case CALC_TI84PC: return ticonv_utf16_to_ti83p(utf16, ti); break;
+			case CALC_TI84PC:
+			case CALC_CBL2:
+			case CALC_CBR2:
+			case CALC_LABPRO: return ticonv_utf16_to_ti83p(utf16, ti); break;
 			case CALC_TI85: return ticonv_utf16_to_ti85(utf16, ti); break;
 			case CALC_TI86: return ticonv_utf16_to_ti86(utf16, ti); break;
 			case CALC_TI89:
@@ -206,6 +211,7 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
 				return ti;
 			}
 			break;
+			case CALC_TIPRESENTER:
 			default:
 			{
 				ti[0] = 0;
@@ -282,10 +288,15 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
 			case CALC_TI73: return ticonv_ti73_to_utf16(ti, utf16); break;
 			case CALC_TI80: return ticonv_ti80_to_utf16(ti, utf16); break;
 			case CALC_TI82: return ticonv_ti82_to_utf16(ti, utf16); break;
-			case CALC_TI83: return ticonv_ti83_to_utf16(ti, utf16); break;
+			case CALC_TI83:
+			case CALC_CBL:
+			case CALC_CBR: return ticonv_ti83_to_utf16(ti, utf16); break;
 			case CALC_TI83P:
 			case CALC_TI84P:
-			case CALC_TI84PC: return ticonv_ti83p_to_utf16(ti, utf16); break;
+			case CALC_TI84PC:
+			case CALC_CBL2:
+			case CALC_CBR2:
+			case CALC_LABPRO: return ticonv_ti83p_to_utf16(ti, utf16); break;
 			case CALC_TI85: return ticonv_ti85_to_utf16(ti, utf16); break;
 			case CALC_TI86: return ticonv_ti86_to_utf16(ti, utf16); break;
 			case CALC_TI89:
@@ -310,6 +321,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
 				return utf16;
 			}
 			break;
+			case CALC_TIPRESENTER:
 			default: utf16[0] = 0; return utf16;
 		}
 	}
@@ -936,7 +948,13 @@ TIEXPORT4 int TICALL ticonv_model_uses_utf8(CalcModel model)
 	        && model != CALC_TI92P
 	        && model != CALC_V200
 	        && model != CALC_TI80
-	        && model != CALC_TI84PC);
+	        && model != CALC_TI84PC
+	        && model != CALC_CBL
+	        && model != CALC_CBR
+	        && model != CALC_CBL2
+	        && model != CALC_CBR2
+	        && model != CALC_LABPRO
+	        && model != CALC_TIPRESENTER);
 }
 
 /**
@@ -1015,6 +1033,25 @@ TIEXPORT4 int TICALL ticonv_model_is_tinspire(CalcModel model)
 }
 
 /**
+ * ticonv_model_is_lab_equipment:
+ * @model: a calculator model taken in #CalcModel.
+ *
+ * Returns whether the given "calculator" model is a lab equipment.
+ *
+ * Return value: nonzero if the calculator is a lab equipment, zero if it doesn't.
+ */
+TIEXPORT4 int TICALL ticonv_model_is_lab_equipment(CalcModel model)
+{
+	return (   /*model <  CALC_MAX
+	        &&*/ ( model == CALC_NSPIRE_CRADLE
+	            || model == CALC_CBL
+	            || model == CALC_CBR
+	            || model == CALC_CBL2
+	            || model == CALC_CBR2
+	            || model == CALC_LABPRO));
+}
+
+/**
  * ticonv_model_has_legacy_ioport:
  * @model: a calculator model taken in #CalcModel.
  *
@@ -1038,7 +1075,12 @@ TIEXPORT4 int TICALL ticonv_model_has_legacy_ioport(CalcModel model)
 	            || model == CALC_TI92P
 	            || model == CALC_V200
 	            || model == CALC_TI80
-	            || model == CALC_TI84PC));
+	            || model == CALC_TI84PC
+	            || model == CALC_CBL
+	            || model == CALC_CBR
+	            || model == CALC_CBL2
+	            || model == CALC_CBR2
+	            || model == CALC_LABPRO));
 }
 
 /**
@@ -1061,7 +1103,9 @@ TIEXPORT4 int TICALL ticonv_model_has_usb_ioport(CalcModel model)
 	            || model == CALC_TI82A_USB
 	            || model == CALC_TI84PT_USB
 	            || model == CALC_NSPIRE_CRADLE
-	            || model == CALC_NSPIRE_CXII));
+	            || model == CALC_NSPIRE_CXII
+	            || model == CALC_CBR2
+	            || model == CALC_LABPRO)); // NOTE: the LabPro's USB port is B, not mini-B, and it's known to speak a protocol other than DUSB/CARS on that interface, at least in some conditions.
 }
 
 /**
@@ -1083,7 +1127,10 @@ TIEXPORT4 int TICALL ticonv_model_has_flash_memory(CalcModel model)
 	        && model != CALC_TI85
 	        && model != CALC_TI86
 	        && model != CALC_TI92
-	        && model != CALC_TI80);
+	        && model != CALC_TI80
+	        && model != CALC_CBR
+	        && model != CALC_CBL
+	        && model != CALC_CBR2); // FIXME this might be wrong, but while we're aware of OS upgrades for CBL2, LabPro and TI-Presenter, we've never seen any for the CBR2.
 }
 
 /**
@@ -1096,8 +1143,14 @@ TIEXPORT4 int TICALL ticonv_model_has_flash_memory(CalcModel model)
  */
 TIEXPORT4 int TICALL ticonv_model_has_real_screen(CalcModel model)
 {
-	return (   /*model <  CALC_MAX
-	        &&*/ (model != CALC_NSPIRE_CRADLE));
+	return (   model != CALC_NONE
+	        && model <  CALC_MAX
+	        && model != CALC_NSPIRE_CRADLE
+	        && model != CALC_CBL
+	        && model != CALC_CBR
+	        && model != CALC_CBL2
+	        && model != CALC_CBR2
+	        && model != CALC_LABPRO);
 }
 
 /**
@@ -1128,7 +1181,8 @@ TIEXPORT4 int TICALL ticonv_model_has_monochrome_screen(CalcModel model)
 	            || model == CALC_NSPIRE    // Some Nspire models have monochrome screens
 	            || model == CALC_TI80
 	            || model == CALC_TI82A_USB
-	            || model == CALC_TI84PT_USB));
+	            || model == CALC_TI84PT_USB
+	            || model == CALC_TIPRESENTER));
 }
 
 /**
@@ -1149,3 +1203,4 @@ TIEXPORT4 int TICALL ticonv_model_has_color_screen(CalcModel model)
 	            || model == CALC_TI84PCE_USB
 	            || model == CALC_NSPIRE_CXII));
 }
+

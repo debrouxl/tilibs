@@ -16,6 +16,7 @@ set(SRC_FILES
         src/calc_9x.cc
         src/calc_nsp.cc
         src/calc_xx.cc
+        src/calclabequipmentdata.cc
         src/clock.cc
         src/cmd68k.cc
         src/cmdz80.cc
@@ -59,7 +60,8 @@ set(PUBLIC_HEADERS
         src/nsp_vpkt.h
         src/nsp_cmd.h
         src/cmdz80.h
-        src/cmd68k.h)
+        src/cmd68k.h
+        src/calclabequipmentdata.h)
 
 # external deps lookup
 pkg_check_modules(DEPS REQUIRED glib-2.0 ticonv ticables2 tifiles2)
