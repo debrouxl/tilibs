@@ -47,9 +47,10 @@ static const char GROUP_FILE_EXT[CALC_MAX + 1][4] =
 	"8Xg", "89g", "",    "", // 16
 	"8Xg", "8Xg", "8Xg", "8Xg", "8Xg", "8xg", // 22
 	"", // 23
-	"", "", "", "", // 27
-	"", "", "", "", // 31
-	"", "", "", "", // 35
+	"",    "",    "",    "", // 27
+	"",    "",    "",    "", // 31
+	"",    "",    "",    "", // 35
+	"",    "",    "",    "",    "",    "", // 41
 	""
 };
 
@@ -61,9 +62,10 @@ static const char BACKUP_FILE_EXT[CALC_MAX + 1][4] =
 	"8Xg", "89g", "",    "", // 16
 	"8Cb", "8Cb", "",    "",    "8Xb", "8Xb", // 22
 	"", // 23
-	"", "", "", "", // 27
-	"", "", "", "", // 31
-	"", "", "", "", // 35
+	"",    "",    "",    "", // 27
+	"",    "",    "",    "", // 31
+	"",    "",    "",    "", // 35
+	"",    "",    "",    "",    "",    "", // 41
 	""
 };
 
@@ -135,6 +137,12 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_group (CalcModel model)
 		case CALC_NSPIRE_CXII_CAS:
 		case CALC_NSPIRE_CXIIT:
 		case CALC_NSPIRE_CXIIT_CAS:
+		case CALC_CBL:
+		case CALC_CBR:
+		case CALC_CBL2:
+		case CALC_CBR2:
+		case CALC_LABPRO:
+		case CALC_TIPRESENTER:
 			return NULL;
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
@@ -210,6 +218,12 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_backup (CalcModel model)
 		case CALC_NSPIRE_CXII_CAS:
 		case CALC_NSPIRE_CXIIT:
 		case CALC_NSPIRE_CXIIT_CAS:
+		case CALC_CBL:
+		case CALC_CBR:
+		case CALC_CBL2:
+		case CALC_CBR2:
+		case CALC_LABPRO:
+		case CALC_TIPRESENTER:
 			return NULL;
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
@@ -287,6 +301,12 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_flash_app (CalcModel model)
 		case CALC_NSPIRE_CXII_CAS:
 		case CALC_NSPIRE_CXIIT:
 		case CALC_NSPIRE_CXIIT_CAS:
+		case CALC_CBL:
+		case CALC_CBR:
+		case CALC_CBL2:
+		case CALC_CBR2:
+		case CALC_LABPRO:
+		case CALC_TIPRESENTER:
 			return NULL;
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
@@ -379,6 +399,15 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_flash_os(CalcModel model)
 			return "tct2";
 		case CALC_NSPIRE_CXIIT_CAS:
 			return "tcc2";
+		case CALC_CBL:
+		case CALC_CBR:
+		case CALC_CBR2:
+			return NULL;
+		case CALC_CBL2:
+		case CALC_LABPRO:
+			return "c2u"; // .hex is also seen in some OS upgraders.
+		case CALC_TIPRESENTER:
+			return "hex"; // Sbase132.hex from the Windows TI-Presenter OS upgrader.
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
@@ -455,6 +484,12 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_certif(CalcModel model)
 		case CALC_NSPIRE_CXII_CAS:
 		case CALC_NSPIRE_CXIIT:
 		case CALC_NSPIRE_CXIIT_CAS:
+		case CALC_CBL:
+		case CALC_CBR:
+		case CALC_CBL2:
+		case CALC_CBR2:
+		case CALC_LABPRO:
+		case CALC_TIPRESENTER:
 			return NULL;
 		default:
 			tifiles_critical("%s: invalid calc_type argument", __FUNCTION__);
@@ -552,7 +587,7 @@ TIEXPORT2 int TICALL tifiles_file_has_ti_header(const char *filename)
 				    !strcmp(buf, "**TI85**") || !strcmp(buf, "**TI86**") ||
 				    !strcmp(buf, "**TI89**") || !strcmp(buf, "**TI92**") ||
 				    !strcmp(buf, "**TI92P*") || !strcmp(buf, "**V200**") ||
-				    !strcmp(buf, "**TIFL**") ||
+				    !strcmp(buf, "**TIFL**") || !strcmp(buf, "**TICBL*") ||
 				    !strncmp(buf, "*TI", 3))
 				{
 					ret = !0;
@@ -847,6 +882,11 @@ TIEXPORT2 int TICALL tifiles_model_to_dev_type(CalcModel model)
 	case CALC_V200:
 		return DEVICE_TYPE_92P;
 #endif
+	case CALC_CBL2:
+	case CALC_LABPRO:
+		return DEVICE_TYPE_CBL2;
+	case CALC_TIPRESENTER:
+		return DEVICE_TYPE_TIPRESENTER;
 	default:
 		return -1;
 	}
@@ -1545,6 +1585,16 @@ TIEXPORT2 CalcModel TICALL tifiles_fext_to_model(const char *ext)
 			// else fall through.
 		}
 #endif
+		else if (c1 == 'c' && c2 == '2' && c3 == 'u')
+		{
+			// Or CALC_LABPRO, but we can't distinguish them at a file extension level, and the same OS upgrades work on both models.
+			type = CALC_CBL2;
+		}
+		else if (c1 == 'h' && c2 == 'e' && c3 == 'x')
+		{
+			// Might be a file suitable for the TI-Presenter, but some versions of the CBL2 OS upgraders contain hex files as well.
+			type = CALC_TIPRESENTER;
+		}
 		// else fall through.
 	}
 
@@ -1619,7 +1669,7 @@ TIEXPORT2 const char *TICALL tifiles_file_get_type(const char *filename)
 		return "";
 	}
 
-	if (   !g_ascii_strcasecmp(e, "tib")
+	if (   !g_ascii_strcasecmp(e, "tib")  || !g_ascii_strcasecmp(e, "c2u")
 	    || !g_ascii_strcasecmp(e, "tno")  || !g_ascii_strcasecmp(e, "tnc")
 	    || !g_ascii_strcasecmp(e, "tco")  || !g_ascii_strcasecmp(e, "tcc")
 	    || !g_ascii_strcasecmp(e, "tco2") || !g_ascii_strcasecmp(e, "tcc2")

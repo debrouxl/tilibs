@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2020-12-31 17:26+0100\n"
+"POT-Creation-Date: 2020-12-31 17:55+0100\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -110,20 +110,20 @@ msgstr ""
 "Cause: le programme qui utilise cette librairie est buggé. Virez le "
 "développeur!"
 
-#: src/filetypes.cc:1622 src/filetypes.cc:1744 src/types68k.cc:74
+#: src/filetypes.cc:1680 src/filetypes.cc:1802 src/types68k.cc:74
 #: src/types83p.cc:70 src/typesoldz80.cc:75
 msgid "OS upgrade"
 msgstr "maj OS"
 
-#: src/filetypes.cc:1633 src/filetypes.cc:1755
+#: src/filetypes.cc:1691 src/filetypes.cc:1813
 msgid "TIGroup"
 msgstr "TIGroup"
 
-#: src/filetypes.cc:1646 src/filetypes.cc:1768
+#: src/filetypes.cc:1704 src/filetypes.cc:1826
 msgid "Group/Backup"
 msgstr "Groupe/sauvegarde"
 
-#: src/filetypes.cc:1649 src/filetypes.cc:1771
+#: src/filetypes.cc:1707 src/filetypes.cc:1829
 msgid "Group"
 msgstr "Groupe"
 

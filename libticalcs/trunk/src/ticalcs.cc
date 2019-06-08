@@ -155,6 +155,24 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_NSPIRE_CXIIT_CAS
 	&calc_nsp_cxiit_cas,
 #endif*/
+#ifndef NO_CBL
+	&calc_cbl,
+#endif
+#ifndef NO_CBR
+	&calc_cbr,
+#endif
+#ifndef NO_CBL2
+	&calc_cbl2,
+#endif
+#ifndef NO_CBR2
+	&calc_cbr2,
+#endif
+#ifndef NO_LABPRO
+	&calc_labpro,
+#endif
+#ifndef NO_TIPRESENTER
+	&calc_tipresenter,
+#endif
 	NULL
 };
 
@@ -265,6 +283,24 @@ static const uint64_t supported_calcs =
 #ifndef NO_NSPIRE_CXIIT_CAS
 	| (UINT64_C(1) << CALC_NSPIRE_CXIIT_CAS)
 #endif*/
+#ifndef NO_CBL
+	| (UINT64_C(1) << CALC_CBL)
+#endif
+#ifndef NO_CBR
+	| (UINT64_C(1) << CALC_CBR)
+#endif
+#ifndef NO_CBL2
+	| (UINT64_C(1) << CALC_CBL2)
+#endif
+#ifndef NO_CBR2
+	| (UINT64_C(1) << CALC_CBR2)
+#endif
+#ifndef NO_LABPRO
+	| (UINT64_C(1) << CALC_LABPRO)
+#endif
+#ifndef NO_TIPRESENTER
+	| (UINT64_C(1) << CALC_TIPRESENTER)
+#endif
 ;
 
 /****************/
@@ -370,7 +406,7 @@ TIEXPORT3 uint64_t TICALL ticalcs_supported_calcs (void)
 	return supported_calcs;
 }
 
-static int default_event_hook(CalcHandle * handle, uint32_t event_count, const CalcEventData * event, void * user_pointer)
+int ticalcs_default_event_hook(CalcHandle * handle, uint32_t event_count, const CalcEventData * event, void * user_pointer)
 {
 	(void)user_pointer;
 	const char * calcstr = ticalcs_model_to_string(ticalcs_get_model(handle));
@@ -394,7 +430,7 @@ static int default_event_hook(CalcHandle * handle, uint32_t event_count, const C
 		case CALC_EVENT_TYPE_BEFORE_CABLE_DETACH: break;
 		case CALC_EVENT_TYPE_AFTER_CABLE_DETACH:
 		{
-			ticalcs_info("Cable %s port %s detached", cablestr, portstr);
+			ticalcs_info("Cable %s port %s detached, retval %d", cablestr, portstr, event->retval);
 			break;
 		}
 
@@ -403,6 +439,7 @@ static int default_event_hook(CalcHandle * handle, uint32_t event_count, const C
 			if (pkt_debug)
 			{
 				ticalcs_info("Before PC->TI DBUS PKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+				ticalcs_info("DBUS PKT: target %u, cmd %u, length %u", event->data.dbus_pkt.id, event->data.dbus_pkt.cmd, event->data.dbus_pkt.length);
 			}
 			break;
 		}
@@ -412,7 +449,9 @@ static int default_event_hook(CalcHandle * handle, uint32_t event_count, const C
 		{
 			if (pkt_debug)
 			{
-				ticalcs_info("After TI->PC DBUS PKT operation for calc %s cable %s port %s", calcstr, cablestr, portstr);
+				ticalcs_info("After TI->PC DBUS PKT operation %d for calc %s cable %s port %s, retval %d", event->type, calcstr, cablestr, portstr, event->retval);
+				ticalcs_info("DBUS PKT: target %u, cmd %u, length %u", event->data.dbus_pkt.id, event->data.dbus_pkt.cmd, event->data.dbus_pkt.length);
+				tifiles_hexdump(event->data.dbus_pkt.data, event->data.dbus_pkt.length);
 			}
 			break;
 		}
@@ -550,7 +589,7 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 			handle->priv.nsp_src_port = 0x8001;
 			handle->priv.nsp_dst_port = 0x4003; // NSP_PORT_ADDR_REQUEST
 
-			handle->event_hook = default_event_hook;
+			handle->event_hook = ticalcs_default_event_hook;
 			//handle->event_count = 0;
 
 			handle->buffer = (uint8_t *)g_malloc(65536 + 6);
@@ -827,7 +866,11 @@ TIEXPORT3 int TICALL ticalcs_model_supports_installing_flashapps(CalcModel model
 {
 	return ticonv_model_has_flash_memory(model) && !(   model == CALC_TI82A_USB
 	                                                 || model == CALC_TI84PT_USB
-	                                                 || ticonv_model_is_tinspire(model));
+	                                                 || ticonv_model_is_tinspire(model)
+	                                                 || model == CALC_CBL2
+	                                                 || model == CALC_CBR2
+	                                                 || model == CALC_LABPRO
+	                                                 || model == CALC_TIPRESENTER);
 }
 
 /**
