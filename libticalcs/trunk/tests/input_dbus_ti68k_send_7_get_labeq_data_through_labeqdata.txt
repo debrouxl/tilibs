@@ -1,0 +1,5 @@
+version 0
+send_lab_equipment_data 8 4
+{7}
+get_lab_equipment_data 8 4
+exit

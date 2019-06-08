@@ -46,10 +46,9 @@ static int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
 {
 	uint8_t host = 0, cmd = 0;
 	uint16_t length = 0;
-	uint8_t buffer[5];
 	int ret;
 
-	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	ret = dbus_recv(handle, &host, &cmd, &length, (uint8_t *)handle->buffer2);
 	if (!ret)
 	{
 		ticalcs_info(" TI->PC: ACK");
@@ -60,6 +59,53 @@ static int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
 		{
 			ret = ERR_VAR_REJECTED;
 		}
+	}
+
+	return ret;
+}
+
+static int try_ready_command(CalcHandle * handle, uint8_t mid, uint8_t * host, uint8_t * cmd, uint16_t * length)
+{
+	int ret;
+
+	for (unsigned int i = 0; i < 2; i++)
+	{
+		ticalcs_info(" PC->TI: RDY?");
+		ret = dbus_send(handle, mid, DBUS_CMD_RDY, 2, NULL);
+		//uint8_t buf[4] = { mid, DBUS_CMD_RDY, 0, 0 };
+		//ret = ticables_cable_send(handle->cable, buf, sizeof(buf));
+		if (ret)
+		{
+			ticalcs_info("Not ready");
+			continue;
+		}
+
+		ret = dbus_recv(handle, host, cmd, length, (uint8_t *)handle->buffer2);
+		if (ret)
+		{
+			ticalcs_info("NOK");
+			continue;
+		}
+		/*ret = dbus_recv_header(handle, host, cmd, length);
+		if (ret)
+		{
+			ticalcs_info("Header NOK");
+			ticalcs_info("ret=%d host=%u cmd=%u length=%u", ret, *host, *cmd, *length);
+			continue;
+		}
+		ticalcs_info("Header OK");
+		ticalcs_info("ret=%d host=%u cmd=%u length=%u", ret, *host, *cmd, *length);
+
+		ret = dbus_recv_data(handle, length, (uint8_t *)handle->buffer2);
+		if (ret)
+		{
+			ticalcs_info("Data NOK");
+			continue;
+		}*/
+
+		ticalcs_info(" TI->PC: ACK");
+		tifiles_hexdump((uint8_t *)handle->buffer2, *length);
+		break;
 	}
 
 	return ret;
@@ -93,7 +139,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 		/* Test for a TI86 before a TI85 */
 		ticalcs_info("%s", _("Check for TI86... "));
-		err = dbus_send(handle, DBUS_MID_PC_TI86, DBUS_CMD_SCR, 2, NULL);
+		err = dbus_send(handle, DBUS_MID_PC_TI86, DBUS_CMD_SCR, 0, NULL);
 		if (err)
 		{
 			break;
@@ -117,7 +163,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 		/* Test for a TI85 */
 		ticalcs_info("%s", _("Check for TI85... "));
-		err = dbus_send(handle, DBUS_MID_PC_TI85, DBUS_CMD_SCR, 2, NULL);
+		err = dbus_send(handle, DBUS_MID_PC_TI85, DBUS_CMD_SCR, 0, NULL);
 		if (err)
 		{
 			break;
@@ -141,7 +187,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 		/* Test for a TI73 before a TI83 */
 		ticalcs_info("%s", _("Check for TI73... "));
-		err = dbus_send(handle, DBUS_MID_PC_TI73, DBUS_CMD_SCR, 2, NULL);
+		err = dbus_send(handle, DBUS_MID_PC_TI73, DBUS_CMD_SCR, 0, NULL);
 		if (err)
 		{
 			break;
@@ -165,7 +211,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 		/* Test for a TI83 before a TI82 */
 		ticalcs_info("%s", _("Check for TI83... "));
-		err = dbus_send(handle, DBUS_MID_PC_TI83, DBUS_CMD_SCR, 2, NULL);
+		err = dbus_send(handle, DBUS_MID_PC_TI83, DBUS_CMD_SCR, 0, NULL);
 		if (err)
 		{
 			break;
@@ -189,7 +235,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 		/* Test for a TI82 */
 		ticalcs_info("%s", _("Check for TI82... "));
-		err = dbus_send(handle, DBUS_MID_PC_TI83, DBUS_CMD_SCR, 2, NULL);
+		err = dbus_send(handle, DBUS_MID_PC_TI83, DBUS_CMD_SCR, 0, NULL);
 		if (err)
 		{
 			break;
@@ -212,29 +258,49 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 		}
 
 #if 0
-		/* Test for a TI80 */
-#pragma message("Warning: TI-80 DETECTION FAILS")
-		ticalcs_info("%s", _("Check for TI80... "));
-		err = dbus_send(handle, DBUS_MID_PC_TI80, DBUS_CMD_SCR, 0, NULL);
-		if (err)
+		/* As a last resort, try probing with the EOT command, which might be supported by some older lab equipment */
+		ticalcs_info("%s", _("Check for lab equipment... "));
 		{
-			break;
-		}
-		err = tixx_recv_ACK(handle, &data);
+			uint8_t host = 0, cmd = 0;
+			uint16_t status = 0;
+			err = try_ready_command(handle, DBUS_MID_PC_TI89, &host, &cmd, &status);
+			if (err)
+			{
+				break;
+			}
 
-		ticalcs_info("<%02X-%02X> ", DBUS_MID_PC_TI80, data);
+			ticalcs_info(" PC->TI: EOT");
+			err = dbus_send(handle, DBUS_MID_TI92_PC, DBUS_CMD_EOT, 0, NULL);
+			if (err)
+			{
+				ticalcs_info("NOK.\n");
+				ticables_cable_reset(handle->cable);
+				break;
+			}
+			err = tixx_recv_ACK(handle, &data);
 
-		if (!err && (data == DBUS_MID_TI80_PC))
-		{
-			ticalcs_info("OK !\n");
-			*model = CALC_TI80;
-			break;
-		}
-		else
-		{
-			ticalcs_info("NOK.\n");
-			ticables_cable_reset(handle->cable);
-			PAUSE(DEAD_TIME);
+			ticalcs_info("<%02X-%02X> ", DBUS_MID_CBL_TI92, data);
+
+			if (!err && (data == DBUS_MID_CBL_TI92))
+			{
+				CalcInfos infos;
+				ticalcs_info("OK !\n");
+				handle->model = CALC_CBL;
+				handle->calc = (CalcFncts *)&calc_cbl;
+
+				memset(&infos, 0, sizeof(CalcInfos));
+				if (ticalcs_calc_get_version(handle, &infos))
+				{
+					break;
+				}
+				*model = infos.model;
+			}
+			else
+			{
+				ticalcs_info("NOK.\n");
+				ticables_cable_reset(handle->cable);
+				PAUSE(DEAD_TIME);
+			}
 		}
 #endif
 	} while(0);
@@ -258,8 +324,7 @@ static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 {
 	uint8_t host = 0, cmd = 0;
 	uint16_t status = 0;
-	uint8_t buffer[256];
-	int i, ret;
+	int ret;
 
 	// init value
 	*model = CALC_NONE;
@@ -269,30 +334,15 @@ static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 		CalcInfos infos;
 
 		// test for FLASH hand-helds (00 68 00 00 -> XX 56 00 00)
-		// where XX is 0x98: TI89/89t, 0x88: TI92+/V200, 0x73: TI83+/84+, 0x74: TI73
+		// where XX is 0x98: TI89/89t,     0x88: TI92+/V200,  0x73: TI83+/84+,          0x74: TI73,
+		//             0x1n: CBL/CBR/CBR2, 0x42: CBL2/LabPro, (TBC 0x43: TI-Presenter).
 		ticalcs_info("%s", _("Check for TIXX... "));
-		for (i = 0; i < 2; i++)
-		{
-			ticalcs_info(" PC->TI: RDY?");
-			ret = dbus_send(handle, DBUS_MID_PC_TIXX, DBUS_CMD_RDY, 2, NULL);
-			if (ret)
-			{
-				continue;
-			}
-
-			ret = dbus_recv(handle, &host, &cmd, &status, buffer);
-			ticalcs_info(" TI->PC: ACK");
-			if (ret)
-			{
-				continue;
-			}
-
-			break;
-		}
+		ret = try_ready_command(handle, DBUS_MID_PC_TIXX, &host, &cmd, &status);
 
 		// test for TI73
 		if (!ret)
 		{
+			ticalcs_info(_("Found host (machine ID) %u"), host);
 			if (host == DBUS_MID_TI73_PC)
 			{
 				*model = CALC_TI73;
@@ -303,33 +353,23 @@ static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 				*model = CALC_TI92;
 				break;
 			}
+			else if (host == DBUS_MID_TIPRESENTER_PC)
+			{
+				// For now, only the TI-Presenter is guessed to use 0x43 (well, according to the OS upgrade file, anyway).
+				*model = CALC_TIPRESENTER;
+				//break; // Do not break because for now, we want get_version to be executed.
+			}
+			// 0x1n (CBL, CBR, CBR2) and 0x42 (CBL2, LabPro) will require further examination, fall through.
 		}
 
 		// test for TI92 (09 68 00 00 -> 89 56 00 00)
-		else if (ret)
+		else /*if (ret)*/
 		{
 			ticalcs_info("%s", _("Check for TI92... "));
 			ticables_cable_reset(handle->cable);
 			PAUSE(DEAD_TIME);	// needed !
 
-			for (i = 0; i < 2; i++)
-			{
-				ticalcs_info(" PC->TI: RDY?");
-				ret = dbus_send(handle, DBUS_MID_PC_TI92, DBUS_CMD_RDY, 2, NULL);
-				if (ret)
-				{
-					continue;
-				}
-
-				ret = dbus_recv(handle, &host, &cmd, &status, buffer);
-				ticalcs_info(" TI->PC: ACK");
-				if (ret)
-				{
-					continue;
-				}
-
-				break;
-			}
+			ret = try_ready_command(handle, DBUS_MID_PC_TI92, &host, &cmd, &status);
 
 			if (!ret)
 			{
@@ -339,45 +379,72 @@ static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 
 		if (cmd != DBUS_CMD_ACK)
 		{
+			ticalcs_info("Was not ACK");
 			ret = ERR_INVALID_CMD;
+		}
+
+		if (ret)
+		{
 			break;
 		}
 
-		if ((status & 1) != 0)
+		memset(&infos, 0, sizeof(CalcInfos));
+
+		// Test for TI9x FLASH hand-helds and newer lab equipment models again (request version and analyze HW_ID).
+		// This whitelist might leave aside some unknown models which use TI-68k-class version support.
+		// However, given that at least CBR and CBR2 can advertise themselves as 0x83, 0x00, 0x18 or presumably other machine IDs >= 0x12 and <= 0x19,
+		// or 0x1D (???), depending on how they communicated before, it's probably better to make the default case trying to probe older lab equipment...
+		//if(!ret && (host != DBUS_MID_TI73_PC) && (host != DBUS_MID_TI83p_PC) && (host != DBUS_MID_CBL_TI73) && ((host < 0x12) || (host > 0x19)))
+		if ((host == DBUS_MID_TI89_PC) || (host == DBUS_MID_TI92_PC) || (host == DBUS_MID_TI92p_PC) || (host == DBUS_MID_CBL2_PC) || (host == DBUS_MID_TIPRESENTER_PC))
 		{
-			ret = ERR_NOT_READY;
-			break;
-		}
-
-		// test for TI9x FLASH hand-helds again (request version and analyze HW_ID)
-		if(!ret && (host != DBUS_MID_TI73_PC) && (host != DBUS_MID_TI83p_PC))
-		{
-			ticalcs_info("%s", _("Check for TI9X... "));
-
-			handle->model = CALC_TI89;
-			handle->calc = (CalcFncts *)&calc_89;
-
-			memset(&infos, 0, sizeof(CalcInfos));
-			ret = ticalcs_calc_get_version(handle, &infos);
-			if (ret)
+			if ((status & 1) != 0)
 			{
+				ticalcs_info("Status was %d", status);
+				ret = ERR_NOT_READY;
 				break;
 			}
-			*model = infos.model;
+
+			ticalcs_info("%s", _("Check for TI9X... "));
+
+			if (*model != CALC_TIPRESENTER)
+			{
+				handle->model = CALC_TI89;
+				handle->calc = (CalcFncts *)&calc_89;
+			}
+			else
+			{
+				handle->model = CALC_TIPRESENTER;
+				handle->calc = (CalcFncts *)&calc_tipresenter;
+			}
 		}
 		else
 		{
-			ticalcs_info("%s", _("Check for TI8X... "));
-
-			handle->model = CALC_TI83P;
-			handle->calc = (CalcFncts *)&calc_83p;
-
-			memset(&infos, 0, sizeof(CalcInfos));
-			ret = ticalcs_calc_get_version(handle, &infos);
-			if (ret)
+			// test for TI-8x and older lab equipment
+			if (host == DBUS_MID_TI73_PC || host == DBUS_MID_TI83p_PC)
 			{
-				break;
+				if ((status & 1) != 0)
+				{
+					ticalcs_info("Status was %d", status);
+					ret = ERR_NOT_READY;
+					break;
+				}
+				ticalcs_info("%s", _("Check for TI8X... "));
+				handle->model = CALC_TI83P;
+				handle->calc = (CalcFncts *)&calc_83p;
 			}
+			else
+			{
+				// Do not pay attention to status, as e.g. the CBR sends xx 56 01 00.
+
+				ticalcs_info("%s", _("Check for old lab equipment... "));
+				handle->model = CALC_CBL;
+				handle->calc = (CalcFncts *)&calc_cbl;
+			}
+		}
+
+		ret = ticalcs_calc_get_version(handle, &infos);
+		if (!ret)
+		{
 			*model = infos.model;
 		}
 	} while(0);
@@ -423,6 +490,7 @@ int TICALL ticalcs_probe_calc(CableHandle* cable, CalcModel* model)
 		calc.buffer2 = (uint8_t *)g_malloc(65536 + 6);
 		calc.cable = cable;
 		calc.open = !0;
+		calc.event_hook = ticalcs_default_event_hook;
 
 		// first: search for FLASH hand-helds (fast)
 		ret = ticalcs_probe_calc_1(&calc, model);
@@ -476,6 +544,7 @@ int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model)
 		calc.buffer2 = (uint8_t *)g_malloc(65536 + 6);
 		calc.cable = cable;
 		calc.open = !0;
+		calc.event_hook = ticalcs_default_event_hook;
 
 		if (cable->model == CABLE_SLV)
 		{
@@ -557,6 +626,7 @@ int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model,
 				calc.buffer2 = (uint8_t *)g_malloc(65536 + 6);
 				calc.cable = handle;
 				calc.open = !0;
+				calc.event_hook = ticalcs_default_event_hook;
 
 				ret = ticalcs_probe_calc_1(&calc, model);
 

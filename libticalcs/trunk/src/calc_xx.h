@@ -71,4 +71,11 @@ extern const CalcFncts calc_nsp_cxii_cas;
 extern const CalcFncts calc_nsp_cxiit;
 extern const CalcFncts calc_nsp_cxiit_cas;
 
+extern const CalcFncts calc_cbl;
+extern const CalcFncts calc_cbr;
+extern const CalcFncts calc_cbl2;
+extern const CalcFncts calc_cbr2;
+extern const CalcFncts calc_labpro;
+extern const CalcFncts calc_tipresenter;
+
 #endif

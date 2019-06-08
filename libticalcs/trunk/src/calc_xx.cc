@@ -1468,9 +1468,105 @@ int TICALL ticalcs_calc_recv_all_vars_backup(CalcHandle* handle, FileContent* co
 	return ret;
 }
 
+/**
+ * ticalcs_calc_send_lab_equipment_data:
+ * @handle: a previously allocated handle
+ * @model: calculator model used by the computer
+ * @size: number of items in @data array
+ * @data: array of raw byte arrays.
+ *
+ * Send list data, i.e. Send({...}), for the models which support it.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+int TICALL ticalcs_calc_send_lab_equipment_data(CalcHandle *handle, CalcModel model, CalcLabEquipmentData * lab_equipment_data)
+{
+	const CalcFncts *calc;
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(lab_equipment_data);
+
+	calc = handle->calc;
+	VALIDATE_CALCFNCTS(calc);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	ticalcs_info("%s", _("Sending lab equipment data:"));
+	handle->busy = 1;
+	if (calc->fncts.send_lab_equipment_data)
+	{
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_LAB_EQUIPMENT_DATA);
+		event.model = model;
+		ticalcs_event_fill_lab_equipment_data(&event, lab_equipment_data->type, lab_equipment_data->size, lab_equipment_data->items, lab_equipment_data->data, lab_equipment_data->index, lab_equipment_data->unknown, lab_equipment_data->vartype);
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->fncts.send_lab_equipment_data(handle, model, lab_equipment_data);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_LAB_EQUIPMENT_DATA);
+		event.model = model;
+		ticalcs_event_fill_lab_equipment_data(&event, lab_equipment_data->type, lab_equipment_data->size, lab_equipment_data->items, lab_equipment_data->data, lab_equipment_data->index, lab_equipment_data->unknown, lab_equipment_data->vartype);
+		ret = ticalcs_event_send(handle, &event);
+	}
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_get_lab_equipment_data:
+ * @handle: a previously allocated handle
+ * @model: calculator model used by the computer
+ * @size: number of items in @data array
+ * @data: pointer to array of raw byte arrays.
+ *
+ * Get list data, i.e. Get <variable>, for the models which support it.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+int TICALL ticalcs_calc_get_lab_equipment_data(CalcHandle *handle, CalcModel model, CalcLabEquipmentData * lab_equipment_data)
+{
+	const CalcFncts *calc;
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(lab_equipment_data);
+
+	calc = handle->calc;
+	VALIDATE_CALCFNCTS(calc);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	ticalcs_info("%s", _("Requesting lab equipment data:"));
+	handle->busy = 1;
+	if (calc->fncts.get_lab_equipment_data)
+	{
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_GET_LAB_EQUIPMENT_DATA);
+		event.model = model;
+		memset((void *)&event.data.labeq_data, 0, sizeof(event.data.labeq_data));
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->fncts.get_lab_equipment_data(handle, model, lab_equipment_data);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_GET_LAB_EQUIPMENT_DATA);
+		event.model = model;
+		ticalcs_event_fill_lab_equipment_data(&event, lab_equipment_data->type, lab_equipment_data->size, lab_equipment_data->items, lab_equipment_data->data, lab_equipment_data->index, lab_equipment_data->unknown, lab_equipment_data->vartype);
+		ret = ticalcs_event_send(handle, &event);
+	}
+	handle->busy = 0;
+
+	return ret;
+}
 
 // ---
-
 
 /**
  * ticalcs_calc_send_backup2:
@@ -1823,7 +1919,7 @@ int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* filename)
  * @handle: a previously allocated handle
  * @filename: name of file
  *
- * Send a FLASH app.
+ * Send an OS.
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
@@ -1849,6 +1945,109 @@ int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filename)
 	// content is destroyed by the functions behind tifiles_file_read_flash() if an error occurs.
 
 	return ret;
+}
+
+/**
+ * ticalcs_calc_send_lab_equipment_data2:
+ * @handle: a previously allocated handle
+ * @model: calculator model used by the computer
+ * @data: list data in convenient text form
+ *
+ * Send list data, i.e. Send({...}), for the models which support it.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+int TICALL ticalcs_calc_send_lab_equipment_data2(CalcHandle *handle, CalcModel model, uint8_t vartype, const char * data)
+{
+	int ret;
+	CalcLabEquipmentData lab_equipment_data;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(data);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	lab_equipment_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_STRING;
+	lab_equipment_data.size = strlen(data) + 1;
+	lab_equipment_data.items = 0;
+	lab_equipment_data.data = (const uint8_t *)data;
+	lab_equipment_data.index = 0;
+	lab_equipment_data.unknown = 0;
+	lab_equipment_data.vartype = vartype;
+	ret = ticalcs_calc_send_lab_equipment_data(handle, model, &lab_equipment_data);
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_get_lab_equipment_data2:
+ * @handle: a previously allocated handle
+ * @model: calculator model used by the computer
+ * @data: pointer to output list data in convenient text form
+ *
+ * Get list data, i.e. Get <variable>, for the models which support it.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+int TICALL ticalcs_calc_get_lab_equipment_data2(CalcHandle *handle, CalcModel model, uint8_t vartype, const char ** data)
+{
+	int ret;
+	CalcLabEquipmentData lab_equipment_data;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(data);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	lab_equipment_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_NONE;
+	lab_equipment_data.size = 0;
+	lab_equipment_data.items = 0;
+	lab_equipment_data.data = nullptr;
+	lab_equipment_data.index = 0;
+	lab_equipment_data.unknown = 0;
+	lab_equipment_data.vartype = vartype;
+	ret = ticalcs_calc_get_lab_equipment_data(handle, model, &lab_equipment_data);
+	if (!ret)
+	{
+		uint32_t item_count;
+		double * raw_values = nullptr;
+		if (lab_equipment_data.type == CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST)
+		{
+			ret = tixx_convert_lab_equipment_data_tiz80_raw_list_to_string(&lab_equipment_data, &item_count, &raw_values, data);
+		}
+		else if (lab_equipment_data.type == CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST)
+		{
+			ret = tixx_convert_lab_equipment_data_ti68k_raw_list_to_string(&lab_equipment_data, &item_count, &raw_values, data);
+		}
+		else if (lab_equipment_data.type == CALC_LAB_EQUIPMENT_DATA_TYPE_STRING)
+		{
+			// Shouldn't happen anyway, but if it does... just borrow data.
+			*data = (const char *)(lab_equipment_data.data);
+		}
+		else
+		{
+			// Internal error.
+			ret = ERR_INVALID_PARAMETER;
+		}
+		tixx_free_converted_lab_equipment_data_fpvals(raw_values);
+	}
+
+	return ret;
+}
+
+/**
+ * ticalcs_free_lab_equipment_data2:
+ * @data: previously allocated list data (string)
+ *
+ * Frees a string previously allocated by ticalcs_calc_get_lab_equipment_data2().
+ */
+void TICALL ticalcs_free_lab_equipment_data2(char * data)
+{
+	g_free((void *)data);
 }
 
 /**

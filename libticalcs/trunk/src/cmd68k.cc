@@ -41,6 +41,11 @@ uint8_t TICALL ti68k_model_to_dbus_mid(CalcModel model)
 	{
 	case CALC_TI89:
 	case CALC_TI89T:
+	case CALC_CBL:
+	case CALC_CBR:
+	case CALC_CBL2:
+	case CALC_CBR2:
+	case CALC_LABPRO:
 		retval = DBUS_MID_PC_TI89; break;
 	case CALC_TI92:
 		retval = DBUS_MID_PC_TI92; break;
@@ -48,6 +53,8 @@ uint8_t TICALL ti68k_model_to_dbus_mid(CalcModel model)
 		retval = DBUS_MID_PC_TI92p; break;
 	case CALC_V200:
 		retval = DBUS_MID_PC_V200; break;
+	case CALC_TIPRESENTER:
+		retval = DBUS_MID_PC_TIPRESENTER; break;
 	default:
 		retval = DBUS_MID_PC_TIXX; break;
 	}
@@ -123,6 +130,25 @@ int TICALL ti68k_send_VAR(CalcHandle* handle, uint32_t varsize, uint8_t vartype,
 
 	ticalcs_info(" PC->TI: VAR (size=0x%08X=%i, id=%02X, name=%s)", varsize, varsize, vartype, trans);
 	return dbus_send(handle, target, DBUS_CMD_VAR, 6 + len + extra, buffer);
+}
+
+int TICALL ti68k_send_VAR_lab_equipment_data(CalcHandle* handle, uint32_t varsize, uint8_t vartype, uint8_t target)
+{
+	uint8_t buffer[16];
+
+	VALIDATE_HANDLE(handle);
+
+	buffer[0] = LSB(LSW(varsize));
+	buffer[1] = MSB(LSW(varsize));
+	buffer[2] = LSB(MSW(varsize));
+	buffer[3] = MSB(MSW(varsize));
+	buffer[4] = vartype;
+	buffer[5] = 0x01;
+	buffer[6] = 0xFF;
+	buffer[7] = 0x00;
+
+	ticalcs_info(" PC->TI: Send({...}) (size=0x%08X=%i, id=%02X)", varsize, varsize, vartype);
+	return dbus_send(handle, target, DBUS_CMD_VAR, 8, buffer);
 }
 
 int TICALL ti68k_send_CTS(CalcHandle* handle, uint8_t target)

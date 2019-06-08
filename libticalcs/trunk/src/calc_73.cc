@@ -1454,36 +1454,43 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	if (!ret)
 	{
 		memset(infos, 0, sizeof(CalcInfos));
-		if (handle->model == CALC_TI73)
+		if (length >= 11)
 		{
-			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1x.%02x", buffer[0], buffer[1]);
-			ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1x.%02x", buffer[2], buffer[3]);
+			if (handle->model == CALC_TI73)
+			{
+				ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1x.%02x", buffer[0], buffer[1]);
+				ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1x.%02x", buffer[2], buffer[3]);
+			}
+			else
+			{
+				ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1i.%02i", buffer[0], buffer[1]);
+				ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%02i", buffer[2], buffer[3]);
+			}
+			infos->battery = (buffer[4] & 1) ? 0 : 1;
+			infos->hw_version = buffer[5];
+			switch(buffer[5])
+			{
+			case 0: infos->model = CALC_TI83P; break;
+			case 1: infos->model = CALC_TI83P; break;
+			case 2: infos->model = CALC_TI84P; break;
+			case 3: infos->model = CALC_TI84P; break;
+			case 5: infos->model = CALC_TI84PC; break;
+			default: infos->model = CALC_TI84PC; break; // If new models ever arise, they'll probably be 84+CSE or newer anyway.
+			}
+			infos->language_id = buffer[6];
+			infos->sub_lang_id = buffer[7];
+			infos->mask = (InfosMask)(INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY_ENOUGH | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID);
+
+			tifiles_hexdump(buffer, length);
+			ticalcs_info(_("  OS: %s"), infos->os_version);
+			ticalcs_info(_("  BIOS: %s"), infos->boot_version);
+			ticalcs_info(_("  HW: %i"), infos->hw_version);
+			ticalcs_info(_("  Battery: %s"), infos->battery ? _("good") : _("low"));
 		}
 		else
 		{
-			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1i.%02i", buffer[0], buffer[1]);
-			ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%02i", buffer[2], buffer[3]);
+			ticalcs_warning("%s", _("Bad data length for version information"));
 		}
-		infos->battery = (buffer[4] & 1) ? 0 : 1;
-		infos->hw_version = buffer[5];
-		switch(buffer[5])
-		{
-		case 0: infos->model = CALC_TI83P; break;
-		case 1: infos->model = CALC_TI83P; break;
-		case 2: infos->model = CALC_TI84P; break;
-		case 3: infos->model = CALC_TI84P; break;
-		case 5: infos->model = CALC_TI84PC; break;
-		default: infos->model = CALC_TI84PC; break; // If new models ever arise, they'll probably be 84+CSE or newer anyway.
-		}
-		infos->language_id = buffer[6];
-		infos->sub_lang_id = buffer[7];
-		infos->mask = (InfosMask)(INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY_ENOUGH | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID);
-
-		tifiles_hexdump(buffer, length);
-		ticalcs_info(_("  OS: %s"), infos->os_version);
-		ticalcs_info(_("  BIOS: %s"), infos->boot_version);
-		ticalcs_info(_("  HW: %i"), infos->hw_version);
-		ticalcs_info(_("  Battery: %s"), infos->battery ? _("good") : _("low"));
 	}
 
 	return ret;
@@ -1630,7 +1637,7 @@ extern const CalcFncts calc_73 =
 	"TI-73",
 	"TI-73",
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS |
-	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_VERSION | OPS_OS |
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_VERSION | OPS_OS /*| OPS_LABEQUIPMENTDATA*/ |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_BACKUP,
 	PRODUCT_ID_TI73,
 	{"",     /* is_ready */
@@ -1661,7 +1668,9 @@ extern const CalcFncts calc_73 =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "",     /* send_all_vars_backup */
-	 ""      /* recv_all_vars_backup */ },
+	 "",     /* recv_all_vars_backup */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1690,7 +1699,9 @@ extern const CalcFncts calc_73 =
 	&noop_rename_var,
 	&noop_change_attr,
 	&noop_send_all_vars_backup,
-	&noop_recv_all_vars_backup
+	&noop_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };
 
 extern const CalcFncts calc_83p =
@@ -1700,7 +1711,7 @@ extern const CalcFncts calc_83p =
 	"TI-83 Plus",
 	"TI-83 Plus",
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS |
-	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_DELVAR | OPS_VERSION | OPS_OS |
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_DELVAR | OPS_VERSION | OPS_OS /*| OPS_LABEQUIPMENTDATA*/ |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT | FTS_BACKUP,
 	PRODUCT_ID_TI83P,
 	{"",     /* is_ready */
@@ -1731,7 +1742,9 @@ extern const CalcFncts calc_83p =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "",     /* send_all_vars_backup */
-	 ""      /* recv_all_vars_backup */ },
+	 "",     /* recv_all_vars_backup */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1760,7 +1773,9 @@ extern const CalcFncts calc_83p =
 	&noop_rename_var,
 	&noop_change_attr,
 	&noop_send_all_vars_backup,
-	&noop_recv_all_vars_backup
+	&noop_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };
 
 extern const CalcFncts calc_84p =
@@ -1770,7 +1785,7 @@ extern const CalcFncts calc_84p =
 	"TI-84 Plus",
 	"TI-84 Plus",
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS |
-	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_OS |
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_OS /*| OPS_LABEQUIPMENTDATA*/ |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT | FTS_BACKUP,
 	PRODUCT_ID_TI84P,
 	{"",     /* is_ready */
@@ -1801,7 +1816,9 @@ extern const CalcFncts calc_84p =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "",     /* send_all_vars_backup */
-	 ""      /* recv_all_vars_backup */ },
+	 "",     /* recv_all_vars_backup */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1830,7 +1847,9 @@ extern const CalcFncts calc_84p =
 	&noop_rename_var,
 	&noop_change_attr,
 	&noop_send_all_vars_backup,
-	&noop_recv_all_vars_backup
+	&noop_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };
 
 extern const CalcFncts calc_84pcse =
@@ -1840,7 +1859,7 @@ extern const CalcFncts calc_84pcse =
 	"TI-84 Plus Color Silver Edition",
 	"TI-84 Plus Color Silver Edition",
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS |
-	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_OS |
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_OS /*| OPS_LABEQUIPMENTDATA*/ |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT | FTS_BACKUP,
 	PRODUCT_ID_TI84PCSE,
 	{"",     /* is_ready */
@@ -1871,7 +1890,9 @@ extern const CalcFncts calc_84pcse =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "",     /* send_all_vars_backup */
-	 ""      /* recv_all_vars_backup */ },
+	 "",     /* recv_all_vars_backup */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1900,5 +1921,7 @@ extern const CalcFncts calc_84pcse =
 	&noop_rename_var,
 	&noop_change_attr,
 	&noop_send_all_vars_backup,
-	&noop_recv_all_vars_backup
+	&noop_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };

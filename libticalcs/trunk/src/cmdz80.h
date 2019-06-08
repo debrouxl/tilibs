@@ -41,7 +41,14 @@ static inline uint8_t tiz80_handle_to_dbus_mid_7383p(CalcHandle * handle)
 
 static inline uint8_t tiz80_handle_to_dbus_mid_8283(CalcHandle * handle)
 {
-	return (handle != NULL) ? ((handle->model == CALC_TI82) ? DBUS_MID_PC_TI82 : DBUS_MID_PC_TI83) : 0;
+	return (handle != NULL) ? (   (handle->model == CALC_TI82)
+	                           || (handle->model == CALC_CBL)
+	                           || (handle->model == CALC_CBR)
+	                           || (handle->model == CALC_CBL2)
+	                           || (handle->model == CALC_CBR2)
+	                           || (handle->model == CALC_LABPRO)
+	                           || (handle->model == CALC_TIPRESENTER)
+	                              ? DBUS_MID_PC_TI82 : DBUS_MID_PC_TI83) : 0;
 }
 
 static inline uint8_t tiz80_handle_to_dbus_mid_8586(CalcHandle * handle)
@@ -59,6 +66,7 @@ TIEXPORT3 int TICALL tiz80_send_ERR(CalcHandle* handle, uint8_t target);
 TIEXPORT3 int TICALL tiz80_send_SCR(CalcHandle* handle, uint8_t target);
 TIEXPORT3 int TICALL tiz80_send_KEY(CalcHandle* handle, uint16_t scancode, uint8_t target);
 TIEXPORT3 int TICALL tiz80_send_EOT(CalcHandle* handle, uint8_t target);
+TIEXPORT3 int TICALL tiz80_send_RTS_lab_equipment_data(CalcHandle* handle, uint16_t varsize, uint8_t vartype, uint8_t target);
 
 /* TI-Z80 family, receive functions */
 TIEXPORT3 int TICALL tiz80_recv_CTS(CalcHandle* handle, uint16_t length);

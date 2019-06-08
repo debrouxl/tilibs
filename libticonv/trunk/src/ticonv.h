@@ -80,6 +80,7 @@ typedef enum
 	CALC_NSPIRE_CX, CALC_NSPIRE_CX_CAS, CALC_NSPIRE_CMC, CALC_NSPIRE_CMC_CAS, // 31
 	CALC_NSPIRE_CXII, CALC_NSPIRE_CXII_CAS, CALC_NSPIRE_CXIIT, CALC_NSPIRE_CXIIT_CAS, // 35
 	CALC_TI82AEP_USB, // 36
+	CALC_CBL, CALC_CBR, CALC_CBL2, CALC_CBR2, CALC_LABPRO, CALC_TIPRESENTER, // 42
 	CALC_MAX
 } CalcModel;
 
@@ -187,6 +188,7 @@ typedef struct
 	TIEXPORT4 int TICALL ticonv_model_is_tiez80(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_is_ti68k(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_is_tinspire(CalcModel model);
+	TIEXPORT4 int TICALL ticonv_model_is_lab_equipment(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_has_legacy_ioport(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_has_usb_ioport(CalcModel model);
 	TIEXPORT4 int TICALL ticonv_model_has_flash_memory(CalcModel model);
