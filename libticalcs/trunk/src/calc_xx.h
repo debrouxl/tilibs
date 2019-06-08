@@ -55,4 +55,11 @@ extern const CalcFncts calc_84pt_usb;
 extern const CalcFncts calc_nsp_cradle;
 extern const CalcFncts calc_nsp_cxii;
 
+extern const CalcFncts calc_cbl;
+extern const CalcFncts calc_cbr;
+extern const CalcFncts calc_cbl2;
+extern const CalcFncts calc_cbr2;
+extern const CalcFncts calc_labpro;
+extern const CalcFncts calc_tipresenter;
+
 #endif

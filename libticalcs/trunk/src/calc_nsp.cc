@@ -1143,6 +1143,8 @@ extern const CalcFncts calc_nsp =
 	&noop_change_attr,
 	&noop_send_all_vars_backup,
 	&tixx_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };
 
 extern const CalcFncts calc_nsp_cradle = 
@@ -1213,6 +1215,8 @@ extern const CalcFncts calc_nsp_cradle =
 	&noop_change_attr,
 	&noop_send_all_vars_backup,
 	&tixx_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };
 
 extern const CalcFncts calc_nsp_cxii = 
@@ -1283,4 +1287,6 @@ extern const CalcFncts calc_nsp_cxii =
 	&noop_change_attr,
 	&noop_send_all_vars_backup,
 	&tixx_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };

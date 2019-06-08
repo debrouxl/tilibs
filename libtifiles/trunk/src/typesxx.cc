@@ -53,8 +53,13 @@ TIEXPORT2 const char *TICALL tifiles_vartype2string(CalcModel model, uint8_t dat
   case CALC_TI82:
     return tixx_byte2type(TI82_CONST, TI82_MAXTYPES, data);
   case CALC_TI83:
+  case CALC_CBL:
+  case CALC_CBR:
     return tixx_byte2type(TI83_CONST, TI83_MAXTYPES, data);
   case CALC_TI83P:
+  case CALC_CBL2:
+  case CALC_CBR2:
+  case CALC_LABPRO:
     return ti83p_byte2type(data);
   case CALC_TI84P:
   case CALC_TI84P_USB:
@@ -92,6 +97,7 @@ TIEXPORT2 const char *TICALL tifiles_vartype2string(CalcModel model, uint8_t dat
   case CALC_NSPIRE_CRADLE:
   case CALC_NSPIRE_CXII:
     return tixx_byte2type(NSP_CONST, NSP_MAXTYPES, data);
+  case CALC_TIPRESENTER:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
@@ -123,8 +129,13 @@ TIEXPORT2 uint8_t TICALL tifiles_string2vartype(CalcModel model, const char *s)
   case CALC_TI82:
     return tixx_type2byte(TI82_CONST, TI82_MAXTYPES, s);
   case CALC_TI83:
+  case CALC_CBL:
+  case CALC_CBR:
     return tixx_type2byte(TI83_CONST, TI83_MAXTYPES, s);
   case CALC_TI83P:
+  case CALC_CBL2:
+  case CALC_CBR2:
+  case CALC_LABPRO:
     return ti83p_type2byte(s);
   case CALC_TI84P:
   case CALC_TI84P_USB:
@@ -162,6 +173,7 @@ TIEXPORT2 uint8_t TICALL tifiles_string2vartype(CalcModel model, const char *s)
   case CALC_NSPIRE_CRADLE:
   case CALC_NSPIRE_CXII:
     return tixx_type2byte(NSP_CONST, NSP_MAXTYPES, s);
+  case CALC_TIPRESENTER:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return 0;
@@ -187,8 +199,13 @@ TIEXPORT2 const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
   case CALC_TI82:
     return tixx_byte2fext(TI82_CONST, TI82_MAXTYPES, data, "82?");
   case CALC_TI83:
+  case CALC_CBL:
+  case CALC_CBR:
     return tixx_byte2fext(TI83_CONST, TI83_MAXTYPES, data, "83?");
   case CALC_TI83P:
+  case CALC_CBL2:
+  case CALC_CBR2:
+  case CALC_LABPRO:
     return ti83p_byte2fext(data);
   case CALC_TI84P:
   case CALC_TI84P_USB:
@@ -226,6 +243,7 @@ TIEXPORT2 const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
   case CALC_NSPIRE_CRADLE:
   case CALC_NSPIRE_CXII:
     return tixx_byte2fext(NSP_CONST, NSP_MAXTYPES, data, "tn?");
+  case CALC_TIPRESENTER:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
@@ -257,8 +275,13 @@ TIEXPORT2 uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
   case CALC_TI82:
     return tixx_fext2byte(TI82_CONST, TI82_MAXTYPES, s);
   case CALC_TI83:
+  case CALC_CBL:
+  case CALC_CBR:
     return tixx_fext2byte(TI83_CONST, TI83_MAXTYPES, s);
   case CALC_TI83P:
+  case CALC_CBL2:
+  case CALC_CBR2:
+  case CALC_LABPRO:
     return ti83p_fext2byte(s);
   case CALC_TI84P:
   case CALC_TI84P_USB:
@@ -296,6 +319,7 @@ TIEXPORT2 uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
   case CALC_NSPIRE_CRADLE:
   case CALC_NSPIRE_CXII:
     return tixx_fext2byte(NSP_CONST, NSP_MAXTYPES, s);
+  case CALC_TIPRESENTER:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return 0;
@@ -322,8 +346,13 @@ TIEXPORT2 const char *TICALL tifiles_vartype2type(CalcModel model, uint8_t varty
   case CALC_TI82:
     return tixx_byte2desc(TI82_CONST, TI82_MAXTYPES, vartype);
   case CALC_TI83:
+  case CALC_CBL:
+  case CALC_CBR:
     return tixx_byte2desc(TI83_CONST, TI83_MAXTYPES, vartype);
   case CALC_TI83P:
+  case CALC_CBL2:
+  case CALC_CBR2:
+  case CALC_LABPRO:
     return ti83p_byte2desc(vartype);
   case CALC_TI84P:
   case CALC_TI84P_USB:
@@ -361,6 +390,7 @@ TIEXPORT2 const char *TICALL tifiles_vartype2type(CalcModel model, uint8_t varty
   case CALC_NSPIRE_CRADLE:
   case CALC_NSPIRE_CXII:
     return tixx_byte2desc(NSP_CONST, NSP_MAXTYPES, vartype);
+  case CALC_TIPRESENTER:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
@@ -387,8 +417,13 @@ TIEXPORT2 const char *TICALL tifiles_vartype2icon(CalcModel model, uint8_t varty
   case CALC_TI82:
     return tixx_byte2icon(TI82_CONST, TI82_MAXTYPES, vartype);
   case CALC_TI83:
+  case CALC_CBL:
+  case CALC_CBR:
     return tixx_byte2icon(TI83_CONST, TI83_MAXTYPES, vartype);
   case CALC_TI83P:
+  case CALC_CBL2:
+  case CALC_CBR2:
+  case CALC_LABPRO:
     return ti83p_byte2icon(vartype);
   case CALC_TI84P:
   case CALC_TI84P_USB:
@@ -426,6 +461,7 @@ TIEXPORT2 const char *TICALL tifiles_vartype2icon(CalcModel model, uint8_t varty
   case CALC_NSPIRE_CRADLE:
   case CALC_NSPIRE_CXII:
     return tixx_byte2icon(NSP_CONST, NSP_MAXTYPES, vartype);
+  case CALC_TIPRESENTER:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
@@ -458,6 +494,8 @@ TIEXPORT2 uint8_t TICALL tifiles_folder_type(CalcModel model)
   case CALC_TI82:
     return -1;
   case CALC_TI83:
+  case CALC_CBL:
+  case CALC_CBR:
     return TI83_DIR;
   case CALC_TI83P:
   case CALC_TI84P:
@@ -468,6 +506,9 @@ TIEXPORT2 uint8_t TICALL tifiles_folder_type(CalcModel model)
   case CALC_TI84PCE_USB:
   case CALC_TI82A_USB:
   case CALC_TI84PT_USB:
+  case CALC_CBL2:
+  case CALC_CBR2:
+  case CALC_LABPRO:
     return TI83p_DIR;
   case CALC_TI85:
     return -1;
@@ -490,6 +531,7 @@ TIEXPORT2 uint8_t TICALL tifiles_folder_type(CalcModel model)
   case CALC_NSPIRE_CRADLE:
   case CALC_NSPIRE_CXII:
     return NSP_DIR;
+  case CALC_TIPRESENTER:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     break;
@@ -520,6 +562,11 @@ TIEXPORT2 uint8_t TICALL tifiles_flash_type(CalcModel model)
   case CALC_TI82:
     return -1;
   case CALC_TI83:
+  case CALC_CBL:
+  case CALC_CBR:
+  case CALC_CBL2:
+  case CALC_CBR2:
+  case CALC_LABPRO:
     return -1;
   case CALC_TI83P:
   case CALC_TI84P:
@@ -552,6 +599,7 @@ TIEXPORT2 uint8_t TICALL tifiles_flash_type(CalcModel model)
   case CALC_NSPIRE:
   case CALC_NSPIRE_CRADLE:
   case CALC_NSPIRE_CXII:
+  case CALC_TIPRESENTER:
     return -1;
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
@@ -583,6 +631,11 @@ TIEXPORT2 uint8_t TICALL tifiles_idlist_type(CalcModel model)
   case CALC_TI82:
     return -1;
   case CALC_TI83:
+  case CALC_CBL:
+  case CALC_CBR:
+  case CALC_CBL2:
+  case CALC_CBR2:
+  case CALC_LABPRO:
     return -1;
   case CALC_TI83P:
   case CALC_TI84P:
@@ -614,6 +667,7 @@ TIEXPORT2 uint8_t TICALL tifiles_idlist_type(CalcModel model)
   case CALC_NSPIRE:
   case CALC_NSPIRE_CRADLE:
   case CALC_NSPIRE_CXII:
+  case CALC_TIPRESENTER:
     return -1;
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
@@ -648,6 +702,8 @@ TIEXPORT2 const char *TICALL tifiles_calctype2signature(CalcModel model)
   case CALC_TI82:
     return "**TI82**";
   case CALC_TI83:
+  case CALC_CBL: // Dubious
+  case CALC_CBR: // Dubious
     return "**TI83**";
   case CALC_TI83P:
   case CALC_TI84P:
@@ -658,6 +714,9 @@ TIEXPORT2 const char *TICALL tifiles_calctype2signature(CalcModel model)
   case CALC_TI84PCE_USB:
   case CALC_TI82A_USB:
   case CALC_TI84PT_USB:
+  case CALC_CBL2: // Dubious
+  case CALC_CBR2: // Dubious
+  case CALC_LABPRO: // Dubious
     return "**TI83F*";
   case CALC_TI85:
     return "**TI85**";
@@ -679,6 +738,7 @@ TIEXPORT2 const char *TICALL tifiles_calctype2signature(CalcModel model)
   case CALC_NSPIRE:
   case CALC_NSPIRE_CRADLE:
   case CALC_NSPIRE_CXII:
+  case CALC_TIPRESENTER:
     return "";
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
@@ -720,6 +780,8 @@ TIEXPORT2 CalcModel TICALL tifiles_signature2calctype(const char *s)
       return CALC_TI92P;
     else if (!g_ascii_strcasecmp(s, "**V200**"))
       return CALC_V200;
+    else if (!g_ascii_strcasecmp(s, "**TICBL*"))
+      return CALC_CBL2;
   }
   tifiles_critical("%s: invalid signature.", __FUNCTION__);
   return CALC_NONE;

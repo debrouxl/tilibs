@@ -17,15 +17,50 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/calc_00.cc:213
+#: src/calclabequipmentdata.cc:116
+msgid "Successfully parsed lab equipment data list string"
+msgstr ""
+"Réussite de la lecture de la chaîne contenant une liste pour équipement de "
+"laboratoire"
+
+#: src/calclabequipmentdata.cc:126
+msgid "Failed to parse lab equipment data list string"
+msgstr ""
+"Echec de la lecture de la chaîne contenant une liste pour équipement de "
+"laboratoire"
+
+#: src/calclabequipmentdata.cc:308 src/calclabequipmentdata.cc:480
+#, c-format
+msgid "Model %d is not known to support list data"
+msgstr ""
+"On n'est pas au courant que le modèle %d gère les données de type liste"
+
+#: src/calclabequipmentdata.cc:332
+msgid "Expected TI-68k list or string format with this calculator model"
+msgstr "Format liste ou chaîne TI-68k attendu avec ce modèle de calculatrice"
+
+#: src/calclabequipmentdata.cc:348
+msgid "Expected TI-Z80 list or string format with this calculator model"
+msgstr "Format liste ou chaîne TI-Z80 attendu avec ce modèle de calculatrice"
+
+#: src/calclabequipmentdata.cc:379
+msgid "List data too large, will not be sent"
+msgstr "La liste est trop longue, elle ne sera pas envoyée"
+
+#: src/calclabequipmentdata.cc:553
+msgid "Expected declared packet sizes to match"
+msgstr ""
+"On s'attendait à ce que les tailles déclarées des paquets correspondent"
+
+#: src/calc_00.cc:225
 msgid "Dummy hand-held"
 msgstr "Calculatrice vide"
 
-#: src/calc_00.cc:214
+#: src/calc_00.cc:226
 msgid "Dummy hand-held used when no calc is set"
 msgstr "Calculatrice vide utilisée quand aucune calculatrice n'est spécifiée"
 
-#: src/calc_73.cc:390 src/calc_84p.cc:301 src/calc_8x.cc:402
+#: src/calc_73.cc:390 src/calc_84p.cc:301 src/calc_8x.cc:422
 #, c-format
 msgid "Parsing %s"
 msgstr "Parcourt %s"
@@ -34,13 +69,13 @@ msgstr "Parcourt %s"
 msgid "Battery low, stopping flash app transfer"
 msgstr "Batterie faible, arrêt du transfert de l'application Flash"
 
-#: src/calc_73.cc:856 src/calc_73.cc:1511 src/calc_9x.cc:1170
+#: src/calc_73.cc:856 src/calc_73.cc:1518 src/calc_9x.cc:1170
 #: src/calc_89t.cc:514
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr "Nom FLASH:  \"%s\""
 
-#: src/calc_73.cc:857 src/calc_73.cc:1512 src/calc_9x.cc:1171
+#: src/calc_73.cc:857 src/calc_73.cc:1519 src/calc_9x.cc:1171
 #: src/calc_89t.cc:515
 #, c-format
 msgid "FLASH size: %i bytes."
@@ -56,46 +91,50 @@ msgstr "Mise à jour de l'horloge..."
 msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
-#: src/calc_73.cc:1409 src/calc_84p.cc:1640 src/calc_8x.cc:1254
+#: src/calc_73.cc:1409 src/calc_84p.cc:1640 src/calc_8x.cc:1274
 #: src/calc_9x.cc:1563 src/calc_9x.cc:1595 src/calc_89t.cc:980
 #: src/calc_nsp.cc:852
 #, c-format
 msgid "Deleting %s..."
 msgstr "Suppression de %s..."
 
-#: src/calc_73.cc:1483 src/calc_9x.cc:1722 src/calc_9x.cc:1755
+#: src/calc_73.cc:1485 src/calc_9x.cc:1720 src/calc_9x.cc:1758
 #, c-format
 msgid "  OS: %s"
 msgstr "  OS: %s"
 
-#: src/calc_73.cc:1484 src/calc_9x.cc:1723
+#: src/calc_73.cc:1486 src/calc_9x.cc:1721
 #, c-format
 msgid "  BIOS: %s"
 msgstr "  BIOS: %s"
 
-#: src/calc_73.cc:1485
+#: src/calc_73.cc:1487
 #, c-format
 msgid "  HW: %i"
 msgstr "  HW: %i"
 
-#: src/calc_73.cc:1486 src/calc_9x.cc:1724 src/calc_9x.cc:1756
+#: src/calc_73.cc:1488 src/calc_9x.cc:1722 src/calc_9x.cc:1759
 #, c-format
 msgid "  Battery: %s"
 msgstr " Batterie: %s"
 
-#: src/calc_73.cc:1486 src/type2str.cc:343
+#: src/calc_73.cc:1488 src/type2str.cc:356
 msgid "good"
 msgstr "bon"
 
-#: src/calc_73.cc:1486 src/type2str.cc:343
+#: src/calc_73.cc:1488 src/type2str.cc:356
 msgid "low"
 msgstr "bas"
 
-#: src/calc_73.cc:1558 src/calc_9x.cc:1237
+#: src/calc_73.cc:1492 src/calc_9x.cc:1726
+msgid "Bad data length for version information"
+msgstr "Mauvaise longueur de données pour l'information de version"
+
+#: src/calc_73.cc:1565 src/calc_9x.cc:1237
 msgid "Header sent completely."
 msgstr "En-tête envoyé complètement"
 
-#: src/calc_73.cc:1571
+#: src/calc_73.cc:1578
 msgid "Receiving certificate"
 msgstr "Réception du certificat"
 
@@ -155,35 +194,35 @@ msgstr "Membre inconnu de la famille 84+ avec product_id=%d hw_version=%d"
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus via DirectLink"
 
-#: src/calc_84p.cc:2124
+#: src/calc_84p.cc:2128
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr "TI-84 Plus C Silver Edition via DirectLink"
 
-#: src/calc_84p.cc:2195
+#: src/calc_84p.cc:2203
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr "TI-83 Premium CE via DirectLink"
 
-#: src/calc_84p.cc:2266
+#: src/calc_84p.cc:2278
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr "TI-84 Plus CE via DirectLink"
 
-#: src/calc_84p.cc:2337
+#: src/calc_84p.cc:2353
 msgid "TI-82 Advanced thru DirectLink"
 msgstr "TI-82 Advanced via DirectLink"
 
-#: src/calc_84p.cc:2408
+#: src/calc_84p.cc:2428
 msgid "TI-84 Plus T thru DirectLink"
 msgstr "TI-84 Plus T via DirectLink"
 
-#: src/calc_8x.cc:493 src/calc_8x.cc:803
+#: src/calc_8x.cc:513 src/calc_8x.cc:823
 msgid "Waiting for user's action..."
 msgstr "Attente d'une action de la part de l'utilisateur..."
 
-#: src/calc_8x.cc:637
+#: src/calc_8x.cc:657
 msgid "Waiting for backup..."
 msgstr "En attente pour sauvegarder..."
 
-#: src/calc_8x.cc:1075
+#: src/calc_8x.cc:1095
 msgid "Waiting for var(s)..."
 msgstr "Attente de variable(s)..."
 
@@ -212,7 +251,7 @@ msgstr "Bloc n°%2i"
 msgid "Creating %s..."
 msgstr "Création de %s..."
 
-#: src/calc_9x.cc:2017
+#: src/calc_9x.cc:2032
 msgid "V200 Personal Learning Tool"
 msgstr "V200 Personal Learning Tool"
 
@@ -254,11 +293,11 @@ msgstr "Listage du dossier dans <%s>...\n"
 msgid "Nspire thru DirectLink"
 msgstr "Nspire via DirectLink"
 
-#: src/calc_nsp.cc:1153
+#: src/calc_nsp.cc:1155
 msgid "Nspire cradle thru DirectLink"
 msgstr "Nspire cradle via DirectLink"
 
-#: src/calc_nsp.cc:1223
+#: src/calc_nsp.cc:1227
 msgid "Nspire CX II thru DirectLink"
 msgstr "Nspire CX II via DirectLink"
 
@@ -389,6 +428,14 @@ msgstr "Envoi fausse sauvegarde (toutes les variables):"
 #: src/calc_xx.cc:1435
 msgid "Requesting fake (all vars) backup:"
 msgstr "Réception fausse sauvegarde (toutes les variables):"
+
+#: src/calc_xx.cc:1482
+msgid "Sending lab equipment data:"
+msgstr "Envoi de données pour équipement de labo:"
+
+#: src/calc_xx.cc:1531
+msgid "Requesting lab equipment data:"
+msgstr "Réception données équipement de labo:"
 
 #: src/dirlist.cc:194
 msgid "| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"
@@ -807,51 +854,60 @@ msgstr "Msg: type de mise à jour de l'OS non reconnu."
 msgid "Msg: anti-downgrade protection refuses this OS version."
 msgstr "Msg: la protection anti-retour refuse cette version d'OS"
 
-#: src/probe.cc:91
+#: src/probe.cc:137
 msgid "Probing calculator...\n"
 msgstr "Recherche calculatrice...\n"
 
-#: src/probe.cc:95
+#: src/probe.cc:141
 msgid "Check for TI86... "
 msgstr "Essai avec TI86... "
 
-#: src/probe.cc:119
+#: src/probe.cc:165
 msgid "Check for TI85... "
 msgstr "Essai avec TI85... "
 
-#: src/probe.cc:143
+#: src/probe.cc:189
 msgid "Check for TI73... "
 msgstr "Essai avec TI83... "
 
-#: src/probe.cc:167
+#: src/probe.cc:213
 msgid "Check for TI83... "
 msgstr "Essai avec TI83... "
 
-#: src/probe.cc:191
+#: src/probe.cc:237
 msgid "Check for TI82... "
 msgstr "Essai avec TI82... "
 
-#: src/probe.cc:217
-msgid "Check for TI80... "
-msgstr "Essai avec TI80... "
+#: src/probe.cc:262
+msgid "Check for lab equipment... "
+msgstr "Essai avec équipement de labo... "
 
-#: src/probe.cc:273
+#: src/probe.cc:339
 msgid "Check for TIXX... "
 msgstr "Essai avec TIXX... "
 
-#: src/probe.cc:311
+#: src/probe.cc:345
+#, c-format
+msgid "Found host (machine ID) %u"
+msgstr "Trouvé l'hôte (ID machine) %u"
+
+#: src/probe.cc:368
 msgid "Check for TI92... "
 msgstr "Essai avec TI92... "
 
-#: src/probe.cc:355
+#: src/probe.cc:407
 msgid "Check for TI9X... "
 msgstr "Essai avec TI9X... "
 
-#: src/probe.cc:370
+#: src/probe.cc:431
 msgid "Check for TI8X... "
 msgstr "Essai avec TI8X... "
 
-#: src/probe.cc:385
+#: src/probe.cc:439
+msgid "Check for old lab equipment... "
+msgstr "Essai de vieux équipements de labo..."
+
+#: src/probe.cc:452
 #, c-format
 msgid "Calculator type: %s"
 msgstr " Type de calculatrice: %s"
@@ -861,16 +917,16 @@ msgstr " Type de calculatrice: %s"
 msgid "Unknown pixel format %d\n"
 msgstr "Format de pixel %d inconnu\n"
 
-#: src/ticalcs.cc:250
+#: src/ticalcs.cc:286
 #, c-format
 msgid "ticalcs library version %s"
 msgstr "librairie ticalcs version %s"
 
-#: src/ticalcs.cc:554
+#: src/ticalcs.cc:593
 msgid "Link calc handle details:"
 msgstr "Détails du descripteur de calculatrice:"
 
-#: src/ticalcs.cc:555
+#: src/ticalcs.cc:594
 #, c-format
 msgid "  model   : %s"
 msgstr "  modèle  : %s"
@@ -899,102 +955,109 @@ msgstr "libre"
 msgid "used"
 msgstr "utilisé"
 
-#: src/type2str.cc:293
+#: src/type2str.cc:303
 msgid "Product Name: "
 msgstr "Nom du Produit: "
 
-#: src/type2str.cc:295
+#: src/type2str.cc:305
 msgid "Product ID: "
 msgstr "ID Produit: "
 
-#: src/type2str.cc:297
+#: src/type2str.cc:307
 msgid "Language ID: "
 msgstr "N° langue: "
 
-#: src/type2str.cc:300
+#: src/type2str.cc:309
+msgid "User-defined ID: "
+msgstr "ID défini par l'utilisateur: "
+
+#: src/type2str.cc:312
 msgid "Device Type: "
 msgstr "Type de calc: "
 
-#: src/type2str.cc:302
+#: src/type2str.cc:314
 msgid "Hardware Version: "
 msgstr "Version du Matériel: "
 
-#: src/type2str.cc:305
+#: src/type2str.cc:317
 msgid "Boot Version: "
 msgstr "Version du Boot: "
 
-#: src/type2str.cc:307
+#: src/type2str.cc:319
 msgid "Boot2 Version: "
 msgstr "Version du Boot2: "
 
-#: src/type2str.cc:309
+#: src/type2str.cc:321
 msgid "OS Version: "
 msgstr "Version de l'OS: "
 
-#: src/type2str.cc:311
+#: src/type2str.cc:324
 msgid "Run level: "
 msgstr "Niveau: "
 
-#: src/type2str.cc:313
+#: src/type2str.cc:326
 msgid "Clock speed: "
 msgstr "Vitesse d'horloge: "
 
-#: src/type2str.cc:315
+#: src/type2str.cc:328
 msgid "Exact math engine: "
 msgstr "Moteur de calcul exact: "
 
-#: src/type2str.cc:316 src/type2str.cc:318
+#: src/type2str.cc:329 src/type2str.cc:331
 msgid "Yes"
 msgstr "Oui"
 
-#: src/type2str.cc:316 src/type2str.cc:318
+#: src/type2str.cc:329 src/type2str.cc:331
 msgid "No"
 msgstr "Non"
 
-#: src/type2str.cc:317
+#: src/type2str.cc:330
 msgid "Python on board: "
 msgstr "Python embarqué: "
 
-#: src/type2str.cc:320
+#: src/type2str.cc:333
 msgid "LCD width: "
 msgstr "Largeur écran: "
 
-#: src/type2str.cc:322
+#: src/type2str.cc:335
 msgid "LCD height: "
 msgstr "Hauteur écran: "
 
-#: src/type2str.cc:324
+#: src/type2str.cc:337
 msgid "Bits per pixel: "
 msgstr "Bits par pixel: "
 
-#: src/type2str.cc:326
+#: src/type2str.cc:339
 msgid "Color screen: "
 msgstr "Ecran couleur: "
 
-#: src/type2str.cc:329
+#: src/type2str.cc:342
 msgid "Physical RAM: "
 msgstr "RAM physique: "
 
-#: src/type2str.cc:331
+#: src/type2str.cc:344
 msgid "User RAM: "
 msgstr "RAM utilisateur: "
 
-#: src/type2str.cc:333
+#: src/type2str.cc:346
 msgid "Free RAM: "
 msgstr "RAM libre: "
 
-#: src/type2str.cc:335
+#: src/type2str.cc:348
 msgid "Physical Flash: "
 msgstr "Flash physique: "
 
-#: src/type2str.cc:337
+#: src/type2str.cc:350
 msgid "User Flash: "
 msgstr "Flash utilisateur: "
 
-#: src/type2str.cc:339
+#: src/type2str.cc:352
 msgid "Free Flash: "
 msgstr "Flash libre: "
 
-#: src/type2str.cc:342
+#: src/type2str.cc:355
 msgid "Battery: "
 msgstr "Batterie: "
+
+#~ msgid "Check for TI80... "
+#~ msgstr "Essai avec TI80... "
