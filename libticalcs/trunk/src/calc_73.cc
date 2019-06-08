@@ -1427,7 +1427,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
 	int ret;
 	uint16_t length;
-	uint8_t buf[32];
+	uint8_t * buffer = (uint8_t *)handle->buffer2;
 
 	ret = SEND_VER(handle);
 	if (!ret)
@@ -1441,7 +1441,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				ret = RECV_ACK(handle, NULL);
 				if (!ret)
 				{
-					ret = RECV_XDP(handle, &length, buf);
+					ret = RECV_XDP(handle, &length, buffer);
 					if (!ret)
 					{
 						ret = SEND_ACK(handle);
@@ -1456,17 +1456,17 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		memset(infos, 0, sizeof(CalcInfos));
 		if (handle->model == CALC_TI73)
 		{
-			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1x.%02x", buf[0], buf[1]);
-			ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1x.%02x", buf[2], buf[3]);
+			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1x.%02x", buffer[0], buffer[1]);
+			ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1x.%02x", buffer[2], buffer[3]);
 		}
 		else
 		{
-			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1i.%02i", buf[0], buf[1]);
-			ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%02i", buf[2], buf[3]);
+			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1i.%02i", buffer[0], buffer[1]);
+			ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%02i", buffer[2], buffer[3]);
 		}
-		infos->battery = (buf[4] & 1) ? 0 : 1;
-		infos->hw_version = buf[5];
-		switch(buf[5])
+		infos->battery = (buffer[4] & 1) ? 0 : 1;
+		infos->hw_version = buffer[5];
+		switch(buffer[5])
 		{
 		case 0: infos->model = CALC_TI83P; break;
 		case 1: infos->model = CALC_TI83P; break;
@@ -1475,11 +1475,11 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		case 5: infos->model = CALC_TI84PC; break;
 		default: infos->model = CALC_TI84PC; break; // If new models ever arise, they'll probably be 84+CSE or newer anyway.
 		}
-		infos->language_id = buf[6];
-		infos->sub_lang_id = buf[7];
+		infos->language_id = buffer[6];
+		infos->sub_lang_id = buffer[7];
 		infos->mask = (InfosMask)(INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID);
 
-		tifiles_hexdump(buf, length);
+		tifiles_hexdump(buffer, length);
 		ticalcs_info(_("  OS: %s"), infos->os_version);
 		ticalcs_info(_("  BIOS: %s"), infos->boot_version);
 		ticalcs_info(_("  HW: %i"), infos->hw_version);
