@@ -62,6 +62,12 @@ TIEXPORT4 const char * TICALL ticonv_model_to_string(CalcModel model)
 	case CALC_TI84PT_USB: return "TI84+T USB";
 	case CALC_NSPIRE_CRADLE: return "Nspire Cradle";
 	case CALC_NSPIRE_CXII: return "Nspire CX II";
+	case CALC_CBL: return "CBL";
+	case CALC_CBR: return "CBR";
+	case CALC_CBL2: return "CBL2";
+	case CALC_CBR2: return "CBR2";
+	case CALC_LABPRO: return "LabPro";
+	case CALC_TIPRESENTER: return "TI-Presenter";
 	default: return "unknown";
 	}
 }
@@ -241,6 +247,39 @@ TIEXPORT4 CalcModel TICALL ticonv_string_to_model(const char *str)
 		         || !g_ascii_strcasecmp(str, "CXII")
 		        )
 			return CALC_NSPIRE_CXII;
+		else if (   !g_ascii_strcasecmp(str, "TI-CBL")
+		         || !g_ascii_strcasecmp(str, "TI CBL")
+		         || !g_ascii_strcasecmp(str, "Vernier CBL")
+		         || !g_ascii_strcasecmp(str, "CBL")
+		        )
+			return CALC_CBL;
+		else if (   !g_ascii_strcasecmp(str, "TI-CBR")
+		         || !g_ascii_strcasecmp(str, "TI CBR")
+		         || !g_ascii_strcasecmp(str, "Vernier CBR")
+		         || !g_ascii_strcasecmp(str, "CBR")
+		        )
+			return CALC_CBR;
+		else if (   !g_ascii_strcasecmp(str, "TI-CBL2")
+		         || !g_ascii_strcasecmp(str, "TI CBL2")
+		         || !g_ascii_strcasecmp(str, "Vernier CBL2")
+		         || !g_ascii_strcasecmp(str, "CBL2")
+		        )
+			return CALC_CBL2;
+		else if (   !g_ascii_strcasecmp(str, "TI-CBR2")
+		         || !g_ascii_strcasecmp(str, "TI CBR2")
+		         || !g_ascii_strcasecmp(str, "Vernier CBR2")
+		         || !g_ascii_strcasecmp(str, "CBR2")
+		        )
+			return CALC_CBR2;
+		else if (   !g_ascii_strcasecmp(str, "Vernier LabPro")
+		         || !g_ascii_strcasecmp(str, "LabPro")
+		        )
+			return CALC_LABPRO;
+		else if (   !g_ascii_strcasecmp(str, "TI-Presenter")
+		         || !g_ascii_strcasecmp(str, "TI Presenter")
+		         || !g_ascii_strcasecmp(str, "Presenter")
+		        )
+			return CALC_TIPRESENTER;
 	}
 
 	return CALC_NONE;

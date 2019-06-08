@@ -35,6 +35,7 @@ set(USED_CMAKE_GENERATOR "${CMAKE_GENERATOR}" CACHE STRING "Expose CMAKE_GENERAT
 message(STATUS "Detected system: ${CMAKE_SYSTEM_NAME} - host processor: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
 
 include(GNUInstallDirs)
+include(CheckFunctionExists)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
@@ -70,6 +71,14 @@ set(LOCALEDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LOCALEDIR}")
 
 # Global defines
 add_definitions(-DHAVE_FVISIBILITY=1 -DLOCALEDIR="${LOCALEDIR}")
+check_function_exists(strtok_r HAVE_STRTOK_R)
+check_function_exists(strtok_s HAVE_STRTOK_S)
+if(HAVE_STRTOK_R)
+add_definitions(-DHAVE_STRTOK_R=1)
+endif()
+if(HAVE_STRTOK_S)
+add_definitions(-DHAVE_STRTOK_S=1)
+endif()
 
 # For libs finding
 find_package(PkgConfig)

@@ -156,14 +156,14 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 		char clock_speed[15];
 		char lcd_width[20];
 		char lcd_height[20];
-		char bpp[14];
+		char bpp[20];
 		char color_screen[11];
-		char ram_phys[30];
-		char ram_user[30];
-		char ram_free[30];
-		char flash_phys[30];
-		char flash_user[30];
-		char flash_free[30];
+		char ram_phys[50];
+		char ram_user[50];
+		char ram_free[50];
+		char flash_phys[50];
+		char flash_user[50];
+		char flash_free[50];
 
 		language_ids[0] = 0;
 		if (infos->mask & INFOS_LANG_ID)
@@ -247,24 +247,22 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 			"%s\n"
 			"%s"
 			"%s\n"
-			"\n"
-			"%s"
-			"%s\n"
-			"%s"
-			"%s\n"
-			"%s"
-			"%s\n"
-			"%s"
-			"%s\n"
-			"%s"
-			"%s\n"
-			"%s"
-			"%s\n"
-			"%s"
-			"%s\n"
 			"%s"
 			"%s\n"
 			"\n"
+
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+
 			"%s"
 			"%s\n"
 			"%s"
@@ -274,6 +272,17 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 			"%s"
 			"%s\n"
 			"\n"
+
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"%s"
+			"%s\n"
+			"\n"
+
 			"%s"
 			"%s\n"
 			"%s"
@@ -287,6 +296,7 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 			"%s"
 			"%s\n"
 			"\n"
+
 			"%s"
 			"%s\n",
 
@@ -296,23 +306,29 @@ TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32
 			(infos->mask & INFOS_PRODUCT_ID) ? infos->product_id : "",
 			(infos->mask & INFOS_LANG_ID) ? _("Language ID: ") : "",
 			language_ids,
+			(infos->mask & INFOS_USER_DEFINED_ID) ? _("User-defined ID: ") : "",
+			(infos->mask & INFOS_USER_DEFINED_ID) ? infos->user_defined_id : "",
 
 			(infos->mask & INFOS_DEVICE_TYPE) ? _("Device Type: ") : "",
 			device_type,
 			(infos->mask & INFOS_HW_VERSION) ? _("Hardware Version: ") : "",
 			hw_version,
+
 			(infos->mask & INFOS_BOOT_VERSION) ? _("Boot Version: ") : "",
 			(infos->mask & INFOS_BOOT_VERSION) ? infos->boot_version : "",
 			(infos->mask & INFOS_BOOT2_VERSION) ? _("Boot2 Version: ") : "",
 			(infos->mask & INFOS_BOOT2_VERSION) ? infos->boot2_version : "",
 			(infos->mask & INFOS_OS_VERSION) ? _("OS Version: ") : "",
 			(infos->mask & INFOS_OS_VERSION) ? infos->os_version : "",
+
 			(infos->mask & INFOS_RUN_LEVEL) ? _("Run level: ") : "",
 			(infos->mask & INFOS_RUN_LEVEL) ? ((infos->run_level == 2) ? "OS" : "boot") : "",
 			(infos->mask & INFOS_CLOCK_SPEED) ? _("Clock speed: ") : "",
 			clock_speed,
 			(infos->mask & INFOS_EXACT_MATH) ? _("Exact math engine: ") : "",
 			(infos->mask & INFOS_EXACT_MATH) ? ((infos->exact_math) ? _("Yes") : _("No")) : "",
+			(infos->mask & INFOS_PYTHON_ON_BOARD) ? _("Python on board: ") : "",
+			(infos->mask & INFOS_PYTHON_ON_BOARD) ? ((infos->python_on_board) ? _("Yes") : _("No")) : "",
 
 			(infos->mask & INFOS_LCD_WIDTH) ? _("LCD width: ") : "",
 			lcd_width,

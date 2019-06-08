@@ -1,0 +1,40 @@
+version 0
+dbus_send_pkt 0x89 0x06 8
+0A 00 00 00  04  01  FF  00
+
+dbus_recv
+dbus_recv_header
+dbus_send_pkt 0x89 0x56 0
+dbus_send_pkt 0x89 0x15 14
+03 00 00 00  20 31 39 39 38 20 31 20 31 00
+
+dbus_recv_header
+dbus_send_pkt 0x89 0x92 0
+dbus_recv_header
+
+dbus_send_pkt 0x89 0x06 8
+0A 00 00 00  04  01  FF  00
+
+dbus_recv_header
+dbus_recv
+dbus_send_pkt 0x89 0x56 0
+dbus_send_pkt 0x89 0x15 14
+03 00 00 00  20 31 39 39 38 20 32 20 31 00
+
+dbus_recv
+dbus_send_pkt 0x89 0x92 0
+dbus_recv_header
+
+dbus_send_pkt 0x89 0x06 8
+0A 00 00 00  04  01  FF  00
+
+dbus_recv
+dbus_recv
+dbus_send_pkt 0x89 0x56 0
+dbus_send_pkt 0x89 0x15 14
+03 00 00 00  20 31 39 39 38 20 33 20 31 00
+
+dbus_recv
+dbus_send_pkt 0x89 0x92 0
+dbus_recv_header
+exit

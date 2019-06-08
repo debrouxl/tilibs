@@ -85,11 +85,12 @@ int main(int argc, char **argv)
     PRINTF(ticonv_model_is_tiez80, INT, CALC_NONE);
     PRINTF(ticonv_model_is_ti68k, INT, CALC_NONE);
     PRINTF(ticonv_model_is_tinspire, INT, CALC_NONE);
+    PRINTF(ticonv_model_is_lab_equipment, INT, CALC_NONE);
     PRINTF(ticonv_model_has_legacy_ioport, INT, CALC_NONE);
     PRINTF(ticonv_model_has_usb_ioport, INT, CALC_NONE);
     PRINTF(ticonv_model_has_flash_memory, INT, CALC_NONE);
-
     PRINTF(ticonv_model_has_real_screen, INT, CALC_NONE);
+
     PRINTF(ticonv_model_has_monochrome_screen, INT, CALC_NONE);
     PRINTF(ticonv_model_has_color_screen, INT, CALC_NONE);
     PRINTF(ticonv_varname_to_utf16_s, PTR, -1, NULL, (void *)0x12345678, 0);
@@ -98,8 +99,8 @@ int main(int argc, char **argv)
     PRINTF(ticonv_varname_to_utf8_sn, STR, -1, NULL, (void *)0x12345678, 0x12345678, 0);
     PRINTF(ticonv_varname_to_utf8_sn, STR, -1, (void *)0x12345678, NULL, 0x12345678, 0);
     PRINTF(ticonv_varname_to_utf8_s, STR, -1, NULL, (void *)0x12345678, 0);
-    PRINTF(ticonv_varname_to_utf8_s, STR, -1, (void *)0x12345678, NULL, 0);
 
+    PRINTF(ticonv_varname_to_utf8_s, STR, -1, (void *)0x12345678, NULL, 0);
     PRINTF(ticonv_varname_to_utf8, STR, -1, NULL, 0);
     PRINTF(ticonv_varname_to_filename_sn, STR, -1, NULL, (void *)0x12345678, 0x12345678, 0);
     PRINTF(ticonv_varname_to_filename_sn, STR, -1, (void *)0x12345678, NULL, 0x12345678, 0);
@@ -109,8 +110,8 @@ int main(int argc, char **argv)
     PRINTF(ticonv_varname_to_tifile_sn, STR, -1, NULL, (void *)0x12345678, 0x12345678, 0);
     PRINTF(ticonv_varname_to_tifile_sn, STR, -1, (void *)0x12345678, NULL, 0x12345678, 0);
     PRINTF(ticonv_varname_to_tifile_s, STR, -1, NULL, (void *)0x12345678, 0);
-    PRINTF(ticonv_varname_to_tifile_s, STR, -1, (void *)0x12345678, NULL, 0);
 
+    PRINTF(ticonv_varname_to_tifile_s, STR, -1, (void *)0x12345678, NULL, 0);
     PRINTF(ticonv_varname_to_tifile, STR, -1, NULL, 0);
     PRINTF(ticonv_varname_from_tifile_sn, STR, -1, NULL, (void *)0x12345678, 0x12345678, 0);
     PRINTF(ticonv_varname_from_tifile_sn, STR, -1, (void *)0x12345678, NULL, 0x12345678, 0);
@@ -120,8 +121,8 @@ int main(int argc, char **argv)
     PRINTF(ticonv_model_to_string, STR, CALC_NONE);
     PRINTF(ticonv_string_to_model, INT, NULL);
     fprintf(stderr, "%d\t%p\n", __LINE__, ti73_charset);
-    fprintf(stderr, "%d\t%p\n", __LINE__, ti80_charset);
 
+    fprintf(stderr, "%d\t%p\n", __LINE__, ti80_charset);
     fprintf(stderr, "%d\t%p\n", __LINE__, ti82_charset);
     fprintf(stderr, "%d\t%p\n", __LINE__, ti83_charset);
     fprintf(stderr, "%d\t%p\n", __LINE__, ti83p_charset);
@@ -135,9 +136,9 @@ int main(int argc, char **argv)
     PRINTF(, STR, retval);
     ticonv_varname_free(retval);
     PRINTFVOID(ticonv_varname_free, NULL);
+
     retval = ticonv_utf16_to_gfe(-1, NULL);
     PRINTF(, STR, retval);
-
     ticonv_gfe_free(retval);
     PRINTFVOID(ticonv_gfe_free, NULL);
     retval = ticonv_gfe_to_zfe(-1, NULL);
@@ -156,8 +157,8 @@ int main(int argc, char **argv)
     // charset.h
     PRINTF(ticonv_ti73_to_utf16, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_ti73_to_utf16, PTR, (void *)0x12345678, NULL);
-    PRINTF(ticonv_ti80_to_utf16, PTR, NULL, (void *)0x12345678);
 
+    PRINTF(ticonv_ti80_to_utf16, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_ti80_to_utf16, PTR, (void *)0x12345678, NULL);
     PRINTF(ticonv_ti82_to_utf16, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_ti82_to_utf16, PTR, (void *)0x12345678, NULL);
@@ -167,8 +168,8 @@ int main(int argc, char **argv)
     PRINTF(ticonv_ti83p_to_utf16, PTR, (void *)0x12345678, NULL);
     PRINTF(ticonv_ti85_to_utf16, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_ti85_to_utf16, PTR, (void *)0x12345678, NULL);
-    PRINTF(ticonv_ti86_to_utf16, PTR, NULL, (void *)0x12345678);
 
+    PRINTF(ticonv_ti86_to_utf16, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_ti86_to_utf16, PTR, (void *)0x12345678, NULL);
     PRINTF(ticonv_ti9x_to_utf16, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_ti9x_to_utf16, PTR, (void *)0x12345678, NULL);
@@ -178,8 +179,8 @@ int main(int argc, char **argv)
     PRINTF(ticonv_utf16_to_ti80, PTR, (void *)0x12345678, NULL);
     PRINTF(ticonv_utf16_to_ti82, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_utf16_to_ti82, PTR, (void *)0x12345678, NULL);
-    PRINTF(ticonv_utf16_to_ti83, PTR, NULL, (void *)0x12345678);
 
+    PRINTF(ticonv_utf16_to_ti83, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_utf16_to_ti83, PTR, (void *)0x12345678, NULL);
     PRINTF(ticonv_utf16_to_ti83p, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_utf16_to_ti83p, PTR, (void *)0x12345678, NULL);
@@ -189,8 +190,8 @@ int main(int argc, char **argv)
     PRINTF(ticonv_utf16_to_ti86, PTR, (void *)0x12345678, NULL);
     PRINTF(ticonv_utf16_to_ti9x, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_utf16_to_ti9x, PTR, (void *)0x12345678, NULL);
-    PRINTF(ticonv_ti84pusb_to_utf16, PTR, NULL, (void *)0x12345678);
 
+    PRINTF(ticonv_ti84pusb_to_utf16, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_ti89tusb_to_utf16, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_utf16_to_ti84pusb, PTR, NULL, NULL);
     PRINTF(ticonv_utf16_to_ti89tusb, PTR, NULL, NULL);
@@ -200,8 +201,8 @@ int main(int argc, char **argv)
     PRINTF(ticonv_ti89tusb_to_utf16, PTR, (void *)0x12345678, NULL);
     PRINTF(ticonv_utf16_to_ti84pusb, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_utf16_to_ti84pusb, PTR, (void *)0x12345678, NULL);
-    PRINTF(ticonv_utf16_to_ti89tusb, PTR, NULL, (void *)0x12345678);
 
+    PRINTF(ticonv_utf16_to_ti89tusb, PTR, NULL, (void *)0x12345678);
     PRINTF(ticonv_utf16_to_ti89tusb, PTR, (void *)0x12345678, NULL);
 
     charset_functions_unit_test();

@@ -81,32 +81,35 @@ typedef struct
 
 static const DBUSMachineInfo machine_types[] =
 {
-	{ DBUS_MID_PC_TIXX, "PC>TI" },         // 0x00, also PC_TI80
-	{ DBUS_MID_PC_TI82, "PC>TI" },         // 0x02
-	{ DBUS_MID_PC_TI83, "PC>TI" },         // 0x03
-	{ DBUS_MID_PC_TI85, "PC>TI" },         // 0x05
-	{ DBUS_MID_PC_TI86, "PC>TI" },         // 0x06
-	{ DBUS_MID_PC_TI73, "PC>TI" },         // 0x07
-	{ DBUS_MID_PC_TI89, "PC>TI" },         // 0x08, also PC_TI89t / PC_TI92p / PC_V200
-	{ DBUS_MID_PC_TI92, "PC>TI" },         // 0x09
+	{ DBUS_MID_PC_TIXX, "PC>TI" },           // 0x00, also PC_TI80
+	{ DBUS_MID_PC_TI82, "PC>TI" },           // 0x02
+	{ DBUS_MID_PC_TI83, "PC>TI" },           // 0x03
+	{ DBUS_MID_PC_TI85, "PC>TI" },           // 0x05
+	{ DBUS_MID_PC_TI86, "PC>TI" },           // 0x06
+	{ DBUS_MID_PC_TI73, "PC>TI" },           // 0x07
+	{ DBUS_MID_PC_TI89, "PC>TI" },           // 0x08, also PC_TI89t / PC_TI92p / PC_V200
+	{ DBUS_MID_PC_TI92, "PC>TI" },           // 0x09
 
-	{ DBUS_MID_CBL_TI73, "CBL>TI" },       // 0x12, also CBL_TI82 / CBL_TI83 / CBL_TI83p / CBL_TI84p
-	{ DBUS_MID_CBL_TI85, "CBL>TI" },       // 0x15, also CBL_TI86
-	{ DBUS_MID_CBL_TI89, "CBL>TI" },       // 0x19, also CBL_TI89t / CBL_TI92 / CBL_TI92p / CBL_V200
+	{ DBUS_MID_CBL_TI73, "CBL>TI" },         // 0x12, also CBL_TI82 / CBL_TI83 / CBL_TI83p / CBL_TI84p
+	{ DBUS_MID_CBL_TI85, "CBL>TI" },         // 0x15, also CBL_TI86
+	{ DBUS_MID_CBL_TI89, "CBL>TI" },         // 0x19, also CBL_TI89t / CBL_TI92 / CBL_TI92p / CBL_V200
 
-	{ DBUS_MID_PC_TI83p, "PC>TI" },        // 0x23, also PC_TI84p
+	{ DBUS_MID_PC_TI83p, "PC>TI" },          // 0x23, also PC_TI84p
 
-	{ DBUS_MID_TI83p_PC, "TI>PC" },        // 0x73, also TI84p_PC
-	{ DBUS_MID_TI73_PC,  "TI>PC" },        // 0x74
-	{ DBUS_MID_TI80_PC,  "TI>PC" },        // 0x80
-	{ DBUS_MID_TI82_PC,  "TI>PC|TI_CBL" }, // 0x82, also TI82_CBL
-	{ DBUS_MID_TI83_PC,  "TI>PC" },        // 0x83
-	{ DBUS_MID_TI85_PC,  "TI>PC|TI>CBL" }, // 0x85, also TI85_CBL / TI86_CBL
-	{ DBUS_MID_TI86_PC,  "TI>PC" },        // 0x86
-	{ DBUS_MID_TI92p_PC, "TI>PC" },        // 0x88, also V200_PC
-	{ DBUS_MID_TI92_PC,  "TI>PC|TI>CBL" }, // 0x89, also TI89_CBL / TI89T_CBL / TI92_CBL / TI82P_CBL / V200_CBL
-	{ DBUS_MID_TI73_CBL, "TI>CBL" },       // 0x95, also TI893_CBL / TI83p_CBL / TI84p_CBL
-	{ DBUS_MID_TI89_PC,  "TI>PC" },        // 0x98, also TI89t_PC
+	{ DBUS_MID_CBL2_PC,  "CBL2>PC" },        // 0x42, also LABPRO_PC
+	{ DBUS_MID_TIPRESENTER_PC,  "TIPR>PC" }, // 0x43, also LABPRO_PC
+
+	{ DBUS_MID_TI83p_PC, "TI>PC" },          // 0x73, also TI84p_PC
+	{ DBUS_MID_TI73_PC,  "TI>PC" },          // 0x74
+	{ DBUS_MID_TI80_PC,  "TI>PC" },          // 0x80
+	{ DBUS_MID_TI82_PC,  "TI>PC|TI_CBL" },   // 0x82, also TI82_CBL
+	{ DBUS_MID_TI83_PC,  "TI>PC" },          // 0x83
+	{ DBUS_MID_TI85_PC,  "TI>PC|TI>CBL" },   // 0x85, also TI85_CBL / TI86_CBL
+	{ DBUS_MID_TI86_PC,  "TI>PC" },          // 0x86
+	{ DBUS_MID_TI92p_PC, "TI>PC" },          // 0x88, also V200_PC
+	{ DBUS_MID_TI92_PC,  "TI>PC|TI>CBL" },   // 0x89, also TI89_CBL / TI89T_CBL / TI92_CBL / TI82P_CBL / V200_CBL
+	{ DBUS_MID_TI73_CBL, "TI>CBL" },         // 0x95, also TI83_CBL / TI83p_CBL / TI84p_CBL
+	{ DBUS_MID_TI89_PC,  "TI>PC" },          // 0x98, also TI89t_PC
 
 };
 
@@ -332,28 +335,34 @@ TIEXPORT3 int TICALL dbus_recv_header(CalcHandle *handle, uint8_t* host, uint8_t
 
 	if (!ret)
 	{
+ticalcs_info("0");
 		// Any packet has always at least 2 bytes (MID, CID)
 		ret = ticables_cable_recv(handle->cable, buf, 2);
 		if (!ret)
 		{
+ticalcs_info("1");
 			*host = buf[0];
 			*cmd = buf[1];
 
 			// Any non-TI-80 packet has a length; TI-80 data packets also have a length
 			if (*host != DBUS_MID_TI80_PC || *cmd == DBUS_CMD_XDP)
 			{
+ticalcs_info("2");
 				ret = ticables_cable_recv(handle->cable, buf, 2);
 				if (!ret)
 				{
+ticalcs_info("3");
 					*length = buf[0] | ((uint16_t)buf[1] << 8);
 				}
 			}
 			else
 			{
+ticalcs_info("4");
 				*length = 0;
 			}
 		}
 	}
+ticalcs_info("5");
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_RECV_DBUS_PKT_HEADER, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_dbus_pkt(&event, /* length */ *length, /* id */ *host, /* cmd */ *cmd, /* data */ NULL);
@@ -367,7 +376,7 @@ TIEXPORT3 int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_
 	int ret = 0;
 	int i;
 	uint16_t chksum;
-	uint8_t buf[4];
+	uint8_t buf[4] = { 0, 0, 0, 0 };
 	int r, q;
 	CalcEventData event;
 
@@ -476,6 +485,7 @@ TIEXPORT3 int TICALL dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, 
 	ret = dbus_recv_header(handle, host, cmd, length);
 	if (!ret)
 	{
+ticalcs_info("a");
 		if (*cmd == DBUS_CMD_ERR || *cmd == DBUS_CMD_ERR2)
 		{
 			return ERR_CHECKSUM; // THIS RETURNS !
@@ -502,10 +512,13 @@ TIEXPORT3 int TICALL dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, 
 		case DBUS_CMD_KEY:
 		case DBUS_CMD_EOT:
 		case DBUS_CMD_CNT:
+ticalcs_info("b");
 			break;
 		default:
+ticalcs_info("c");
 			return ERR_INVALID_CMD; // THIS RETURNS !
 		}
+ticalcs_info("d");
 
 		if (!ret && !(ref++ % 4))
 		{

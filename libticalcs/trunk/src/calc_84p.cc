@@ -1713,7 +1713,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		DUSB_PID_PHYS_RAM, DUSB_PID_USER_RAM, DUSB_PID_FREE_RAM,
 		DUSB_PID_PHYS_FLASH, DUSB_PID_USER_FLASH, DUSB_PID_FREE_FLASH,
 		DUSB_PID_LCD_WIDTH, DUSB_PID_LCD_HEIGHT, DUSB_PID_BITS_PER_PIXEL, DUSB_PID_COLOR_AVAILABLE,
-		DUSB_PID_BATTERY, DUSB_PID_MATH_CAPABILITIES, DUSB_PID_CLASSIC_CLK_SUPPORT
+		DUSB_PID_BATTERY, DUSB_PID_MATH_CAPABILITIES, DUSB_PID_PYTHON_ON_BOARD, DUSB_PID_CLASSIC_CLK_SUPPORT
 	};
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	DUSBCalcParam **params;
@@ -1975,6 +1975,13 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			}
 			i++;
 
+			if (params[i]->ok && params[i]->size == 1)
+			{
+				infos->python_on_board = params[i]->data[0];
+				infos_mask |= INFOS_PYTHON_ON_BOARD;
+			}
+			i++;
+
 			switch (product_id)
 			{
 				case PRODUCT_ID_TI84P:
@@ -2076,7 +2083,9 @@ extern const CalcFncts calc_84p_usb =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "2P",   /* send_all_vars_backup */
-	 "2P",   /* recv_all_vars_backup */ },
+	 "2P",   /* recv_all_vars_backup */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2105,7 +2114,9 @@ extern const CalcFncts calc_84p_usb =
 	&rename_var,
 	&change_attr,
 	&send_all_vars_backup,
-	&tixx_recv_all_vars_backup
+	&tixx_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };
 
 extern const CalcFncts calc_84pcse_usb =
@@ -2147,7 +2158,9 @@ extern const CalcFncts calc_84pcse_usb =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "2P",   /* send_all_vars_backup */
-	 "2P",   /* recv_all_vars_backup */ },
+	 "2P",   /* recv_all_vars_backup */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2176,7 +2189,9 @@ extern const CalcFncts calc_84pcse_usb =
 	&rename_var,
 	&change_attr,
 	&send_all_vars_backup,
-	&tixx_recv_all_vars_backup
+	&tixx_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };
 
 extern const CalcFncts calc_83pce_usb =
@@ -2218,7 +2233,9 @@ extern const CalcFncts calc_83pce_usb =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "2P",   /* send_all_vars_backup */
-	 "2P",   /* recv_all_vars_backup */ },
+	 "2P",   /* recv_all_vars_backup */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2247,7 +2264,9 @@ extern const CalcFncts calc_83pce_usb =
 	&rename_var,
 	&change_attr,
 	&send_all_vars_backup,
-	&tixx_recv_all_vars_backup
+	&tixx_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };
 
 extern const CalcFncts calc_84pce_usb =
@@ -2289,7 +2308,9 @@ extern const CalcFncts calc_84pce_usb =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "2P",   /* send_all_vars_backup */
-	 "2P",   /* recv_all_vars_backup */ },
+	 "2P",   /* recv_all_vars_backup */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2318,7 +2339,9 @@ extern const CalcFncts calc_84pce_usb =
 	&rename_var,
 	&change_attr,
 	&send_all_vars_backup,
-	&tixx_recv_all_vars_backup
+	&tixx_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };
 
 extern const CalcFncts calc_82a_usb =
@@ -2360,7 +2383,9 @@ extern const CalcFncts calc_82a_usb =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "2P",   /* send_all_vars_backup */
-	 "2P",   /* recv_all_vars_backup */ },
+	 "2P",   /* recv_all_vars_backup */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2389,7 +2414,9 @@ extern const CalcFncts calc_82a_usb =
 	&rename_var,
 	&change_attr,
 	&send_all_vars_backup,
-	&tixx_recv_all_vars_backup
+	&tixx_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };
 
 extern const CalcFncts calc_84pt_usb =
@@ -2431,7 +2458,9 @@ extern const CalcFncts calc_84pt_usb =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "2P",   /* send_all_vars_backup */
-	 "2P",   /* recv_all_vars_backup */ },
+	 "2P",   /* recv_all_vars_backup */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2460,5 +2489,7 @@ extern const CalcFncts calc_84pt_usb =
 	&rename_var,
 	&change_attr,
 	&send_all_vars_backup,
-	&tixx_recv_all_vars_backup
+	&tixx_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };
