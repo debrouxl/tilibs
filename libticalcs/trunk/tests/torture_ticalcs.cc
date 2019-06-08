@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
+#include <locale.h>
 #include <ticalcs.h>
 #include <inttypes.h>
 #include <nsp_rpkt.h>
@@ -12,6 +14,7 @@
 #include <cmd68k.h>
 #include <romdump.h>
 #include "../src/error.h"
+#include "../src/internal.h"
 
 #define PRINTF(FUNCTION, TYPE, ...) \
 fprintf(stderr, "%d\t" TYPE "\n", __LINE__, FUNCTION(__VA_ARGS__))
@@ -136,10 +139,20 @@ static void torture_ticalcs()
     PRINTF(ticalcs_calc_send_cert, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(ticalcs_calc_recv_cert, INT, nullptr, (FlashContent*)0x12345678);
     PRINTF(ticalcs_calc_recv_cert, INT, (CalcHandle*)0x12345678, nullptr);
-    PRINTF(ticalcs_calc_send_tigroup, INT, nullptr, (TigContent*)0x12345678, (TigMode)-1);
+    PRINTF(ticalcs_calc_send_all_vars_backup, INT, nullptr, (FileContent *)0x12345678);
 
+    PRINTF(ticalcs_calc_send_all_vars_backup, INT, (CalcHandle *)0x12345678, nullptr);
+    PRINTF(ticalcs_calc_recv_all_vars_backup, INT, nullptr, (FileContent *)0x12345678);
+    PRINTF(ticalcs_calc_recv_all_vars_backup, INT, (CalcHandle *)0x12345678, nullptr);
+    PRINTF(ticalcs_calc_send_lab_equipment_data, INT, nullptr, (CalcModel)-1, (CalcLabEquipmentData *)0x12345678);
+    PRINTF(ticalcs_calc_send_lab_equipment_data, INT, (CalcHandle *)0x12345678, (CalcModel)-1, nullptr);
+    PRINTF(ticalcs_calc_get_lab_equipment_data, INT, nullptr, (CalcModel)-1, (CalcLabEquipmentData *)0x12345678);
+    PRINTF(ticalcs_calc_get_lab_equipment_data, INT, (CalcHandle *)0x12345678, (CalcModel)-1, nullptr);
+    PRINTF(ticalcs_calc_control_lab_equipment, INT, nullptr, (CalcModel)-1, (CalcLabEquipmentParameters *)0x12345678);
+    PRINTF(ticalcs_calc_send_tigroup, INT, nullptr, (TigContent*)0x12345678, (TigMode)-1);
     PRINTF(ticalcs_calc_send_tigroup, INT, (CalcHandle*)0x12345678, nullptr, (TigMode)-1);
     PRINTF(ticalcs_calc_recv_tigroup, INT, nullptr, (TigContent*)0x12345678, (TigMode)-1);
+
     PRINTF(ticalcs_calc_recv_tigroup, INT, (CalcHandle*)0x12345678, nullptr, (TigMode)-1);
     PRINTF(ticalcs_calc_send_backup2, INT, nullptr, (const char*)0x12345678);
     PRINTF(ticalcs_calc_send_backup2, INT, (CalcHandle*)0x12345678, nullptr);
@@ -148,9 +161,9 @@ static void torture_ticalcs()
     PRINTF(ticalcs_calc_send_var2, INT, nullptr, (CalcMode)-1, (const char*)0x12345678);
     PRINTF(ticalcs_calc_send_var2, INT, (CalcHandle*)0x12345678, (CalcMode)-1, nullptr);
     PRINTF(ticalcs_calc_recv_var2, INT, nullptr, (CalcMode)-1, (const char*)0x12345678, (VarRequest*)0x12345678);
-
     PRINTF(ticalcs_calc_recv_var2, INT, (CalcHandle*)0x12345678, (CalcMode)-1, nullptr, (VarRequest*)0x12345678);
     PRINTF(ticalcs_calc_recv_var2, INT, (CalcHandle*)0x12345678, (CalcMode)-1, (const char*)0x12345678, nullptr);
+
     PRINTF(ticalcs_calc_send_var_ns2, INT, nullptr, (CalcMode)-1, (const char*)0x12345678);
     PRINTF(ticalcs_calc_send_var_ns2, INT, (CalcHandle*)0x12345678, (CalcMode)-1, nullptr);
     PRINTF(ticalcs_calc_recv_var_ns2, INT, nullptr, (CalcMode)-1, (const char*)0x12345678, (VarEntry**)0x12345678);
@@ -159,18 +172,25 @@ static void torture_ticalcs()
     PRINTF(ticalcs_calc_send_app2, INT, nullptr, (const char*)0x12345678);
     PRINTF(ticalcs_calc_send_app2, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(ticalcs_calc_recv_app2, INT, nullptr, (const char*)0x12345678, (VarRequest*)0x12345678);
-
     PRINTF(ticalcs_calc_recv_app2, INT, (CalcHandle*)0x12345678, nullptr, (VarRequest*)0x12345678);
     PRINTF(ticalcs_calc_recv_app2, INT, nullptr, (const char*)0x12345678, (VarRequest*)0x12345678);
+
     PRINTF(ticalcs_calc_send_cert2, INT, nullptr, (const char*)0x12345678);
     PRINTF(ticalcs_calc_send_cert2, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(ticalcs_calc_recv_cert2, INT, nullptr, (const char*)0x12345678);
     PRINTF(ticalcs_calc_recv_cert2, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(ticalcs_calc_send_os2, INT, nullptr, (const char*)0x12345678);
     PRINTF(ticalcs_calc_send_os2, INT, (CalcHandle*)0x12345678, nullptr);
+    PRINTF(ticalcs_calc_send_lab_equipment_datastr, INT, nullptr, (CalcModel)-1, 0, (const char *)0x12345678);
+    PRINTF(ticalcs_calc_send_lab_equipment_datastr, INT, (CalcHandle *)0x12345678, (CalcModel)-1, 0, nullptr);
+    PRINTF(ticalcs_calc_get_lab_equipment_datastr, INT, nullptr, (CalcModel)-1, 0, (const char **)0x12345678);
+    PRINTF(ticalcs_calc_get_lab_equipment_datastr, INT, (CalcHandle *)0x12345678, (CalcModel)-1, 0, nullptr);
+
+    PRINTFVOID(ticalcs_free_lab_equipment_data_related, nullptr);
+    PRINTFVOID(ticalcs_calc_free_lab_equipment_data, nullptr);
+    { CalcLabEquipmentData labeq_data = { CALC_LAB_EQUIPMENT_DATA_TYPE_NONE, 0, 0, nullptr, nullptr, 4, 0, 0 }; PRINTFVOID(ticalcs_calc_free_lab_equipment_data, &labeq_data); }
     PRINTF(ticalcs_calc_send_tigroup2, INT, nullptr, (const char*)0x12345678, (TigMode)-1);
     PRINTF(ticalcs_calc_send_tigroup2, INT, (CalcHandle*)0x12345678, nullptr, (TigMode)-1);
-
     PRINTF(ticalcs_calc_recv_tigroup2, INT, nullptr, (const char*)0x12345678, (TigMode)-1);
     PRINTF(ticalcs_calc_recv_tigroup2, INT, (CalcHandle*)0x12345678, nullptr, (TigMode)-1);
 // dirlist.c
@@ -179,10 +199,10 @@ static void torture_ticalcs()
     PRINTF(ticalcs_dirlist_ram_used, INT, nullptr);
     PRINTF(ticalcs_dirlist_flash_used, INT, nullptr, (GNode*)0x12345678);
     PRINTF(ticalcs_dirlist_flash_used, INT, (GNode*)0x12345678, nullptr);
+
     PRINTF(ticalcs_dirlist_ve_count, INT, nullptr);
     PRINTF(ticalcs_dirlist_ve_exist, PTR, nullptr, (VarEntry*)0x12345678);
     PRINTF(ticalcs_dirlist_ve_exist, PTR, (GNode*)0x12345678, nullptr);
-
     PRINTFVOID(ticalcs_dirlist_ve_add, nullptr, (VarEntry*)0x12345678);
     PRINTFVOID(ticalcs_dirlist_ve_add, (GNode*)0x12345678, nullptr);
     PRINTFVOID(ticalcs_dirlist_ve_del, nullptr, (VarEntry*)0x12345678);
@@ -191,10 +211,10 @@ static void torture_ticalcs()
     PRINTF(ticalcs_model_to_string, STR, (CalcModel)-1);
     PRINTF(ticalcs_string_to_model, INT, nullptr);
     PRINTF(ticalcs_scrfmt_to_string, STR, (CalcScreenFormat)-1);
+
     PRINTF(ticalcs_string_to_scrfmt, INT, nullptr);
     PRINTF(ticalcs_pathtype_to_string, STR, (CalcPathType)-1);
     PRINTF(ticalcs_string_to_pathtype, INT, nullptr);
-
     PRINTF(ticalcs_memtype_to_string, STR, (CalcMemType)-1);
     PRINTF(ticalcs_string_to_memtype, INT, nullptr);
     PRINTF(ticalcs_infos_to_string, INT, nullptr, (char*)0x12345678, 0x12345678);
@@ -204,10 +224,10 @@ static void torture_ticalcs()
     PRINTF(ticalcs_clock_show, INT, (CalcModel)-1, nullptr);
 // screen.c
     PRINTF(ticalcs_screen_convert_bw_to_rgb888, INT, nullptr, 0x12345678, 0x12345678, (uint8_t*)0x12345678);
+
     PRINTF(ticalcs_screen_convert_bw_to_rgb888, INT, (const uint8_t*)0x12345678, 0x12345678, 0x12345678, nullptr);
     PRINTF(ticalcs_screen_convert_bw_to_blurry_rgb888, INT, nullptr, 0x12345678, 0x12345678, (uint8_t*)0x12345678);
     PRINTF(ticalcs_screen_convert_bw_to_blurry_rgb888, INT, (const uint8_t*)0x12345678, 0x12345678, 0x12345678, nullptr);
-
     PRINTF(ticalcs_screen_convert_gs4_to_rgb888, INT, nullptr, 0x12345678, 0x12345678, (uint8_t*)0x12345678);
     PRINTF(ticalcs_screen_convert_gs4_to_rgb888, INT, (const uint8_t*)0x12345678, 0x12345678, 0x12345678, nullptr);
     PRINTF(ticalcs_screen_convert_rgb565le_to_rgb888, INT, nullptr, 0x12345678, 0x12345678, (uint8_t*)0x12345678);
@@ -215,6 +235,7 @@ static void torture_ticalcs()
     PRINTF(ticalcs_screen_convert_native_to_rgb888, INT, (CalcPixelFormat)1, nullptr, 0x12345678, 0x12345678, (uint8_t*)0x12345678);
     PRINTF(ticalcs_screen_convert_native_to_rgb888, INT, (CalcPixelFormat)1, (const uint8_t*)0x12345678, 0x12345678, 0x12345678, nullptr);
     PRINTF(ticalcs_screen_nspire_rle_uncompress, INT, (CalcPixelFormat)1, (const uint8_t*)0x12345678, 0x12345678, nullptr, 0x12345678);
+
     PRINTF(ticalcs_screen_nspire_rle_uncompress, INT, (CalcPixelFormat)1, nullptr, 0x12345678, (uint8_t*)0x12345678, 0x12345678);
     PRINTF(ticalcs_screen_84pcse_rle_uncompress, INT, (const uint8_t*)0x12345678, 0x12345678, nullptr, 0x12345678);
     PRINTF(ticalcs_screen_84pcse_rle_uncompress, INT, nullptr, 0x12345678, (uint8_t*)0x12345678, 0x12345678);
@@ -227,10 +248,10 @@ static void torture_ticalcs()
     PRINTF(ticalcs_keys_92p, PTR, 0);
 // probe.c
     PRINTF(ticalcs_probe_calc, INT, nullptr, (CalcModel *)0x12345678);
+
     PRINTF(ticalcs_probe_calc, INT, (CableHandle*)0x12345678, nullptr);
     PRINTF(ticalcs_probe_usb_calc, INT, nullptr, (CalcModel *)0x12345678);
     PRINTF(ticalcs_probe_usb_calc, INT, (CableHandle*)0x12345678, nullptr);
-
     PRINTF(ticalcs_probe, INT, (CableModel)-1, (CablePort)-1, nullptr, -1);
     PRINTF(ticalcs_device_info_to_model, INT, nullptr);
     PRINTF(ticalcs_remap_model_from_usb, INT, (CableModel)0, (CalcModel)0);
@@ -239,10 +260,10 @@ static void torture_ticalcs()
     PRINTF(dbus_send, INT, nullptr, 0, 0, 0, (uint8_t*)0x12345678);
     PRINTF(dbus_recv, INT, nullptr, (uint8_t*)0x12345678, (uint8_t*)0x12345678, (uint16_t*)0x12345678, (uint8_t*)0x12345678);
     PRINTF(dbus_recv, INT, (CalcHandle*)0x12345678, nullptr, (uint8_t*)0x12345678, (uint16_t*)0x12345678, (uint8_t*)0x12345678);
+
     PRINTF(dbus_recv, INT, (CalcHandle*)0x12345678, (uint8_t*)0x12345678, nullptr, (uint16_t*)0x12345678, (uint8_t*)0x12345678);
     PRINTF(dbus_recv, INT, (CalcHandle*)0x12345678, (uint8_t*)0x12345678, (uint8_t*)0x12345678, nullptr, (uint8_t*)0x12345678);
     PRINTF(dbus_recv_header, INT, nullptr, (uint8_t*)0x12345678, (uint8_t*)0x12345678, (uint16_t*)0x12345678);
-
     PRINTF(dbus_recv_header, INT, (CalcHandle*)0x12345678, nullptr, (uint8_t*)0x12345678, (uint16_t*)0x12345678);
     PRINTF(dbus_recv_header, INT, (CalcHandle*)0x12345678, (uint8_t*)0x12345678, nullptr, (uint16_t*)0x12345678);
     PRINTF(dbus_recv_header, INT, (CalcHandle*)0x12345678, (uint8_t*)0x12345678, (uint8_t*)0x12345678, nullptr);
@@ -251,6 +272,7 @@ static void torture_ticalcs()
     PRINTF(dbus_recv_data, INT, (CalcHandle*)0x12345678, (uint16_t*)0x12345678, nullptr);
 // dusb_rpkt.c
     PRINTF(dusb_send, INT, nullptr, (DUSBRawPacket*)0x12345678);
+
     PRINTF(dusb_send, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(dusb_recv, INT, nullptr, (DUSBRawPacket*)0x12345678);
     PRINTF(dusb_recv, INT, (CalcHandle*)0x12345678, nullptr);
@@ -700,6 +722,7 @@ static void torture_cmdz80()
     PRINTF(ti85_recv_RTS, INT, (CalcHandle*)0x12345678, nullptr, (uint8_t*)0x12345678, (char*)0x12345678);
     PRINTF(ti85_recv_RTS, INT, (CalcHandle*)0x12345678, (uint16_t*)0x12345678, nullptr, (char*)0x12345678);
     PRINTF(ti85_recv_RTS, INT, (CalcHandle*)0x12345678, (uint16_t*)0x12345678, (uint8_t*)0x12345678, nullptr);
+    PRINTF(tiz80_send_RTS_lab_equipment_data, INT, nullptr, 0, 0, nullptr);
 }
 
 static void torture_cmd68k()
@@ -708,14 +731,15 @@ static void torture_cmd68k()
     PRINTF(ti68k_model_to_dbus_mid, INT, CALC_NONE);
     PRINTF(ti68k_handle_to_dbus_mid, INT, NULL);
     PRINTF(ti89_send_VAR, INT, nullptr, 0, 0, (const char*)0x12345678);
+    PRINTF(ti68k_send_VAR_lab_equipment_data, INT, nullptr, 0, 0, 0);
     PRINTF(ti89_send_CTS, INT, nullptr);
     PRINTF(ti89_send_XDP, INT, nullptr, 0, (uint8_t*)0x12345678);
     PRINTF(ti89_send_SKP, INT, nullptr, 0);
     PRINTF(ti89_send_ACK, INT, nullptr);
     PRINTF(ti89_send_ERR, INT, nullptr);
     PRINTF(ti89_send_RDY, INT, nullptr);
-    PRINTF(ti89_send_SCR, INT, nullptr);
 
+    PRINTF(ti89_send_SCR, INT, nullptr);
     PRINTF(ti89_send_CNT, INT, nullptr);
     PRINTF(ti89_send_KEY, INT, nullptr, 0);
     PRINTF(ti89_send_EOT, INT, nullptr);
@@ -725,8 +749,8 @@ static void torture_cmd68k()
     PRINTF(ti89_send_RTS, INT, (CalcHandle*)0x12345678, 0, 0, nullptr);
     PRINTF(ti89_send_RTS2, INT, nullptr, 0, 0, 0);
     PRINTF(ti89_send_VER, INT, nullptr);
-    PRINTF(ti89_send_DEL, INT, nullptr, 0, 0, (const char*)0x12345678);
 
+    PRINTF(ti89_send_DEL, INT, nullptr, 0, 0, (const char*)0x12345678);
     PRINTF(ti89_send_DEL, INT, (CalcHandle*)0x12345678, 0, 0, nullptr);
     PRINTF(ti89_recv_VAR, INT, nullptr, (uint32_t*)0x12345678, (uint8_t*)0x12345678, (char*)0x12345678);
     PRINTF(ti89_recv_VAR, INT, (CalcHandle *)0x12345678, nullptr, (uint8_t*)0x12345678, (char*)0x12345678);
@@ -736,8 +760,8 @@ static void torture_cmd68k()
     PRINTF(ti89_recv_SKP, INT, nullptr, (uint8_t*)0x12345678);
     PRINTF(ti89_recv_SKP, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(ti89_recv_XDP, INT, nullptr, (uint16_t*)0x12345678, (uint8_t*)0x12345678);
-    PRINTF(ti89_recv_XDP, INT, (CalcHandle*)0x12345678, nullptr, (uint8_t*)0x12345678);
 
+    PRINTF(ti89_recv_XDP, INT, (CalcHandle*)0x12345678, nullptr, (uint8_t*)0x12345678);
     PRINTF(ti89_send_ACK, INT, nullptr);
     PRINTF(ti89_recv_CNT, INT, nullptr);
     PRINTF(ti89_recv_EOT, INT, nullptr);
@@ -747,8 +771,8 @@ static void torture_cmd68k()
     PRINTF(ti89_recv_RTS, INT, (CalcHandle*)0x12345678, (uint32_t*)0x12345678, (uint8_t*)0x12345678, nullptr);
     PRINTF(ti92_send_VAR, INT, nullptr, 0, 0, (const char*)0x12345678);
     PRINTF(ti92_send_VAR, INT, (CalcHandle*)0x12345678, 0, 0, nullptr);
-    PRINTF(ti92_send_CTS, INT, nullptr);
 
+    PRINTF(ti92_send_CTS, INT, nullptr);
     PRINTF(ti92_send_XDP, INT, nullptr, 0, (uint8_t*)0x12345678);
     PRINTF(ti92_send_SKP, INT, nullptr, 0);
     PRINTF(ti92_send_ACK, INT, nullptr);
@@ -758,8 +782,8 @@ static void torture_cmd68k()
     PRINTF(ti92_send_SCR, INT, nullptr);
     PRINTF(ti92_send_CNT, INT, nullptr);
     PRINTF(ti92_send_KEY, INT, nullptr, 0);
-    PRINTF(ti92_send_EOT, INT, nullptr);
 
+    PRINTF(ti92_send_EOT, INT, nullptr);
     PRINTF(ti92_send_REQ, INT, nullptr, 0, 0, (const char*)0x12345678);
     PRINTF(ti92_send_REQ, INT, (CalcHandle*)0x12345678, 0, 0, nullptr);
     PRINTF(ti92_send_RTS, INT, nullptr, 0, 0, (const char*)0x12345678);
@@ -769,8 +793,8 @@ static void torture_cmd68k()
     PRINTF(ti92_recv_VAR, INT, (CalcHandle*)0x12345678, (uint32_t*)0x12345678, nullptr, (char*)0x12345678);
     PRINTF(ti92_recv_VAR, INT, (CalcHandle*)0x12345678, (uint32_t*)0x12345678, (uint8_t*)0x12345678, nullptr);
     PRINTF(ti92_recv_CTS, INT, nullptr);
-    PRINTF(ti92_recv_SKP, INT, nullptr, (uint8_t*)0x12345678);
 
+    PRINTF(ti92_recv_SKP, INT, nullptr, (uint8_t*)0x12345678);
     PRINTF(ti92_recv_SKP, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(ti92_recv_XDP, INT, nullptr, (uint16_t*)0x12345678, (uint8_t*)0x12345678);
     PRINTF(ti92_recv_XDP, INT, (CalcHandle*)0x12345678, nullptr, (uint8_t*)0x12345678);
@@ -780,6 +804,7 @@ static void torture_cmd68k()
     PRINTF(ti92_recv_RTS, INT, nullptr, (uint32_t*)0x12345678, (uint8_t*)0x12345678, (char*)0x12345678);
     PRINTF(ti92_recv_RTS, INT, (CalcHandle*)0x12345678, nullptr, (uint8_t*)0x12345678, (char*)0x12345678);
     PRINTF(ti92_recv_RTS, INT, (CalcHandle*)0x12345678, (uint32_t*)0x12345678, nullptr, (char*)0x12345678);
+
     PRINTF(ti92_recv_RTS, INT, (CalcHandle*)0x12345678, (uint32_t*)0x12345678, (uint8_t*)0x12345678, nullptr);
 }
 
@@ -969,9 +994,541 @@ static void dissect_functions_unit_test_3()
     assert(0 == nsp_dissect(CALC_NONE, stderr, nsp_good_keypress_home, sizeof(nsp_good_keypress_home), 0));
 }
 
+// The list returned by the "Get" corresponding to the Send({7}) status command, as captured from a 89(T): 17 items, in the TI-68k wire format.
+static const uint8_t ti68k_labeq_17_items_89[] = {
+0x11, 0x00, 0x00, 0x00,
+0x20, 0x2b, 0x35, 0x2e, 0x30, 0x31, 0x31, 0x33, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +5.01130E+00"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x20, 0x2b, 0x38, 0x2e, 0x38, 0x38, 0x38, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x33, // " +8.88800E+03"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x20, 0x2b, 0x31, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +1.00000E+00"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x20, 0x2b, 0x30, 0x2e, 0x30, 0x30, 0x30, 0x30, 0x30, 0x45, 0x2b, 0x30, 0x30, // " +0.00000E+00"
+0x00
+};
+
+// The converters fill long doubles from decimal text or BCD digits: compare tolerantly.
+static int ld_close(long double a, long double b)
+{
+	long double diff = a - b;
+	if (diff < 0)
+	{
+		diff = -diff;
+	}
+	return diff <= 1e-15L * ((a < 0 ? -a : a) + (b < 0 ? -b : b)) + 1e-320L;
+}
+
+static void lab_equipment_data_unit_test()
+{
+    CalcLabEquipmentData labeq_data;
+    uint32_t item_count;
+    long double * raw_values;
+    char * out_data;
+    size_t i;
+
+    // String -> TI-68k raw list: valid inputs.
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{7}"));
+    assert(CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST == labeq_data.type);
+    assert(7 == labeq_data.size); // [01 00 00 00][0x20 37 00]
+    assert(1 == labeq_data.items);
+    assert(4 == labeq_data.vartype);
+    assert(labeq_data.data[0] == 0x01 && labeq_data.data[1] == 0 && labeq_data.data[2] == 0 && labeq_data.data[3] == 0);
+    assert(labeq_data.data[4] == 0x20 && labeq_data.data[5] == '7' && labeq_data.data[6] == 0);
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+    assert(labeq_data.data == nullptr && labeq_data.size == 0);
+
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1,2,3}"));
+    assert(3 == labeq_data.items);
+    assert(11 == labeq_data.size); // [03 00 00 00][0x20 31 0x20 32 0x20 33 00]
+    assert(labeq_data.data[0] == 0x03 && labeq_data.data[1] == 0 && labeq_data.data[2] == 0 && labeq_data.data[3] == 0);
+    assert(memcmp(labeq_data.data + 4, " 1 2 3", 6) == 0 && labeq_data.data[10] == 0);
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    // String -> TI-68k raw list: floating-point, negative and exponent numbers.
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{3,-1}"));
+    assert(2 == labeq_data.items);
+    assert(memcmp(labeq_data.data + 4, " 3 -1", 5) == 0);
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{3,.1,-1,0}"));
+    assert(4 == labeq_data.items);
+    assert(memcmp(labeq_data.data + 4, " 3 .1 -1 0", 10) == 0);
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{+1.5e-3,-.25E+2}"));
+    assert(2 == labeq_data.items);
+    assert(memcmp(labeq_data.data + 4, " +1.5e-3 -.25E+2", 16) == 0);
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    // String -> TI-68k raw list: invalid inputs.
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "7"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{a}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1,}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1.2.3}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1e}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1e+}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{-.}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1,2 3}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, ""));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, nullptr));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(nullptr, "{1}"));
+    // An input string with more than 65535 items must be rejected rather than overflowing the item count.
+    {
+        char * huge = (char *)g_malloc(4 + 2 * 65536);
+        assert(nullptr != huge);
+        huge[0] = '{';
+        for (i = 0; i < 65536; i++)
+        {
+            huge[1 + 2 * i] = '1';
+            huge[2 + 2 * i] = ',';
+        }
+        huge[1 + 2 * 65536 - 1] = '}';
+        huge[1 + 2 * 65536] = 0;
+        ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+        assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, huge));
+        g_free(huge);
+    }
+
+    // String -> TI-Z80 raw list (9-byte floating-point format): valid inputs.
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{7}"));
+    assert(CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST == labeq_data.type);
+    assert(11 == labeq_data.size); // [01 00][00 80 70 00 00 00 00 00 00]
+    assert(1 == labeq_data.items);
+    assert(0x01 == labeq_data.vartype);
+    {
+        static const uint8_t expected[] = { 0x01, 0x00, 0x00, 0x80, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        assert(0 == memcmp(labeq_data.data, expected, sizeof(expected)));
+    }
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{0,-8888.8}"));
+    assert(20 == labeq_data.size && 2 == labeq_data.items);
+    {
+        static const uint8_t expected[] = { 0x02, 0x00,
+                                            0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                            0x80, 0x83, 0x88, 0x88, 0x80, 0x00, 0x00, 0x00, 0x00 };
+        assert(0 == memcmp(labeq_data.data, expected, sizeof(expected)));
+    }
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{3.14159265358979}"));
+    {
+        // Lossless round trip: the full 14-digit mantissa survives the string conversion.
+        assert(0 == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+        assert(0 == strcmp(out_data, "{3.1415926535898}"));
+        ticalcs_free_lab_equipment_data_related(out_data);
+        ticalcs_free_lab_equipment_data_related(raw_values);
+    }
+    assert(11 == labeq_data.size);
+    {
+        static const uint8_t expected[] = { 0x01, 0x00, 0x00, 0x80, 0x31, 0x41, 0x59, 0x26, 0x53, 0x58, 0x98 };
+        assert(0 == memcmp(labeq_data.data, expected, sizeof(expected)));
+    }
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1e99,1e-99}"));
+    assert(20 == labeq_data.size && 2 == labeq_data.items);
+    assert(labeq_data.data[2] == 0x00 && labeq_data.data[3] == 0xE3);
+    assert(memcmp(labeq_data.data + 4, "\x10\x00\x00\x00\x00\x00\x00", 7) == 0);
+    assert(labeq_data.data[11] == 0x00 && labeq_data.data[12] == 0x1D);
+    assert(memcmp(labeq_data.data + 13, "\x10\x00\x00\x00\x00\x00\x00", 7) == 0);
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    // String -> TI-Z80 raw list: invalid inputs.
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "7"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{a}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1,}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, nullptr));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(nullptr, "{1}"));
+    // Magnitudes beyond the +/-99 exponent range of the TI-Z80 models must be rejected rather than truncated silently.
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_OUT_OF_RANGE == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1e100}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_OUT_OF_RANGE == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{-1e100}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_OUT_OF_RANGE == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1e-100}"));
+    // Rounding this value up to the next power of ten would overflow the exponent range.
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_OUT_OF_RANGE == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{9.999999999999994e99}"));
+    // An input string yielding an oversized list payload must be rejected.
+    {
+        char * huge = (char *)g_malloc(2 + 2 * 7500 + 2);
+        assert(nullptr != huge);
+        huge[0] = '{';
+        for (i = 0; i < 7500; i++)
+        {
+            huge[1 + 2 * i] = '1';
+            huge[2 + 2 * i] = ',';
+        }
+        huge[1 + 2 * 7500 - 1] = '}';
+        huge[1 + 2 * 7500] = 0;
+        ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+        assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, huge));
+        ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+        assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, huge));
+        g_free(huge);
+    }
+    // The largest TI-Z80 list which fits into a 16-bit XDP packet length is accepted.
+    {
+        const unsigned int count = (0xFFFF - 2) / 9;
+        char * huge = (char *)g_malloc(2 + 2 * count + 2);
+        assert(nullptr != huge);
+        huge[0] = '{';
+        for (i = 0; i < count; i++)
+        {
+            huge[1 + 2 * i] = '1';
+            huge[2 + 2 * i] = ',';
+        }
+        huge[1 + 2 * count - 1] = '}';
+        huge[1 + 2 * count] = 0;
+        ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+        assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, huge));
+        assert((uint16_t)(2 + count * 9) == labeq_data.size);
+        ticalcs_calc_free_lab_equipment_data(&labeq_data);
+        g_free(huge);
+    }
+
+    // String -> TI-85/86 raw list (10-byte floating-point format): valid inputs.
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI8586_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{7}"));
+    assert(CALC_LAB_EQUIPMENT_DATA_TYPE_TI8586_RAW_LIST == labeq_data.type);
+    assert(12 == labeq_data.size); // [01 00][00 00 FC 70 00 00 00 00 00 00]
+    assert(1 == labeq_data.items);
+    assert(0x04 == labeq_data.vartype);
+    {
+        static const uint8_t expected[] = { 0x01, 0x00, 0x00, 0x00, 0xFC, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        assert(0 == memcmp(labeq_data.data, expected, sizeof(expected)));
+    }
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI8586_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{-8888.8,1e-99}"));
+    assert(22 == labeq_data.size && 2 == labeq_data.items);
+    {
+        static const uint8_t expected[] = { 0x02, 0x00,
+                                            0x80, 0x03, 0xFC, 0x88, 0x88, 0x80, 0x00, 0x00, 0x00, 0x00,
+                                            0x00, 0x9D, 0xFB, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        assert(0 == memcmp(labeq_data.data, expected, sizeof(expected)));
+    }
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    // The TI-85/86 16-bit exponent field spans +/-999, far beyond the +/-99 limit of the 9-byte format
+    // and beyond the range of doubles themselves: magnitudes which the TI-Z80 format rejects are valid.
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI8586_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{-1e100}"));
+    assert(12 == labeq_data.size);
+    {
+        static const uint8_t expected[] = { 0x01, 0x00, 0x80, 0x64, 0xFC, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        assert(0 == memcmp(labeq_data.data, expected, sizeof(expected)));
+    }
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    // Rounding this value up to the next power of ten lands at exponent 100: within the TI-85/86 range.
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI8586_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{9.999999999999994e99}"));
+    assert(12 == labeq_data.size);
+    assert(labeq_data.data[3] == 0x64 && labeq_data.data[4] == 0xFC);
+    assert(memcmp(labeq_data.data + 5, "\x10\x00\x00\x00\x00\x00\x00", 7) == 0);
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI8586_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1e308}"));
+    assert(12 == labeq_data.size);
+    assert(labeq_data.data[2] == 0x00 && labeq_data.data[3] == 0x34 && labeq_data.data[4] == 0xFD);
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    // Decimal exponents beyond the double range are handled exactly, without a detour through doubles:
+    // the TI-85/86 format accepts them just like real calculators do.
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI8586_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1e400,-1e-400}"));
+    assert(22 == labeq_data.size && 2 == labeq_data.items);
+    assert(labeq_data.data[2] == 0x00 && labeq_data.data[3] == 0x90 && labeq_data.data[4] == 0xFD);
+    assert(memcmp(labeq_data.data + 5, "\x10\x00\x00\x00\x00\x00\x00", 7) == 0);
+    assert(labeq_data.data[12] == 0x80 && labeq_data.data[13] == 0x70 && labeq_data.data[14] == 0xFA);
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    // String -> TI-85/86 raw list: invalid inputs.
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "7"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{a}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, nullptr));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_from_string(nullptr, "{1}"));
+    // The +/-999 exponent range of the format must be enforced.
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_OUT_OF_RANGE == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1e1000}"));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(ERR_OUT_OF_RANGE == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{1e-1000}"));
+
+    // TI-68k raw list -> string: empty list.
+    static const uint8_t empty_list[] = { 0x00, 0x00, 0x00, 0x00 };
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST;
+    labeq_data.size = sizeof(empty_list);
+    labeq_data.items = 0;
+    labeq_data.data = empty_list;
+    assert(0 == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+    assert(0 == item_count && nullptr == raw_values);
+    assert(0 == strcmp(out_data, "{}"));
+    ticalcs_free_lab_equipment_data_related(out_data);
+
+    // TI-68k raw list -> string: the captured 17-item list.
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST;
+    labeq_data.size = sizeof(ti68k_labeq_17_items_89);
+    labeq_data.items = 17;
+    labeq_data.data = ti68k_labeq_17_items_89;
+    assert(0 == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+    assert(17 == item_count && nullptr != raw_values);
+    assert(0 == strcmp(out_data, "{+5.01130E+00,+0.00000E+00,+0.00000E+00,+8.88800E+03,+0.00000E+00,+0.00000E+00,+0.00000E+00,+0.00000E+00,+0.00000E+00,+0.00000E+00,+0.00000E+00,+0.00000E+00,+0.00000E+00,+1.00000E+00,+0.00000E+00,+0.00000E+00,+0.00000E+00}"));
+    assert(ld_close(raw_values[0], 5.0113L) && ld_close(raw_values[3], 8888.0L) && ld_close(raw_values[13], 1.0L) && ld_close(raw_values[16], 0.0L));
+    ticalcs_free_lab_equipment_data_related(out_data);
+    ticalcs_free_lab_equipment_data_related(raw_values);
+
+    // TI-68k raw list -> string: round trip through the string form.
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{5,6,7}"));
+    assert(0 == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+    assert(0 == strcmp(out_data, "{5,6,7}"));
+    assert(3 == item_count && ld_close(raw_values[0], 5.0L) && ld_close(raw_values[2], 7.0L));
+    ticalcs_free_lab_equipment_data_related(out_data);
+    ticalcs_free_lab_equipment_data_related(raw_values);
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    // TI-68k raw list -> string: payload without a trailing NUL must still be parsed.
+    static const uint8_t payload_no_nul[] = { 0x01, 0x00, 0x00, 0x00, 0x20, 0x37 };
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST;
+    labeq_data.size = sizeof(payload_no_nul);
+    labeq_data.items = 1;
+    labeq_data.data = payload_no_nul;
+    assert(0 == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+    assert(0 == strcmp(out_data, "{7}"));
+    ticalcs_free_lab_equipment_data_related(out_data);
+    ticalcs_free_lab_equipment_data_related(raw_values);
+
+    // TI-68k raw list -> string: malformed inputs must be rejected, not overrun.
+    static const uint8_t too_small[] = { 0x01, 0x00, 0x00 };
+    static const uint8_t garbage_payload[] = { 0x01, 0x00, 0x00, 0x00, 0x20, 0x58, 0x58, 0x00 }; // " XX"
+    static const uint8_t item_count_mismatch[] = { 0x02, 0x00, 0x00, 0x00, 0x20, 0x37, 0x00 }; // 2 items announced, 1 provided
+    static const uint8_t too_many_items[] = { 0x00, 0x80, 0x00, 0x00, 0x20, 0x37, 0x00 }; // 32768 items announced
+    static const uint8_t huge_count[] = { 0x01, 0x00, 0x01, 0x00, 0x20, 0x37, 0x00 }; // 65537 items announced
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST;
+    labeq_data.size = sizeof(too_small);
+    labeq_data.items = 1;
+    labeq_data.data = too_small;
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST;
+    labeq_data.size = sizeof(garbage_payload);
+    labeq_data.items = 1;
+    labeq_data.data = garbage_payload;
+    assert(ERR_INVALID_PACKET == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST;
+    labeq_data.size = sizeof(item_count_mismatch);
+    labeq_data.items = 2;
+    labeq_data.data = item_count_mismatch;
+    assert(ERR_INVALID_PACKET == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST;
+    labeq_data.size = sizeof(too_many_items);
+    labeq_data.items = 32768;
+    labeq_data.data = too_many_items;
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST;
+    labeq_data.size = sizeof(huge_count);
+    labeq_data.items = (uint16_t)(65537 & 0xFFFF);
+    labeq_data.data = huge_count;
+    // The 16-bit items field can't represent the 32-bit count carried by the raw data.
+    assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+
+    // Raw list -> string, TI-Z80 9-byte floating-point format: valid inputs.
+    {
+        static const uint8_t raw[] = { 0x02, 0x00,
+                                       0x00, 0x80, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                       0x80, 0x83, 0x88, 0x88, 0x80, 0x00, 0x00, 0x00, 0x00 };
+        memset(&labeq_data, 0, sizeof(labeq_data));
+        labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST;
+        labeq_data.size = sizeof(raw);
+        labeq_data.items = 2;
+        labeq_data.data = raw;
+        assert(0 == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+        assert(2 == item_count && nullptr != raw_values && nullptr != out_data);
+        assert(0 == strcmp(out_data, "{7,-8888.8}"));
+        assert(ld_close(raw_values[0], 7.0L) && ld_close(raw_values[1], -8888.8L));
+        ticalcs_free_lab_equipment_data_related(out_data);
+        ticalcs_free_lab_equipment_data_related(raw_values);
+    }
+
+    // Round trip through the string form.
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    ticalcs_fill_lab_equipment_data(&labeq_data, CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST, 0, 0, nullptr, nullptr, 0, 0, 0);
+    assert(0 == ticalcs_convert_lab_equipment_data_from_string(&labeq_data, "{5.0113,0,8888.8,1}"));
+    assert(0 == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+    assert(4 == item_count);
+    assert(0 == strcmp(out_data, "{5.0113,0,8888.8,1}"));
+    ticalcs_free_lab_equipment_data_related(out_data);
+    ticalcs_free_lab_equipment_data_related(raw_values);
+    ticalcs_calc_free_lab_equipment_data(&labeq_data);
+
+    // The elements of the captured Get(L1 dumps decode as expected.
+    {
+        static const uint8_t dump82[] = { 0x04, 0x00,
+                                          0x00, 0x80, 0x50, 0x11, 0x30, 0x00, 0x00, 0x00, 0x00,
+                                          0x00, 0x83, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                          0x00, 0x80, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                          0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        memset(&labeq_data, 0, sizeof(labeq_data));
+        labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST;
+        labeq_data.size = sizeof(dump82);
+        labeq_data.items = 4;
+        labeq_data.data = dump82;
+        assert(0 == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+        assert(0 == strcmp(out_data, "{5.0113,8888,1,0}"));
+        ticalcs_free_lab_equipment_data_related(out_data);
+        ticalcs_free_lab_equipment_data_related(raw_values);
+    }
+    {
+        // Same values in the 10-byte format used by the TI-85/86 and by the Get direction
+        // of the TI-73/83/83+/84+ lab equipment protocol.
+        static const uint8_t dump85[] = { 0x04, 0x00,
+                                          0x00, 0x00, 0xFC, 0x50, 0x11, 0x30, 0x00, 0x00, 0x00, 0x00,
+                                          0x00, 0x03, 0xFC, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                          0x00, 0x00, 0xFC, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                          0x00, 0x00, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        memset(&labeq_data, 0, sizeof(labeq_data));
+        labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TI8586_RAW_LIST;
+        labeq_data.size = sizeof(dump85);
+        labeq_data.items = 4;
+        labeq_data.data = dump85;
+        assert(0 == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+        assert(0 == strcmp(out_data, "{5.0113,8888,1,0}"));
+        ticalcs_free_lab_equipment_data_related(out_data);
+        ticalcs_free_lab_equipment_data_related(raw_values);
+    }
+
+    // Raw list -> string: empty list.
+    memset(&labeq_data, 0, sizeof(labeq_data));
+    labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST;
+    labeq_data.size = 2;
+    labeq_data.items = 0;
+    labeq_data.data = (const uint8_t *)"\x00\x00";
+    assert(0 == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+    assert(0 == item_count && nullptr == raw_values);
+    assert(0 == strcmp(out_data, "{}"));
+    ticalcs_free_lab_equipment_data_related(out_data);
+
+    // Raw list -> string: invalid inputs.
+    {
+        static const uint8_t bad_count[] = { 0x03, 0x00, 0x00, 0x80, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        static const uint8_t bad_exp[] = { 0x01, 0x00, 0x00, 0xFF, 0x3F, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        memset(&labeq_data, 0, sizeof(labeq_data));
+        labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST;
+        labeq_data.size = sizeof(bad_count);
+        labeq_data.items = 1; // embedded count says 3
+        labeq_data.data = bad_count;
+        assert(ERR_INVALID_PACKET == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+
+        memset(&labeq_data, 0, sizeof(labeq_data));
+        labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TI8586_RAW_LIST;
+        labeq_data.size = sizeof(bad_exp);
+        labeq_data.items = 1; // exponent field 0x3FFF - 0xFC00 = 1023 > 999
+        labeq_data.data = bad_exp;
+        assert(ERR_OUT_OF_RANGE == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+
+        memset(&labeq_data, 0, sizeof(labeq_data));
+        labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST;
+        labeq_data.size = sizeof(bad_count) - 1; // truncated payload
+        labeq_data.items = 1;
+        labeq_data.data = bad_count;
+        assert(ERR_INVALID_PACKET == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+
+        memset(&labeq_data, 0, sizeof(labeq_data));
+        labeq_data.type = CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST; // wrong type for the converter
+        labeq_data.size = sizeof(bad_count);
+        labeq_data.items = 1;
+        labeq_data.data = bad_count;
+        assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, &item_count, &raw_values, &out_data));
+
+        assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_to_string(nullptr, &item_count, &raw_values, &out_data));
+        assert(ERR_INVALID_PARAMETER == ticalcs_convert_lab_equipment_data_to_string(&labeq_data, nullptr, &raw_values, &out_data));
+    }
+
+    ticalcs_calc_free_lab_equipment_data(nullptr);
+}
+
 int main(int argc, char **argv)
 {
     ticalcs_library_init();
+    // Pin the decimal point to '.', so that the expected output strings of the conversion tests are locale-independent.
+    setlocale(LC_ALL, "C");
 
     torture_ticalcs();
     torture_nsp();
@@ -984,6 +1541,7 @@ int main(int argc, char **argv)
     dissect_functions_unit_test_1();
     dissect_functions_unit_test_2();
     dissect_functions_unit_test_3();
+    lab_equipment_data_unit_test();
 
     ticalcs_library_exit();
 

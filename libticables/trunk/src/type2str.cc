@@ -168,6 +168,11 @@ const char *TICALL ticables_usbpid_to_string(UsbPid pid)
 	case PID_NSPIRE: return "Nspire";		// must match tifiles name
 	case PID_NSPIRE_CRADLE: return "Nspire Cradle";		// must match tifiles name
 	case PID_NSPIRE_CXII: return "Nspire CX II";		// must match tifiles name
+	case PID_LABPRO: return "LabPro";			// must match ticonv name
+	case PID_EASYTEMP_GOTEMP: return "Go! Temp";			// must match ticonv name
+	case PID_EASYLINK_GOLINK: return "Go! Link";			// must match ticonv name
+	case PID_CBR2_GOMOTION: return "Go! Motion";		// must match ticonv name
+	case PID_GODIRECT: return "Go Direct";		// must match ticonv name
 	default: return "unknown";
 	}
 }
@@ -200,6 +205,16 @@ UsbPid TICALL ticables_string_to_usbpid(const char *str)
 		return PID_NSPIRE_CRADLE;
 	else if(!strcmp(str, "Nspire CX II"))
 		return PID_NSPIRE_CXII;
+	else if(!strcmp(str, "LabPro"))
+		return PID_LABPRO;
+	else if(!strcmp(str, "Go! Temp") || !strcmp(str, "Go Temp"))
+		return PID_EASYTEMP_GOTEMP;
+	else if(!strcmp(str, "Go! Link") || !strcmp(str, "Go Link"))
+		return PID_EASYLINK_GOLINK;
+	else if(!strcmp(str, "Go! Motion") || !strcmp(str, "Go Motion"))
+		return PID_CBR2_GOMOTION;
+	else if(!strcmp(str, "Go Direct"))
+		return PID_GODIRECT;
 	else if(!strncmp(str, "Nspire", 6) || !strncmp(str, "NSpire", 6))
 		return PID_NSPIRE;
 

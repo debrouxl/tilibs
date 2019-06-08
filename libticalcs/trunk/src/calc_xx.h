@@ -71,4 +71,16 @@ extern const CalcFncts calc_nsp_cxii_cas;
 extern const CalcFncts calc_nsp_cxiit;
 extern const CalcFncts calc_nsp_cxiit_cas;
 
+extern const CalcFncts calc_cbl;
+extern const CalcFncts calc_cbr;
+extern const CalcFncts calc_cbl2;
+extern const CalcFncts calc_cbr2;
+extern const CalcFncts calc_labpro;
+extern const CalcFncts calc_tipresenter;
+extern const CalcFncts calc_labpro_usb;
+extern const CalcFncts calc_easytemp_gotemp_usb;
+extern const CalcFncts calc_easylink_golink_usb;
+extern const CalcFncts calc_cbr2_gomotion_usb;
+extern const CalcFncts calc_godirect_usb;
+
 #endif

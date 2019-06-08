@@ -1,24 +1,19 @@
+version 0
 raw_send_data
 00000004 (01)
 	[00000400]
 
-raw_recv_data
-5
-raw_recv_data
-4
+raw_recv_data 5
+raw_recv_data 4
 raw_send_data
 00000010 04
 	0000000a {0001}
 		00 03 00 01 00 00 00 00 07 D0
 
-raw_recv_data
-5
-raw_recv_data
-2
-raw_recv_data
-5
-raw_recv_data
-10
+raw_recv_data 5
+raw_recv_data 2
+raw_recv_data 5
+raw_recv_data 10
 raw_send_data
 00000002 (05)
 	[e000]

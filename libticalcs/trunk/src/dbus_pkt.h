@@ -102,6 +102,11 @@ extern "C" {
 #define DBUS_MID_CBL_V200  0x19
 #define DBUS_MID_V200_CBL  0x89
 
+#define DBUS_MID_CBL2_PC         0x42
+#define DBUS_MID_LABPRO_PC       0x42
+#define DBUS_MID_PC_TIPRESENTER  0x33
+#define DBUS_MID_TIPRESENTER_PC  0x43
+
 // Command IDs
 /*
  * means there is data attached.
