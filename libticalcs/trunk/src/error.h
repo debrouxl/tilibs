@@ -66,6 +66,7 @@ typedef enum
 	ERR_INVALID_PARAMETER,
 	ERR_INVALID_SCREENSHOT,
 	ERR_VAR_VERSION,		// Variable rejected due to version code
+	ERR_OUT_OF_RANGE,		// Value out of supported range
 
 // --- 300 to 379 are reserved for hand-held status (DUSB)
 

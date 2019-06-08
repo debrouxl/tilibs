@@ -1,6 +1,7 @@
 # List of source files containing translatable strings.
 
 src/backup.cc
+src/calclabequipmentdata.cc
 src/calc_00.cc
 src/calc_73.cc
 src/calc_84p.cc

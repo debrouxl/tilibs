@@ -97,6 +97,17 @@ SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e01c", ENV{ID_PDA}="
 # TI-Nspire CX II
 SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e022", ENV{ID_PDA}="1"
 
+# Vernier LabPro
+SUBSYSTEM=="usb", ATTR{idVendor}=="08f7", ATTR{idProduct}=="0001", ENV{ID_PDA}="1"
+# Vernier EasyTemp / Go! Temp
+SUBSYSTEM=="usb", ATTR{idVendor}=="08f7", ATTR{idProduct}=="0002", ENV{ID_PDA}="1"
+# Vernier EasyLink / Go! Link
+SUBSYSTEM=="usb", ATTR{idVendor}=="08f7", ATTR{idProduct}=="0003", ENV{ID_PDA}="1"
+# Vernier CBR2 / Go! Motion
+SUBSYSTEM=="usb", ATTR{idVendor}=="08f7", ATTR{idProduct}=="0004", ENV{ID_PDA}="1"
+# Vernier Go! Direct devices
+SUBSYSTEM=="usb", ATTR{idVendor}=="08f7", ATTR{idProduct}=="0010", ENV{ID_PDA}="1"
+
 LABEL="libticables_end"
 
 IMPORTANT NOTE:
