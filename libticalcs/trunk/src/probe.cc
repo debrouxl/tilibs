@@ -420,6 +420,7 @@ TIEXPORT3 int TICALL ticalcs_probe_calc(CableHandle* cable, CalcModel* model)
 		calc.model = *model = CALC_NONE;
 		calc.updat = (CalcUpdate *)&default_update;
 		calc.buffer = (uint8_t *)g_malloc(65536 + 6);
+		calc.buffer2 = (uint8_t *)g_malloc(65536 + 6);
 		calc.cable = cable;
 		calc.open = !0;
 
@@ -427,12 +428,14 @@ TIEXPORT3 int TICALL ticalcs_probe_calc(CableHandle* cable, CalcModel* model)
 		ret = ticalcs_probe_calc_1(&calc, model);
 		if (!ret && (*model != CALC_NONE))
 		{
+			g_free(calc.buffer2);
 			g_free(calc.buffer);
 			break;
 		}
 
 		// second: search for other calcs (slow)
 		ret = ticalcs_probe_calc_2(&calc, model);
+		g_free(calc.buffer2);
 		g_free(calc.buffer);
 	} while(0);
 
@@ -470,6 +473,7 @@ TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model
 		calc.model = *model = CALC_NONE;
 		calc.updat = (CalcUpdate *)&default_update;
 		calc.buffer = (uint8_t *)g_malloc(65536 + 6);
+		calc.buffer2 = (uint8_t *)g_malloc(65536 + 6);
 		calc.cable = cable;
 		calc.open = !0;
 
@@ -488,6 +492,7 @@ TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model
 			}
 		}
 
+		g_free(calc.buffer2);
 		g_free(calc.buffer);
 	} while(0);
 
@@ -511,22 +516,12 @@ TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcMod
 {
 	CableHandle *handle;
 	int ret = 0;
-	CalcHandle calc;
 
 	VALIDATE_NONNULL(model);
 
 	// get handle
 	handle = ticables_handle_new(c_model, c_port);
 	ticables_options_set_timeout(handle, 10);
-
-	// hack: we construct the structure here because we don't really need it.
-	// I want to use ticalcs functions with a non-fixed calculator
-	memset(&calc, 0, sizeof(CalcHandle));
-	calc.model = *model = CALC_NONE;
-	calc.updat = (CalcUpdate *)&default_update;
-	calc.buffer = (uint8_t *)g_malloc(65536 + 6);
-	calc.cable = handle;
-	calc.open = !0;
 
 	do
 	{
@@ -552,7 +547,21 @@ TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcMod
 			}
 			else
 			{
+				CalcHandle calc;
+				// hack: we construct the structure here because we don't really need it.
+				// I want to use ticalcs functions with a non-fixed calculator
+				memset(&calc, 0, sizeof(CalcHandle));
+				calc.model = *model = CALC_NONE;
+				calc.updat = (CalcUpdate *)&default_update;
+				calc.buffer = (uint8_t *)g_malloc(65536 + 6);
+				calc.buffer2 = (uint8_t *)g_malloc(65536 + 6);
+				calc.cable = handle;
+				calc.open = !0;
+
 				ret = ticalcs_probe_calc_1(&calc, model);
+
+				g_free(calc.buffer2);
+				g_free(calc.buffer);
 			}
 		}
 
