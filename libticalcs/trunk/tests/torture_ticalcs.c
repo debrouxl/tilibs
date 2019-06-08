@@ -129,15 +129,24 @@ static void torture_ticalcs(void)
     PRINTF(ticalcs_calc_send_cert, INT, (void *)0x12345678, NULL);
     PRINTF(ticalcs_calc_recv_cert, INT, NULL, (void *)0x12345678);
     PRINTF(ticalcs_calc_recv_cert, INT, (void *)0x12345678, NULL);
+    PRINTF(ticalcs_calc_send_all_vars_backup, INT, NULL, (void *)0x12345678);
+    PRINTF(ticalcs_calc_send_all_vars_backup, INT, (void *)0x12345678, NULL);
+    PRINTF(ticalcs_calc_recv_all_vars_backup, INT, NULL, (void *)0x12345678);
+    PRINTF(ticalcs_calc_recv_all_vars_backup, INT, (void *)0x12345678, NULL);
+    PRINTF(ticalcs_calc_send_lab_equipment_data, INT, NULL, -1, (void *)0x12345678);
+    PRINTF(ticalcs_calc_send_lab_equipment_data, INT, (void *)0x12345678, -1, NULL);
+
+    PRINTF(ticalcs_calc_get_lab_equipment_data, INT, NULL, -1, (void *)0x12345678);
+    PRINTF(ticalcs_calc_get_lab_equipment_data, INT, (void *)0x12345678, -1, NULL);
     PRINTF(ticalcs_calc_send_tigroup, INT, NULL, (void *)0x12345678, -1);
     PRINTF(ticalcs_calc_send_tigroup, INT, (void *)0x12345678, NULL, -1);
     PRINTF(ticalcs_calc_recv_tigroup, INT, NULL, (void *)0x12345678, -1);
     PRINTF(ticalcs_calc_recv_tigroup, INT, (void *)0x12345678, NULL, -1);
     PRINTF(ticalcs_calc_send_backup2, INT, NULL, (void *)0x12345678);
     PRINTF(ticalcs_calc_send_backup2, INT, (void *)0x12345678, NULL);
-
     PRINTF(ticalcs_calc_recv_backup2, INT, NULL, (void *)0x12345678);
     PRINTF(ticalcs_calc_recv_backup2, INT, (void *)0x12345678, NULL);
+
     PRINTF(ticalcs_calc_send_var2, INT, NULL, -1, (void *)0x12345678);
     PRINTF(ticalcs_calc_send_var2, INT, (void *)0x12345678, -1, NULL);
     PRINTF(ticalcs_calc_recv_var2, INT, NULL, -1, (void *)0x12345678, (void *)0x12345678);
@@ -146,9 +155,9 @@ static void torture_ticalcs(void)
     PRINTF(ticalcs_calc_send_var_ns2, INT, NULL, -1, (void *)0x12345678);
     PRINTF(ticalcs_calc_send_var_ns2, INT, (void *)0x12345678, -1, NULL);
     PRINTF(ticalcs_calc_recv_var_ns2, INT, NULL, -1, (void *)0x12345678, (void *)0x12345678);
-
     PRINTF(ticalcs_calc_recv_var_ns2, INT, (void *)0x12345678, -1, NULL, (void *)0x12345678);
     PRINTF(ticalcs_calc_recv_var_ns2, INT, (void *)0x12345678, -1, (void *)0x12345678, NULL);
+
     PRINTF(ticalcs_calc_send_app2, INT, NULL, (void *)0x12345678);
     PRINTF(ticalcs_calc_send_app2, INT, (void *)0x12345678, NULL);
     PRINTF(ticalcs_calc_recv_app2, INT, NULL, (void *)0x12345678, (void *)0x12345678);
@@ -157,10 +166,15 @@ static void torture_ticalcs(void)
     PRINTF(ticalcs_calc_send_cert2, INT, NULL, (void *)0x12345678);
     PRINTF(ticalcs_calc_send_cert2, INT, (void *)0x12345678, NULL);
     PRINTF(ticalcs_calc_recv_cert2, INT, NULL, (void *)0x12345678);
-
     PRINTF(ticalcs_calc_recv_cert2, INT, (void *)0x12345678, NULL);
     PRINTF(ticalcs_calc_send_os2, INT, NULL, (void *)0x12345678);
+
     PRINTF(ticalcs_calc_send_os2, INT, (void *)0x12345678, NULL);
+    PRINTF(ticalcs_calc_send_lab_equipment_data2, INT, NULL, -1, 0, (void *)0x12345678);
+    PRINTF(ticalcs_calc_send_lab_equipment_data2, INT, (void *)0x12345678, -1, 0, NULL);
+    PRINTF(ticalcs_calc_get_lab_equipment_data2, INT, NULL, -1, 0, (void *)0x12345678);
+    PRINTF(ticalcs_calc_get_lab_equipment_data2, INT, (void *)0x12345678, -1, 0, NULL);
+    PRINTFVOID(ticalcs_free_lab_equipment_data2, NULL);
     PRINTF(ticalcs_calc_send_tigroup2, INT, NULL, (void *)0x12345678, -1);
     PRINTF(ticalcs_calc_send_tigroup2, INT, (void *)0x12345678, NULL, -1);
     PRINTF(ticalcs_calc_recv_tigroup2, INT, NULL, (void *)0x12345678, -1);
@@ -169,7 +183,6 @@ static void torture_ticalcs(void)
     PRINTFVOID(ticalcs_dirlist_destroy, NULL);
     PRINTFVOID(ticalcs_dirlist_display, NULL);
     PRINTF(ticalcs_dirlist_ram_used, INT, NULL);
-
     PRINTF(ticalcs_dirlist_flash_used, INT, NULL, (void *)0x12345678);
     PRINTF(ticalcs_dirlist_flash_used, INT, (void *)0x12345678, NULL);
     PRINTF(ticalcs_dirlist_ve_count, INT, NULL);
@@ -177,11 +190,11 @@ static void torture_ticalcs(void)
     PRINTF(ticalcs_dirlist_ve_exist, PTR, (void *)0x12345678, NULL);
     PRINTFVOID(ticalcs_dirlist_ve_add, NULL, (void *)0x12345678);
     PRINTFVOID(ticalcs_dirlist_ve_add, (void *)0x12345678, NULL);
+
     PRINTFVOID(ticalcs_dirlist_ve_del, NULL, (void *)0x12345678);
     PRINTFVOID(ticalcs_dirlist_ve_del, (void *)0x12345678, NULL);
 // type2str.c
     PRINTF(ticalcs_model_to_string, STR, -1);
-
     PRINTF(ticalcs_string_to_model, INT, NULL);
     PRINTF(ticalcs_scrfmt_to_string, STR, -1);
     PRINTF(ticalcs_string_to_scrfmt, INT, NULL);
@@ -189,11 +202,11 @@ static void torture_ticalcs(void)
     PRINTF(ticalcs_string_to_pathtype, INT, NULL);
     PRINTF(ticalcs_memtype_to_string, STR, -1);
     PRINTF(ticalcs_string_to_memtype, INT, NULL);
+
     PRINTF(ticalcs_infos_to_string, INT, NULL, (void *)0x12345678, 0x12345678);
 // clock.c
     PRINTF(ticalcs_clock_format2date, STR, -1, -1);
     PRINTF(ticalcs_clock_date2format, INT, -1, NULL);
-
     PRINTF(ticalcs_clock_show, INT, -1, NULL);
 // screen.c
     PRINTF(ticalcs_screen_convert_bw_to_rgb888, INT, NULL, 0x12345678, 0x12345678, (void *)0x12345678);
@@ -202,10 +215,10 @@ static void torture_ticalcs(void)
     PRINTF(ticalcs_screen_convert_bw_to_blurry_rgb888, INT, (void *)0x12345678, 0x12345678, 0x12345678, NULL);
     PRINTF(ticalcs_screen_convert_gs4_to_rgb888, INT, NULL, 0x12345678, 0x12345678, (void *)0x12345678);
     PRINTF(ticalcs_screen_convert_gs4_to_rgb888, INT, (void *)0x12345678, 0x12345678, 0x12345678, NULL);
+
     PRINTF(ticalcs_screen_convert_rgb565le_to_rgb888, INT, NULL, 0x12345678, 0x12345678, (void *)0x12345678);
     PRINTF(ticalcs_screen_convert_rgb565le_to_rgb888, INT, (void *)0x12345678, 0x12345678, 0x12345678, NULL);
     PRINTF(ticalcs_screen_convert_native_to_rgb888, INT, 1, NULL, 0x12345678, 0x12345678, (void *)0x12345678);
-
     PRINTF(ticalcs_screen_convert_native_to_rgb888, INT, 1, (void *)0x12345678, 0x12345678, 0x12345678, NULL);
     PRINTF(ticalcs_screen_nspire_rle_uncompress, INT, 1, (void *)0x12345678, 0x12345678, NULL, 0x12345678);
     PRINTF(ticalcs_screen_nspire_rle_uncompress, INT, 1, NULL, 0x12345678, (void *)0x12345678, 0x12345678);
@@ -214,10 +227,10 @@ static void torture_ticalcs(void)
 // tikeys.c
     PRINTF(ticalcs_keys_73, PTR, 0);
     PRINTF(ticalcs_keys_83, PTR, 0);
+
     PRINTF(ticalcs_keys_83p, PTR, 0);
     PRINTF(ticalcs_keys_86, PTR, 0);
     PRINTF(ticalcs_keys_89, PTR, 0);
-
     PRINTF(ticalcs_keys_92p, PTR, 0);
 // probe.c
     PRINTF(ticalcs_probe_calc, INT, NULL, (void *)0x12345678);
@@ -226,11 +239,11 @@ static void torture_ticalcs(void)
     PRINTF(ticalcs_probe_usb_calc, INT, (void *)0x12345678, NULL);
     PRINTF(ticalcs_probe, INT, -1, -1, NULL, -1);
     PRINTF(ticalcs_device_info_to_model, INT, NULL);
+
     PRINTF(ticalcs_remap_model_from_usb, INT, 0, 0);
     PRINTF(ticalcs_remap_model_to_usb, INT, 0, 0);
 // dbus_pkt.c
     PRINTF(dbus_send, INT, NULL, 0, 0, 0, (void *)0x12345678);
-
     PRINTF(dbus_recv, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
@@ -238,10 +251,10 @@ static void torture_ticalcs(void)
     PRINTF(dbus_recv_header, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv_header, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv_header, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
+
     PRINTF(dbus_recv_header, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
     PRINTF(dbus_recv_data, INT, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv_data, INT, (void *)0x12345678, NULL, (void *)0x12345678);
-
     PRINTF(dbus_recv_data, INT, (void *)0x12345678, (void *)0x12345678, NULL);
 // dusb_rpkt.c
     PRINTF(dusb_send, INT, NULL, (void *)0x12345678);
@@ -251,6 +264,7 @@ static void torture_ticalcs(void)
 // nsp_rpkt.c
     PRINTF(nsp_send, INT, NULL, (void *)0x12345678);
     PRINTF(nsp_send, INT, (void *)0x12345678, NULL);
+
     PRINTF(nsp_recv, INT, NULL, (void *)0x12345678);
     PRINTF(nsp_recv, INT, (void *)0x12345678, NULL);
 }
@@ -664,12 +678,14 @@ static void torture_cmdz80(void)
     PRINTF(ti85_recv_RTS, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti85_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(ti85_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
+    PRINTF(tiz80_send_RTS_lab_equipment_data, INT, NULL, 0, 0, 0);
 }
 
 static void torture_cmd68k(void)
 {
 // cmd68k.c
     PRINTF(ti89_send_VAR, INT, NULL, 0, 0, (void *)0x12345678);
+    PRINTF(ti68k_send_VAR_lab_equipment_data, INT, NULL, 0, 0, 0);
     PRINTF(ti89_send_CTS, INT, NULL);
     PRINTF(ti89_send_XDP, INT, NULL, 0, (void *)0x12345678);
     PRINTF(ti89_send_SKP, INT, NULL, 0);

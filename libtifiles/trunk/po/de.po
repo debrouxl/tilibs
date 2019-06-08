@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2020-12-31 17:26+0100\n"
+"POT-Creation-Date: 2020-12-31 17:55+0100\n"
 "PO-Revision-Date: 2019-10-29 14:15+0100\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
 "Language-Team: <debian-l10n-german@lists.debian.org>\n"
@@ -110,20 +110,20 @@ msgstr ""
 "Grund: Das Programm, das diese Bibliothek benützt, ist\n"
 "Fehlerhaft. Kontaktieren Sie den Entwickler!"
 
-#: src/filetypes.cc:1622 src/filetypes.cc:1744 src/types68k.cc:74
+#: src/filetypes.cc:1670 src/filetypes.cc:1792 src/types68k.cc:74
 #: src/types83p.cc:70 src/typesoldz80.cc:75
 msgid "OS upgrade"
 msgstr "Betriebssystem-Aktualisierung"
 
-#: src/filetypes.cc:1633 src/filetypes.cc:1755
+#: src/filetypes.cc:1681 src/filetypes.cc:1803
 msgid "TIGroup"
 msgstr "Tigroup"
 
-#: src/filetypes.cc:1646 src/filetypes.cc:1768
+#: src/filetypes.cc:1694 src/filetypes.cc:1816
 msgid "Group/Backup"
 msgstr "Gruppe/Backup"
 
-#: src/filetypes.cc:1649 src/filetypes.cc:1771
+#: src/filetypes.cc:1697 src/filetypes.cc:1819
 msgid "Group"
 msgstr "Gruppe"
 

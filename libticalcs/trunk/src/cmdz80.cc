@@ -47,29 +47,34 @@
 #define TI8283_BKUP ((handle->model == CALC_TI82) ? TI82_BKUP : TI83_BKUP)
 #define TI8586_BKUP ((handle->model == CALC_TI85) ? TI85_BKUP : TI86_BKUP)
 
+TIEXPORT3 uint8_t TICALL tiz80_model_to_dbus_mid(CalcModel model)
+{
+	switch (model)
+	{
+	case CALC_TI73:
+		return DBUS_MID_PC_TI73;
+	case CALC_TI82:
+		return DBUS_MID_PC_TI82;
+	case CALC_TI83:
+		return DBUS_MID_PC_TI83;
+	case CALC_TI83P:
+	case CALC_TI84P:
+	case CALC_TI84PC:
+		return DBUS_MID_PC_TI83p;
+	case CALC_TI85:
+		return DBUS_MID_PC_TI85;
+	case CALC_TI86:
+		return DBUS_MID_PC_TI86;
+	default:
+		return DBUS_MID_PC_TIXX;
+	}
+}
+
 TIEXPORT3 uint8_t TICALL tiz80_handle_to_dbus_mid(CalcHandle * handle)
 {
 	if (ticalcs_validate_handle(handle))
 	{
-		switch (handle->model)
-		{
-		case CALC_TI73:
-			return DBUS_MID_PC_TI73;
-		case CALC_TI82:
-			return DBUS_MID_PC_TI82;
-		case CALC_TI83:
-			return DBUS_MID_PC_TI83;
-		case CALC_TI83P:
-		case CALC_TI84P:
-		case CALC_TI84PC:
-			return DBUS_MID_PC_TI83p;
-		case CALC_TI85:
-			return DBUS_MID_PC_TI85;
-		case CALC_TI86:
-			return DBUS_MID_PC_TI86;
-		default:
-			return DBUS_MID_PC_TIXX;
-		}
+		return tiz80_model_to_dbus_mid(handle->model);
 	}
 	return 0;
 }
@@ -486,6 +491,28 @@ TIEXPORT3 int TICALL ti85_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t
 	return dbus_send(handle, tiz80_handle_to_dbus_mid_8586(handle), DBUS_CMD_RTS, 12, buffer);
 
 	return 0;
+}
+
+TIEXPORT3 int TICALL tiz80_send_RTS_lab_equipment_data(CalcHandle* handle, uint16_t varsize, uint8_t vartype, uint8_t target)
+{
+	uint8_t buffer[16];
+
+	VALIDATE_HANDLE(handle);
+
+	buffer[ 0] = LSB(varsize);
+	buffer[ 1] = MSB(varsize);
+	buffer[ 2] = vartype;
+	buffer[ 3] = 0x24;
+	buffer[ 4] = 0x00;
+	buffer[ 5] = 0x00;
+	buffer[ 6] = 0x00;
+	buffer[ 7] = 0x00;
+	buffer[ 8] = 0x00;
+	buffer[ 9] = 0x00;
+	buffer[10] = 0x00;
+
+	ticalcs_info(" PC->TI: Send({...}) (size=0x%04X=%i, id=%02X)", varsize, varsize, vartype);
+	return dbus_send(handle, target, DBUS_CMD_RTS, 11, buffer);
 }
 
 /* Send an invalid packet that causes the calc to execute assembly

@@ -167,31 +167,31 @@ typedef enum
 {
 	FTS_NONE = 0,
 
-	OPS_ISREADY     = (1 << 0),
-	OPS_KEYS        = (1 << 1),
-	OPS_SCREEN      = (1 << 2),
-	OPS_DIRLIST     = (1 << 3),
-	OPS_BACKUP      = (1 << 4),
-	OPS_VARS        = (1 << 5),
-	OPS_FLASH       = (1 << 6),
-	OPS_IDLIST      = (1 << 7),
-	OPS_CLOCK       = (1 << 8),
-	OPS_ROMDUMP     = (1 << 9),
-	OPS_VERSION     = (1 << 10),
-	OPS_NEWFLD      = (1 << 11),
-	OPS_DELVAR      = (1 << 12),
-	OPS_OS          = (1 << 13),
-	OPS_RENAME      = (1 << 14),
-	OPS_CHATTR      = (1 << 21),
+	OPS_ISREADY           = (1 << 0),
+	OPS_KEYS              = (1 << 1),
+	OPS_SCREEN            = (1 << 2),
+	OPS_DIRLIST           = (1 << 3),
+	OPS_BACKUP            = (1 << 4),
+	OPS_VARS              = (1 << 5),
+	OPS_FLASH             = (1 << 6),
+	OPS_IDLIST            = (1 << 7),
+	OPS_CLOCK             = (1 << 8),
+	OPS_ROMDUMP           = (1 << 9),
+	OPS_VERSION           = (1 << 10),
+	OPS_NEWFLD            = (1 << 11),
+	OPS_DELVAR            = (1 << 12),
+	OPS_OS                = (1 << 13),
+	OPS_RENAME            = (1 << 14),
+	OPS_CHATTR            = (1 << 21),
+	OPS_LABEQUIPMENTDATA  = (1 << 23),
 
-	FTS_SILENT      = (1 << 15),
-	FTS_FOLDER      = (1 << 16),
-	FTS_MEMFREE     = (1 << 17),
-	FTS_FLASH       = (1 << 18),
-	FTS_CERT        = (1 << 19),
-	FTS_BACKUP      = (1 << 20),
-	FTS_NONSILENT   = (1 << 22)
-
+	FTS_SILENT            = (1 << 15),
+	FTS_FOLDER            = (1 << 16),
+	FTS_MEMFREE           = (1 << 17),
+	FTS_FLASH             = (1 << 18),
+	FTS_CERT              = (1 << 19),
+	FTS_BACKUP            = (1 << 20),
+	FTS_NONSILENT         = (1 << 22)
 } CalcFeatures;
 
 /**
@@ -212,32 +212,35 @@ typedef enum
  **/
 typedef enum
 {
-	INFOS_PRODUCT_NUMBER = (1 << 0), /* obsolete (never used) */
-	INFOS_PRODUCT_NAME   = (1 << 1),
-	INFOS_MAIN_CALC_ID   = (1 << 2), /* obsolete, replaced by INFOS_PRODUCT_ID */
-	INFOS_HW_VERSION     = (1 << 3),
-	INFOS_LANG_ID        = (1 << 4),
-	INFOS_SUB_LANG_ID    = (1 << 5),
-	INFOS_DEVICE_TYPE    = (1 << 6),
-	INFOS_BOOT_VERSION   = (1 << 7),
-	INFOS_OS_VERSION     = (1 << 8),
-	INFOS_RAM_PHYS       = (1 << 9),
-	INFOS_RAM_USER       = (1 << 10),
-	INFOS_RAM_FREE       = (1 << 11),
-	INFOS_FLASH_PHYS     = (1 << 12),
-	INFOS_FLASH_USER     = (1 << 13),
-	INFOS_FLASH_FREE     = (1 << 14),
-	INFOS_LCD_WIDTH      = (1 << 15),
-	INFOS_LCD_HEIGHT     = (1 << 16),
-	INFOS_BATTERY        = (1 << 17),
-	INFOS_BOOT2_VERSION  = (1 << 18),
-	INFOS_RUN_LEVEL      = (1 << 19),
-	INFOS_BPP            = (1 << 20),
-	INFOS_CLOCK_SPEED    = (1 << 21),
-	INFOS_PRODUCT_ID     = (1 << 22),
-	INFOS_EXACT_MATH     = (1 << 23),
-	INFOS_CLOCK_SUPPORT  = (1 << 24),
-	INFOS_COLOR_SCREEN   = (1 << 25),
+	INFOS_PRODUCT_NUMBER  = (1 << 0), /* obsolete (never used) */
+	INFOS_PRODUCT_NAME    = (1 << 1),
+	INFOS_MAIN_CALC_ID    = (1 << 2), /* obsolete, replaced by INFOS_PRODUCT_ID */
+	INFOS_HW_VERSION      = (1 << 3),
+	INFOS_LANG_ID         = (1 << 4),
+	INFOS_SUB_LANG_ID     = (1 << 5),
+	INFOS_DEVICE_TYPE     = (1 << 6),
+	INFOS_BOOT_VERSION    = (1 << 7),
+	INFOS_OS_VERSION      = (1 << 8),
+	INFOS_RAM_PHYS        = (1 << 9),
+	INFOS_RAM_USER        = (1 << 10),
+	INFOS_RAM_FREE        = (1 << 11),
+	INFOS_FLASH_PHYS      = (1 << 12),
+	INFOS_FLASH_USER      = (1 << 13),
+	INFOS_FLASH_FREE      = (1 << 14),
+	INFOS_LCD_WIDTH       = (1 << 15),
+	INFOS_LCD_HEIGHT      = (1 << 16),
+	INFOS_BATTERY         = (1 << 17),
+	INFOS_BOOT2_VERSION   = (1 << 18),
+	INFOS_RUN_LEVEL       = (1 << 19),
+	INFOS_BPP             = (1 << 20),
+	INFOS_CLOCK_SPEED     = (1 << 21),
+	INFOS_PRODUCT_ID      = (1 << 22),
+	INFOS_EXACT_MATH      = (1 << 23),
+	INFOS_CLOCK_SUPPORT   = (1 << 24),
+	INFOS_COLOR_SCREEN    = (1 << 25),
+	INFOS_PYTHON_ON_BOARD = (1 << 26),
+	INFOS_USER_DEFINED_ID = (1 << 27),
+	// TODO INFOS_PTT_MODE, based on DUSB_PID_PTT_MODE_STATE for the TI-eZ80 series, and whichever NavNet equivalent, if any.
 
 	// INFOS_MORE_INFOS     = (1 << 30), /* Some day ? Reserved value for signaling more bits are available elsewhere */
 	INFOS_CALC_MODEL     = 0x80000000
@@ -280,6 +283,8 @@ typedef enum
 	FNCT_CHATTR,
 	FNCT_SEND_ALL_VARS_BACKUP,
 	FNCT_RECV_ALL_VARS_BACKUP,
+	FNCT_SEND_LAB_EQUIPMENT_DATA,
+	FNCT_GET_LAB_EQUIPMENT_DATA,
 	CALC_FNCT_LAST // Keep this one last
 } CalcFnctsIdx;
 
@@ -542,6 +547,35 @@ typedef struct
 } CalcClock;
 
 /**
+ * CalcLabEquipmentDataType:
+ *
+ * An enumeration which contains the following list data types:
+ */
+typedef enum
+{
+	CALC_LAB_EQUIPMENT_DATA_TYPE_NONE = 0,
+	CALC_LAB_EQUIPMENT_DATA_TYPE_STRING = 1,
+	CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST = 2,
+	CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST = 3,
+} CalcLabEquipmentDataType;
+
+/**
+ * CalcLabEquipmentData:
+ * @size: size of data to be sent
+ * @data: pointer to data to be sent
+ */
+typedef struct
+{
+	CalcLabEquipmentDataType type;
+	uint16_t size;
+	uint16_t items;
+	const uint8_t * data;
+	uint16_t index;
+	uint16_t unknown;
+	uint8_t vartype;
+} CalcLabEquipmentData;
+
+/**
  * CalcUpdate:
  * @text: a text to display about the current operation (locale used is those defined by tifiles_transcoding_set)
  * @cancel: set to 1 if transfer have to be cancelled
@@ -632,6 +666,8 @@ typedef struct
 	uint8_t		exact_math;
 	uint8_t		clock_support;
 	uint8_t		color_screen;
+	uint8_t		python_on_board;
+	char		user_defined_id[32];
 } CalcInfos;
 
 /**
@@ -663,6 +699,8 @@ typedef struct
  * @change_attr: change attributes of a variable
  * @send_all_vars_backup: send a fake backup (set of files and FlashApps)
  * @recv_all_vars_backup: request a fake backup (set of files and FlashApps)
+ * @send_lab_equipment_data: send data in a format suitable for lab equipment
+ * @get_lab_equipment_data: get data from a piece of lab equipment
  *
  * A structure containing pointers to functions implementing the various operations (potentially) supported by a hand-held.
  * !!! This structure is for private use !!!
@@ -714,6 +752,8 @@ struct _CalcFnctPtrs
 	int		(*send_all_vars_backup)	(CalcHandle*, FileContent*);
 	int		(*recv_all_vars_backup)	(CalcHandle*, FileContent*);
 
+	int		(*send_lab_equipment_data)	(CalcHandle*, CalcModel, CalcLabEquipmentData *);
+	int		(*get_lab_equipment_data)	(CalcHandle*, CalcModel, CalcLabEquipmentData *);
 };
 
 /**
@@ -837,6 +877,7 @@ typedef struct
 	int attached;
 	int open;
 	CalcFnctsIdx operation;
+	CalcModel model;
 	union
 	{
 		int intval;
@@ -849,6 +890,7 @@ typedef struct
 		NSPRawPacketA nsp_rpkt;
 		NSPVirtualPacket nsp_vpkt;
 		ROMDumpPacket romdump_pkt;
+		CalcLabEquipmentData labeq_data;
 		struct
 		{
 			void * data;
@@ -1030,6 +1072,9 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_calc_send_all_vars_backup(CalcHandle *handle, FileContent*);
 	TIEXPORT3 int TICALL ticalcs_calc_recv_all_vars_backup(CalcHandle *handle, FileContent*);
 
+	TIEXPORT3 int TICALL ticalcs_calc_send_lab_equipment_data(CalcHandle *handle, CalcModel, CalcLabEquipmentData *);
+	TIEXPORT3 int TICALL ticalcs_calc_get_lab_equipment_data(CalcHandle *handle, CalcModel, CalcLabEquipmentData *);
+
 	TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle *handle, TigContent*, TigMode);
 	TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle *handle, TigContent*, TigMode);
 
@@ -1050,6 +1095,10 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle *handle, const char*);
 
 	TIEXPORT3 int TICALL ticalcs_calc_send_os2(CalcHandle *handle, const char*);
+
+	TIEXPORT3 int TICALL ticalcs_calc_send_lab_equipment_data2(CalcHandle *handle, CalcModel, uint8_t, const char *);
+	TIEXPORT3 int TICALL ticalcs_calc_get_lab_equipment_data2(CalcHandle *handle, CalcModel, uint8_t, const char **);
+	TIEXPORT3 void TICALL ticalcs_free_lab_equipment_data2(char * data);
 
 	TIEXPORT3 int TICALL ticalcs_calc_send_tigroup2(CalcHandle *handle, const char*, TigMode);
 	TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup2(CalcHandle *handle, const char*, TigMode);
