@@ -318,6 +318,7 @@ static inline void ticalcs_event_fill_header(CalcHandle * handle, CalcEventData 
 	event->attached = handle->attached;
 	event->open = handle->open;
 	event->operation = operation;
+	event->model = handle->model;
 }
 
 static inline void ticalcs_event_fill_dbus_pkt(CalcEventData * event, uint16_t length, uint8_t id, uint8_t cmd, uint8_t * data)
@@ -374,6 +375,17 @@ static inline void ticalcs_event_fill_romdump_pkt(CalcEventData * event, uint16_
 	event->data.romdump_pkt.data = data;
 }
 
+static inline void ticalcs_event_fill_lab_equipment_data(CalcEventData * event, CalcLabEquipmentDataType type, uint16_t size, uint16_t items, const uint8_t * data, uint16_t index, uint16_t unknown, uint8_t vartype)
+{
+	event->data.labeq_data.type = type;
+	event->data.labeq_data.size = size;
+	event->data.labeq_data.items = items;
+	event->data.labeq_data.data = data;
+	event->data.labeq_data.index = index;
+	event->data.labeq_data.unknown = unknown;
+	event->data.labeq_data.vartype = vartype;
+}
+
 static inline int ticalcs_event_send_simple_generic(CalcHandle * handle, CalcEventType type, int retval, CalcFnctsIdx operation)
 {
 	int ret = retval;
@@ -408,7 +420,9 @@ static inline int ticalcs_event_send(CalcHandle * handle, CalcEventData * event)
 	return ret;
 }
 
+
 // backup.c
+
 int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content);
 
 
@@ -443,6 +457,8 @@ int noop_rename_var (CalcHandle* handle, VarRequest* oldname, VarRequest* newnam
 int noop_change_attr (CalcHandle* handle, VarRequest* vr, FileAttr attr);
 int noop_send_all_vars_backup (CalcHandle* handle, FileContent* content);
 int noop_recv_all_vars_backup (CalcHandle* handle, FileContent* content);
+int noop_send_lab_equipment_data (CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
+int noop_get_lab_equipment_data (CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
 
 
 // calc_xx.c
@@ -472,5 +488,27 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 		ticalcs_critical("%s: " #attrs " is NULL", __FUNCTION__); \
 		return ERR_INVALID_PARAMETER; \
 	}
+
+
+// calclabequipmentdata.cc
+
+int tixx_convert_lab_equipment_data_string_to_ti8586_raw_list(const char * lab_equipment_data, CalcLabEquipmentData * out_data);
+int tixx_convert_lab_equipment_data_string_to_tiz80_raw_list(const char * lab_equipment_data, CalcLabEquipmentData * out_data);
+int tixx_convert_lab_equipment_data_string_to_ti68k_raw_list(const char * lab_equipment_data, CalcLabEquipmentData * out_data);
+int tixx_convert_lab_equipment_data_ti8586_raw_list_to_string(CalcLabEquipmentData * lab_equipment_data, uint32_t * out_item_count, double ** raw_values, const char ** out_data);
+int tixx_convert_lab_equipment_data_tiz80_raw_list_to_string(CalcLabEquipmentData * lab_equipment_data, uint32_t * out_item_count, double ** raw_values, const char ** out_data);
+int tixx_convert_lab_equipment_data_ti68k_raw_list_to_string(CalcLabEquipmentData * lab_equipment_data, uint32_t * out_item_count, double ** raw_values, const char ** out_data);
+void tixx_free_converted_lab_equipment_data_item(CalcLabEquipmentData * lab_equipment_data);
+void tixx_free_converted_lab_equipment_data_string(void * lab_equipment_data);
+void tixx_free_converted_lab_equipment_data_fpvals(double * raw_values);
+
+int tixx_send_lab_equipment_data(CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
+int tixx_get_lab_equipment_data(CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
+
+
+// ticalcs.cc
+
+int ticalcs_default_event_hook(CalcHandle * handle, uint32_t event_count, const CalcEventData * event, void * user_pointer);
+
 
 #endif // __TICALCS_INTERNAL__

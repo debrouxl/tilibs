@@ -1201,7 +1201,9 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	&rename_var, \
 	&noop_change_attr, \
 	&noop_send_all_vars_backup, \
-	&tixx_recv_all_vars_backup \
+	&tixx_recv_all_vars_backup, \
+	&noop_send_lab_equipment_data, \
+	&noop_get_lab_equipment_data \
 }
 
 extern const CalcFncts calc_nsp = 

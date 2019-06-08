@@ -496,6 +496,28 @@ int TICALL ti85_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t vartype, 
 	return 0;
 }
 
+int TICALL tiz80_send_RTS_lab_equipment_data(CalcHandle* handle, uint16_t varsize, uint8_t vartype, uint8_t target)
+{
+	uint8_t buffer[16];
+
+	VALIDATE_HANDLE(handle);
+
+	buffer[ 0] = LSB(varsize);
+	buffer[ 1] = MSB(varsize);
+	buffer[ 2] = vartype;
+	buffer[ 3] = 0x24;
+	buffer[ 4] = 0x00;
+	buffer[ 5] = 0x00;
+	buffer[ 6] = 0x00;
+	buffer[ 7] = 0x00;
+	buffer[ 8] = 0x00;
+	buffer[ 9] = 0x00;
+	buffer[10] = 0x00;
+
+	ticalcs_info(" PC->TI: Send({...}) (size=0x%04X=%i, id=%02X)", varsize, varsize, vartype);
+	return dbus_send(handle, target, DBUS_CMD_RTS, 11, buffer);
+}
+
 /* Send an invalid packet that causes the calc to execute assembly
    code stored in the most recently transferred variable.
 

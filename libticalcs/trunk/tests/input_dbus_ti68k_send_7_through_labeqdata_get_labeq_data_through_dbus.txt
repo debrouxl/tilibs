@@ -1,0 +1,19 @@
+version 0
+send_lab_equipment_data 8 4
+{7}
+dbus_send_pkt 0x89 0xA2 6
+00 00 00 00 04 00
+
+dbus_recv_header
+dbus_recv_header
+buffer_peek_data le16 2 r1
+dbus_recv_data 0 r1
+buffer_peek_data le32 4 r1
+dbus_send_pkt 0x89 0x56 0
+dbus_send_pkt 0x89 0x09 0
+dbus_recv_header
+dbus_recv_header
+buffer_peek_data le16 2 r1
+dbus_recv_data 0 r1
+dbus_send_pkt 0x89 0x56 0
+exit

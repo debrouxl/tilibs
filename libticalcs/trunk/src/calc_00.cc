@@ -206,6 +206,18 @@ int noop_recv_all_vars_backup (CalcHandle* handle, FileContent* content)
 	return 0;
 }
 
+int noop_send_lab_equipment_data (CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data)
+{
+	(void)handle, (void)model, (void)data;
+	return 0;
+}
+
+int noop_get_lab_equipment_data (CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data)
+{
+	(void)handle, (void)model, (void)data;
+	return 0;
+}
+
 extern const CalcFncts calc_00 = 
 {
 	CALC_NONE,
@@ -242,7 +254,9 @@ extern const CalcFncts calc_00 =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "",     /* send_all_vars_backup */
-	 ""      /* recv_all_vars_backup */ },
+	 "",     /* recv_all_vars_backup */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&noop_is_ready,
 	&noop_send_key,
 	&noop_execute,
@@ -271,5 +285,7 @@ extern const CalcFncts calc_00 =
 	&noop_rename_var,
 	&noop_change_attr,
 	&noop_send_all_vars_backup,
-	&noop_recv_all_vars_backup
+	&noop_recv_all_vars_backup,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };

@@ -509,6 +509,11 @@ char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigne
 	case CALC_TI83P:
 	case CALC_TI84P:
 	case CALC_TI84PC:
+	case CALC_CBL:    // FIXME is that correct ?
+	case CALC_CBR:
+	case CALC_CBL2:
+	case CALC_CBR2:
+	case CALC_LABPRO:
 		dst = detokenize_vartype(model, src, type);
 		if (dst)
 		{
@@ -552,6 +557,7 @@ char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigne
 	case CALC_NSPIRE_CXIIT:
 	case CALC_NSPIRE_CXIIT_CAS:
 		return g_strdup(src);
+	case CALC_TIPRESENTER:
 	default:
 		return g_strdup("________");
 	}
@@ -743,7 +749,7 @@ char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_, unsigned
  * This function is mostly meant for internal use: duplicating a non-tokenized string with the same allocation function ticonv_varname_tokenize(),
  * so that it can be passed to ticonv_varname_free().
  **/
-TIEXPORT4 char* TICALL ticonv_varname_strdup(char * varname)
+char* TICALL ticonv_varname_strdup(char * varname)
 {
 	if (NULL == varname)
 	{
