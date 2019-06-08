@@ -420,6 +420,31 @@ void translate_usb_device_info(CableDeviceInfo *info, const USBCableInfo *usbinf
 		info->family = CABLE_FAMILY_USB_NSPIRE_CXII;
 		info->variant = CABLE_VARIANT_NSPIRE_CXII;
 	}
+	else if (usbinfo->pid == PID_LABPRO)
+	{
+		info->family = CABLE_FAMILY_USB_LABPRO;
+		info->variant = CABLE_VARIANT_LABPRO;
+	}
+	else if (usbinfo->pid == PID_EASYTEMP_GOTEMP)
+	{
+		info->family = CABLE_FAMILY_USB_EASYTEMP_GOTEMP;
+		info->variant = CABLE_VARIANT_EASYTEMP_GOTEMP;
+	}
+	else if (usbinfo->pid == PID_EASYLINK_GOLINK)
+	{
+		info->family = CABLE_FAMILY_USB_EASYLINK_GOLINK;
+		info->variant = CABLE_VARIANT_EASYLINK_GOLINK;
+	}
+	else if (usbinfo->pid == PID_CBR2_GOMOTION)
+	{
+		info->family = CABLE_FAMILY_USB_CBR2_GOMOTION;
+		info->variant = CABLE_VARIANT_CBR2_GOMOTION;
+	}
+	else if (usbinfo->pid == PID_GODIRECT)
+	{
+		info->family = CABLE_FAMILY_USB_GODIRECT;
+		info->variant = CABLE_VARIANT_GODIRECT;
+	}
 	else
 	{
 		ticables_critical("unknown PID %x", usbinfo->pid);

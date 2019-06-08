@@ -74,6 +74,17 @@ const char * TICALL ticonv_model_to_string(CalcModel model)
 	case CALC_NSPIRE_CXIIT: return "TI-Nspire CX II-T";
 	case CALC_NSPIRE_CXIIT_CAS: return "TI-Nspire CX II-T CAS";
 	case CALC_TI82AEP_USB: return "TI-82 Advanced Edition Python";
+	case CALC_TIPRESENTER: return "TI-Presenter";
+	case CALC_CBL: return "TI-CBL";
+	case CALC_CBR: return "TI-CBR";
+	case CALC_CBL2: return "TI-CBL2";
+	case CALC_CBR2: return "TI-CBR2";
+	case CALC_LABPRO: return "Vernier LabPro";
+	case CALC_LABPRO_USB: return "Vernier LabPro (USB)";
+	case CALC_EASYTEMP_GOTEMP_USB: return "Vernier EasyTemp / Go! Temp";
+	case CALC_EASYLINK_GOLINK_USB: return "Vernier EasyLink / Go! Link";
+	case CALC_CBR2_GOMOTION_USB: return "Vernier Go! Motion";
+	case CALC_GODIRECT_USB: return "Vernier Go! Direct";
 	default: return "unknown";
 	}
 }
@@ -413,6 +424,68 @@ CalcModel TICALL ticonv_string_to_model(const char *str)
 		         || !g_ascii_strcasecmp(str, "CXIITCAS")
 		        )
 			return CALC_NSPIRE_CXIIT_CAS;
+		else if (   !g_ascii_strcasecmp(str, "TI-Presenter")
+		         || !g_ascii_strcasecmp(str, "TI Presenter")
+		         || !g_ascii_strcasecmp(str, "Presenter")
+		        )
+			return CALC_TIPRESENTER;
+		else if (   !g_ascii_strcasecmp(str, "TI-CBL")
+		         || !g_ascii_strcasecmp(str, "TI CBL")
+		         || !g_ascii_strcasecmp(str, "Vernier CBL")
+		         || !g_ascii_strcasecmp(str, "CBL")
+		        )
+			return CALC_CBL;
+		else if (   !g_ascii_strcasecmp(str, "TI-CBR")
+		         || !g_ascii_strcasecmp(str, "TI CBR")
+		         || !g_ascii_strcasecmp(str, "Vernier CBR")
+		         || !g_ascii_strcasecmp(str, "CBR")
+		        )
+			return CALC_CBR;
+		else if (   !g_ascii_strcasecmp(str, "TI-CBL2")
+		         || !g_ascii_strcasecmp(str, "TI CBL2")
+		         || !g_ascii_strcasecmp(str, "Vernier CBL2")
+		         || !g_ascii_strcasecmp(str, "CBL2")
+		        )
+			return CALC_CBL2;
+		else if (   !g_ascii_strcasecmp(str, "TI-CBR2")
+		         || !g_ascii_strcasecmp(str, "TI CBR2")
+		         || !g_ascii_strcasecmp(str, "Vernier CBR2")
+		         || !g_ascii_strcasecmp(str, "CBR2")
+		        )
+			return CALC_CBR2;
+		else if (   !g_ascii_strcasecmp(str, "Vernier LabPro")
+		         || !g_ascii_strcasecmp(str, "LabPro")
+		        )
+			return CALC_LABPRO;
+		else if (   !g_ascii_strcasecmp(str, "Vernier LabPro (USB)")
+		         || !g_ascii_strcasecmp(str, "LabPro USB")
+		        )
+			return CALC_LABPRO_USB;
+		else if (   !g_ascii_strcasecmp(str, "Vernier EasyTemp")
+		         || !g_ascii_strcasecmp(str, "Go! Temp")
+		         || !g_ascii_strcasecmp(str, "Go Temp")
+		         || !g_ascii_strcasecmp(str, "GoTemp")
+		         || !g_ascii_strcasecmp(str, "EasyTemp")
+		        )
+			return CALC_EASYTEMP_GOTEMP_USB;
+		else if (   !g_ascii_strcasecmp(str, "Vernier EasyLink")
+		         || !g_ascii_strcasecmp(str, "Vernier Go! Link")
+		         || !g_ascii_strcasecmp(str, "Go! Link")
+		         || !g_ascii_strcasecmp(str, "Go Link")
+		         || !g_ascii_strcasecmp(str, "GoLink")
+		         || !g_ascii_strcasecmp(str, "EasyLink")
+		        )
+			return CALC_EASYLINK_GOLINK_USB;
+		else if (   !g_ascii_strcasecmp(str, "Vernier Go! Motion")
+		         || !g_ascii_strcasecmp(str, "Go! Motion")
+		         || !g_ascii_strcasecmp(str, "Go Motion")
+		        )
+			return CALC_CBR2_GOMOTION_USB;
+		else if (   !g_ascii_strcasecmp(str, "Vernier Go Direct")
+		         || !g_ascii_strcasecmp(str, "Go! Direct")
+		         || !g_ascii_strcasecmp(str, "Go Direct")
+		        )
+			return CALC_GODIRECT_USB;
 	}
 
 	return CALC_NONE;

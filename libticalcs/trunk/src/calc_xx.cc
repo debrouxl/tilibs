@@ -1468,9 +1468,151 @@ int TICALL ticalcs_calc_recv_all_vars_backup(CalcHandle* handle, FileContent* co
 	return ret;
 }
 
+/**
+ * ticalcs_calc_send_lab_equipment_data:
+ * @handle: a previously allocated handle
+ * @model: calculator model used by the computer. It selects the wire protocol family: TI-68k for TI-68k calculators and the TI-68k-speaking lab equipment (CBL, CBR, CBL2, CBR2, LabPro), TI-Z80 or TI-85/86 for the other models.
+ * @lab_equipment_data: a pointer to a #CalcLabEquipmentData structure describing the data to send
+ *
+ * Send list data, i.e. Send({...}), for the models which support it.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+int TICALL ticalcs_calc_send_lab_equipment_data(CalcHandle *handle, CalcModel model, CalcLabEquipmentData * lab_equipment_data)
+{
+	const CalcFncts *calc;
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(lab_equipment_data);
+
+	calc = handle->calc;
+	VALIDATE_CALCFNCTS(calc);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	ticalcs_info("%s", _("Sending lab equipment data:"));
+	handle->busy = 1;
+	if (calc->fncts.send_lab_equipment_data)
+	{
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_LAB_EQUIPMENT_DATA);
+		event.model = model;
+		ticalcs_event_fill_lab_equipment_data(&event, lab_equipment_data->type, lab_equipment_data->size, lab_equipment_data->items, lab_equipment_data->data, lab_equipment_data->sensor_mask, lab_equipment_data->sensor_number, lab_equipment_data->vartype, lab_equipment_data->varname);
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->fncts.send_lab_equipment_data(handle, model, lab_equipment_data);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_LAB_EQUIPMENT_DATA);
+		event.model = model;
+		ticalcs_event_fill_lab_equipment_data(&event, lab_equipment_data->type, lab_equipment_data->size, lab_equipment_data->items, lab_equipment_data->data, lab_equipment_data->sensor_mask, lab_equipment_data->sensor_number, lab_equipment_data->vartype, lab_equipment_data->varname);
+		ret = ticalcs_event_send(handle, &event);
+	}
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_get_lab_equipment_data:
+ * @handle: a previously allocated handle
+ * @model: calculator model used by the computer. It selects the wire protocol family: TI-68k for TI-68k calculators and the TI-68k-speaking lab equipment (CBL, CBR, CBL2, CBR2, LabPro), TI-Z80 or TI-85/86 for the other models.
+ * @lab_equipment_data: a pointer to a #CalcLabEquipmentData structure describing the data to request. On success, the library allocates @data, which must be freed by calling #ticalcs_calc_free_lab_equipment_data().
+ *
+ * Get list data, i.e. Get <variable>, for the models which support it.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+int TICALL ticalcs_calc_get_lab_equipment_data(CalcHandle *handle, CalcModel model, CalcLabEquipmentData * lab_equipment_data)
+{
+	const CalcFncts *calc;
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(lab_equipment_data);
+
+	calc = handle->calc;
+	VALIDATE_CALCFNCTS(calc);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	ticalcs_info("%s", _("Requesting lab equipment data:"));
+	handle->busy = 1;
+	if (calc->fncts.get_lab_equipment_data)
+	{
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_GET_LAB_EQUIPMENT_DATA);
+		event.model = model;
+		memset((void *)&event.data.labeq_data, 0, sizeof(event.data.labeq_data));
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->fncts.get_lab_equipment_data(handle, model, lab_equipment_data);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_GET_LAB_EQUIPMENT_DATA);
+		event.model = model;
+		ticalcs_event_fill_lab_equipment_data(&event, lab_equipment_data->type, lab_equipment_data->size, lab_equipment_data->items, lab_equipment_data->data, lab_equipment_data->sensor_mask, lab_equipment_data->sensor_number, lab_equipment_data->vartype, lab_equipment_data->varname);
+		ret = ticalcs_event_send(handle, &event);
+	}
+	handle->busy = 0;
+
+	return ret;
+}
 
 // ---
 
+/**
+ * ticalcs_calc_control_lab_equipment:
+ * @handle: a previously allocated handle
+ * @model: calculator model used by the computer (see #ticalcs_calc_send_lab_equipment_data)
+ * @params: a pointer to a #CalcLabEquipmentParameters structure describing the requested setup and
+ *          control actions, or NULL to run the device's default initialization
+ *
+ * Initializes and controls a piece of lab equipment: the setup fields are applied only when they
+ * differ from their "leave unchanged" values, and the action flags may be combined.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+int TICALL ticalcs_calc_control_lab_equipment(CalcHandle *handle, CalcModel model, CalcLabEquipmentParameters * params)
+{
+	const CalcFncts *calc;
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+
+	calc = handle->calc;
+	VALIDATE_CALCFNCTS(calc);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	handle->busy = 1;
+	if (calc->fncts.control_lab_equipment)
+	{
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_CONTROL_LAB_EQUIPMENT_DATA);
+		event.model = model;
+		memset((void *)&event.data, 0, sizeof(event.data));
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->fncts.control_lab_equipment(handle, model, params);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_CONTROL_LAB_EQUIPMENT_DATA);
+		event.model = model;
+		memset((void *)&event.data, 0, sizeof(event.data));
+		ret = ticalcs_event_send(handle, &event);
+	}
+	handle->busy = 0;
+
+	return ret;
+}
 
 /**
  * ticalcs_calc_send_backup2:
@@ -1823,7 +1965,7 @@ int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* filename)
  * @handle: a previously allocated handle
  * @filename: name of file
  *
- * Send a FLASH app.
+ * Send an OS.
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
@@ -1851,6 +1993,88 @@ int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filename)
 	return ret;
 }
 
+/**
+ * ticalcs_calc_send_lab_equipment_datastr:
+ * @handle: a previously allocated handle
+ * @model: calculator model used by the computer (see #ticalcs_calc_send_lab_equipment_data)
+ * @vartype: variable type, only value 4 (list) is supported, for now
+ * @data: list data in convenient text form, i.e. "{1,2,3}" (numbers may be signed, floating-point, and use an exponent)
+ *
+ * Send list data, i.e. Send({...}), for the models which support it.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+int TICALL ticalcs_calc_send_lab_equipment_datastr(CalcHandle *handle, CalcModel model, uint8_t vartype, const char * data)
+{
+	int ret;
+	CalcLabEquipmentData lab_equipment_data;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(data);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	ticalcs_fill_lab_equipment_data(&lab_equipment_data, CALC_LAB_EQUIPMENT_DATA_TYPE_STRING, (uint16_t)(strlen(data) + 1), 0, (const uint8_t *)data, nullptr, vartype, 0, 0);
+	ret = ticalcs_calc_send_lab_equipment_data(handle, model, &lab_equipment_data);
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_get_lab_equipment_datastr:
+ * @handle: a previously allocated handle
+ * @model: calculator model used by the computer (see #ticalcs_calc_get_lab_equipment_data)
+ * @vartype: variable type, only value 4 (list) is supported, for now
+ * @data: pointer to output list data in convenient text form. The returned string must be freed by calling #ticalcs_free_lab_equipment_data_related().
+ *
+ * Get list data, i.e. Get <variable>, for the models which support it.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+int TICALL ticalcs_calc_get_lab_equipment_datastr(CalcHandle *handle, CalcModel model, uint8_t vartype, const char ** data)
+{
+	int ret;
+	CalcLabEquipmentData lab_equipment_data;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(data);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	ticalcs_fill_lab_equipment_data(&lab_equipment_data, CALC_LAB_EQUIPMENT_DATA_TYPE_NONE, 0, 0, nullptr, nullptr, vartype, 0, 0);
+	ret = ticalcs_calc_get_lab_equipment_data(handle, model, &lab_equipment_data);
+	if (!ret)
+	{
+		uint32_t item_count;
+		long double * raw_values = nullptr;
+		char * string_data = nullptr;
+		ret = ticalcs_convert_lab_equipment_data_to_string(&lab_equipment_data, &item_count, &raw_values, &string_data);
+		if (!ret)
+		{
+			*data = string_data;
+		}
+		else
+		{
+			ticalcs_free_lab_equipment_data_related(string_data);
+		}
+		ticalcs_free_lab_equipment_data_related(raw_values);
+	}
+	// Release the raw data buffer, whether or not the operation succeeded.
+	ticalcs_calc_free_lab_equipment_data(&lab_equipment_data);
+
+	return ret;
+}
+
+/**
+ * ticalcs_free_lab_equipment_data_related:
+ * @data: previously allocated list data (string)
+ *
+ * Frees a string previously allocated by ticalcs_calc_get_lab_equipment_datastr().
+ */
 /**
  * ticalcs_calc_recv_cert2:
  * @handle: a previously allocated handle

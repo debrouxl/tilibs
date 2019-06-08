@@ -79,6 +79,7 @@
 #define MAX_CABLES   4
 
 #define VID_TI       0x0451     /* Texas Instruments, Inc.            */
+#define VID_VERNIER  0x08F7     /* Vernier Software & Technology      */
 
 #define to           (100 * h->timeout)        // in ms
 
@@ -97,14 +98,19 @@ typedef struct
 // list of known devices
 static usb_infos tigl_infos[] =
 {
-	{VID_TI, PID_TIGLUSB,       "TI-GRAPH LINK USB",           NULL},
-	{VID_TI, PID_TI84P,         "TI-84 Plus Hand-Held",        NULL},
-	{VID_TI, PID_TI89TM,        "TI-89 Titanium Hand-Held",    NULL},
-	{VID_TI, PID_TI84P_SE,      "TI-84 Plus Silver Hand-Held", NULL},
-	{VID_TI, PID_NSPIRE,        "TI-Nspire Hand-Held",         NULL},
-	{VID_TI, PID_NSPIRE_CRADLE, "TI-Nspire Cradle",            NULL},
-	{VID_TI, PID_NSPIRE_CXII,   "TI-Nspire CX II Hand-Held",   NULL},
-	{0,      0,                 NULL,                          NULL}
+	{VID_TI,      PID_TIGLUSB,         "TI-GRAPH LINK USB",           NULL},
+	{VID_TI,      PID_TI84P,           "TI-84 Plus Hand-Held",        NULL},
+	{VID_TI,      PID_TI89TM,          "TI-89 Titanium Hand-Held",    NULL},
+	{VID_TI,      PID_TI84P_SE,        "TI-84 Plus Silver Hand-Held", NULL},
+	{VID_TI,      PID_NSPIRE,          "TI-Nspire Hand-Held",         NULL},
+	{VID_TI,      PID_NSPIRE_CRADLE,   "TI-Nspire Cradle",            NULL},
+	{VID_TI,      PID_NSPIRE_CXII,     "TI-Nspire CX II Hand-Held",   NULL},
+	{VID_VERNIER, PID_LABPRO,          "Vernier LabPro",              NULL},
+	{VID_VERNIER, PID_EASYTEMP_GOTEMP, "Vernier EasyTemp / Go! Temp", NULL},
+	{VID_VERNIER, PID_EASYLINK_GOLINK, "Vernier EasyLink / Go! Link", NULL},
+	{VID_VERNIER, PID_CBR2_GOMOTION,   "Vernier CBR2 / Go! Motion",   NULL},
+	{VID_VERNIER, PID_GODIRECT,        "Vernier Go! Direct",          NULL},
+	{0,           0,                   NULL,                          NULL}
 };
 
 // list of devices found
@@ -147,6 +153,23 @@ static int completed = 0;
 #if !HAVE_LIBUSB10_STRERROR
 #error Please use a version of libusb 1.0 which provides libusb_strerror() (>= 1.0.16).
 #endif
+
+// Helper functions for Vernier devices:
+// * the LabPro uses bulk transfers, so it uses the same code paths as TI calculators;
+// * the Go! Temp, Go! Link and Go! Motion devices are HID-style devices: commands are sent as class
+//   control transfers (SET_REPORT, report ID 1), and responses arrive on the interrupt IN endpoint,
+//   one 8-byte packet at a time;
+// * the Go Direct devices are HID devices as well, but they use 64-byte interrupt transfers in both
+//   directions, with the packet length in the first byte of each transfer.
+static int is_hid_style_device(uint16_t pid)
+{
+	return pid == PID_EASYTEMP_GOTEMP || pid == PID_EASYLINK_GOLINK || pid == PID_CBR2_GOMOTION;
+}
+
+static int is_gdx_style_device(uint16_t pid)
+{
+	return pid == PID_GODIRECT;
+}
 
 static void tigl_get_product(char * string, size_t maxlen, struct libusb_device *dev)
 {
@@ -204,11 +227,11 @@ static int tigl_find(void)
 			fprintf(stderr, "failed to get device descriptor");
 			return r;
 		}
-		if (desc.idVendor == VID_TI)
+		if (desc.idVendor == VID_TI || desc.idVendor == VID_VERNIER)
 		{
-			for(k = 0; k < (int)(sizeof(tigl_infos) / sizeof(tigl_infos[0])); k++)
+			for (k = 0; k < (int)(sizeof(tigl_infos) / sizeof(tigl_infos[0])); k++)
 			{
-				if (desc.idProduct == tigl_infos[k].pid)
+				if (desc.idVendor == tigl_infos[k].vid && desc.idProduct == tigl_infos[k].pid)
 				{
 					tigl_devices[j].vid = desc.idVendor;
 					tigl_devices[j].pid = desc.idProduct;
@@ -277,6 +300,15 @@ static int tigl_open(int id, libusb_device_handle ** udh)
 		}
 
 		/* Interface #0 for the selected configuration. */
+		if ((is_hid_style_device(tigl_devices[id].pid) || is_gdx_style_device(tigl_devices[id].pid)) && libusb_kernel_driver_active(*udh, 0) == 1)
+		{
+			// The Go! family devices are HID devices, so the usbhid kernel driver grabs them by default.
+			ret = libusb_detach_kernel_driver(*udh, 0);
+			if (ret)
+			{
+				ticables_warning("libusb_detach_kernel_driver (%s).\n", libusb_strerror((libusb_error)ret));
+			}
+		}
 		ret = libusb_claim_interface(*udh, 0);
 		if (ret)
 		{
@@ -388,6 +420,8 @@ static int slv_open(CableHandle *h)
 	const struct libusb_interface *interface_;
 	const struct libusb_interface_descriptor *interface;
 	const struct libusb_endpoint_descriptor *endpoint;
+	const int hid_style = is_hid_style_device(tigl_devices[h->address].pid);
+	const int gdx_style = is_gdx_style_device(tigl_devices[h->address].pid);
 
 	// open device
 	ret = tigl_open(h->address, &uHdl);
@@ -417,7 +451,29 @@ static int slv_open(CableHandle *h)
 	for (i = 0; i < interface->bNumEndpoints; i++)
 	{
 		endpoint = &(interface->endpoint[i]);
-		if ((endpoint->bmAttributes & LIBUSB_TRANSFER_TYPE_BULK) == LIBUSB_TRANSFER_TYPE_BULK)
+		if (hid_style || gdx_style)
+		{
+			// The Go! family devices return one 8-byte report per interrupt transfer, while the
+			// Go Direct devices use 64-byte interrupt transfers in both directions.
+			if ((endpoint->bmAttributes & LIBUSB_TRANSFER_TYPE_INTERRUPT) == LIBUSB_TRANSFER_TYPE_INTERRUPT)
+			{
+				if (endpoint->bEndpointAddress & LIBUSB_ENDPOINT_IN)
+				{
+					uInEnd = endpoint->bEndpointAddress;
+					ticables_info("found interrupt in endpoint 0x%02X\n", uInEnd);
+					if (endpoint->wMaxPacketSize < max_ps)
+					{
+						max_ps = endpoint->wMaxPacketSize;
+					}
+				}
+				else if (gdx_style)
+				{
+					uOutEnd = endpoint->bEndpointAddress;
+					ticables_info("found interrupt out endpoint 0x%02X\n", uOutEnd);
+				}
+			}
+		}
+		else if ((endpoint->bmAttributes & LIBUSB_TRANSFER_TYPE_BULK) == LIBUSB_TRANSFER_TYPE_BULK)
 		{
 			if (endpoint->bEndpointAddress & LIBUSB_ENDPOINT_IN)
 			{
@@ -440,6 +496,28 @@ static int slv_open(CableHandle *h)
 	}
 	nBytesRead = 0;
 	was_max_ps = 0;
+
+	if (hid_style || gdx_style)
+	{
+		// Flush any stale data left over from a previous session, like Vernier's GoIO SDK does on open.
+		// The loop exits as soon as a read times out, i.e. once the pipe is drained.
+		uint8_t buf[64];
+		int bytesReceived;
+		do
+		{
+			int r = libusb_interrupt_transfer(uHdl, uInEnd, buf, sizeof(buf), &bytesReceived, 10);
+			if ((0 != r) && (LIBUSB_ERROR_TIMEOUT != r))
+			{
+				ticables_warning("Failed to flush stale data (%s).\n", libusb_strerror((libusb_error)r));
+				break;
+			}
+			if (bytesReceived > 0)
+			{
+				ticables_info("Flushed %d stale bytes from Vernier device.\n", bytesReceived);
+			}
+		}
+		while (bytesReceived > 0);
+	}
 
 	return 0;
 }
@@ -519,24 +597,38 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
 		return ERR_WRITE_ERROR;
 	}
 
-	ret = libusb_bulk_transfer(uHdl, uOutEnd, (unsigned char*)data, length, &tmp, to);
-
-	if (ret == LIBUSB_ERROR_TIMEOUT)
+	if (is_hid_style_device(tigl_devices[h->address].pid))
 	{
-		ticables_warning("libusb_bulk_transfer (%s).\n", libusb_strerror((libusb_error)ret));
-		return ERR_WRITE_TIMEOUT;
+		// The Go! family devices are HID-style: send the 8-byte command as a class control transfer
+		// (SET_REPORT, report ID 1), like Vernier's GoIO SDK does.
+		ret = libusb_control_transfer(uHdl,
+		                              LIBUSB_RECIPIENT_INTERFACE | LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_ENDPOINT_OUT,
+		                              /* bRequest */ 0x09 /* SET_REPORT */, /* wValue */ (1 << 8) /* report ID 1 */,
+		                              /* wIndex */ 0, (unsigned char *)data, length, to);
+		if (ret != length)
+		{
+			ticables_warning("libusb_control_transfer (%s).\n", libusb_strerror((libusb_error)ret));
+			return ERR_WRITE_ERROR;
+		}
 	}
-	else if (ret < 0)
+	else if (is_gdx_style_device(tigl_devices[h->address].pid))
 	{
-		ticables_warning("libusb_bulk_transfer (%s).\n", libusb_strerror((libusb_error)ret));
-		return ERR_WRITE_ERROR;
+		// The Go Direct devices use 64-byte interrupt transfers.
+		ret = libusb_interrupt_transfer(uHdl, uOutEnd, (unsigned char*)data, length, &tmp, to);
+		if (ret == LIBUSB_ERROR_TIMEOUT)
+		{
+			ticables_warning("libusb_interrupt_transfer (%s).\n", libusb_strerror((libusb_error)ret));
+			return ERR_WRITE_TIMEOUT;
+		}
+		else if (ret < 0)
+		{
+			ticables_warning("libusb_interrupt_transfer (%s).\n", libusb_strerror((libusb_error)ret));
+			return ERR_WRITE_ERROR;
+		}
 	}
-
-	// FIXME do Nspire CX II calculators also need this ?
-	if ((tigl_devices[h->address].pid == PID_NSPIRE || tigl_devices[h->address].pid == PID_NSPIRE_CRADLE) && length % max_ps == 0)
+	else
 	{
-		ticables_info("XXX triggering an extra bulk write");
-		ret = libusb_bulk_transfer(uHdl, uOutEnd, (unsigned char*)data, 0, &tmp, to);
+		ret = libusb_bulk_transfer(uHdl, uOutEnd, (unsigned char*)data, length, &tmp, to);
 
 		if (ret == LIBUSB_ERROR_TIMEOUT)
 		{
@@ -547,6 +639,24 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
 		{
 			ticables_warning("libusb_bulk_transfer (%s).\n", libusb_strerror((libusb_error)ret));
 			return ERR_WRITE_ERROR;
+		}
+
+		// FIXME do Nspire CX II calculators also need this ?
+		if ((tigl_devices[h->address].pid == PID_NSPIRE || tigl_devices[h->address].pid == PID_NSPIRE_CRADLE) && length % max_ps == 0)
+		{
+			ticables_info("XXX triggering an extra bulk write");
+			ret = libusb_bulk_transfer(uHdl, uOutEnd, (unsigned char*)data, 0, &tmp, to);
+
+			if (ret == LIBUSB_ERROR_TIMEOUT)
+			{
+				ticables_warning("libusb_bulk_transfer (%s).\n", libusb_strerror((libusb_error)ret));
+				return ERR_WRITE_TIMEOUT;
+			}
+			else if (ret < 0)
+			{
+				ticables_warning("libusb_bulk_transfer (%s).\n", libusb_strerror((libusb_error)ret));
+				return ERR_WRITE_ERROR;
+			}
 		}
 	}
 
@@ -661,7 +771,16 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 		do
 		{
 			// NOTE: slv_get() has already checked for uHdl != NULL .
-			ret = slv_bulk_read(uHdl, uInEnd, (unsigned char*)rBuf, max_ps, &len, to);
+			if (is_hid_style_device(tigl_devices[h->address].pid) || is_gdx_style_device(tigl_devices[h->address].pid))
+			{
+				// The Go! family and Go Direct devices are HID-style: each interrupt transfer returns
+				// one report.
+				ret = libusb_interrupt_transfer(uHdl, uInEnd, (unsigned char*)rBuf, max_ps, &len, to);
+			}
+			else
+			{
+				ret = slv_bulk_read(uHdl, uInEnd, (unsigned char*)rBuf, max_ps, &len, to);
+			}
 		}
 		while(!len && !ret);
 
@@ -795,7 +914,10 @@ static int raw_probe(CableHandle *h)
 		    tigl_devices[h->address].pid == PID_TI84P_SE ||
 		    tigl_devices[h->address].pid == PID_NSPIRE ||
 		    tigl_devices[h->address].pid == PID_NSPIRE_CRADLE ||
-		    tigl_devices[h->address].pid == PID_NSPIRE_CXII)
+		    tigl_devices[h->address].pid == PID_NSPIRE_CXII ||
+		    is_hid_style_device(tigl_devices[h->address].pid) ||
+		    is_gdx_style_device(tigl_devices[h->address].pid) ||
+		    tigl_devices[h->address].pid == PID_LABPRO)
 		{
 			return 0;
 		}
@@ -821,6 +943,27 @@ static int slv_check(CableHandle *h, int *status)
 
 	if (NULL == uHdl)
 	{
+		return ERR_READ_ERROR;
+	}
+
+	if (is_hid_style_device(tigl_devices[h->address].pid) || is_gdx_style_device(tigl_devices[h->address].pid))
+	{
+		// The Go! family and Go Direct devices are HID-style: peek at the interrupt IN endpoint with a null timeout.
+		int len = 0;
+		r = libusb_interrupt_transfer(uHdl, uInEnd, (unsigned char *)rBuf, max_ps, &len, 0);
+		if (r == 0 && len > 0)
+		{
+			nBytesRead = len;
+			rBufPtr = rBuf;
+			*status = TRUE;
+			return 0;
+		}
+		else if (r == LIBUSB_ERROR_TIMEOUT)
+		{
+			*status = FALSE;
+			return 0;
+		}
+		*status = FALSE;
 		return ERR_READ_ERROR;
 	}
 

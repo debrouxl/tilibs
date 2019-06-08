@@ -173,14 +173,14 @@ int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen)
 		char clock_speed[15];
 		char lcd_width[20];
 		char lcd_height[20];
-		char bpp[14];
+		char bpp[20];
 		char color_screen[11];
-		char ram_phys[30];
-		char ram_user[30];
-		char ram_free[30];
-		char flash_phys[30];
-		char flash_user[30];
-		char flash_free[30];
+		char ram_phys[50];
+		char ram_user[50];
+		char ram_free[50];
+		char flash_phys[50];
+		char flash_user[50];
+		char flash_free[50];
 		char battery_level[20];
 		char color_depth[20];
 		char user_pages[20];
@@ -420,6 +420,7 @@ int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen)
 			(infos->mask & INFOS_BOOT2_VERSION) ? infos->boot2_version : "",
 			(infos->mask & INFOS_OS_VERSION) ? _("OS Version: ") : "",
 			(infos->mask & INFOS_OS_VERSION) ? infos->os_version : "",
+
 			(infos->mask & INFOS_RUN_LEVEL) ? _("Run level: ") : "",
 			(infos->mask & INFOS_RUN_LEVEL) ? ((infos->run_level == 2) ? "OS" : "boot") : "",
 			(infos->mask & INFOS_CLOCK_SPEED) ? _("Clock speed: ") : "",

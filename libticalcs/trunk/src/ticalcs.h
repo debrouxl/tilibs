@@ -167,31 +167,31 @@ typedef enum
 {
 	FTS_NONE = 0,
 
-	OPS_ISREADY     = (1 << 0),
-	OPS_KEYS        = (1 << 1),
-	OPS_SCREEN      = (1 << 2),
-	OPS_DIRLIST     = (1 << 3),
-	OPS_BACKUP      = (1 << 4),
-	OPS_VARS        = (1 << 5),
-	OPS_FLASH       = (1 << 6),
-	OPS_IDLIST      = (1 << 7),
-	OPS_CLOCK       = (1 << 8),
-	OPS_ROMDUMP     = (1 << 9),
-	OPS_VERSION     = (1 << 10),
-	OPS_NEWFLD      = (1 << 11),
-	OPS_DELVAR      = (1 << 12),
-	OPS_OS          = (1 << 13),
-	OPS_RENAME      = (1 << 14),
-	OPS_CHATTR      = (1 << 21),
+	OPS_ISREADY           = (1 << 0),
+	OPS_KEYS              = (1 << 1),
+	OPS_SCREEN            = (1 << 2),
+	OPS_DIRLIST           = (1 << 3),
+	OPS_BACKUP            = (1 << 4),
+	OPS_VARS              = (1 << 5),
+	OPS_FLASH             = (1 << 6),
+	OPS_IDLIST            = (1 << 7),
+	OPS_CLOCK             = (1 << 8),
+	OPS_ROMDUMP           = (1 << 9),
+	OPS_VERSION           = (1 << 10),
+	OPS_NEWFLD            = (1 << 11),
+	OPS_DELVAR            = (1 << 12),
+	OPS_OS                = (1 << 13),
+	OPS_RENAME            = (1 << 14),
+	OPS_CHATTR            = (1 << 21),
+	OPS_LABEQUIPMENTDATA  = (1 << 23),
 
-	FTS_SILENT      = (1 << 15),
-	FTS_FOLDER      = (1 << 16),
-	FTS_MEMFREE     = (1 << 17),
-	FTS_FLASH       = (1 << 18),
-	FTS_CERT        = (1 << 19),
-	FTS_BACKUP      = (1 << 20),
-	FTS_NONSILENT   = (1 << 22)
-
+	FTS_SILENT            = (1 << 15),
+	FTS_FOLDER            = (1 << 16),
+	FTS_MEMFREE           = (1 << 17),
+	FTS_FLASH             = (1 << 18),
+	FTS_CERT              = (1 << 19),
+	FTS_BACKUP            = (1 << 20),
+	FTS_NONSILENT         = (1 << 22)
 } CalcFeatures;
 
 /**
@@ -316,6 +316,9 @@ typedef enum
 	FNCT_CHATTR,
 	FNCT_SEND_ALL_VARS_BACKUP,
 	FNCT_RECV_ALL_VARS_BACKUP,
+	FNCT_CONTROL_LAB_EQUIPMENT,
+	FNCT_SEND_LAB_EQUIPMENT_DATA,
+	FNCT_GET_LAB_EQUIPMENT_DATA,
 	CALC_FNCT_LAST // Keep this one last
 } CalcFnctsIdx;
 
@@ -580,6 +583,81 @@ typedef struct
 } CalcClock;
 
 /**
+ * CalcLabEquipmentDataType:
+ * @CALC_LAB_EQUIPMENT_DATA_TYPE_NONE: placeholder for an uninitialized structure
+ * @CALC_LAB_EQUIPMENT_DATA_TYPE_STRING: list data in the convenient "{1,2,3}" text form (numbers may be signed, floating-point, and use an exponent; spaces are not accepted, for now)
+ * @CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST: raw list data in the wire format used by TI-68k calculators and the TI-68k-speaking lab equipment
+ * @CALC_LAB_EQUIPMENT_DATA_TYPE_TI8586_RAW_LIST: raw list data in the wire format used by TI-85/86 calculators
+ * @CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST: raw list data in the wire format used by TI-Z80 calculators
+ * @CALC_LAB_EQUIPMENT_DATA_TYPE_RAW: raw bytes exchanged verbatim with the device, without any interpretation by the library; used for the binary command/response protocol of the Go! Temp / Go! Link / Go! Motion devices, and for raw commands sent to Go! Direct devices
+ * @CALC_LAB_EQUIPMENT_DATA_TYPE_GDX_MEASUREMENT: a decoded measurement packet received from a Go Direct device; the values are returned as 32-bit little-endian floats in @data, with @items giving their count
+ *
+ * An enumeration which contains the following data types:
+ */
+typedef enum
+{
+	CALC_LAB_EQUIPMENT_DATA_TYPE_NONE = 0,
+	CALC_LAB_EQUIPMENT_DATA_TYPE_STRING = 1,
+	CALC_LAB_EQUIPMENT_DATA_TYPE_RAW = 2,
+	CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST = 3,
+	CALC_LAB_EQUIPMENT_DATA_TYPE_TI8586_RAW_LIST = 4,
+	CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST = 5,
+	CALC_LAB_EQUIPMENT_DATA_TYPE_GDX_MEASUREMENT = 6,
+} CalcLabEquipmentDataType;
+
+/**
+ * CalcLabEquipmentData:
+ * @type: type of the data carried in @data (see #CalcLabEquipmentDataType). Note that Get on TI-73/83/83+/84+ calculators produces #CALC_LAB_EQUIPMENT_DATA_TYPE_TI8586_RAW_LIST data (10-byte elements), unlike Send on those models which consumes #CALC_LAB_EQUIPMENT_DATA_TYPE_TIZ80_RAW_LIST data (9-byte elements): received lists must be re-encoded before being sent back.
+ * @size: size of the data pointed to by @data, in bytes. For a RAW-type Get, it announces the expected number of bytes to read.
+ * @items: number of elements in the list.
+ * @data: pointer to the data. For sending, the caller keeps ownership; for receiving, the library allocates the buffer, and it must be released by calling #ticalcs_calc_free_lab_equipment_data(). For the TI-68k raw list type, the data carries its own 32-bit little-endian item count before the payload, so that received data can be sent back as-is. For #CALC_LAB_EQUIPMENT_DATA_TYPE_GDX_MEASUREMENT, @data holds @items 32-bit little-endian floats.
+ * @sensor_mask: for #CALC_LAB_EQUIPMENT_DATA_TYPE_GDX_MEASUREMENT Gets: mask of the sensors the returned values belong to; zero when not applicable.
+ * @sensor_number: for #CALC_LAB_EQUIPMENT_DATA_TYPE_GDX_MEASUREMENT Gets from single-sensor packet types: number of the sensor the returned values belong to; zero when not applicable.
+ * @vartype: variable type byte as used in the wire headers of the selected protocol family (e.g. 4 for a TI-68k list, 1 for a TI-73/82/83/83+/84+ list, 4 for a TI-85/86 list); ignored where the protocol has no meaningful value.
+ * @varname: name of the variable to request with Get or to send to, or NULL for the default target. On send to TI-73/82/83/83+/84+/85/86 dialects, up to eight bytes are copied verbatim into the wire header's name field: pass a pre-encoded token sequence (e.g. ticonv_varname_tokenize() output) to select a named target.
+ */
+typedef struct
+{
+	CalcLabEquipmentDataType type;
+	uint16_t size;
+	uint16_t items;
+	const uint8_t * data;
+	const char * varname;
+	uint8_t vartype;
+	uint8_t sensor_number;
+	uint32_t sensor_mask;
+} CalcLabEquipmentData;
+
+/**
+ * CalcLabEquipmentParameters:
+ * @measurement_period: measurement period in seconds; 0 = use the device's default period (0.5 s for the CBL / CBR / CBL2 / CBR2 / LabPro, and the built-in default for the other devices)
+ * @led_color: LED color (Go! family, CBL2 and LabPro); 0xFF = leave unchanged
+ * @led_brightness: LED brightness; 0xFF = leave unchanged
+ * @analog_input_channel: analog input channel (Go! Link); 0xFF = leave unchanged
+ * @start_measurements: nonzero = start (or arm, for the legacy lab equipments) data collection after applying the requested setup
+ * @stop_measurements: nonzero = stop data collection
+ * @reset: nonzero = run the device's initialization/reset sequence first
+ * @sensor_mask: sensors to enable (Go Direct devices); 0 = use the device's default sensors
+ * @reserved: must be zero
+ *
+ * Parameters for initializing and controlling lab equipment through #ticalcs_calc_control_lab_equipment().
+ * The setup fields are applied only when they differ from their "leave unchanged" values, and the action
+ * flags may be combined, so that a single call can both configure and start the device.
+ */
+typedef struct
+{
+	double   measurement_period;
+	uint8_t  led_color;
+	uint8_t  led_brightness;
+	uint8_t  analog_input_channel;
+	uint8_t  start_measurements;
+	uint8_t  stop_measurements;
+	uint8_t  reset;
+	uint32_t sensor_mask;
+	uint32_t reserved;
+} CalcLabEquipmentParameters;
+
+/**
  * CalcUpdate:
  * @text: a text to display about the current operation (locale used is those defined by tifiles_transcoding_set)
  * @cancel: set to 1 if transfer have to be cancelled
@@ -718,6 +796,8 @@ typedef struct
  * @change_attr: change attributes of a variable
  * @send_all_vars_backup: send a fake backup (set of files and FlashApps)
  * @recv_all_vars_backup: request a fake backup (set of files and FlashApps)
+ * @send_lab_equipment_data: send data in a format suitable for lab equipment
+ * @get_lab_equipment_data: get data from a piece of lab equipment
  *
  * A structure containing pointers to functions implementing the various operations (potentially) supported by a hand-held.
  * !!! This structure is for private use !!!
@@ -769,6 +849,9 @@ struct _CalcFnctPtrs
 	int		(*send_all_vars_backup)	(CalcHandle*, FileContent*);
 	int		(*recv_all_vars_backup)	(CalcHandle*, FileContent*);
 
+	int		(*control_lab_equipment)	(CalcHandle*, CalcModel, CalcLabEquipmentParameters *);
+	int		(*send_lab_equipment_data)	(CalcHandle*, CalcModel, CalcLabEquipmentData *);
+	int		(*get_lab_equipment_data)	(CalcHandle*, CalcModel, CalcLabEquipmentData *);
 };
 
 /**
@@ -806,6 +889,9 @@ struct _CalcFnctPtrs
  * @change_attr: change attributes of a variable
  * @send_all_vars_backup: send a fake backup (set of files and FlashApps)
  * @recv_all_vars_backup: request a fake backup (set of files and FlashApps)
+ * @control_lab_equipment: initialize and control a piece of lab equipment
+ * @send_lab_equipment_data: send data to lab equipment
+ * @get_lab_equipment_data: get data from lab equipment
  *
  * A structure used for handling a hand-held.
  * !!! This structure is for private use !!!
@@ -892,6 +978,7 @@ typedef struct
 	int attached;
 	int open;
 	CalcFnctsIdx operation;
+	CalcModel model;
 	union
 	{
 		int intval;
@@ -904,6 +991,7 @@ typedef struct
 		NSPRawPacketA nsp_rpkt;
 		NSPVirtualPacket nsp_vpkt;
 		ROMDumpPacket romdump_pkt;
+		CalcLabEquipmentData labeq_data;
 		struct
 		{
 			void * data;
@@ -968,6 +1056,7 @@ struct _CalcHandle
 		uint16_t nsp_src_port;
 		uint16_t nsp_dst_port;
 		uint8_t dusb_needs_mode_set; // DUSB protocol resync requested
+		uint8_t gdx_rolling_counter;
 	} priv;
 };
 
@@ -1089,6 +1178,12 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_calc_send_all_vars_backup(CalcHandle *handle, FileContent*);
 	TIEXPORT3 int TICALL ticalcs_calc_recv_all_vars_backup(CalcHandle *handle, FileContent*);
 
+	TIEXPORT3 int TICALL ticalcs_calc_send_lab_equipment_data(CalcHandle *handle, CalcModel, CalcLabEquipmentData *);
+	TIEXPORT3 int TICALL ticalcs_calc_get_lab_equipment_data(CalcHandle *handle, CalcModel, CalcLabEquipmentData *);
+	TIEXPORT3 int TICALL ticalcs_calc_control_lab_equipment(CalcHandle *handle, CalcModel, CalcLabEquipmentParameters *);
+	TIEXPORT3 void TICALL ticalcs_calc_free_lab_equipment_data(CalcLabEquipmentData * lab_equipment_data);
+	TIEXPORT3 void TICALL ticalcs_free_lab_equipment_data_related(void * data);
+
 	TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle *handle, TigContent*, TigMode);
 	TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle *handle, TigContent*, TigMode);
 
@@ -1109,6 +1204,9 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle *handle, const char*);
 
 	TIEXPORT3 int TICALL ticalcs_calc_send_os2(CalcHandle *handle, const char*);
+
+	TIEXPORT3 int TICALL ticalcs_calc_send_lab_equipment_datastr(CalcHandle *handle, CalcModel, uint8_t, const char *);
+	TIEXPORT3 int TICALL ticalcs_calc_get_lab_equipment_datastr(CalcHandle *handle, CalcModel, uint8_t, const char **);
 
 	TIEXPORT3 int TICALL ticalcs_calc_send_tigroup2(CalcHandle *handle, const char*, TigMode);
 	TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup2(CalcHandle *handle, const char*, TigMode);

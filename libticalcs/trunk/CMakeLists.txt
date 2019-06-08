@@ -16,6 +16,11 @@ set(SRC_FILES
         src/calc_9x.cc
         src/calc_nsp.cc
         src/calc_xx.cc
+        src/calclabequipmentdata.cc
+        src/calclabequipmentlegacy.cc
+        src/calclabequipmentlabpro.cc
+        src/calclabequipmentgo.cc
+        src/calclabequipmentgdx.cc
         src/clock.cc
         src/cmd68k.cc
         src/cmdz80.cc
@@ -60,7 +65,8 @@ set(PUBLIC_HEADERS
         src/nsp_vpkt.h
         src/nsp_cmd.h
         src/cmdz80.h
-        src/cmd68k.h)
+        src/cmd68k.h
+        src/calclabequipmentdata.h)
 
 # auto-creation of all targets with flags etc., alongside with internal deps
 create_lib_target_with_deps(ticalcs2 tifiles2 ticables2 ticonv)
