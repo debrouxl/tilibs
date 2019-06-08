@@ -89,10 +89,11 @@ AC_CHECK_HEADERS([stdlib.h string.h time.h unistd.h])
 AC_C_BIGENDIAN
 AC_C_CONST
 AC_C_RESTRICT
+AX_CXX_COMPILE_STDCXX_11(noext, mandatory)
 
 # Checks for library functions.
 AC_PROG_GCC_TRADITIONAL
-AC_CHECK_FUNCS([bzero memmove memset strcasecmp strdup localtime_r asctime_r])
+AC_CHECK_FUNCS([bzero memmove memset strcasecmp strdup localtime_r asctime_r strtok_r strtok_s])
 
 # Platform specific tests.
 dnl AC_CANONICAL_HOST

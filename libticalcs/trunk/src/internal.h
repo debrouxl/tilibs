@@ -28,6 +28,7 @@
 #include "error.h"
 #include "pause.h"
 #include "macros.h"
+#include "calclabequipmentdata.h"
 
 #define VALIDATE_NONNULL(ptr) \
 	do \
@@ -325,6 +326,7 @@ static inline void ticalcs_event_fill_header(CalcHandle * handle, CalcEventData 
 	event->attached = handle->attached;
 	event->open = handle->open;
 	event->operation = operation;
+	event->model = handle->model;
 }
 
 static inline void ticalcs_event_fill_dbus_pkt(CalcEventData * event, uint16_t length, uint8_t id, uint8_t cmd, uint8_t * data)
@@ -381,6 +383,11 @@ static inline void ticalcs_event_fill_romdump_pkt(CalcEventData * event, uint16_
 	event->data.romdump_pkt.data = data;
 }
 
+static inline void ticalcs_event_fill_lab_equipment_data(CalcEventData * event, CalcLabEquipmentDataType type, uint16_t size, uint16_t items, const uint8_t * data, uint32_t sensor_mask, uint8_t sensor_number, uint8_t vartype, const char * varname)
+{
+	ticalcs_fill_lab_equipment_data(&event->data.labeq_data, type, size, items, data, varname, vartype, sensor_number, sensor_mask);
+}
+
 static inline int ticalcs_event_send_simple_generic(CalcHandle * handle, CalcEventType type, int retval, CalcFnctsIdx operation)
 {
 	int ret = retval;
@@ -415,7 +422,9 @@ static inline int ticalcs_event_send(CalcHandle * handle, CalcEventData * event)
 	return ret;
 }
 
+
 // backup.c
+
 int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content);
 
 
@@ -450,6 +459,9 @@ int noop_rename_var (CalcHandle* handle, VarRequest* oldname, VarRequest* newnam
 int noop_change_attr (CalcHandle* handle, VarRequest* vr, FileAttr attr);
 int noop_send_all_vars_backup (CalcHandle* handle, FileContent* content);
 int noop_recv_all_vars_backup (CalcHandle* handle, FileContent* content);
+int noop_control_lab_equipment (CalcHandle* handle, CalcModel model, CalcLabEquipmentParameters * params);
+int noop_send_lab_equipment_data (CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
+int noop_get_lab_equipment_data (CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
 
 
 // calc_xx.c
@@ -485,5 +497,38 @@ unsigned int ticalcs_nsp_error_count(void);
 		ticalcs_critical("%s: " #attrs " is NULL", __FUNCTION__); \
 		return ERR_INVALID_PARAMETER; \
 	}
+
+
+// calclabequipmentdata.cc
+
+// calclabequipmentlegacy.cc
+int tixx_control_lab_equipment_impl(CalcHandle* handle, CalcModel model, CalcLabEquipmentParameters * params,
+                                    int (*send)(CalcHandle *, CalcModel, CalcLabEquipmentData *));
+int tixx_control_lab_equipment_legacy(CalcHandle* handle, CalcModel model, CalcLabEquipmentParameters * params);
+int tixx_send_lab_equipment_data_legacy(CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
+int tixx_get_lab_equipment_data_legacy(CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
+
+// calclabequipmentlabpro.cc
+int tixx_control_lab_equipment_labpro_usb(CalcHandle* handle, CalcModel model, CalcLabEquipmentParameters * params);
+int tixx_send_lab_equipment_data_labpro_usb(CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
+int tixx_get_lab_equipment_data_labpro_usb(CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
+
+// calclabequipmentgo.cc
+int tixx_get_version_lab_equipment_usb_go(CalcHandle* handle, CalcInfos* infos);
+int tixx_control_lab_equipment_usb_go(CalcHandle* handle, CalcModel model, CalcLabEquipmentParameters * params);
+int tixx_send_lab_equipment_data_usb_go(CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
+int tixx_get_lab_equipment_data_usb_go(CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
+
+// calclabequipmentgdx.cc
+int tixx_get_version_lab_equipment_usb_gdx(CalcHandle* handle, CalcInfos* infos);
+int tixx_control_lab_equipment_usb_gdx(CalcHandle* handle, CalcModel model, CalcLabEquipmentParameters * params);
+int tixx_send_lab_equipment_data_usb_gdx(CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
+int tixx_get_lab_equipment_data_usb_gdx(CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
+
+
+// ticalcs.cc
+
+int ticalcs_default_event_hook(CalcHandle * handle, uint32_t event_count, const CalcEventData * event, void * user_pointer);
+
 
 #endif // __TICALCS_INTERNAL__

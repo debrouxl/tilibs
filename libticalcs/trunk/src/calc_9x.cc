@@ -1698,31 +1698,34 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	if (!ret)
 	{
 		memset(infos, 0, sizeof(CalcInfos));
-		ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1d.%02d", buffer[0], buffer[1]);
-		ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1d.%02d", buffer[2], buffer[3]);
-		infos->battery = buffer[4] == 1 ? 0 : 1;
-		switch(buffer[13])
+		if (length >= 14)
 		{
-		case 1:
-		case 3: infos->hw_version = buffer[5] + 1; break;
-		case 8: infos->hw_version = buffer[5]; break;
-		case 9: infos->hw_version = buffer[5] + 1; break;
-		}
-		switch(buffer[13])
-		{
-		case 1: infos->model = CALC_TI92P; break;
-		case 3: infos->model = CALC_TI89; break;
-		case 8: infos->model = CALC_V200; break;
-		case 9: infos->model = CALC_TI89T; break;
-		}
-		infos->language_id = buffer[6];
-		infos->sub_lang_id = buffer[7];
-		infos->mask = (InfosMask)(INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY_ENOUGH | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID);
+			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1d.%02d", buffer[0], buffer[1]);
+			ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1d.%02d", buffer[2], buffer[3]);
+			infos->battery = buffer[4] >= 1 ? 0 : 1;
+			switch(buffer[13])
+			{
+			case 1: infos->hw_version = buffer[5] + 1; infos->model = CALC_TI92P; break;
+			case 3: infos->hw_version = buffer[5] + 1; infos->model = CALC_TI89; break;
+			case 5: infos->hw_version = buffer[5]; infos->model = CALC_CBL2; break; // Tentative
+			case 6: infos->hw_version = buffer[5]; infos->model = CALC_LABPRO; break; // Tentative
+			case 7: infos->hw_version = buffer[5]; infos->model = CALC_TIPRESENTER; break; // Tentative
+			case 8: infos->hw_version = buffer[5]; infos->model = CALC_V200; break;
+			case 9: infos->hw_version = buffer[5] + 1; infos->model = CALC_TI89T; break;
+			}
+			infos->language_id = buffer[6];
+			infos->sub_lang_id = buffer[7];
+			infos->mask = (InfosMask)(INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY_ENOUGH | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID);
 
-		tifiles_hexdump(buffer, length);
-		ticalcs_info(_("  OS: %s"), infos->os_version);
-		ticalcs_info(_("  BIOS: %s"), infos->boot_version);
-		ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "low");
+			tifiles_hexdump(buffer, length);
+			ticalcs_info(_("  OS: %s"), infos->os_version);
+			ticalcs_info(_("  BIOS: %s"), infos->boot_version);
+			ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "low");
+		}
+		else
+		{
+			ticalcs_warning("%s", _("Bad data length for version information"));
+		}
 	}
 
 	return ret;
@@ -1797,7 +1800,7 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	return ret;
 }
 
-extern const CalcFncts calc_89 = 
+extern const CalcFncts calc_89 =
 {
 	CALC_TI89,
 	"TI89",
@@ -1805,7 +1808,7 @@ extern const CalcFncts calc_89 =
 	"TI-89",
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
-	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS | OPS_LABEQUIPMENTDATA |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT | FTS_NONSILENT,
 	PRODUCT_ID_TI89,
 	{"",     /* is_ready */
@@ -1836,7 +1839,10 @@ extern const CalcFncts calc_89 =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "2P1L", /* send_all_vars_backup */
-	 "2P1L"  /* recv_all_vars_backup */ },
+	 "2P1L"  /* recv_all_vars_backup */
+	 "",     /* control_lab_equipment */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1866,9 +1872,12 @@ extern const CalcFncts calc_89 =
 	&noop_change_attr,
 	&send_all_vars_backup,
 	&tixx_recv_all_vars_backup,
+	&noop_control_lab_equipment,
+	&tixx_send_lab_equipment_data_legacy,
+	&tixx_get_lab_equipment_data_legacy
 };
 
-extern const CalcFncts calc_92p = 
+extern const CalcFncts calc_92p =
 {
 	CALC_TI92P,
 	"TI92+",
@@ -1876,7 +1885,7 @@ extern const CalcFncts calc_92p =
 	"TI-92 Plus",
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
-	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS | OPS_LABEQUIPMENTDATA |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT | FTS_NONSILENT,
 	PRODUCT_ID_TI92P,
 	{"",     /* is_ready */
@@ -1907,7 +1916,10 @@ extern const CalcFncts calc_92p =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "2P1L", /* send_all_vars_backup */
-	 "2P1L"  /* recv_all_vars_backup */ },
+	 "2P1L"  /* recv_all_vars_backup */
+	 "",     /* control_lab_equipment */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1937,9 +1949,12 @@ extern const CalcFncts calc_92p =
 	&noop_change_attr,
 	&send_all_vars_backup,
 	&tixx_recv_all_vars_backup,
+	&noop_control_lab_equipment,
+	&tixx_send_lab_equipment_data_legacy,
+	&tixx_get_lab_equipment_data_legacy
 };
 
-extern const CalcFncts calc_89t = 
+extern const CalcFncts calc_89t =
 {
 	CALC_TI89T,
 	"Titanium",
@@ -1947,7 +1962,7 @@ extern const CalcFncts calc_89t =
 	"TI-89 Titanium",
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP | 
-	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS | OPS_LABEQUIPMENTDATA |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT | FTS_NONSILENT,
 	PRODUCT_ID_TI89T,
 	{"",     /* is_ready */
@@ -1978,7 +1993,10 @@ extern const CalcFncts calc_89t =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "2P1L", /* send_all_vars_backup */
-	 "2P1L"  /* recv_all_vars_backup */ },
+	 "2P1L"  /* recv_all_vars_backup */
+	 "",     /* control_lab_equipment */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2008,9 +2026,12 @@ extern const CalcFncts calc_89t =
 	&noop_change_attr,
 	&send_all_vars_backup,
 	&tixx_recv_all_vars_backup,
+	&noop_control_lab_equipment,
+	&tixx_send_lab_equipment_data_legacy,
+	&tixx_get_lab_equipment_data_legacy
 };
 
-extern const CalcFncts calc_v2 = 
+extern const CalcFncts calc_v2 =
 {
 	CALC_V200,
 	"V200",
@@ -2018,7 +2039,7 @@ extern const CalcFncts calc_v2 =
 	N_("V200 Personal Learning Tool"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
-	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS | OPS_LABEQUIPMENTDATA |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT | FTS_NONSILENT,
 	PRODUCT_ID_TIV200,
 	{"",     /* is_ready */
@@ -2049,7 +2070,10 @@ extern const CalcFncts calc_v2 =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "2P1L", /* send_all_vars_backup */
-	 "2P1L"  /* recv_all_vars_backup */ },
+	 "2P1L"  /* recv_all_vars_backup */
+	 "",     /* control_lab_equipment */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2079,16 +2103,19 @@ extern const CalcFncts calc_v2 =
 	&noop_change_attr,
 	&send_all_vars_backup,
 	&tixx_recv_all_vars_backup,
+	&noop_control_lab_equipment,
+	&tixx_send_lab_equipment_data_legacy,
+	&tixx_get_lab_equipment_data_legacy
 };
 
-extern const CalcFncts calc_92 = 
+extern const CalcFncts calc_92 =
 {
 	CALC_TI92,
 	"TI92",
 	"TI-92",
 	"TI-92",
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
-	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_LABEQUIPMENTDATA |
 	FTS_SILENT | FTS_FOLDER | FTS_BACKUP | FTS_NONSILENT,
 	PRODUCT_ID_NONE,
 	{"",     /* is_ready */
@@ -2119,7 +2146,10 @@ extern const CalcFncts calc_92 =
 	 "",     /* rename */
 	 "",     /* chattr */
 	 "",     /* send_all_vars_backup */
-	 ""      /* recv_all_vars_backup */ },
+	 "",     /* recv_all_vars_backup */
+	 "",     /* control_lab_equipment */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2149,4 +2179,234 @@ extern const CalcFncts calc_92 =
 	&noop_change_attr,
 	&noop_send_all_vars_backup,
 	&noop_recv_all_vars_backup,
+	&noop_control_lab_equipment,
+	&tixx_send_lab_equipment_data_legacy,
+	&tixx_get_lab_equipment_data_legacy
+};
+
+extern const CalcFncts calc_cbl2 =
+{
+	CALC_CBL2,
+	"CBL2",
+	"CBL2",
+	"CBL2",
+	OPS_ISREADY /*| OPS_DIRLIST | OPS_VARS*/ |
+	OPS_VERSION /*| OPS_OS*/ | OPS_LABEQUIPMENTDATA |
+	FTS_SILENT,
+	PRODUCT_ID_CBL2,
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "",     /* recv_screen */
+	 "",     /* get_dirlist */
+	 "",     /* get_memfree */
+	 "",     /* send_backup */
+	 "",     /* recv_backup */
+	 "",     /* send_var */
+	 "",     /* recv_var */
+	 "",     /* send_var_ns */
+	 "",     /* recv_var_ns */
+	 "",     /* send_app */
+	 "",     /* recv_app */
+	 "",     /* send_os */
+	 "",     /* recv_idlist */
+	 "",     /* dump_rom_1 */
+	 "",     /* dump_rom_2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "",     /* del_var */
+	 "",     /* new_folder */
+	 "",     /* get_version */
+	 "",     /* send_cert */
+	 "",     /* recv_cert */
+	 "",     /* rename */
+	 "",     /* chattr */
+	 "",     /* send_all_vars_backup */
+	 "",     /* recv_all_vars_backup */
+	 "",     /* control_lab_equipment */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
+	&is_ready,
+	&noop_send_key,
+	&noop_execute,
+	&noop_recv_screen,
+	&noop_get_dirlist,
+	&noop_get_memfree,
+	&noop_send_backup,
+	&noop_recv_backup,
+	&noop_send_var_ns,
+	&noop_recv_var,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
+	&noop_send_flash,
+	&noop_recv_flash,
+	&noop_send_os,
+	&noop_recv_idlist,
+	&noop_dump_rom_1,
+	&noop_dump_rom_2,
+	&noop_set_clock,
+	&noop_get_clock,
+	&noop_del_var,
+	&noop_new_folder,
+	&get_version,
+	&noop_send_cert,
+	&noop_recv_cert,
+	&noop_rename_var,
+	&noop_change_attr,
+	&noop_send_all_vars_backup,
+	&noop_recv_all_vars_backup,
+	&tixx_control_lab_equipment_legacy,
+	&tixx_send_lab_equipment_data_legacy,
+	&tixx_get_lab_equipment_data_legacy
+};
+
+extern const CalcFncts calc_labpro =
+{
+	CALC_LABPRO,
+	"LABPRO",
+	"LabPro",
+	"LabPro",
+	OPS_ISREADY /*| OPS_DIRLIST | OPS_VARS*/ |
+	OPS_VERSION /*| OPS_OS*/ | OPS_LABEQUIPMENTDATA |
+	FTS_SILENT,
+	PRODUCT_ID_LABPRO,
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "",     /* recv_screen */
+	 "",     /* get_dirlist */
+	 "",     /* get_memfree */
+	 "",     /* send_backup */
+	 "",     /* recv_backup */
+	 "",     /* send_var */
+	 "",     /* recv_var */
+	 "",     /* send_var_ns */
+	 "",     /* recv_var_ns */
+	 "",     /* send_app */
+	 "",     /* recv_app */
+	 "",     /* send_os */
+	 "",     /* recv_idlist */
+	 "",     /* dump_rom_1 */
+	 "",     /* dump_rom_2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "",     /* del_var */
+	 "",     /* new_folder */
+	 "",     /* get_version */
+	 "",     /* send_cert */
+	 "",     /* recv_cert */
+	 "",     /* rename */
+	 "",     /* chattr */
+	 "",     /* send_all_vars_backup */
+	 "",     /* recv_all_vars_backup */
+	 "",     /* control_lab_equipment */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
+	&is_ready,
+	&noop_send_key,
+	&noop_execute,
+	&noop_recv_screen,
+	&noop_get_dirlist,
+	&noop_get_memfree,
+	&noop_send_backup,
+	&noop_recv_backup,
+	&noop_send_var_ns,
+	&noop_recv_var,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
+	&noop_send_flash,
+	&noop_recv_flash,
+	&noop_send_os,
+	&noop_recv_idlist,
+	&noop_dump_rom_1,
+	&noop_dump_rom_2,
+	&noop_set_clock,
+	&noop_get_clock,
+	&noop_del_var,
+	&noop_new_folder,
+	&get_version,
+	&noop_send_cert,
+	&noop_recv_cert,
+	&noop_rename_var,
+	&noop_change_attr,
+	&noop_send_all_vars_backup,
+	&noop_recv_all_vars_backup,
+	&tixx_control_lab_equipment_legacy,
+	&tixx_send_lab_equipment_data_legacy,
+	&tixx_get_lab_equipment_data_legacy
+};
+
+extern const CalcFncts calc_tipresenter =
+{
+	CALC_TIPRESENTER,
+	"TIPRESENTER",
+	"TI-Presenter",
+	"TI-Presenter",
+	OPS_ISREADY | OPS_VERSION /*| OPS_OS*/ |
+	FTS_SILENT,
+	PRODUCT_ID_TIPRESENTER,
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "",     /* recv_screen */
+	 "",     /* get_dirlist */
+	 "",     /* get_memfree */
+	 "",     /* send_backup */
+	 "",     /* recv_backup */
+	 "",     /* send_var */
+	 "",     /* recv_var */
+	 "",     /* send_var_ns */
+	 "",     /* recv_var_ns */
+	 "",     /* send_app */
+	 "",     /* recv_app */
+	 "",     /* send_os */
+	 "",     /* recv_idlist */
+	 "",     /* dump_rom_1 */
+	 "",     /* dump_rom_2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "",     /* del_var */
+	 "",     /* new_folder */
+	 "",     /* get_version */
+	 "",     /* send_cert */
+	 "",     /* recv_cert */
+	 "",     /* rename */
+	 "",     /* chattr */
+	 "",     /* send_all_vars_backup */
+	 "",     /* recv_all_vars_backup */
+	 "",     /* control_lab_equipment */
+	 "",     /* send_lab_equipment_data */
+	 ""      /* get_lab_equipment_data */ },
+	&is_ready,
+	&noop_send_key,
+	&noop_execute,
+	&noop_recv_screen,
+	&noop_get_dirlist,
+	&noop_get_memfree,
+	&noop_send_backup,
+	&noop_recv_backup,
+	&noop_send_var_ns,
+	&noop_recv_var,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
+	&noop_send_flash,
+	&noop_recv_flash,
+	&noop_send_os,
+	&noop_recv_idlist,
+	&noop_dump_rom_1,
+	&noop_dump_rom_2,
+	&noop_set_clock,
+	&noop_get_clock,
+	&noop_del_var,
+	&noop_new_folder,
+	&get_version,
+	&noop_send_cert,
+	&noop_recv_cert,
+	&noop_rename_var,
+	&noop_change_attr,
+	&noop_send_all_vars_backup,
+	&noop_recv_all_vars_backup,
+	&noop_control_lab_equipment,
+	&noop_send_lab_equipment_data,
+	&noop_get_lab_equipment_data
 };

@@ -1,0 +1,41 @@
+version 0
+raw_send_data
+89 06 08 00  03 00 00 00  04  01  FF  00  07 01
+
+raw_recv_data 4
+raw_recv_data 4
+raw_send_data
+89 56 00 00
+
+raw_send_data
+89 15 07 00  01 00 00 00  20 37 00  58 00
+
+raw_recv_data 4
+raw_send_data
+89 92 00 00
+
+raw_recv_data 4
+raw_send_data
+89 A2 06 00  00 00 00 00 04 00  04 00
+
+raw_recv_data 4
+raw_recv_data 4
+buffer_peek_data le16 2 r1
+reg_add 2 r1
+raw_recv_data r1
+buffer_peek_data le32 0 r2
+raw_send_data
+89 56 00 00
+
+raw_send_data
+89 09 00 00
+
+raw_recv_data 4
+raw_recv_data 4
+buffer_peek_data le16 2 r1
+reg_add 2 r1
+raw_recv_data r2
+raw_send_data
+89 56 00 00
+
+exit

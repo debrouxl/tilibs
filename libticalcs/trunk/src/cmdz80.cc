@@ -496,6 +496,219 @@ int TICALL ti85_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t vartype, 
 	return 0;
 }
 
+int TICALL tiz80_send_RTS_lab_equipment_data(CalcHandle* handle, uint16_t varsize, uint8_t target, const char * varname)
+{
+	uint8_t buffer[16];
+
+	VALIDATE_HANDLE(handle);
+
+	size_t len = 0;
+	if (varname != nullptr)
+	{
+		len = strlen(varname);
+		if (len > 8)
+		{
+			ticalcs_critical("Oversized variable name has length %u, clamping to 8", (unsigned int)len);
+			len = 8;
+		}
+	}
+
+	// θ, i.e. the unnamed list which Send({...}) targets on these calculators; real list.
+	buffer[ 0] = LSB(varsize);
+	buffer[ 1] = MSB(varsize);
+	buffer[ 2] = 0x01;
+	buffer[ 3] = 0x24;
+	memcpy(buffer + 4, varname != nullptr ? varname : "", len);
+	memset(buffer + 4 + len, 0, sizeof(buffer) - 4 - len);
+
+	ticalcs_info(" PC->TI: Send({...}) (size=0x%04X=%i, id=%02X)", varsize, varsize, buffer[2]);
+	return dbus_send(handle, target, DBUS_CMD_RTS, 11, buffer);
+}
+
+// Fixed var headers matching the packets emitted by TI-Z80 calculators executing Send({...}) towards a lab
+// equipment (CBL / CBR / CBL2 / LabPro), see the protocol captures in calclabequipmentlegacy.cc.
+// @varname may be NULL or empty, in which case the name captured on the wire is used; otherwise, up to
+// eight bytes from the NUL-terminated string are copied verbatim into the name field (pass a pre-encoded
+// token sequence such as ticonv_varname_tokenize() output to target e.g. L2).
+int TICALL ti73_send_RTS_lab_equipment_data(CalcHandle* handle, uint16_t varsize, uint8_t target, const char * varname)
+{
+	uint8_t buffer[11];
+
+	VALIDATE_HANDLE(handle);
+
+	size_t len = 0;
+	if (varname != nullptr)
+	{
+		len = strlen(varname);
+		if (len > 8)
+		{
+			ticalcs_critical("Oversized variable name has length %u, clamping to 8", (unsigned int)len);
+			len = 8;
+		}
+	}
+
+	// L1, with the TI-73's list numbering scheme.
+	buffer[ 0] = LSB(varsize);
+	buffer[ 1] = MSB(varsize);
+	buffer[ 2] = 0x01; // Real list.
+	buffer[ 3] = 0x5D;
+	memcpy(buffer + 4, varname != nullptr ? varname : "", len);
+	memset(buffer + 4 + len, 0, sizeof(buffer) - 4 - len);
+
+	ticalcs_info(" PC->TI: Send({...}) (size=0x%04X=%i, id=%02X)", varsize, varsize, buffer[2]);
+	return dbus_send(handle, target, DBUS_CMD_RTS, sizeof(buffer), buffer);
+}
+
+int TICALL ti8283_send_RTS_lab_equipment_data(CalcHandle* handle, uint16_t varsize, uint8_t target, const char * varname)
+{
+	uint8_t buffer[11];
+
+	VALIDATE_HANDLE(handle);
+
+	size_t len = 0;
+	if (varname != nullptr)
+	{
+		len = strlen(varname);
+		if (len > 8)
+		{
+			ticalcs_critical("Oversized variable name has length %u, clamping to 8", (unsigned int)len);
+			len = 8;
+		}
+	}
+
+	// L1, with the TI-82/83 list numbering scheme.
+	buffer[ 0] = LSB(varsize);
+	buffer[ 1] = MSB(varsize);
+	buffer[ 2] = 0x01; // Real list.
+	buffer[ 3] = 0x5D;
+	buffer[ 4] = 0x01;
+	memcpy(buffer + 5, varname != nullptr ? varname : "", len);
+	memset(buffer + 5 + len, 0, sizeof(buffer) - 5 - len);
+
+	ticalcs_info(" PC->TI: Send({...}) (size=0x%04X=%i, id=%02X)", varsize, varsize, buffer[2]);
+	return dbus_send(handle, target, DBUS_CMD_RTS, sizeof(buffer), buffer);
+}
+
+int TICALL ti8586_send_RTS_lab_equipment_data(CalcHandle* handle, uint16_t varsize, uint8_t target, const char * varname)
+{
+	uint8_t buffer[12];
+
+	VALIDATE_HANDLE(handle);
+
+	size_t len = 0;
+	if (varname != nullptr)
+	{
+		len = strlen(varname);
+		if (len > 8)
+		{
+			ticalcs_critical("Oversized variable name has length %u, clamping to 8", (unsigned int)len);
+			len = 8;
+		}
+	}
+
+	// Length-prefixed variable name "B" (or the caller-provided name, clamped to 8 bytes).
+	buffer[ 0] = LSB(varsize);
+	buffer[ 1] = MSB(varsize);
+	buffer[ 2] = 0x04; // Real list.
+	if (len == 0)
+	{
+		len = sizeof("B") - 1;
+	}
+	buffer[ 3] = (uint8_t)len;
+	memset(buffer + 5, 0, sizeof(buffer) - 5);
+	memcpy(buffer + 5, varname != nullptr && varname[0] != '\0' ? varname : "B", len);
+
+	ticalcs_info(" PC->TI: Send({...}) (size=0x%04X=%i, id=%02X)", varsize, varsize, buffer[2]);
+	return dbus_send(handle, target, DBUS_CMD_RTS, sizeof(buffer), buffer);
+}
+
+// Fixed var headers matching the packets sent when requesting a list from a calculator
+// (Get <varname>), see the protocol captures in calclabequipmentdata.cc.
+// @varname may be NULL, in which case the name captured on the wire is used; otherwise, up to
+// eight bytes from the NUL-terminated string are copied verbatim into the name field (so a
+// caller willing to request e.g. L2 can pass a pre-encoded "\x5D\x01" token sequence).
+int TICALL ti73_send_REQ_lab_equipment_data(CalcHandle* handle, uint8_t target, const char * varname)
+{
+	uint8_t buffer[11];
+	size_t len;
+
+	VALIDATE_HANDLE(handle);
+
+	buffer[0] = 0x0B;
+	buffer[1] = 0x00;
+	buffer[2] = 0x04; // Real list.
+	if (varname == NULL)
+	{
+		varname = "\x01\x41"; // Name captured on the wire.
+	}
+	len = strlen(varname);
+	if (len > 8)
+	{
+		ticalcs_critical("Oversized variable name has length %u, clamping to 8", (unsigned int)len);
+		len = 8;
+	}
+	memset(buffer + 3, 0, sizeof(buffer) - 3);
+	memcpy(buffer + 3, varname, len);
+
+	ticalcs_info(" PC->TI: Get(<varname>) (id=%02X)", buffer[2]);
+	return dbus_send(handle, target, DBUS_CMD_REQ, sizeof(buffer), buffer);
+}
+
+int TICALL ti8283_send_REQ_lab_equipment_data(CalcHandle* handle, uint8_t target, const char * varname)
+{
+	uint8_t buffer[11];
+	size_t len;
+
+	VALIDATE_HANDLE(handle);
+
+	buffer[0] = 0x0B;
+	buffer[1] = 0x00;
+	buffer[2] = 0x00; // Real number type byte as captured on the wire.
+	if (varname == NULL)
+	{
+		varname = "\x5D\x00"; // L1-ish name captured on the wire.
+	}
+	len = strlen(varname);
+	if (len > 8)
+	{
+		ticalcs_critical("Oversized variable name has length %u, clamping to 8", (unsigned int)len);
+		len = 8;
+	}
+	memset(buffer + 3, 0, sizeof(buffer) - 3);
+	memcpy(buffer + 3, varname, len);
+
+	ticalcs_info(" PC->TI: Get(<varname>) (id=%02X)", buffer[2]);
+	return dbus_send(handle, target, DBUS_CMD_REQ, sizeof(buffer), buffer);
+}
+
+int TICALL ti8586_send_REQ_lab_equipment_data(CalcHandle* handle, uint8_t target, const char * varname)
+{
+	uint8_t buffer[12];
+	size_t len;
+
+	VALIDATE_HANDLE(handle);
+
+	buffer[0] = 0x0C;
+	buffer[1] = 0x00;
+	buffer[2] = 0x04; // Real list.
+	if (varname == NULL)
+	{
+		varname = "C"; // Name captured on the wire.
+	}
+	len = strlen(varname);
+	if (len > 8)
+	{
+		ticalcs_critical("Oversized variable name has length %u, clamping to 8", (unsigned int)len);
+		len = 8;
+	}
+	buffer[3] = (uint8_t)len;
+	memset(buffer + 4, 0, sizeof(buffer) - 4);
+	memcpy(buffer + 4, varname, len);
+
+	ticalcs_info(" PC->TI: Get(<varname>) (id=%02X)", buffer[2]);
+	return dbus_send(handle, target, DBUS_CMD_REQ, sizeof(buffer), buffer);
+}
+
 /* Send an invalid packet that causes the calc to execute assembly
    code stored in the most recently transferred variable.
 

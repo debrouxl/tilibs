@@ -101,8 +101,11 @@ typedef enum
 {
 	DEVICE_TYPE_83P = 0x73,
 	DEVICE_TYPE_73  = 0x74,
+	DEVICE_TYPE_83  = 0x83,
 	DEVICE_TYPE_89  = 0x98,
 	DEVICE_TYPE_92P = 0x88,
+	DEVICE_TYPE_TIPRESENTER = 0x43,
+	DEVICE_TYPE_CBL2 = 0x42, // Also LabPro
 } DeviceType;
 
 /* Structures (common to all calcs) */
