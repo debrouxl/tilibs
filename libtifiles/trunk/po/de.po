@@ -1,0 +1,443 @@
+# German translations for libtifiles2 package.
+# Copyright (C) 2019 Free Software Foundation, Inc.
+# This file is distributed under the same license as the libtifiles2 package.
+# Andreas B. Mundt <andi@debian.org>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libtifiles2 1.1.8\n"
+"Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
+"POT-Creation-Date: 2016-11-01 18:41+0100\n"
+"PO-Revision-Date: 2019-06-10 12:46+0200\n"
+"Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/error.c:58
+msgid "Msg: unable to allocate memory (malloc)."
+msgstr "Msg: kann Speicher nicht reservieren (malloc)."
+
+#: src/error.c:60
+msgid "Cause: memory too low ?"
+msgstr "Grund: zu wenig Speicher?"
+
+#: src/error.c:66
+msgid "Msg: unable to open file."
+msgstr "Msg: kann Datei nicht öffnen."
+
+#: src/error.c:68 src/error.c:76
+msgid "Cause: either the file does not exist, either there is no room."
+msgstr ""
+"Grund: entweder existiert die Datei nicht, oder es ist kein Platz verfügbar."
+
+#: src/error.c:74
+msgid "Msg: unable to close file."
+msgstr "Msg: kann Datei nicht schließen."
+
+#: src/error.c:82
+msgid "Msg: the size of a group file cannot exceed 64 KB."
+msgstr "Msg: die Größe einer Gruppendatei darf 64 KB nicht überschreiten."
+
+#: src/error.c:84
+msgid "Cause: too many variables/data."
+msgstr "Grund: zu viele Variablen/Data."
+
+#: src/error.c:90
+msgid "Msg: unknown calculator type."
+msgstr "Msg: unbekannter Taschenrechner."
+
+#: src/error.c:92
+msgid "Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."
+msgstr ""
+"Grund: wahrscheinlich aufgrund eines Fehlers, kontaktiere tilp-users@lists."
+"sf.net."
+
+#: src/error.c:99
+msgid "Msg: invalid file."
+msgstr "Msg: ungültige Datei."
+
+#: src/error.c:101
+msgid "Cause: it's probably not a TI formatted file."
+msgstr ""
+"Grund: wahrscheinlich handelt es sich nicht um eine TI-formatierte Datei."
+
+#: src/error.c:107
+msgid "Msg: checksum error."
+msgstr "Msg: Prüfsummen-Fehler."
+
+#: src/error.c:109
+msgid "Cause: the file has an incorrect checksum and may be corrupted."
+msgstr ""
+"Grund: die Datei hat eine ungültige Prüfsumme und ist möglicherweise korrupt."
+
+#: src/error.c:115
+msgid "Msg: (Un)Zip error."
+msgstr "Msg: (Un)Zip Fehler."
+
+#: src/error.c:117
+msgid "Cause: unknown..."
+msgstr "Grund: unbekannt..."
+
+#: src/error.c:123
+msgid "Msg: unsupported function."
+msgstr "Msg: Funktion wird nicht unterstützt."
+
+#: src/error.c:125
+msgid "Cause: the function you attempted to use is not available."
+msgstr "Grund: die gewählte Funktion ist nicht verfügbar."
+
+#: src/error.c:131
+msgid "Msg: I/O file error."
+msgstr "Msg: I/O Datei Fehler."
+
+#: src/error.c:133
+msgid "Cause: file is corrupted or invalid."
+msgstr "Grund: Datei ist korrupt oder ungültig."
+
+#: src/error.c:139
+msgid "Msg: invalid parameter."
+msgstr "Msg: ungültiger Parameter."
+
+#: src/error.c:141
+msgid ""
+"Cause: the program which uses this library is buggy. Fire-up the developer!"
+msgstr ""
+"Grund: Das Programm, das diese Bibliothek benützt, ist\n"
+"Fehlerhaft. Kontaktiere den Entwickler!"
+
+#: src/filetypes.c:1426 src/filetypes.c:1530 src/types68k.c:74
+#: src/types83p.c:70 src/typesoldz80.c:75
+msgid "OS upgrade"
+msgstr "OS Upgrade"
+
+#: src/filetypes.c:1436 src/filetypes.c:1540
+msgid "TIGroup"
+msgstr "Tigroup"
+
+#: src/filetypes.c:1448 src/filetypes.c:1552
+msgid "Group/Backup"
+msgstr "Gruppe/Backup"
+
+#: src/filetypes.c:1450 src/filetypes.c:1554
+msgid "Group"
+msgstr "Gruppe"
+
+#: src/tifiles.c:88
+#, c-format
+msgid "tifiles library version %s"
+msgstr "tifiles Bibliothek Version %s"
+
+#: src/type2str.c:66 src/type2str.c:86
+msgid "none     "
+msgstr "keine    "
+
+#: src/type2str.c:67 src/type2str.c:88
+msgid "locked   "
+msgstr "gesperrt "
+
+#: src/type2str.c:68 src/type2str.c:90
+msgid "archived "
+msgstr "archiviert "
+
+#: src/type2str.c:69 src/type2str.c:92
+msgid "protected"
+msgstr "geschützt"
+
+#: src/type2str.c:111 src/type2str.c:135
+msgid "single"
+msgstr "single"
+
+#: src/type2str.c:112 src/type2str.c:137
+msgid "group"
+msgstr "Gruppe"
+
+#: src/type2str.c:113 src/type2str.c:139
+msgid "regular"
+msgstr "regulär"
+
+#: src/type2str.c:114 src/type2str.c:141
+msgid "backup"
+msgstr "Backup"
+
+#: src/type2str.c:115 src/type2str.c:149
+msgid "tigroup"
+msgstr "tigroup"
+
+#: src/type2str.c:116 src/type2str.c:143
+msgid "os"
+msgstr "OS"
+
+#: src/type2str.c:117 src/type2str.c:145
+msgid "application"
+msgstr "Anwendung"
+
+#: src/type2str.c:118 src/type2str.c:147
+msgid "flash"
+msgstr "Flash"
+
+#: src/type2str.c:119
+msgid "unknown"
+msgstr "unbekannt"
+
+#: src/types68k.c:39
+msgid "Expression"
+msgstr "Ausdruck"
+
+#: src/types68k.c:40 src/types68k.c:41 src/types68k.c:42 src/types68k.c:44
+#: src/types68k.c:46 src/types68k.c:47 src/types68k.c:48 src/types68k.c:54
+#: src/types68k.c:56 src/types68k.c:60 src/types68k.c:61 src/types68k.c:62
+#: src/types68k.c:63 src/types68k.c:64 src/types68k.c:65 src/types68k.c:66
+#: src/types68k.c:69 src/types68k.c:70 src/types68k.c:71 src/types68k.c:77
+#: src/types68k.c:78 src/types68k.c:79 src/types68k.c:80 src/types68k.c:81
+#: src/types68k.c:82 src/types68k.c:83 src/types68k.c:84 src/types68k.c:85
+#: src/types68k.c:86 src/types83p.c:44 src/types83p.c:45 src/types83p.c:49
+#: src/types83p.c:53 src/types83p.c:55 src/types83p.c:60 src/types83p.c:69
+#: src/types83p.c:73 src/types83p.c:74 src/types83p.c:75 src/types83p.c:76
+#: src/types83p.c:77 src/types83p.c:78 src/types83p.c:79 src/types83p.c:80
+#: src/types83p.c:81 src/types83p.c:82 src/typesoldz80.c:49
+#: src/typesoldz80.c:50 src/typesoldz80.c:53 src/typesoldz80.c:54
+#: src/typesoldz80.c:58 src/typesoldz80.c:60 src/typesoldz80.c:61
+#: src/typesoldz80.c:62 src/typesoldz80.c:63 src/typesoldz80.c:64
+#: src/typesoldz80.c:65 src/typesoldz80.c:67 src/typesoldz80.c:68
+#: src/typesoldz80.c:69 src/typesoldz80.c:70 src/typesoldz80.c:71
+#: src/typesoldz80.c:72 src/typesoldz80.c:73 src/typesoldz80.c:74
+#: src/typesoldz80.c:78 src/typesoldz80.c:79 src/typesoldz80.c:80
+#: src/typesoldz80.c:81 src/typesoldz80.c:82 src/typesoldz80.c:83
+#: src/typesoldz80.c:84 src/typesoldz80.c:85 src/typesoldz80.c:86
+#: src/typesoldz80.c:87 src/typesoldz80.c:97 src/typesoldz80.c:102
+#: src/typesoldz80.c:103 src/typesoldz80.c:109 src/typesoldz80.c:110
+#: src/typesoldz80.c:111 src/typesoldz80.c:112 src/typesoldz80.c:113
+#: src/typesoldz80.c:114 src/typesoldz80.c:115 src/typesoldz80.c:116
+#: src/typesoldz80.c:117 src/typesoldz80.c:118 src/typesoldz80.c:119
+#: src/typesoldz80.c:120 src/typesoldz80.c:121 src/typesoldz80.c:122
+#: src/typesoldz80.c:123 src/typesoldz80.c:124 src/typesoldz80.c:125
+#: src/typesoldz80.c:126 src/typesoldz80.c:127 src/typesoldz80.c:128
+#: src/typesoldz80.c:129 src/typesoldz80.c:130 src/typesoldz80.c:131
+#: src/typesoldz80.c:132 src/typesoldz80.c:133 src/typesoldz80.c:134
+#: src/typesoldz80.c:135 src/typesoldz80.c:136 src/typesoldz80.c:137
+#: src/typesoldz80.c:138 src/typesoldz80.c:139 src/typesoldz80.c:140
+#: src/typesoldz80.c:155 src/typesoldz80.c:156 src/typesoldz80.c:157
+#: src/typesoldz80.c:159 src/typesoldz80.c:160 src/typesoldz80.c:164
+#: src/typesoldz80.c:166 src/typesoldz80.c:167 src/typesoldz80.c:168
+#: src/typesoldz80.c:169 src/typesoldz80.c:170 src/typesoldz80.c:171
+#: src/typesoldz80.c:172 src/typesoldz80.c:173 src/typesoldz80.c:174
+#: src/typesoldz80.c:175 src/typesoldz80.c:176 src/typesoldz80.c:177
+#: src/typesoldz80.c:178 src/typesoldz80.c:179 src/typesoldz80.c:180
+#: src/typesoldz80.c:181 src/typesoldz80.c:182 src/typesoldz80.c:183
+#: src/typesoldz80.c:184 src/typesoldz80.c:185 src/typesoldz80.c:186
+#: src/typesoldz80.c:187 src/typesoldz80.c:188 src/typesoldz80.c:189
+#: src/typesoldz80.c:190 src/typesoldz80.c:191 src/typesoldz80.c:192
+#: src/typesoldz80.c:193 src/typesoldz80.c:210 src/typesoldz80.c:221
+#: src/typesoldz80.c:227 src/typesoldz80.c:229 src/typesoldz80.c:230
+#: src/typesoldz80.c:231 src/typesoldz80.c:232 src/typesoldz80.c:233
+#: src/typesoldz80.c:234 src/typesoldz80.c:235 src/typesoldz80.c:236
+#: src/typesoldz80.c:237 src/typesoldz80.c:238 src/typesoldz80.c:239
+#: src/typesoldz80.c:240 src/typesoldz80.c:242 src/typesoldz80.c:243
+#: src/typesoldz80.c:244 src/typesoldz80.c:245 src/typesoldz80.c:246
+#: src/typesoldz80.c:263 src/typesoldz80.c:274 src/typesoldz80.c:280
+#: src/typesoldz80.c:282 src/typesoldz80.c:283 src/typesoldz80.c:284
+#: src/typesoldz80.c:285 src/typesoldz80.c:286 src/typesoldz80.c:287
+#: src/typesoldz80.c:288 src/typesoldz80.c:289 src/typesoldz80.c:290
+#: src/typesoldz80.c:291 src/typesoldz80.c:292 src/typesoldz80.c:293
+#: src/typesoldz80.c:294 src/typesoldz80.c:295 src/typesoldz80.c:296
+#: src/typesoldz80.c:297 src/typesoldz80.c:298 src/typesoldz80.c:299
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: src/types68k.c:43 src/types83p.c:36 src/types83p.c:48 src/typesoldz80.c:41
+#: src/typesoldz80.c:94 src/typesoldz80.c:147 src/typesoldz80.c:203
+#: src/typesoldz80.c:256
+msgid "List"
+msgstr "Liste"
+
+#: src/types68k.c:45 src/types83p.c:37 src/typesoldz80.c:42
+#: src/typesoldz80.c:95 src/typesoldz80.c:148 src/typesoldz80.c:205
+#: src/typesoldz80.c:258
+msgid "Matrix"
+msgstr "Matrix"
+
+#: src/types68k.c:49
+msgid "Data"
+msgstr "Data"
+
+#: src/types68k.c:50
+msgid "Text"
+msgstr "Text"
+
+#: src/types68k.c:51 src/types83p.c:39 src/typesoldz80.c:44
+#: src/typesoldz80.c:150 src/typesoldz80.c:211 src/typesoldz80.c:264
+msgid "String"
+msgstr "String"
+
+#: src/types68k.c:52 src/types83p.c:43 src/typesoldz80.c:48
+#: src/typesoldz80.c:101 src/typesoldz80.c:154 src/typesoldz80.c:212
+#: src/typesoldz80.c:213 src/typesoldz80.c:214 src/typesoldz80.c:215
+#: src/typesoldz80.c:265 src/typesoldz80.c:266 src/typesoldz80.c:267
+#: src/typesoldz80.c:268
+msgid "GDB"
+msgstr "GDB"
+
+#: src/types68k.c:53
+msgid "Figure"
+msgstr "Figur"
+
+#: src/types68k.c:55 src/types83p.c:42 src/typesoldz80.c:47
+#: src/typesoldz80.c:100 src/typesoldz80.c:153 src/typesoldz80.c:216
+#: src/typesoldz80.c:269
+msgid "Picture"
+msgstr "Bild"
+
+#: src/types68k.c:57 src/types83p.c:40 src/types83p.c:57 src/typesoldz80.c:45
+#: src/typesoldz80.c:98 src/typesoldz80.c:151 src/typesoldz80.c:217
+#: src/typesoldz80.c:270
+msgid "Program"
+msgstr "Programm"
+
+#: src/types68k.c:58
+msgid "Function"
+msgstr "Funktion"
+
+#: src/types68k.c:59
+msgid "Macro"
+msgstr "Makro"
+
+#: src/types68k.c:67
+msgid "Other (Zipped, etc.)"
+msgstr "Anderes (Zipped, etc.)"
+
+#: src/types68k.c:68 src/types83p.c:54 src/typesoldz80.c:59
+#: src/typesoldz80.c:108 src/typesoldz80.c:165 src/typesoldz80.c:228
+#: src/typesoldz80.c:281
+msgid "Backup"
+msgstr "Backup"
+
+#: src/types68k.c:72 src/types83p.c:41 src/typesoldz80.c:46
+#: src/typesoldz80.c:152
+msgid "Asm Program"
+msgstr "Asm Programm"
+
+#: src/types68k.c:73
+msgid "ID-LIST"
+msgstr "ID-LIST"
+
+#: src/types68k.c:75 src/types83p.c:71 src/typesoldz80.c:76
+msgid "Application"
+msgstr "Anwendung"
+
+#: src/types68k.c:76 src/types83p.c:72 src/typesoldz80.c:77
+msgid "Certificate"
+msgstr "Zertifikat"
+
+#: src/types83p.c:35 src/types83p.c:59 src/types83p.c:63 src/types83p.c:67
+#: src/types83p.c:68 src/typesoldz80.c:40 src/typesoldz80.c:93
+#: src/typesoldz80.c:146 src/typesoldz80.c:199 src/typesoldz80.c:252
+msgid "Real"
+msgstr "Real"
+
+#: src/types83p.c:38 src/types83p.c:46 src/typesoldz80.c:43
+#: src/typesoldz80.c:209 src/typesoldz80.c:262
+msgid "Equation"
+msgstr "Gleichung"
+
+#: src/types83p.c:47 src/types83p.c:62 src/types83p.c:64 src/types83p.c:65
+#: src/types83p.c:66 src/typesoldz80.c:52 src/typesoldz80.c:158
+#: src/typesoldz80.c:200 src/typesoldz80.c:253
+msgid "Complex"
+msgstr "Komplex"
+
+#: src/types83p.c:50 src/typesoldz80.c:51 src/typesoldz80.c:55
+#: src/typesoldz80.c:104 src/typesoldz80.c:161 src/typesoldz80.c:222
+#: src/typesoldz80.c:275 src/typesoldz80.c:276 src/typesoldz80.c:277
+#: src/typesoldz80.c:278 src/typesoldz80.c:279
+msgid "Window Setup"
+msgstr "Window Setup"
+
+#: src/types83p.c:51 src/typesoldz80.c:56 src/typesoldz80.c:105
+#: src/typesoldz80.c:162 src/typesoldz80.c:226
+msgid "Zoom"
+msgstr "Zoom"
+
+#: src/types83p.c:52 src/typesoldz80.c:57 src/typesoldz80.c:106
+#: src/typesoldz80.c:163
+msgid "Table Setup"
+msgstr "Table Setup"
+
+#: src/types83p.c:56 src/typesoldz80.c:66
+msgid "App Var"
+msgstr "App Var"
+
+#: src/types83p.c:58
+msgid "Group Var"
+msgstr "Group Var"
+
+#: src/types83p.c:61
+msgid "Image"
+msgstr "Bild"
+
+#: src/typesnsp.c:33
+msgid "Document"
+msgstr "Dokument"
+
+#: src/typesnsp.c:34 src/typesoldz80.c:220 src/typesoldz80.c:273
+msgid "Directory"
+msgstr "Verzeichnis"
+
+#: src/typesoldz80.c:96 src/typesoldz80.c:149 src/typesoldz80.c:241
+msgid "Y-Var"
+msgstr "Y-Var"
+
+#: src/typesoldz80.c:99
+msgid "Protected Program"
+msgstr "Geschütztes Programm"
+
+#: src/typesoldz80.c:107
+msgid "LCD"
+msgstr "LCD"
+
+#: src/typesoldz80.c:201 src/typesoldz80.c:254
+msgid "Vector"
+msgstr "Vektor"
+
+#: src/typesoldz80.c:202 src/typesoldz80.c:255
+msgid "Complex Vector"
+msgstr "Komplexer Vektor"
+
+#: src/typesoldz80.c:204 src/typesoldz80.c:257
+msgid "Complex List"
+msgstr "Komplexe Liste"
+
+#: src/typesoldz80.c:206 src/typesoldz80.c:259
+msgid "Complex Matrix"
+msgstr "Komplexe Matrix"
+
+#: src/typesoldz80.c:207 src/typesoldz80.c:260
+msgid "Constant"
+msgstr "Konstante"
+
+#: src/typesoldz80.c:208 src/typesoldz80.c:261
+msgid "Complex Constant"
+msgstr "Komplexe Konstante"
+
+#: src/typesoldz80.c:218 src/typesoldz80.c:271
+msgid "Range"
+msgstr "Bereich"
+
+#: src/typesoldz80.c:219 src/typesoldz80.c:272
+msgid "Screen"
+msgstr "Bildschirm"
+
+#: src/typesoldz80.c:223
+msgid "Polar"
+msgstr "Polar"
+
+#: src/typesoldz80.c:224
+msgid "Parametric"
+msgstr "Parametrisch"
+
+#: src/typesoldz80.c:225
+msgid "Diff Equ"
+msgstr "Diff. Gleichung"
