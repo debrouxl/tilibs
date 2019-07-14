@@ -697,7 +697,7 @@ TIEXPORT3 CalcModel TICALL ticalcs_remap_model_to_usb(CableModel cable, CalcMode
 		{
 			return CALC_TI84PC_USB;
 		}
-		else if (calc== CALC_TI89T)
+		else if (calc == CALC_TI89T)
 		{
 			return CALC_TI89T_USB;
 		}
