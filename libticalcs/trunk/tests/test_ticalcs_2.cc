@@ -1454,55 +1454,39 @@ int main(int argc, char **argv)
 	// set cable
 	if (do_probe && cable_model == CABLE_NUL)
 	{
-		int *pids, npids;
+		int ndevices;
+		CableDeviceInfo *list;
 
-		ticables_get_usb_devices(&pids, &npids);
+		// This function is outdated because it yields inaccurate results for modern hardware, e.g. the TI-eZ80 series,
+		// which uses the same USB PID as the 84+SE.
+		//ticables_get_usb_devices(&pids, &npids);
+		ticables_get_usb_device_info(&list, &ndevices);
 
-		if (npids < 1)
+		if (ndevices < 1)
 		{
 			fprintf(stderr, "No supported USB cable found\n");
-			return 1;
+			ticables_free_usb_device_info(list);
+			goto end;
 		}
 
-		switch(pids[0])
+		if (ndevices > 1)
 		{
-		case PID_TIGLUSB:
-			cable_model = CABLE_SLV;
-			break;
-
-		case PID_TI84P:
-		case PID_TI84P_SE:
-			cable_model = CABLE_USB;
-			calc_model = CALC_TI84P_USB;
-			break;
-
-		case PID_TI89TM:
-			cable_model = CABLE_USB;
-			calc_model = CALC_TI89T_USB;
-			break;
-
-		case PID_NSPIRE:
-			cable_model = CABLE_USB;
-			calc_model = CALC_NSPIRE;
-			break;
-
-		case PID_NSPIRE_CRADLE:
-			cable_model = CABLE_USB;
-			calc_model = CALC_NSPIRE_CRADLE;
-			break;
-
-		case PID_NSPIRE_CXII:
-			cable_model = CABLE_USB;
-			calc_model = CALC_NSPIRE_CXII;
-			break;
-
-		default:
-			fprintf(stderr, "Unrecognized PID %04x\n", pids[0]);
-			free(pids);
-			return 1;
+			fprintf(stderr, "More than one device is not supported by test_ticalcs_2 at the moment\n");
+			ticables_free_usb_device_info(list);
+			goto end;
 		}
 
-		free(pids);
+		if (list[0].family == CABLE_FAMILY_UNKNOWN)
+		{
+			fprintf(stderr, "Unknown cable\n");
+			ticables_free_usb_device_info(list);
+			goto end;
+		}
+
+		cable_model = list[0].family == CABLE_FAMILY_DBUS ? CABLE_SLV : CABLE_USB;
+		calc_model = ticalcs_device_info_to_model(&list[0]);
+
+		ticables_free_usb_device_info(list);
 	}
 
 	cable = ticables_handle_new(cable_model, port_number);
