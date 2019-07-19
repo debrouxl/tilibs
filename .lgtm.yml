@@ -1,0 +1,32 @@
+extraction:
+  cpp:
+    prepare:
+      packages:
+        - build-essential
+        - git
+        - libglib2.0-dev
+        - zlib1g-dev
+        - libusb-1.0-0-dev
+        - gettext
+        - bison
+        - flex
+        - groff
+        - texinfo
+        - libarchive-dev
+        - ninja-build
+        - liblz4-dev
+        - liblzma-dev
+    after_prepare:
+      - mkdir -p ${LGTM_WORKSPACE}/prefix
+      - export PKG_CONFIG_PATH=${LGTM_WORKSPACE}/prefix/lib/pkgconfig:${PKG_CONFIG_PATH}
+      - mkdir build
+    configure:
+      command:
+        - cd build
+        - /usr/bin/cmake-wrapped -GNinja -DCMAKE_INSTALL_PREFIX=${LGTM_WORKSPACE}/prefix ..
+    index:
+      build_command:
+        - cd build
+        - /usr/bin/cmake-wrapped --build . --target all
+        - /usr/bin/cmake-wrapped --build . --target check
+        - /usr/bin/cmake-wrapped --build . --target install
