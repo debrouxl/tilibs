@@ -464,7 +464,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 			if (!ret)
 			{
 				content->model = handle->model;
-				ticalcs_strlcpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment));
+				tifiles_comment_set_single_sn(content->comment, sizeof(content->comment));
 				content->num_entries = 1;
 
 				content->entries = tifiles_ve_create_array(1);
@@ -818,7 +818,11 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	int ret;
 
 	time(&now);
+#ifdef HAVE_LOCALTIME_R
+	localtime_r(&now, &ref);
+#else
 	memcpy(&ref, localtime(&now), sizeof(struct tm));
+#endif
 
 	ref.tm_year = 1997 - 1900;
 	ref.tm_mon = 0;
@@ -900,7 +904,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 					    && params[3]->ok && params[3]->size == 1
 					    && params[4]->ok && params[4]->size == 1)
 					{
-						struct tm ref, *cur;
+						struct tm ref, cur;
 						time_t r, c, now;
 						uint8_t * data = params[2]->data;
 						uint32_t calc_time = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (data[3] <<  0);
@@ -908,7 +912,11 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 						ticalcs_info(_("Found valid classic clock"));
 
 						time(&now);	// retrieve current DST setting
+#ifdef HAVE_LOCALTIME_R
+						localtime_r(&now, &ref);
+#else
 						memcpy(&ref, localtime(&now), sizeof(struct tm));
+#endif
 						ref.tm_year = 1997 - 1900;
 						ref.tm_mon = 0;
 						ref.tm_yday = 0;
@@ -921,14 +929,18 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 						r = mktime(&ref);
 
 						c = r + calc_time;
-						cur = localtime(&c);
+#ifdef HAVE_LOCALTIME_R
+						localtime_r(&c, &cur);
+#else
+						memcpy(&cur, localtime(&c), sizeof(struct tm));
+#endif
 
-						_clock->year = cur->tm_year + 1900;
-						_clock->month = cur->tm_mon + 1;
-						_clock->day = cur->tm_mday;
-						_clock->hours = cur->tm_hour;
-						_clock->minutes = cur->tm_min;
-						_clock->seconds = cur->tm_sec;
+						_clock->year = cur.tm_year + 1900;
+						_clock->month = cur.tm_mon + 1;
+						_clock->day = cur.tm_mday;
+						_clock->hours = cur.tm_hour;
+						_clock->minutes = cur.tm_min;
+						_clock->seconds = cur.tm_sec;
 
 						_clock->date_format = params[3]->data[0] == 0 ? 3 : params[3]->data[0];
 						_clock->time_format = params[4]->data[0] ? 24 : 12;

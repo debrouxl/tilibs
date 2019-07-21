@@ -533,7 +533,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	uint8_t attr, ver;
 
 	content->model = handle->model;
-	ticalcs_strlcpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment));
+	tifiles_comment_set_backup_sn(content->comment, sizeof(content->comment));
 
 	varname[0] = 0;
 	ret = SEND_REQ(handle, 0x0000, TI73_BKUP, "\0\0\0\0\0\0\0", 0x00, 0x00);
@@ -734,7 +734,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t ve_size;
 
 	content->model = handle->model;
-	ticalcs_strlcpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment));
+	tifiles_comment_set_single_sn(content->comment, sizeof(content->comment));
 	content->num_entries = 1;
 	content->entries = tifiles_ve_create_array(1);
 	ve = content->entries[0] = tifiles_ve_create();
@@ -1239,7 +1239,11 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	time_t r, c, now;
 
 	time(&now);	// retrieve current DST setting
+#ifdef HAVE_LOCALTIME_R
+	localtime_r(&now, &ref);
+#else
 	memcpy(&ref, localtime(&now), sizeof(struct tm));
+#endif
 
 	ref.tm_year = 1997 - 1900;
 	ref.tm_mon = 0;
@@ -1318,7 +1322,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	uint8_t * buffer = handle->buffer2;
 	uint32_t calc_time;
 
-	struct tm ref, *cur;
+	struct tm ref, cur;
 	time_t r, c, now;
 
 	ticalcs_strlcpy(handle->updat->text, _("Getting clock..."), sizeof(handle->updat->text));
@@ -1360,7 +1364,11 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 		//printf("<%08x>\n", time);
 
 		time(&now);	// retrieve current DST setting
-		memcpy(&ref, localtime(&now), sizeof(struct tm));;
+#ifdef HAVE_LOCALTIME_R
+		localtime_r(&now, &ref);
+#else
+		memcpy(&ref, localtime(&now), sizeof(struct tm));
+#endif
 		ref.tm_year = 1997 - 1900;
 		ref.tm_mon = 0;
 		ref.tm_yday = 0;
@@ -1374,15 +1382,19 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 		//printf("%s\n", asctime(&ref));
 
 		c = r + calc_time;
-		cur = localtime(&c);
+#ifdef HAVE_LOCALTIME_R
+		localtime_r(&c, &cur);
+#else
+		memcpy(&cur, localtime(&c), sizeof(struct tm));
+#endif
 		//printf("%s\n", asctime(cur));
 
-		_clock->year = cur->tm_year + 1900;
-		_clock->month = cur->tm_mon + 1;
-		_clock->day = cur->tm_mday;
-		_clock->hours = cur->tm_hour;
-		_clock->minutes = cur->tm_min;
-		_clock->seconds = cur->tm_sec;
+		_clock->year = cur.tm_year + 1900;
+		_clock->month = cur.tm_mon + 1;
+		_clock->day = cur.tm_mday;
+		_clock->hours = cur.tm_hour;
+		_clock->minutes = cur.tm_min;
+		_clock->seconds = cur.tm_sec;
 
 		_clock->date_format = buffer[6];
 		_clock->time_format = buffer[7];

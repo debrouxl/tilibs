@@ -93,7 +93,7 @@ AC_C_RESTRICT
 
 # Checks for library functions.
 AC_PROG_GCC_TRADITIONAL
-AC_CHECK_FUNCS([bzero memmove memset strcasecmp strdup])
+AC_CHECK_FUNCS([bzero memmove memset strcasecmp strdup localtime_r asctime_r])
 
 # Platform specific tests.
 dnl AC_CANONICAL_HOST

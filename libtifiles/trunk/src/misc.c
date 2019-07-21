@@ -235,32 +235,45 @@ TIEXPORT2 char *TICALL tifiles_get_varname(const char *full_name)
 
 /**
  * tifiles_get_fldname:
- * @full_name: a calculator path such as 'fldname\varname'.
  *
- * Returns the folder within the variable is located..
+ * Use tifiles_get_fldname_s instead.
  *
- * Return value: folder name as string. It should not be modified (static).
+ * Return value: a static string.
  **/
 TIEXPORT2 char *TICALL tifiles_get_fldname(const char *full_name)
 {
 	static char folder[FLDNAME_MAX];
+	return tifiles_get_fldname_s(full_name, folder);
+}
+
+/**
+ * tifiles_get_fldname_s:
+ * @full_name: a calculator path such as 'fldname\varname'.
+ * @dest_fldname: a destination buffer for storing the variable name, assumed to be at least FLDNAME_MAX characters large.
+ *
+ * Returns the folder part of the given calculator path.
+ *
+ * Return value: the given buffer, dest_fldname.
+ **/
+TIEXPORT2 char *TICALL tifiles_get_fldname_s(const char *full_name, char * dest_fldname)
+{
 	char *bs;
 	int i;
 
-	if (full_name != NULL)
+	if (full_name != NULL && dest_fldname != NULL)
 	{
 		bs = strchr(full_name, '\\');
 		if (bs == NULL)
 		{
-			folder[0] = 0;
+			dest_fldname[0] = 0;
 		}
 		else
 		{
 			i = strlen(full_name) - strlen(bs);
-			strncpy(folder, full_name, i);
-			folder[i] = '\0';
+			strncpy(dest_fldname, full_name, i);
+			dest_fldname[i] = '\0';
 		}
-		return folder;
+		return dest_fldname;
 	}
 	tifiles_critical("%s(NULL)", __FUNCTION__);
 	return NULL;
@@ -288,7 +301,7 @@ TIEXPORT2 char* TICALL tifiles_build_fullname(CalcModel model, char *full_name, 
 
 	if (tifiles_has_folder(model)) 
 	{
-		if (fldname[0] == 0)
+		if (fldname[0] != 0)
 		{
 			sprintf(full_name, "%s\\%s", fldname, varname);
 		}

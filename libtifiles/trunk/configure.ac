@@ -86,7 +86,7 @@ AC_STRUCT_TM
 # Checks for library functions.
 AC_PROG_GCC_TRADITIONAL
 AC_FUNC_STAT
-AC_CHECK_FUNCS([memset strcasecmp strchr strdup strrchr])
+AC_CHECK_FUNCS([memset strcasecmp strchr strdup strrchr ctime_r localtime_r asctime_r])
 
 # Platform specific tests.
 dnl AC_CANONICAL_HOST

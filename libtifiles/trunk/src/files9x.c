@@ -44,7 +44,7 @@
 /* Misc */
 /********/
 
-static int fsignature[2] = { 1, 0 };
+static const int fsignature[2] = { 1, 0 };
 
 /***********/
 /* Reading */
