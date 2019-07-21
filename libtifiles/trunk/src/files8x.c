@@ -47,8 +47,8 @@
 /* Misc */
 /********/
 
-static uint8_t fsignature85[3] = { 0x1A, 0x0C, 0x00 };	//TI85
-static uint8_t fsignature8x[3] = { 0x1A, 0x0A, 0x00 };	//TI73, 82, 83, 86
+static const uint8_t fsignature85[3] = { 0x1A, 0x0C, 0x00 };	//TI85
+static const uint8_t fsignature8x[3] = { 0x1A, 0x0A, 0x00 };	//TI73, 82, 83, 86
 
 
 static int is_ti8586(CalcModel model)

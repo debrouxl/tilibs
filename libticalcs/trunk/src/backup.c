@@ -127,7 +127,7 @@ end:
 			cnt->entries = NULL;
 			tifiles_content_delete_regular(cnt);
 
-			ticalcs_strlcpy(content->comment, tifiles_comment_set_group(), sizeof(content->comment));
+			tifiles_comment_set_group_sn(content->comment, sizeof(content->comment));
 		}
 	}
 

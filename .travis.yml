@@ -26,15 +26,28 @@ _linuxpackages: &_linuxpackages
 matrix:
   include:
     - os: linux
+      arch: amd64
       dist: xenial
       env: PREBUILDER=autotools BUILDER=make
       <<: *_linuxpackages
     - os: linux
+      arch: amd64
       dist: xenial
       env: PREBUILDER=cmake     BUILDER=make
       <<: *_linuxpackages
     - os: linux
+      arch: amd64
       dist: xenial
+      env: PREBUILDER=cmake     BUILDER=ninja
+      <<: *_linuxpackages
+    - os: linux
+      arch: amd64
+      dist: bionic
+      env: PREBUILDER=cmake     BUILDER=ninja
+      <<: *_linuxpackages
+    - os: linux
+      arch: arm64
+      dist: bionic
       env: PREBUILDER=cmake     BUILDER=ninja
       <<: *_linuxpackages
     - os: osx

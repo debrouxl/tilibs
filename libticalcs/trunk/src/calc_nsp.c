@@ -633,7 +633,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 						VarEntry *ve;
 
 						content->model = handle->model;
-						ticalcs_strlcpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment));
+						tifiles_comment_set_single_sn(content->comment, sizeof(content->comment));
 						content->num_entries = 1;
 
 						content->entries = tifiles_ve_create_array(1);

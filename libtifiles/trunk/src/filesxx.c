@@ -58,8 +58,7 @@ TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 			tifiles_warning("Invalid calculator model");
 		}
 		content->model = content->model_dst = model;
-		strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
-		content->comment[sizeof(content->comment) - 1] = 0;
+		tifiles_comment_set_single_sn(content->comment, sizeof(content->comment));
 	}
 
 #ifdef TRACE_CONTENT_INSTANCES
@@ -363,8 +362,7 @@ TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 			tifiles_warning("Invalid calculator model");
 		}
 		content->model = model;
-		strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
-		content->comment[sizeof(content->comment) - 1] = 0;
+		tifiles_comment_set_backup_sn(content->comment, sizeof(content->comment));
 	}
 
 #ifdef TRACE_CONTENT_INSTANCES
@@ -539,17 +537,21 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 		if (tifiles_calc_is_ti9x(content->model))
 		{
 			time_t tt;
-			struct tm *lt;
+			struct tm lt;
 
 			time(&tt);
-			lt = localtime(&tt);
+#ifdef HAVE_LOCALTIME_R
+			localtime_r(&tt, &lt);
+#else
+			memcpy(&lt, localtime(&tt), sizeof(struct tm));
+#endif
 			content->revision_major = 1;
 			content->revision_minor = 0;
 			content->flags = 0;
 			content->object_type = 0;
-			content->revision_day = lt->tm_mday;
-			content->revision_month = lt->tm_mon;
-			content->revision_year = lt->tm_year + 1900;
+			content->revision_day = lt.tm_mday;
+			content->revision_month = lt.tm_mon;
+			content->revision_year = lt.tm_year + 1900;
 		}
 	}
 

@@ -414,7 +414,8 @@ extern "C" {
 	TIEXPORT2 int TICALL      tifiles_hexdump(const uint8_t* ptr, unsigned int length);
 
 	TIEXPORT2 char* TICALL tifiles_get_varname(const char *full_name);
-	TIEXPORT2 char* TICALL tifiles_get_fldname(const char *full_name);
+	TILIBS_DEPRECATED TIEXPORT2 char* TICALL tifiles_get_fldname(const char *full_name);
+	TIEXPORT2 char* TICALL tifiles_get_fldname_s(const char *full_name, char * dest_fldname);
 	TIEXPORT2 char* TICALL tifiles_build_fullname(CalcModel model, char *full_name, const char *fldname, const char *varname);
 	TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *ve);
 	TIEXPORT2 void  TICALL tifiles_filename_free(char * filename);
@@ -495,10 +496,14 @@ extern "C" {
 	TIEXPORT2 int			TICALL tifiles_te_sizeof_array(TigEntry**);
 
 	// comments.c
-	TIEXPORT2 const char* TICALL tifiles_comment_set_single(void);
-	TIEXPORT2 const char* TICALL tifiles_comment_set_group(void);
-	TIEXPORT2 const char* TICALL tifiles_comment_set_backup(void);
-	TIEXPORT2 const char* TICALL tifiles_comment_set_tigroup(void);
+	TILIBS_DEPRECATED TIEXPORT2 const char* TICALL tifiles_comment_set_single(void);
+	TILIBS_DEPRECATED TIEXPORT2 const char* TICALL tifiles_comment_set_group(void);
+	TILIBS_DEPRECATED TIEXPORT2 const char* TICALL tifiles_comment_set_backup(void);
+	TILIBS_DEPRECATED TIEXPORT2 const char* TICALL tifiles_comment_set_tigroup(void);
+	TIEXPORT2 char* TICALL tifiles_comment_set_single_sn(char * comment, uint32_t maxlen);
+	TIEXPORT2 char* TICALL tifiles_comment_set_group_sn(char * comment, uint32_t maxlen);
+	TIEXPORT2 char* TICALL tifiles_comment_set_backup_sn(char * comment, uint32_t maxlen);
+	TIEXPORT2 char* TICALL tifiles_comment_set_tigroup_sn(char * comment, uint32_t maxlen);
 
 	// ve_fp.c
 	TIEXPORT2 VarEntry*	TICALL tifiles_ve_create(void);

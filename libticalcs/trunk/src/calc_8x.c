@@ -618,7 +618,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	char varname[9];
 
 	content->model = handle->model;
-	ticalcs_strlcpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment));
+	tifiles_comment_set_backup_sn(content->comment, sizeof(content->comment));
 
 	if (handle->model == CALC_TI83)
 	{
@@ -1012,7 +1012,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t ve_size;
 
 	content->model = handle->model;
-	ticalcs_strlcpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment));
+	tifiles_comment_set_single_sn(content->comment, sizeof(content->comment));
 	content->num_entries = 1;
 	content->entries = tifiles_ve_create_array(1);
 	ve = content->entries[0] = tifiles_ve_create();
@@ -1146,12 +1146,12 @@ error:
 
 	if (nvar == 1)
 	{
-		ticalcs_strlcpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment));
+		tifiles_comment_set_single_sn(content->comment, sizeof(content->comment));
 		*vr = tifiles_ve_dup(content->entries[0]);
 	}
 	else
 	{
-		ticalcs_strlcpy(content->comment, tifiles_comment_set_group(), sizeof(content->comment));
+		tifiles_comment_set_group_sn(content->comment, sizeof(content->comment));
 		*vr = NULL;
 	}
 

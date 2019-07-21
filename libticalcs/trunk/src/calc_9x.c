@@ -687,7 +687,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		if (!ret)
 		{
 			content->model = CALC_TI92;
-			ticalcs_strlcpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment));
+			tifiles_comment_set_backup_sn(content->comment, sizeof(content->comment));
 			content->data_part = tifiles_ve_alloc_data(128 * 1024);
 			content->type = TI92_BKUP;
 			content->data_length = 0;

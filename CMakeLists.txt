@@ -35,6 +35,7 @@ set(USED_CMAKE_GENERATOR "${CMAKE_GENERATOR}" CACHE STRING "Expose CMAKE_GENERAT
 message(STATUS "Detected system: ${CMAKE_SYSTEM_NAME} - host processor: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
 
 include(GNUInstallDirs)
+include(CheckSymbolExists)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -W -Wall -Wextra -Wno-unused-parameter -Werror=shadow -Werror=write-strings -Wredundant-decls -Werror=format -Werror=format-nonliteral -Werror=format-security -Werror=declaration-after-statement -Werror=implicit-function-declaration -Werror=date-time -Werror=missing-prototypes -Werror=return-type -Werror=pointer-arith ")
@@ -62,6 +63,18 @@ set(LOCALEDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LOCALEDIR}")
 
 # Global defines
 add_definitions(-DHAVE_FVISIBILITY=1 -DLOCALEDIR="${LOCALEDIR}")
+check_symbol_exists(ctime_r "time.h" HAVE_CTIME_R)
+check_symbol_exists(localtime_r "time.h" HAVE_LOCALTIME_R)
+check_symbol_exists(asctime_r "time.h" HAVE_ASCTIME_R)
+if(HAVE_CTIME_R)
+add_definitions(-DHAVE_CTIME_R=1)
+endif()
+if(HAVE_LOCALTIME_R)
+add_definitions(-DHAVE_LOCALTIME_R=1)
+endif()
+if(HAVE_ASCTIME_R)
+add_definitions(-DHAVE_ASCTIME_R=1)
+endif()
 
 # For libs finding
 find_package(PkgConfig)

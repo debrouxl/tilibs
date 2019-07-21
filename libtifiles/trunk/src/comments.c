@@ -30,76 +30,130 @@
 
 #include "tifiles.h"
 
-static char comment[64];	// 40 bytes max
+// Helper function for factoring code.
+static inline char * tifiles_comment_set_sn(const char * prefix, char * comment, uint32_t maxlen)
+{
+	if (NULL != comment && maxlen > 0)
+	{
+		char * str;
+		time_t t = time(NULL);
+#ifdef HAVE_CTIME_R
+		char datetime[64];
+		ctime_r(&t, datetime);
+		str = datetime;
+#else
+		str = ctime(&t);
+#endif
+		maxlen = (maxlen >= 41) ? 41 : maxlen;
+		// This truncation is intentional, and we want the compiler to shut up, so make sure to use the result of snprintf...
+		if (maxlen <= (uint32_t)snprintf(comment, maxlen, "%s%s", prefix, str))
+		{
+			t = 0;
+		}
+		comment[maxlen - 1] = 0;
+	}
+
+	return comment;
+}
 
 /**
  * tifiles_comment_set_single:
  *
- * Returns a string which contains a comment such as "Group file dated 12/31/99, 15:15".
+ * Use tifiles_comment_set_single_sn instead.
  *
  * Return value: a static string.
  **/
 TIEXPORT2 const char* TICALL tifiles_comment_set_single(void)
 {
-	time_t t = time(NULL);
-	char *str = asctime(localtime(&t));
+	static char comment[64];
+	return tifiles_comment_set_single_sn(comment, 41);
+}
 
-	sprintf(comment, "Single file dated %s", str);
-	comment[40] = '\0';
-
-	return comment;
+/**
+ * tifiles_comment_set_single_sn:
+ * @comment: destination buffer for storing the comment, needs to be at least 41 chars long.
+ * @maxlen: maximum length to be written.
+ *
+ * Stores a comment such as "Group file dated 12/31/99, 15:15" into the maxlen first bytes of the given buffer.
+ *
+ * Return value: the given comment buffer.
+ **/
+TIEXPORT2 char* TICALL tifiles_comment_set_single_sn(char * comment, uint32_t maxlen)
+{
+	return tifiles_comment_set_sn("Single file dated ", comment, maxlen);
 }
 
 /**
  * tifiles_comment_set_group:
  *
- * Returns a string which contains a comment such as "Group file dated 12/31/99, 15:15".
+ * Use tifiles_comment_set_group_sn instead.
  *
  * Return value: a static string.
  **/
 TIEXPORT2 const char* TICALL tifiles_comment_set_group(void)
 {
-	time_t t = time(NULL);
-	char *str = asctime(localtime(&t));
+	static char comment[64];
+	return tifiles_comment_set_group_sn(comment, 41);
+}
 
-	sprintf(comment, "Group file dated %s", str);
-	comment[40] = '\0';
-
-	return comment;
+/**
+ * tifiles_comment_set_group_sn:
+ *
+ * Returns a string which contains a comment such as "Group file dated 12/31/99, 15:15".
+ *
+ * Return value: the given comment buffer.
+ **/
+TIEXPORT2 char* TICALL tifiles_comment_set_group_sn(char * comment, uint32_t maxlen)
+{
+	return tifiles_comment_set_sn("Group file dated ", comment, maxlen);
 }
 
 /**
  * tifiles_comment_set_backup:
  *
- * Returns a string which contains a comment such as "Group file dated 12/31/99, 15:15".
+ * Use tifiles_comment_set_backup_sn instead.
  *
  * Return value: a static string.
  **/
 TIEXPORT2 const char* TICALL tifiles_comment_set_backup(void)
 {
-	time_t t = time(NULL);
-	char *str = asctime(localtime(&t));
+	static char comment[64];
+	return tifiles_comment_set_backup_sn(comment, 41);
+}
 
-	sprintf(comment, "Backup file dated %s", str);
-	comment[40] = '\0';
-
-	return comment;
+/**
+ * tifiles_comment_set_backup_sn:
+ *
+ * Returns a string which contains a comment such as "Group file dated 12/31/99, 15:15".
+ *
+ * Return value: the given comment buffer.
+ **/
+TIEXPORT2 char* TICALL tifiles_comment_set_backup_sn(char * comment, uint32_t maxlen)
+{
+	return tifiles_comment_set_sn("Backup file dated ", comment, maxlen);
 }
 
 /**
  * tifiles_comment_set_tigroup:
  *
- * Returns a string which contains a comment such as "TiGroup file dated 12/31/99, 15:15".
+ * Use tifiles_comment_set_tigroup_sn instead.
  *
- * Return value: a _dynamically allocated_ .
+ * Return value: a static string.
  **/
 TIEXPORT2 const char* TICALL tifiles_comment_set_tigroup(void)
 {
-	time_t t = time(NULL);
-	char *str = asctime(localtime(&t));
+	static char comment[64];
+	return tifiles_comment_set_tigroup_sn(comment, 41);
+}
 
-	sprintf(comment, "TiGroup file dated %s", str);
-	comment[40] = 0;
-
-	return comment;
+/**
+ * tifiles_comment_set_tigroup_sn:
+ *
+ * Returns a string which contains a comment such as "TiGroup file dated 12/31/99, 15:15".
+ *
+ * Return value: the given comment buffer.
+ **/
+TIEXPORT2 char* TICALL tifiles_comment_set_tigroup_sn(char * comment, uint32_t maxlen)
+{
+	return tifiles_comment_set_sn("TiGroup file dated ", comment, maxlen);
 }

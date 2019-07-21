@@ -182,8 +182,10 @@ int main(int argc, char **argv)
     PRINTF(tifiles_hexdump, INT, NULL, 1);
     PRINTF(tifiles_get_varname, STR, NULL);
     PRINTF(tifiles_get_fldname, STR, NULL);
-    PRINTF(tifiles_build_fullname, STR, -1, NULL, NULL, (void *)0x12345678);
+    PRINTF(tifiles_get_fldname_s, STR, NULL, (void *)0x12345678);
 
+    PRINTF(tifiles_get_fldname_s, STR, (void *)0x12345678, NULL);
+    PRINTF(tifiles_build_fullname, STR, -1, NULL, NULL, (void *)0x12345678);
     PRINTF(tifiles_build_fullname, STR, -1, (void *)0x12345678, NULL, NULL);
     PRINTF(tifiles_build_fullname, STR, -1, NULL, (void *)0x12345678, NULL);
     PRINTF(tifiles_build_filename, STR, -1, NULL);
@@ -194,9 +196,9 @@ int main(int argc, char **argv)
     PRINTF(tifiles_content_delete_regular, INT, NULL);
     PRINTF(tifiles_file_read_regular, INT, NULL, (void *)0x12345678);
     PRINTF(tifiles_file_read_regular, INT, (void *)0x12345678, NULL);
+
     PRINTF(tifiles_file_write_regular, INT, NULL, NULL, (void *)0x12345678);
     PRINTF(tifiles_file_write_regular, INT, NULL, (void *)0x12345678, NULL);
-
     PRINTF(tifiles_file_write_regular, INT, (void *)0x12345678, NULL, NULL);
     PRINTF(tifiles_file_display_regular, INT, NULL);
     ptr = tifiles_content_create_backup(-1);
@@ -207,11 +209,11 @@ int main(int argc, char **argv)
     PRINTF(tifiles_file_read_backup, INT, (void *)0x12345678, NULL);
     PRINTF(tifiles_file_write_backup, INT, NULL, (void *)0x12345678);
     PRINTF(tifiles_file_write_backup, INT, (void *)0x12345678, NULL);
+
     PRINTF(tifiles_file_display_backup, INT, NULL);
     ptr = tifiles_content_create_flash(-1);
     PRINTF(, PTR, ptr);
     tifiles_content_delete_flash(ptr);
-
     PRINTF(tifiles_file_read_flash, INT, NULL, (void *)0x12345678);
     PRINTF(tifiles_content_delete_flash, INT, NULL);
     PRINTF(tifiles_file_read_flash, INT, (void *)0x12345678, NULL);
@@ -220,9 +222,9 @@ int main(int argc, char **argv)
     PRINTF(tifiles_file_write_flash2, INT, NULL, (void *)0x12345678, NULL);
     PRINTF(tifiles_file_write_flash2, INT, (void *)0x12345678, NULL, NULL);
     PRINTF(tifiles_file_display_flash, INT, NULL);
+
     PRINTF(tifiles_content_dup_regular, PTR, NULL);
     PRINTF(tifiles_content_dup_flash, PTR, NULL);
-
     PRINTF(tifiles_file_display, INT, NULL);
     ptr = tifiles_content_create_group(0);
     PRINTF(, PTR, ptr);
@@ -233,9 +235,9 @@ int main(int argc, char **argv)
     PRINTF(tifiles_ungroup_content, INT, NULL, (void *)0x12345678);
     PRINTF(tifiles_ungroup_content, INT, (void *)0x12345678, NULL);
     PRINTF(tifiles_group_files, INT, NULL, (void *)0x12345678);
+
     PRINTF(tifiles_group_files, INT, (void *)0x12345678, NULL);
     PRINTF(tifiles_ungroup_file, INT, NULL, (void *)0x12345678);
-
     PRINTF(tifiles_content_add_entry, INT, NULL, (void *)0x12345678);
     PRINTF(tifiles_content_del_entry, INT, NULL, (void *)0x12345678);
     PRINTF(tifiles_group_add_file, INT, NULL, (void *)0x12345678);
@@ -246,9 +248,9 @@ int main(int argc, char **argv)
     PRINTF(, PTR, ptr);
     tifiles_content_delete_tigroup(ptr);
     PRINTF(tifiles_content_delete_tigroup, INT, NULL);
+
     PRINTF(tifiles_file_read_tigroup, INT, NULL, (void *)0x12345678);
     PRINTF(tifiles_file_read_tigroup, INT, (void *)0x12345678, NULL);
-
     PRINTF(tifiles_file_write_tigroup, INT, NULL, (void *)0x12345678);
     PRINTF(tifiles_file_write_tigroup, INT, (void *)0x12345678, NULL);
     PRINTF(tifiles_file_display_tigroup, INT, NULL);
@@ -257,9 +259,9 @@ int main(int argc, char **argv)
     PRINTF(tifiles_tigroup_contents, INT, NULL, NULL, NULL);
     PRINTF(tifiles_untigroup_content, INT, NULL, NULL, NULL);
     PRINTF(tifiles_untigroup_content, INT, NULL, NULL, NULL);
+
     PRINTF(tifiles_untigroup_content, INT, NULL, NULL, NULL);
     PRINTF(tifiles_tigroup_files, INT, NULL, NULL);
-
     PRINTF(tifiles_tigroup_files, INT, NULL, NULL);
     PRINTF(tifiles_untigroup_file, INT, NULL, NULL);
     PRINTF(tifiles_untigroup_file, INT, NULL, NULL);
@@ -268,9 +270,9 @@ int main(int argc, char **argv)
     PRINTF(tifiles_content_del_te, INT, NULL, NULL);
     PRINTF(tifiles_content_del_te, INT, NULL, NULL);
     PRINTF(tifiles_tigroup_add_file, INT, NULL, NULL);
+
     PRINTF(tifiles_tigroup_add_file, INT, NULL, NULL);
     PRINTF(tifiles_tigroup_del_file, INT, NULL, NULL);
-
     PRINTF(tifiles_tigroup_del_file, INT, NULL, NULL);
     PRINTF(tifiles_te_create, PTR, NULL, -1, -1);
     PRINTF(tifiles_te_delete, INT, NULL);
@@ -283,10 +285,14 @@ int main(int argc, char **argv)
     PRINTFVOID(tifiles_te_delete_array, NULL);
     PRINTF(tifiles_te_sizeof_array, INT, NULL);
     PRINTF(tifiles_comment_set_single, STR);
+
     PRINTF(tifiles_comment_set_group, STR);
     PRINTF(tifiles_comment_set_backup, STR);
-
     PRINTF(tifiles_comment_set_tigroup, STR);
+    PRINTF(tifiles_comment_set_single_sn, STR, NULL, 1234567891);
+    PRINTF(tifiles_comment_set_group_sn, STR, NULL, 1234567891);
+    PRINTF(tifiles_comment_set_backup_sn, STR, NULL, 1234567891);
+    PRINTF(tifiles_comment_set_tigroup_sn, STR, NULL, 1234567891);
     ptr = tifiles_ve_create();
     PRINTF(, PTR, ptr);
     tifiles_ve_delete(ptr);
@@ -300,6 +306,7 @@ int main(int argc, char **argv)
     PRINTF(, PTR, ptr);
     tifiles_ve_delete(ptr);
     PRINTFVOID(tifiles_ve_delete, NULL);
+
     ptr = tifiles_ve_alloc_data(0);
     PRINTF(, PTR, ptr);
     tifiles_ve_free_data(ptr);
@@ -308,7 +315,6 @@ int main(int argc, char **argv)
     tifiles_ve_free_data(ptr);
     PRINTFVOID(tifiles_ve_free_data, NULL);
     PRINTF(tifiles_ve_copy, PTR, NULL, NULL);
-
     PRINTF(tifiles_ve_dup, PTR, NULL);
     ptr = tifiles_ve_create_array(0);
     PRINTF(, PTR, ptr);
@@ -323,6 +329,7 @@ int main(int argc, char **argv)
     ptr = tifiles_fp_create_alloc_data(0);
     PRINTF(, PTR, ptr);
     tifiles_fp_delete(ptr);
+
     ptr = tifiles_fp_create_with_data(0);
     PRINTF(, PTR, ptr);
     tifiles_fp_delete(ptr);
@@ -333,7 +340,6 @@ int main(int argc, char **argv)
     ptr = tifiles_fp_alloc_data(0);
     PRINTF(, PTR, ptr);
     tifiles_fp_free_data(ptr);
-
     ptr = tifiles_fp_realloc_data(NULL, 1);
     PRINTF(, PTR, ptr);
     tifiles_fp_free_data(ptr);
@@ -348,6 +354,7 @@ int main(int argc, char **argv)
     ptr = tifiles_create_table_of_entries(NULL, NULL);
     PRINTF(, PTR, ptr);
     tifiles_free_table_of_entries(ptr);
+
     PRINTFVOID(tifiles_free_table_of_entries, NULL);
 
     cert_functions_unit_test();

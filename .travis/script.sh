@@ -13,24 +13,29 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:${prefixpath}/lib/pkgconfig
 
 if [ "$PREBUILDER" == "autotools" ]; then
     cd libticonv/trunk
-    mkdir m4; autoreconf -ivf
+    mkdir m4; autoreconf -ivf &
+    cd ../../libtifiles/trunk
+    mkdir m4; autoreconf -ivf &
+    cd ../../libticables/trunk
+    mkdir m4; autoreconf -ivf &
+    cd ../../libticalcs/trunk
+    mkdir m4; autoreconf -ivf &
+    wait
+    cd ../../libticonv/trunk
     ./configure --prefix=${prefixpath}
     make -j${NPROC} check
     make -j${NPROC} install
     cd ../../libtifiles/trunk
-    mkdir m4; autoreconf -ivf
     cd po; make libtifiles2.pot-update; make update-po; cd ..
     ./configure --prefix=${prefixpath}
     make -j${NPROC} check
     make -j${NPROC} install
     cd ../../libticables/trunk
-    mkdir m4; autoreconf -ivf
     cd po; make libticables2.pot-update; make update-po; cd ..
     ./configure --prefix=${prefixpath} --enable-logging --enable-libusb10
     make -j${NPROC} check
     make -j${NPROC} install
     cd ../../libticalcs/trunk
-    mkdir m4; autoreconf -ivf
     cd po; make libticalcs2.pot-update; make update-po; cd ..
     ./configure --prefix=${prefixpath}
     make -j${NPROC} check
