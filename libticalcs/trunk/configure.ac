@@ -205,12 +205,15 @@ AC_ARG_ENABLE([builtin-rom-dumpers],
   [], [enable_builtin_rom_dumpers=yes])
 
 AC_ARG_VAR([SPASM], [SPASM Z80 assembler])
+AC_ARG_VAR([PASMO], [PASMO Z80 assembler])
 AC_ARG_VAR([TIPACK], [Tool for creating TI variable files])
 have_spasm=no
+have_pasmo=no
 have_tipack=no
 have_tigcc=no
 have_m68klinuxgnu=no
 : ${SPASM=spasm}
+: ${PASMO=pasmo}
 : ${TIPACK=tipack}
 
 if test "x$enable_builtin_rom_dumpers" != "xyes" ; then
@@ -226,7 +229,22 @@ EOF
   fi
   AC_MSG_RESULT([$have_spasm])
 
-  if test "x$have_spasm" = "xyes" ; then
+  AC_MSG_CHECKING([whether $PASMO works])
+  cat >conftest.asm <<EOF
+    macro B_CALL, arg
+        db 0EFh
+        dw arg
+    endm
+    org 9d95h
+    B_CALL 4972h
+    ret
+EOF
+  if "$PASMO" conftest.asm conftest.bin >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
+    have_pasmo=yes
+  fi
+  AC_MSG_RESULT([$have_pasmo])
+
+  if test "x$have_spasm$have_pasmo" = "xyesyes" ; then
     AC_MSG_CHECKING([whether $TIPACK works])
     if "$TIPACK" conftest.bin -p -o conftest.8xp >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
       have_tipack=yes
@@ -266,12 +284,12 @@ EOF
   AC_MSG_RESULT([$have_m68klinuxgnu])
 fi
 
-if test "x$have_spasm$have_tipack" = "xyesyes" ; then
+if test "x$have_spasm$have_pasmo$have_tipack" = "xyesyesyes" ; then
   build_z80_rom_dumpers=yes
 else
   build_z80_rom_dumpers=no
   if test "x$enable_builtin_rom_dumpers" = "xno" ; then
-    AC_MSG_FAILURE([spasm and/or tipack are not installed or are not usable.])
+    AC_MSG_FAILURE([spasm, pasmo and/or tipack are not installed or are not usable.])
   fi
 fi
 

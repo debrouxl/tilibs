@@ -58,17 +58,38 @@ cxError equ 52h
 
 ;;; Macros
 
-#define CLEAR_LCD    call ClearLCD
-#define PUT_CHAR     call PutC
-#define PUT_DECIMAL  call DispHL
-#define PUT_STRING   call PutS
+macro CLEAR_LCD
+    call ClearLCD
+endm
+macro PUT_CHAR
+    call PutC
+endm
+macro PUT_DECIMAL
+    call DispHL
+endm
+macro PUT_STRING
+    call PutS
+endm
 
-#define GET_CSC        di \ ld hl, kbdScanCode \ ld a, (hl) \ ld (hl), 0
-#define RUN_INDIC_OFF  res indicRun, (iy + indicFlags)
-#define SET_ROM_PAGE   and 7 \ or 88h \ out (memPort), a
+macro GET_CSC
+    di
+    ld hl, kbdScanCode
+    ld a, (hl)
+    ld (hl), 0
+endm
+macro RUN_INDIC_OFF
+    res indicRun, (iy + indicFlags)
+endm
+macro SET_ROM_PAGE
+    and 7
+    or 88h
+    out (memPort), a
+endm
 
-#define EXIT_KEY_STR  db "[MODE]"
+macro EXIT_KEY_STR
+    db "[MODE]"
+endm
 
 ;;; Miscellaneous
 
-#define CALC_ROM_SIZE 128
+CALC_ROM_SIZE equ 128
