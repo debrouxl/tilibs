@@ -25,32 +25,32 @@ Main:
 	res apdRunning, (iy + apdFlags)
 	in a, (memPort)
 	ld (defaultMemPage), a
- #ifdef TI83
+ if defined TI83
 	in a, (linkPort)
 	and 10h
 	or LINK_RESET
 	ld (defaultLinkState), a
- #endif
- #ifdef TI84PC
+ endif
+ if defined TI84PC
 	in a, (memExtPort)
 	ld (defaultMemExt), a
- #endif
+ endif
 
- #ifdef TI82
+ if defined TI82
 	call InitializeLink
- #endif
+ endif
 
- #ifdef CALC_USB
+ if defined CALC_USB
 	call InitializeUSB
- #endif
+ endif
 
- #ifdef CALC_FLASH
+ if defined CALC_FLASH
 	call Unlock
 	ld a, (defaultMemPage)
 	out (memPort), a
- #endif
+ endif
 
- #ifdef TI83P
+ if defined TI83P
 	in a, (2)
 	add a, a
 	jr nc, Main_83PlusBE
@@ -64,7 +64,7 @@ Main:
 Main_84PlusBE:
 	ld (ROMSize + 2), a
 Main_83PlusBE:
- #endif
+ endif
 
 	ld hl, 0
 	ld (errorCount), hl
@@ -148,14 +148,14 @@ Received_3:
 	ld (curRow), hl
 	ld hl, KString
 	PUT_STRING
- #ifdef TI83P
+ if defined TI83P
 	ld hl, (ROMSize + 1)
 	srl h
 	srl h
 	PUT_DECIMAL
 	ld a, 'K'
 	PUT_CHAR
- #endif
+ endif
 MainLoop_:
 	jr MainLoop
 
@@ -171,9 +171,9 @@ Main_Error:
 	inc hl
 	ld (errorCount), hl
 	PUT_DECIMAL
- #ifndef USB
+ if ! defined USB
 	call LinkError
- #endif
+ endif
 MainLoop__:
 	jr MainLoop_
 
@@ -220,14 +220,14 @@ BlockRequest_SetPacket:
 	call SendPacket
 
 	;; Restore original memory page
- #ifdef TI83
+ if defined TI83
 	ld a, (defaultLinkState)
 	out (linkPort), a
- #endif
- #ifdef TI84PC
+ endif
+ if defined TI84PC
 	ld a,(defaultMemExt)
 	out (memExtPort), a
- #endif
+ endif
 	ld a, (defaultMemPage)
 	out (memPort), a
 

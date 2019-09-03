@@ -55,17 +55,41 @@ _RunIndicOff  equ 4795h
 
 ;;; Macros
 
-#define CLEAR_LCD      call _ClrScrnFull
-#define GET_CSC        call _GetCSC
-#define PUT_CHAR       call _PutC
-#define PUT_DECIMAL    call _DispHL
-#define PUT_STRING     call _PutS
-#define RUN_INDIC_OFF  call _RunIndicOff
+macro CLEAR_LCD
+    call _ClrScrnFull
+endm
+macro GET_CSC
+    call _GetCSC
+endm
+macro PUT_CHAR
+    call _PutC
+endm
+macro PUT_DECIMAL
+    call _DispHL
+endm
+macro PUT_STRING
+    call _PutS
+endm
+macro RUN_INDIC_OFF
+    call _RunIndicOff
+endm
 
-#define SET_ROM_PAGE  push af \ and 8 \ rlca \ or LINK_RESET \ out (linkPort), a \ pop af \ and 7 \ or 88h \ out (2), a
+macro SET_ROM_PAGE
+    push af
+    and 8
+    rlca
+    or LINK_RESET
+    out (linkPort), a
+    pop af
+    and 7
+    or 88h
+    out (2), a
+endm
 
-#define EXIT_KEY_STR db 0C1h, "MODE]"
+macro EXIT_KEY_STR
+    db 0C1h, "MODE]"
+endm
 
 ;;; Miscellaneous
 
-#define CALC_ROM_SIZE 256
+CALC_ROM_SIZE equ 256

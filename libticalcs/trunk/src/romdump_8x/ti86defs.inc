@@ -57,18 +57,35 @@ _runindicoff equ 4AB1h
 
 ;;; Macros
 
-#define CLEAR_LCD      call _clrScrn
-#define GET_CSC        call _get_key
-#define PUT_CHAR       call _putc
-#define PUT_DECIMAL    xor a \ call _dispAHL
-#define PUT_STRING     call _puts
-#define RUN_INDIC_OFF  call _runindicoff
+macro CLEAR_LCD
+    call _clrScrn
+endm
+macro GET_CSC
+    call _get_key
+endm
+macro PUT_CHAR
+    call _putc
+endm
+macro PUT_DECIMAL
+    xor a
+    call _dispAHL
+endm
+macro PUT_STRING
+    call _puts
+endm
+macro RUN_INDIC_OFF
+    call _runindicoff
+endm
 
-#define SET_ROM_PAGE  out (memPort), a
+macro SET_ROM_PAGE
+    out (memPort), a
+endm
 
-#define EXIT_KEY_STR  db "[EXIT]"
+macro EXIT_KEY_STR
+    db "[EXIT]"
+endm
 
 ;;; Miscellaneous
 
-#define CALC_ROM_SIZE 256
+CALC_ROM_SIZE equ 256
 
