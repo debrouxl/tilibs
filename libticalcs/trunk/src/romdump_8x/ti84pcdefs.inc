@@ -66,19 +66,40 @@ _SendAByte equ 4ECAh
 
 ;;; Macros
 
-.addinstr B_CALL * EF 3 NOP 1
+macro B_CALL, arg
+    db 0EFh
+    dw arg
+endm
 
-#define CLEAR_LCD       B_CALL _ClrScrnFull
-#define GET_CSC         B_CALL _GetCSC
-#define PUT_CHAR        B_CALL _PutC
-#define PUT_DECIMAL     B_CALL _DispHL
-#define PUT_STRING      B_CALL _PutS
-#define RUN_INDIC_OFF   B_CALL _RunIndicOff
-#define SET_ROM_PAGE    rlca \ out (memExtPort), a \ srl a \ out (memPort), a
+macro CLEAR_LCD
+    B_CALL _ClrScrnFull
+endm
+macro GET_CSC
+    B_CALL _GetCSC
+endm
+macro PUT_CHAR
+    B_CALL _PutC
+endm
+macro PUT_DECIMAL
+    B_CALL _DispHL
+endm
+macro PUT_STRING
+    B_CALL _PutS
+endm
+macro RUN_INDIC_OFF
+    B_CALL _RunIndicOff
+endm
+macro SET_ROM_PAGE
+    rlca
+    out (memExtPort), a
+    srl a
+    out (memPort), a
+endm
 
-#define EXIT_KEY_STR    db 0C1h, "MODE]"
+macro EXIT_KEY_STR
+    db 0C1h, "MODE]"
+endm
 
 ;;; Miscellaneous
 
-#define CALC_LINK_ASSIST
-#define CALC_ROM_SIZE 4096
+CALC_ROM_SIZE equ 4096

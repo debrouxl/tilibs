@@ -21,121 +21,158 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
- .nolist
-#define bcall(romcallname) rst 28h \ .dw romcallname
 
-#ifdef TI84P
-_LdHLind        = 4009h
-_cphlde         = 400Ch
-_PutC           = 4504h
-_PutS           = 450Ah
-_clrLCDFull     = 4540h
-_homeUp         = 4558h
-_runIndicOff    = 4570h
-_Mov18B         = 47DAh
-_getKey         = 4972h
-_GetBaseVer      = 4C6Fh
-_GetVariableData = 5092h
-_SendUSBData     = 50F2h
-_KillUSBDevice   = 5257h
-_GetBootVer      = 80B7h
-_GetHWVer        = 80BAh
-_WriteAByteSafe  = 80C6h
-_KillUSB         = 810Eh
+macro B_CALL, arg
+    rst 28h
+    dw arg
+endm
 
-appData         = 8000h
-ramCode         = 8100h
-arcInfo         = 83EEh
-curRow          = 844Bh
-OP1             = 8478h
-iMathPtr5       = 84DBh
-flags           = 89F0h
-pagedCount      = 9834h
-pagedBuf        = 983Ah
-appBackUpScreen = 9872h
-userMem         = 9D95h
+if defined TI84P
+_LdHLind         equ 4009h
+_cphlde          equ 400Ch
+_PutC            equ 4504h
+_PutS            equ 450Ah
+_clrLCDFull      equ 4540h
+_homeUp          equ 4558h
+_runIndicOff     equ 4570h
+_Mov18B          equ 47DAh
+_getKey          equ 4972h
+_GetBaseVer      equ 4C6Fh
+_GetVariableData equ 5092h
+_SendUSBData     equ 50F2h
+_KillUSBDevice   equ 5257h
+_GetBootVer      equ 80B7h
+_GetHWVer        equ 80BAh
+_WriteAByteSafe  equ 80C6h
+_KillUSB         equ 810Eh
 
-outPageNum      = 83EBh
-inputBuffer     = 9C31h
-usbReadCount    = 9C80h
-usbQueuedCount  = 9C27h
+appData          equ 8000h
+ramCode          equ 8100h
+arcInfo          equ 83EEh
+curRow           equ 844Bh
+OP1              equ 8478h
+iMathPtr5        equ 84DBh
+flags            equ 89F0h
+pagedCount       equ 9834h
+pagedBuf         equ 983Ah
+appBackUpScreen  equ 9872h
+userMem          equ 9D95h
 
-#define SAVE_MEM_PAGE           in a,(6) \ push af
-#define RESTORE_MEM_PAGE        pop af \ out (6),a
-#define RESTORE_MEM_PAGE_SAVEF  pop bc \ ld a,b \ out (6),a
-#define SET_FLASH_PAGE_A        out (6), a
-#endif
+outPageNum       equ 83EBh
+inputBuffer      equ 9C31h
+usbReadCount     equ 9C80h
+usbQueuedCount   equ 9C27h
 
-#ifdef TI84PC
-_LdHLind        = 4009h
-_cphlde         = 400Ch
-_PutC           = 44FBh
-_PutS           = 4501h
-_clrLCDFull     = 4537h
-_homeUp         = 454Fh
-_runIndicOff    = 4567h
-_getKey         = 495Dh
-_SendUSBData    = 50D4h
-_KillUSBDevice  = 5236h
-_KillUSB        = 810Eh
+macro SAVE_MEM_PAGE
+        in a,(6)
+        push af
+endm
 
-appData         = 08000h
-curRow          = 08459h
-OP1             = 084AEh
-pagedCount      = 09E15h
-appBackUpScreen = 0A0B0h ; note: this might be wrong
-userMem         = 0A60Bh
+macro RESTORE_MEM_PAGE
+        pop af
+        out (6),a
+endm
+macro RESTORE_MEM_PAGE_SAVEF
+        pop bc
+        ld a,b
+        out (6),a
+endm
+macro SET_FLASH_PAGE_A
+        out (6), a
+endm
+endif
 
-outPageNum      = appBackUpScreen+50
-usbReadCount    = 09F61h
-usbQueuedCount  = 09F08h
+if defined TI84PC
+_LdHLind        equ 4009h
+_cphlde         equ 400Ch
+_PutC           equ 44FBh
+_PutS           equ 4501h
+_clrLCDFull     equ 4537h
+_homeUp         equ 454Fh
+_runIndicOff    equ 4567h
+_getKey         equ 495Dh
+_SendUSBData    equ 50D4h
+_KillUSBDevice  equ 5236h
+_KillUSB        equ 810Eh
 
-#define SAVE_MEM_PAGE           in a,(0Eh) \ push af \ in a,(6) \ push af
-#define RESTORE_MEM_PAGE        pop af \ out (6),a \ pop af \ out (0Eh),a
-#define RESTORE_MEM_PAGE_SAVEF  pop bc \ ld a,b \ out (6),a \ pop bc \ ld a,b \ out (0Eh),a
-#define SET_FLASH_PAGE_A        rlca \ out (0Eh),a \ srl a \ out (6),a
-#endif
+appData         equ 08000h
+curRow          equ 08459h
+OP1             equ 084AEh
+pagedCount      equ 09E15h
+appBackUpScreen equ 0A0B0h ; note: this might be wrong
+userMem         equ 0A60Bh
 
-appTextSave = 1
-appFlags    = 0Dh
+outPageNum      equ appBackUpScreen+50
+usbReadCount    equ 09F61h
+usbQueuedCount  equ 09F08h
 
-onInterrupt     = 4
-onFlags         = 9h
-LlBrack         = 0C1h
+macro SAVE_MEM_PAGE
+        in a,(0Eh)
+        push af
+        in a,(6)
+        push af
+endm
+macro RESTORE_MEM_PAGE
+        pop af
+        out (6),a
+        pop af
+        out (0Eh),a
+endm
+macro RESTORE_MEM_PAGE_SAVEF
+        pop bc
+        ld a,b
+        out (6),a
+        pop bc
+        ld a,b
+        out (0Eh),a
+endm
+macro SET_FLASH_PAGE_A
+        rlca
+        out (0Eh),a
+        srl a
+        out (6),a
+endm
+endif
 
-PACKET_SIZE     = 1024
-CMD_READY       = 0AA55h
-CMD_OK          = 0001h
-CMD_EXIT        = 0002h
-CMD_SIZE        = 0003h
-CMD_GETDATA     = 0005h
-CMD_DATA        = 0006h
-CMD_REPEAT      = 0007h
- .list
+appTextSave     equ 1
+appFlags        equ 0Dh
 
-SPbackup        = appBackUpScreen
-outputBuffer    = appBackUpScreen+2
+onInterrupt     equ 4
+onFlags         equ 9h
+LlBrack         equ 0C1h
 
-.org userMem-2
-#ifdef TI84P
-        .db 0BBh,6Dh
-#endif
-#ifdef TI84PC
-        .db 0EFh,69h
-		res appTextSave,(iy+appFlags)
-		ld a,1
-		out (20h),a
-#endif
-        bcall(_runIndicOff)
+PACKET_SIZE     equ 1024
+CMD_READY       equ 0AA55h
+CMD_OK          equ 0001h
+CMD_EXIT        equ 0002h
+CMD_SIZE        equ 0003h
+CMD_GETDATA     equ 0005h
+CMD_DATA        equ 0006h
+CMD_REPEAT      equ 0007h
+
+SPbackup        equ appBackUpScreen
+outputBuffer    equ appBackUpScreen+2
+
+org userMem-2
+if defined TI84P
+        db 0BBh,6Dh
+endif
+if defined TI84PC
+        db 0EFh,69h
+        res appTextSave,(iy+appFlags)
+        ld a,1
+        out (20h),a
+endif
+        B_CALL _runIndicOff
 ; Unlock Flash, if possible.
 ; The purpose is to get an accurate dump of the certificate page (page 3Eh/7Eh).
-#ifdef TI84P
+if defined TI84P
         in a,(6)
         push af
         call Unlock
         pop af
         out (6),a
-#endif
+endif
 
         ld (SPbackup),sp
         call clearScreen
@@ -147,16 +184,16 @@ throwError:
         ld sp,(SPbackup)
         call clearScreen
         ld hl,sError
-        bcall(_PutS)
-        bcall(_getKey)
+        B_CALL _PutS
+        B_CALL _getKey
 clearScreen:
-        bcall(_clrLCDFull)
-        bcall(_homeUp)
+        B_CALL _clrLCDFull
+        B_CALL _homeUp
         res onInterrupt,(iy+onFlags)
         ret
 startDump:
         ld hl,sMessage
-        bcall(_PutS)
+        B_CALL _PutS
         res 5,(iy+41h)
 getCommandsLoop:
         ld hl,appData
@@ -165,19 +202,19 @@ getCommandsLoop:
         ld hl,(appData)
 ;Exit dumper?
         ld de,CMD_EXIT
-        bcall(_cphlde)
+        B_CALL _cphlde
         jr z,exitDumper
 ;Requesting ROM dump size?
         ld de,CMD_SIZE
-        bcall(_cphlde)
+        B_CALL _cphlde
         jr z,sizeRequested
 ;Requesting ROM data?
         ld de,CMD_GETDATA
-        bcall(_cphlde)
+        B_CALL _cphlde
         jr z,dataRequested
 ;Are we ready?
         ld de,CMD_READY
-        bcall(_cphlde)
+        B_CALL _cphlde
         jr z,readyReceived
         jr getCommandsLoop
 
@@ -193,9 +230,9 @@ sizeRequested:
         inc hl
         ld (hl),0
         inc hl
-#ifdef TI84PC
+if defined TI84PC
         ld (hl),40h
-#else
+else
         in a,(21h)
         and 3
         ld a,10h
@@ -203,7 +240,7 @@ sizeRequested:
         add a,a
 srIsNotSE:
         ld (hl),a
-#endif
+endif
         inc hl
         ld (hl),0
         ld a,81h
@@ -293,26 +330,26 @@ requestingEmptyPacket:
         jp getCommandsLoop
 
 sMessage:
-        .db "Dumping",0CEh,"        "
-        .db "                "
-        .db "                "
-        .db "                "
-        .db "Press ",LlBrack,"ON] to   "
-        .db "abort.",0
-sError: .db "ERROR!          "
-        .db "                "
-        .db "There was an    "
-        .db "unknown USB     "
-        .db "error.          "
-        .db "                "
-        .db "Press any key to"
-        .db "quit.",0
+        db "Dumping",0CEh,"        "
+        db "                "
+        db "                "
+        db "                "
+        db "Press ",LlBrack,"ON] to   "
+        db "abort.",0
+sError: db "ERROR!          "
+        db "                "
+        db "There was an    "
+        db "unknown USB     "
+        db "error.          "
+        db "                "
+        db "Press any key to"
+        db "quit.",0
 
 SendFlashPacket:
-#ifdef TI84PC
+if defined TI84PC
         rlca
         srl a
-#endif
+endif
 SendPacket:
 ;Sends a TiLP ROM dump packet.
 ;Inputs:        DE: command ID
@@ -325,10 +362,10 @@ SendPacket:
         push bc
         ld (outPageNum),a
         SAVE_MEM_PAGE
-#ifdef TI84PC
+if defined TI84PC
         sbc a,a
         out (0Eh),a
-#endif
+endif
         ld a,83h
         out (6),a
         push hl
@@ -463,7 +500,7 @@ vdispha:
         add a,48
         jr vdispd
 vdhlet: add a,55
-vdispd: bcall(_PutC)
+vdispd: B_CALL _PutC
         ret
 
 ;----------------------------------------------------------------------------
@@ -472,7 +509,7 @@ vdispd: bcall(_PutC)
 ;Inputs:        None
 ;Outputs:       Carry flag set if any issues
 InitializePeriphUSB:
-        bcall(_KillUSB)
+        B_CALL _KillUSB
         ret c
         ld a,80h
         out (57h),a
@@ -591,7 +628,7 @@ IsUSBAvailable:
 SendUSBData:
         set 2,(iy+40h)
         res 0,(iy+43h)
-        bcall(_SendUSBData)
+        B_CALL _SendUSBData
         res 0,(iy+41h)
         ret
 
@@ -624,64 +661,64 @@ ReceiveUSBDataWait:
 ;               Carry flag set if any issues
 ;Make sure you know how much you need to be receiving before calling.
 ReceiveUSBData:
-	push bc
-	push af
-	xor a
-	ld (pagedCount),a
-	jr receive_data_ready
+        push bc
+        push af
+        xor a
+        ld (pagedCount),a
+        jr receive_data_ready
 receive_big_loop:
-	in a,(4)
-	bit 3,a
-	jr z,P2scfRet
-	bit 5,(iy+41h)
-	jr nz,receive_data_ready
-	in a,(84h)
-	bit 2,a
-	jr nz,receiving_data
-	bit 1,a
-	jr z,restart_receive_loop
+        in a,(4)
+        bit 3,a
+        jr z,P2scfRet
+        bit 5,(iy+41h)
+        jr nz,receive_data_ready
+        in a,(84h)
+        bit 2,a
+        jr nz,receiving_data
+        bit 1,a
+        jr z,restart_receive_loop
 receiving_data:
-	set 5,(iy+41h)
-	xor a
-	ld (usbQueuedCount),a
-	jr receive_data_ready
+        set 5,(iy+41h)
+        xor a
+        ld (usbQueuedCount),a
+        jr receive_data_ready
 restart_receive_loop:
         in a,(86h)
-	bit 5,a
-	jr nz,P2scfRet
-	jr receive_big_loop
+        bit 5,a
+        jr nz,P2scfRet
+        jr receive_big_loop
 receive_data_ready:
-	push bc
-	push hl
-	ld hl,40h
-	or a
-	sbc hl,bc
-	pop hl
-	ld b,c
+        push bc
+        push hl
+        ld hl,40h
+        or a
+        sbc hl,bc
+        pop hl
+        ld b,c
         jr nc,receiveRest
-	ld b,40h
+        ld b,40h
 receiveRest:
-	call ReceiveUSBData_small
-	ex de,hl
-	pop hl
-	jr c,P2scfRet
-	or a
-	ld b,0
-	sbc hl,bc
-	jr z,P2ret
-	ld b,h
-	ld c,l
-	ex de,hl
-	jr receive_big_loop
-P2ret:	pop bc
-	ld a,b
-	pop bc
-	ret
+        call ReceiveUSBData_small
+        ex de,hl
+        pop hl
+        jr c,P2scfRet
+        or a
+        ld b,0
+        sbc hl,bc
+        jr z,P2ret
+        ld b,h
+        ld c,l
+        ex de,hl
+        jr receive_big_loop
+P2ret:  pop bc
+        ld a,b
+        pop bc
+        ret
 P2scfRet:
-	pop af
-	pop bc
-	scf
-	ret
+        pop af
+        pop bc
+        scf
+        ret
 ReceiveUSBData_small:
         ld a,b
         or a
@@ -791,8 +828,8 @@ calcIsPeripheral:
         and 0DFh
         out (94h),a
         pop af
-        bcall(_KillUSBDevice)
-	jr receiveError
+        B_CALL _KillUSBDevice
+        jr receiveError
 startReceive2:
         ld a,(usbQueuedCount)
         or a
@@ -836,15 +873,15 @@ endReceive:
 
 ;----------------------------------------------------------------------------
 
-#ifdef TI84P
-	
+if defined TI84P
+
 ;;; Table of supported OS and boot code versions
 VersionTable:
-	.db 1,19, 1,01		; TI-83 Plus
-	.db 1,19, 1,00		; TI-83 Plus SE
-	.db 2,55, 1,03		; TI-84 Plus
-	.db 2,55, 1,03		; TI-84 Plus SE (odd versions)
-	.db 2,56, 1,03		; Nspire (even versions)
+        db 1,19, 1,01           ; TI-83 Plus
+        db 1,19, 1,00           ; TI-83 Plus SE
+        db 2,55, 1,03           ; TI-84 Plus
+        db 2,55, 1,03           ; TI-84 Plus SE (odd versions)
+        db 2,56, 1,03           ; Nspire (even versions)
 
 ;; Unlock:
 ;;
@@ -860,130 +897,127 @@ VersionTable:
 ;; - Interrupt mode set to 1
 
 Unlock:
-	;; Check if current OS/boot version is known to be supported
-	bcall(_GetBaseVer)
-	ld c, a
-	bcall(_GetHWVer)
-	ld l, a
-	add a, -4
-	ret c
-	inc a
-	jr nz, Unlock_NotNspire
-	bit 0, b
-	jr nz, Unlock_NotNspire
-	inc l
+        ;; Check if current OS/boot version is known to be supported
+        B_CALL _GetBaseVer
+        ld c, a
+        B_CALL _GetHWVer
+        ld l, a
+        add a, -4
+        ret c
+        inc a
+        jr nz, Unlock_NotNspire
+        bit 0, b
+        jr nz, Unlock_NotNspire
+        inc l
 Unlock_NotNspire:
-	ld h, 0
-	add hl, hl
-	add hl, hl
-	ld de, VersionTable
-	add hl, de
-	ld a, c
-	call CheckVersion
-	ret c
-	inc hl
-	bcall(_GetBootVer)
-	call CheckVersion
-	ret c
+        ld h, 0
+        add hl, hl
+        add hl, hl
+        ld de, VersionTable
+        add hl, de
+        ld a, c
+        call CheckVersion
+        ret c
+        inc hl
+        B_CALL _GetBootVer
+        call CheckVersion
+        ret c
 
-	di
-	push iy
-	 ld de, 7B09h
-	 ld a, e
-	 ld (arcInfo), a
-	 out (6), a
-	 ld a, (de)
-	 ld b, a
-	 push bc
-	  push de
-	   call SetFlashPageD
-	   ld a, e
-	   bcall(_WriteAByteSafe)
-	   ld hl, Unlock_Recover - 2
-	   ld de, pagedBuf - 2
-	   bcall(_Mov18B)
-	   ld (pagedBuf + 2), sp
-	   call Unlock_Main
-	   pop af
-	  pop bc
-	 jr Unlock_Done
+        di
+        push iy
+         ld de, 7B09h
+         ld a, e
+         ld (arcInfo), a
+         out (6), a
+         ld a, (de)
+         ld b, a
+         push bc
+          push de
+           call SetFlashPageD
+           ld a, e
+           B_CALL _WriteAByteSafe
+           ld hl, Unlock_Recover - 2
+           ld de, pagedBuf - 2
+           B_CALL _Mov18B
+           ld (pagedBuf + 2), sp
+           call Unlock_Main
+           pop af
+          pop bc
+         jr Unlock_Done
 
 Unlock_Main:
-	ld a, (_GetVariableData + 2)
-	ld d, a
-	ld hl, ramCode
-	ld bc, 304
+        ld a, (_GetVariableData + 2)
+        ld d, a
+        ld hl, ramCode
+        ld bc, 304
 Unlock_Loop1:
-	ld a, 0EDh
-	cpir
-	ret nz
-	ld a, (hl)
-	sub 0A0h
-	jr nz, Unlock_Loop1
-	ld c, (hl)
-	ld b, a
-	inc hl
-	ld (iMathPtr5), hl
-	ld hl, (_GetVariableData)
-	inc a
+        ld a, 0EDh
+        cpir
+        ret nz
+        ld a, (hl)
+        sub 0A0h
+        jr nz, Unlock_Loop1
+        ld c, (hl)
+        ld b, a
+        inc hl
+        ld (iMathPtr5), hl
+        ld hl, (_GetVariableData)
+        inc a
 Unlock_Data:
-	ld (pagedCount), a
-	or a
-	call nz, SetFlashPageD
+        ld (pagedCount), a
+        or a
+        call nz, SetFlashPageD
 Unlock_Loop2:
-	ld a, 3Ah
-	cpir
-	ret nz
-	ld de, Unlock_Data + 1
+        ld a, 3Ah
+        cpir
+        ret nz
+        ld de, Unlock_Data + 1
 Unlock_Loop3:
-	ld a,(de)
-	cp (hl)
-	jr nz, Unlock_Loop2
-	inc hl
-	inc de
-	cp 0C4h
-	jr nz, Unlock_Loop3
-	bcall(_LdHLind)
-	ld iy, 56h - 25h
+        ld a,(de)
+        cp (hl)
+        jr nz, Unlock_Loop2
+        inc hl
+        inc de
+        cp 0C4h
+        jr nz, Unlock_Loop3
+        B_CALL _LdHLind
+        ld iy, 56h - 25h
 Unlock_Recover:
-	jp (hl)
-	   ld sp, 0
-	   pop hl
-	  pop af
-	 ld (hl), a
+        jp (hl)
+           ld sp, 0
+           pop hl
+          pop af
+         ld (hl), a
 Unlock_WriteByte:
-	 cp (hl)
-	 jr nz, Unlock_WriteByte
-	 ld (hl), 0F0h
+         cp (hl)
+         jr nz, Unlock_WriteByte
+         ld (hl), 0F0h
 Unlock_Done:
-	 pop iy
-	ret
+         pop iy
+        ret
 
 SetFlashPageD:
-	in a, (2)
-	add a, a
-	ld a, 1Fh
-	jr nc, SetFlashPage_Mask
-	in a, (21h)
-	and 3
-	ld a, 7Fh
-	jr nz, SetFlashPage_Mask
-	rra
+        in a, (2)
+        add a, a
+        ld a, 1Fh
+        jr nc, SetFlashPage_Mask
+        in a, (21h)
+        and 3
+        ld a, 7Fh
+        jr nz, SetFlashPage_Mask
+        rra
 SetFlashPage_Mask:
-	and d
-	out (6), a
-	ret
+        and d
+        out (6), a
+        ret
 
 CheckVersion:
-	cp (hl)
-	inc hl
-	ccf
-	ret nz
-	ld a, (hl)
-	cp b
-	ret
+        cp (hl)
+        inc hl
+        ccf
+        ret nz
+        ld a, (hl)
+        cp b
+        ret
 
-#endif
-
-.end
-end
+endif
