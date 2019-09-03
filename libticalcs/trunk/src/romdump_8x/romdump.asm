@@ -21,28 +21,28 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#define equ .equ
-#define org .org
-#define rorg .org
-#define db .db
-#define dw .dw
+;;.define equ .equ
+;.define org .org
+;.define rorg .org
+;.define db .db
+;.define dw .dw
 
-#include "romdump.inc"
+include "romdump.inc"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; TI-73
 ;;;
 
-#ifdef TI73
+if defined TI73
 
 ;;; This program can be launched from the home screen.
 
-#include "ti73defs.inc"
+include "ti73defs.inc"
 
-#define safe_mem          appBackUpScreen
-#define fixed_exec        saveSScreen
-#define fixed_size_limit  768
+safe_mem         equ appBackUpScreen
+fixed_exec       equ saveSScreen
+fixed_size_limit equ 768
 
 	;; BASIC code to launch assembly stub
 	db "_00001005?"
@@ -58,26 +58,26 @@ start:	ld bc, 3FD5h
 
 	res remoteKeyPress, (iy + remoteKeyFlag)
 
-#endif ; TI73
+endif ; TI73
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; TI-82
 ;;;
 
-#ifdef TI82
+if defined TI82
 
 ;;; This program is launched using a buffer overflow, which jumps
 ;;; directly to 'start', with HL equal to the address of 'start' and
 ;;; SP = (onSP).
 
-#include "ti82defs.inc"
+include "ti82defs.inc"
 
-#define NEED_DISPLAY_ROUTINES
+;#define NEED_DISPLAY_ROUTINES
 
-#define safe_mem          saveSScreen
-#define fixed_exec        (saveSScreen + 128)
-#define fixed_size_limit  640
+safe_mem         equ saveSScreen
+fixed_exec       equ (saveSScreen + 128)
+fixed_size_limit equ 640
 
 start:
 	    ld de, fixed_code - start
@@ -112,7 +112,7 @@ start:
 	    xor (hl)
 	    inc hl
 	    xor (hl)
-	    cp 3Eh ^ cxError ^ 0CDh
+	    cp 3Eh xor cxError xor 0CDh
 	    jr nz, exit_error
 	    ld a, cxCmd
 	    jp (hl)
@@ -129,22 +129,22 @@ exit_error:
 	ld (errNo), a
 	ret
 
-#endif ; TI82
+endif ; TI82
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; TI-83 / TI-82 STATS / TI-76.fr
 ;;;
 
-#ifdef TI83
+if defined TI83
 
 ;;; This program can be launched using the command "Send(9prgmROMDUMP".
 
-#include "ti83defs.inc"
+include "ti83defs.inc"
 
-#define safe_mem          saveSScreen
-#define fixed_exec        saveSScreen + 128
-#define fixed_size_limit  640
+safe_mem         equ saveSScreen
+fixed_exec       equ saveSScreen + 128
+fixed_size_limit equ 640
 
 	db "CD2644"	; call _FindProgSym
 	db "211900"	; ld hl, 25
@@ -160,20 +160,20 @@ start:
 	ld bc, fixed_code_size
 	ldir
 
-#endif ; TI83
+endif ; TI83
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; TI-83 Plus / TI-84 Plus
 ;;;
 
-#ifdef TI83P
+if defined TI83P
 
 ;;; This program can be launched using the command "Asm(prgmROMDUMP".
 
-#include "ti83pdefs.inc"
+include "ti83pdefs.inc"
 
-#define safe_mem saveSScreen
+safe_mem equ saveSScreen
 
 	;; Header for Asm(
 	org 9d93h
@@ -186,20 +186,20 @@ start:
 
 	res remoteKeyPress, (iy + remoteKeyFlag)
 
-#endif ; TI83P
+endif ; TI83P
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; TI-84 Plus C
 ;;;
 
-#ifdef TI84PC
+if defined TI84PC
 
 ;;; This program can be launched using the command "Asm(prgmROMDUMP".
 
-#include "ti84pcdefs.inc"
+include "ti84pcdefs.inc"
 
-#define safe_mem saveSScreen
+safe_mem equ saveSScreen
 
 	;; Header for Asm(
 	org 0A609h
@@ -211,26 +211,26 @@ start:
 	res appTextSave, (iy + appFlags)
 	res remoteKeyPress, (iy + remoteKeyFlag)
 
-#endif ; TI84PC
+endif ; TI84PC
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; TI-85
 ;;;
 
-#ifdef TI85
+if defined TI85
 
 ;;; This program is launched using a buffer overflow, which jumps
 ;;; directly to 'start', with HL equal to the address of 'start' and
 ;;; SP = (onSP).
 
-#include "ti85defs.inc"
+include "ti85defs.inc"
 
-#define NEED_DISPLAY_ROUTINES
+;#define NEED_DISPLAY_ROUTINES
 
-#define safe_mem          plotSScreen
-#define fixed_exec        plotSScreen + 128
-#define fixed_size_limit  896
+safe_mem         equ plotSScreen
+fixed_exec       equ plotSScreen + 128
+fixed_size_limit equ 896
 
 start:
 	    ld de, fixed_code - start
@@ -262,20 +262,20 @@ start:
 	ld (errNo), a
 	ret
 
-#endif ; TI85
+endif ; TI85
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; TI-86
 ;;;
 
-#ifdef TI86
+if defined TI86
 
-#include "ti86defs.inc"
+include "ti86defs.inc"
 
 ;;; This program can be launched using the command "Asm(ROMDump".
 
-#define safe_mem 9000h
+safe_mem equ 9000h
 
  	;; Header for Asm(
 	org 0D746h
@@ -283,71 +283,71 @@ start:
 
 	res remoteKeyPress, (iy + remoteKeyFlag)
 
-#endif ; TI86
+endif ; TI86
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Main program
 ;;;
 
-#include "defs.inc"
-#include "main.asm"
+include "defs.inc"
+include "main.asm"
 
 fixed_code:
 
-#ifdef fixed_exec
- rorg fixed_exec
-#endif
+if defined fixed_exec
+ org fixed_exec
+endif
 
 CallHL:	jp (hl)
 
-#ifdef TI73
- #include "unlock73.asm"
-#endif
+if defined TI73
+ include "unlock73.asm"
+endif
 
-#ifdef TI83P
- #include "unlock83p.asm"
-#endif
+if defined TI83P
+ include "unlock83p.asm"
+endif
 
-#include "packet.asm"
+include "packet.asm"
 
-#ifdef USB
- #include "usb.asm"
-#else
- #include "link.asm"
- #ifdef TI83P
-  #include "link83p.asm"
- #else
-  #ifdef TI84PC
-   #include "link83p.asm"
-  #else
-   #include "linksw.asm"
-  #endif
- #endif
-#endif
+if defined USB && USB != 0
+ ;include "usb.asm"
+else
+ include "link.asm"
+ if defined TI83P
+  include "link83p.asm"
+ else
+  if defined TI84PC
+   include "link83p.asm"
+  else
+   include "linksw.asm"
+  endif
+ endif
+endif
 
-#ifdef NEED_DISPLAY_ROUTINES
- #include "display.asm"
- #ifdef TI82
-  #include "display82.asm"
- #else
-  #include "display85.asm"
- #endif
-#endif
+if defined NEED_DISPLAY_ROUTINES
+ include "display.asm"
+ if defined TI82
+  include "display82.asm"
+ else
+  include "display85.asm"
+ endif
+endif
 
-#include "data.asm"
+include "data.asm"
 
-#ifdef fixed_exec
+if defined fixed_exec
 fixed_code_size equ $ - fixed_exec
- #if (fixed_code_size > fixed_size_limit)
-  #error "Fixed code section too large"
- #endif
-#endif
+ if (fixed_code_size > fixed_size_limit)
+  error "Fixed code section too large"
+ endif
+endif
 
-#ifdef NEED_DISPLAY_ROUTINES
- #include "font.asm"
-#endif
+if defined NEED_DISPLAY_ROUTINES
+ include "font.asm"
+endif
 
-#ifdef TI83
+if defined TI83
 	db 0D4h, "?0000?", 0D4h
-#endif
+endif
