@@ -21,15 +21,15 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-CMD_PING   .equ 0AA55h
-CMD_NOK    .equ 0
-CMD_OK     .equ 1
-CMD_EOT    .equ 2
-CMD_SIZE   .equ 3
-CMD_RETRY  .equ 4
-CMD_REQ    .equ 5
-CMD_DATA   .equ 6
-CMD_REPEAT .equ 7
+CMD_PING   equ 0AA55h
+CMD_NOK    equ 0
+CMD_OK     equ 1
+CMD_EOT    equ 2
+CMD_SIZE   equ 3
+CMD_RETRY  equ 4
+CMD_REQ    equ 5
+CMD_DATA   equ 6
+CMD_REPEAT equ 7
 
-BLOCK_SIZE .equ 1024
-TIMEOUT    .equ 65535
+BLOCK_SIZE equ 1024
+TIMEOUT    equ 65535

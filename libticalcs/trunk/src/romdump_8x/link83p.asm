@@ -37,11 +37,11 @@ CheckLinkActivity:
 	cpl
 	and 3
 	ret nz
- #ifndef TI84PC
+ if ! defined TI84PC
 	in a, (2)
 	and 80h
 	ret z
- #endif
+ endif
 	in a, (9)
 	and 18h
 	ret
