@@ -23,17 +23,29 @@
 
 BIT_TIMEOUT equ 65535
 
-#ifndef TI82
+if ! defined TI82
 
-#define LD_A_LINK_D0L         ld a, LINK_D0L
-#define LD_A_LINK_D1L         ld a, LINK_D1L
-#define AND_LINK_STATUS_MASK  and LINK_STATUS_MASK
+macro LD_A_LINK_D0L
+    ld a, LINK_D0L
+endm
+macro LD_A_LINK_D1L
+    ld a, LINK_D1L
+endm
+macro AND_LINK_STATUS_MASK
+    and LINK_STATUS_MASK
+endm
 
-#else ; TI82
+else ; TI82
 
-#define LD_A_LINK_D0L         ld a, (linkD0L)
-#define LD_A_LINK_D1L         ld a, (linkD1L)
-#define AND_LINK_STATUS_MASK  call AndLinkStatusMask
+macro LD_A_LINK_D0L
+    ld a, (linkD0L)
+endm
+macro LD_A_LINK_D1L
+    ld a, (linkD1L)
+endm
+macro AND_LINK_STATUS_MASK
+    call AndLinkStatusMask
+endm
 
 LINK_STATUS_MASK equ 0
 
@@ -67,7 +79,7 @@ InitializeLink_Old:
 	ld (linkD0L), hl
 	ret
 
-#endif ; TI82
+endif ; TI82
 
 ;; CheckLinkActivity:
 ;;

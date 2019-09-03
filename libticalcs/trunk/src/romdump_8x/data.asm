@@ -29,26 +29,26 @@ ErrorString:		db "Errors:", 0
 
 KString:		db "0K of "
 
- #if CALC_ROM_SIZE == 4096
+ if CALC_ROM_SIZE = 4096
 			db "4096K"
 ROMSize:		dw 0000h, 0040h
- #endif
+ endif
 
- #if CALC_ROM_SIZE == 512
+ if CALC_ROM_SIZE = 512
 			db "512K"
 ROMSize:		dw 0000h, 0008h
- #endif
+ endif
 
- #if CALC_ROM_SIZE == 128
+ if CALC_ROM_SIZE = 128
 			db "128K"
 ROMSize:		dw 0000h, 0002h
- #endif
+ endif
 
- #if CALC_ROM_SIZE == 256
+ if CALC_ROM_SIZE = 256
 			db "256K"
 ROMSize:		dw 0000h, 0004h
- #endif
+ endif
 
- #if CALC_ROM_SIZE == 0
+ if CALC_ROM_SIZE = 0
 ROMSize:		dw 0000h, 0008h
- #endif
+ endif

@@ -43,12 +43,12 @@ LinkSendBC:
 	ret z
 	dec bc
 	push bc
- #ifdef TI83
+ if defined TI83
 	 in a, (linkPort)
 	 and 10h
 	 or LINK_RESET
 	 push af
- #endif
+ endif
 	  ld a, (de)
 	  inc de
 	  ld c, a
@@ -59,11 +59,11 @@ LinkSendBC:
 	    call LinkPutByte
 	    pop hl
 	   pop de
- #ifdef TI83
+ if defined TI83
 	  pop bc
 	 ld c, linkPort
 	 out (c), b
- #endif
+ endif
 	 pop bc
 	ret c
 	jr LinkSendBC
@@ -85,12 +85,12 @@ LinkSendBC:
 ;; - AF, BC, DE
 
 LinkReceiveB:
- #ifdef TI83
+ if defined TI83
 	in a, (linkPort)
 	and 10h
 	or LINK_RESET
 	ld c, a
- #endif
+ endif
 LinkReceiveB_Loop:
 	push bc
 	 push hl
@@ -110,10 +110,10 @@ LinkReceiveB_Loop:
 	push bc
 LinkReceiveB_Error:
 	 pop bc
- #ifdef TI83
+ if defined TI83
 	ld a, c
 	out (linkPort), a
- #endif
+ endif
 	ret
 
 ;; LinkError:
@@ -127,27 +127,27 @@ LinkReceiveB_Error:
 LinkError:
 	ld b, 255
 	push af
- #ifdef CALC_LINK_ASSIST
+ if defined CALC_LINK_ASSIST
 	 in a, (2)
 	 and 80h
 	 out (8), a
- #endif
- #ifdef TI83
+ endif
+ if defined TI83
 	 in a, (linkPort)
 	 and 10h
 	 or LINK_RESET
- #else
+ else
 	 ld a, LINK_RESET
- #endif
+ endif
 	 out (linkPort), a
 LinkDelay_Loop:
 	 ei
 	 halt
 	 halt
 	 djnz LinkDelay_Loop
- #ifdef CALC_LINK_ASSIST
+ if defined CALC_LINK_ASSIST
 	 xor a
 	 out (8), a
- #endif
+ endif
 	 pop af
 	ret
