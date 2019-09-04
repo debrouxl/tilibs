@@ -30,6 +30,7 @@ project(tilibs C CXX)
 #     but at least you have the choice to do whatever you want should you ever really need a static build.
 #
 # In the future...:
+#   - TODO: add support to build tifileutil
 #   - TODO: add support to build the ROM dumpers (will end up just launching the external tools...)
 #   - WISH: do not hardcode the (auto-generated...) potfiles_* target names
 #   - WISH: better expose each lib's generated install target (NTS: look at cmake's components feature?)

@@ -16,6 +16,8 @@ if [ "$PREBUILDER" == "autotools" ]; then
     mkdir m4; autoreconf -ivf &
     cd ../../libtifiles/trunk
     mkdir m4; autoreconf -ivf &
+    cd ../../tifileutil/trunk
+    mkdir m4; autoreconf -ivf &
     cd ../../libticables/trunk
     mkdir m4; autoreconf -ivf &
     cd ../../libticalcs/trunk
@@ -27,6 +29,11 @@ if [ "$PREBUILDER" == "autotools" ]; then
     make -j${NPROC} install
     cd ../../libtifiles/trunk
     cd po; make libtifiles2.pot-update; make update-po; cd ..
+    ./configure --prefix=${prefixpath}
+    make -j${NPROC} check
+    make -j${NPROC} install
+    cd ../../tifileutil/trunk
+    cd po; make tifileutil.pot-update; make update-po; cd ..
     ./configure --prefix=${prefixpath}
     make -j${NPROC} check
     make -j${NPROC} install

@@ -40,22 +40,22 @@ dump86.bin: romdump.asm romdump.inc ti86defs.inc defs.inc main.asm \
 	$(SPASM) $(SPASMFLAGS) -A -DTI86 -I $(srcdir) $(srcdir)/romdump.asm dump86.bin
 
 dump73.73p: dump73.bin
-	$(TIPACK) -n 'ROMDUMP' dump73.bin -p -o dump73.73p
+	$(TIFILEUTIL) wrap -n 'ROMDUMP' dump73.bin -p -o dump73.73p
 
 dump82.82y: dump82.bin
-	$(TIPACK) -n '$$RD' dump82.bin -o dump82.82y
+	$(TIFILEUTIL) wrap -n '$$RD' dump82.bin -o dump82.82y
 
 dump83.83p: dump83.bin
-	$(TIPACK) -n 'ROMDUMP' dump83.bin -p -o dump83.83p
+	$(TIFILEUTIL) wrap -n 'ROMDUMP' dump83.bin -p -o dump83.83p
 
 dump83p.8xp: dump83p.bin
-	$(TIPACK) -n 'ROMDUMP' dump83p.bin -p -o dump83p.8xp
+	$(TIFILEUTIL) wrap -n 'ROMDUMP' dump83p.bin -p -o dump83p.8xp
 
 dump84pc.8xp: dump84pc.bin
-	$(TIPACK) -n 'ROMDUMP' dump84pc.bin -p -o dump84pc.8xp
+	$(TIFILEUTIL) wrap -n 'ROMDUMP' dump84pc.bin -p -o dump84pc.8xp
 
 dump85.85s: dump85.bin
-	$(TIPACK) -n '$$RD' dump85.bin -o dump85.85s
+	$(TIFILEUTIL) wrap -n '$$RD' dump85.bin -o dump85.85s
 
 dump86.86p: dump86.bin
-	$(TIPACK) -n 'ROMDump' dump86.bin -o dump86.86p
+	$(TIFILEUTIL) wrap -n 'ROMDump' dump86.bin -o dump86.86p

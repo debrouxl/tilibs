@@ -14,6 +14,7 @@ _linuxpackages: &_linuxpackages
         - zlib1g-dev
         - libusb-1.0-0-dev
         - gettext
+        - intltool
         - bison
         - flex
         - groff
@@ -22,6 +23,7 @@ _linuxpackages: &_linuxpackages
         - ninja-build
         - liblz4-dev
         - liblzma-dev
+        - autoconf-archive
 
 matrix:
   include:
@@ -58,7 +60,7 @@ matrix:
       env: PREBUILDER=cmake     BUILDER=ninja
 
 install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake ninja gettext libarchive libtool glib libusb bison flex texinfo libiconv intltool ; brew link --force gettext libarchive ; export PKG_CONFIG_PATH="/usr/local/opt/libarchive/lib/pkgconfig"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake ninja gettext libarchive libtool glib libusb bison flex texinfo libiconv intltool autoconf-archive ; brew link --force gettext libarchive ; export PKG_CONFIG_PATH="/usr/local/opt/libarchive/lib/pkgconfig"; fi
   - which gcc   ; gcc --version
   - which cmake ; cmake --version
   - which ninja ; ninja --version
