@@ -367,6 +367,10 @@ msgstr "Zoom"
 msgid "Table Setup"
 msgstr "Config Table"
 
+#: src/types83p.cc:55
+msgid "App Obj"
+msgstr "Objet Application"
+
 #: src/types83p.cc:56 src/typesoldz80.cc:66
 msgid "App Var"
 msgstr "Variable Application"

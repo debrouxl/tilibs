@@ -359,6 +359,10 @@ msgstr ""
 msgid "Table Setup"
 msgstr ""
 
+#: src/types83p.cc:55
+msgid "App Obj"
+msgstr ""
+
 #: src/types83p.cc:56 src/typesoldz80.cc:66
 msgid "App Var"
 msgstr ""
