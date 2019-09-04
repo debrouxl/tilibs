@@ -207,7 +207,7 @@ int tifiles_file_read_regular(const char *filename, FileContent *content)
 	}
 	else
 	{
-		tifiles_critical("tifiles_file_read_regular: unable to determine the calculator model", __FUNCTION__);
+		tifiles_critical("%s: unable to determine the calculator model", __FUNCTION__);
 		tifiles_content_delete_regular(content);
 		return ERR_BAD_CALC;
 	}
@@ -447,7 +447,7 @@ int tifiles_file_read_backup(const char *filename, BackupContent *content)
 	}
 	else
 #endif
-	tifiles_critical("tifiles_file_read_backup: unable to determine the calculator model", __FUNCTION__);
+	tifiles_critical("%s: unable to determine the calculator model", __FUNCTION__);
 	tifiles_content_delete_backup(content);
 	return ERR_BAD_CALC;
 }
@@ -724,7 +724,7 @@ int tifiles_file_read_flash(const char *filename, FlashContent *content)
 	}
 	else
 	{
-		tifiles_critical("tifiles_file_read_flash: unable to determine the calculator model", __FUNCTION__);
+		tifiles_critical("%s: unable to determine the calculator model", __FUNCTION__);
 		tifiles_content_delete_flash(content);
 		return ERR_BAD_CALC;
 	}

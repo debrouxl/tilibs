@@ -10,9 +10,9 @@ endif
 dump84p.bin: romdump.z80
 	$(SPASM) $(SPASMFLAGS) -A -DTI84P $(srcdir)/romdump.z80 dump84p.bin
 dump84p.8xp: dump84p.bin
-	$(TIPACK) -n 'ROMDUMP' dump84p.bin -p -o dump84p.8xp
+	$(TIFILEUTIL) wrap -n 'ROMDUMP' dump84p.bin -p -o dump84p.8xp
 
 dump84pcu.bin: romdump.z80
 	$(SPASM) $(SPASMFLAGS) -A -DTI84PC $(srcdir)/romdump.z80 dump84pcu.bin
 dump84pcu.8xp: dump84pcu.bin
-	$(TIPACK) -n 'ROMDUMP' dump84pcu.bin -p -o dump84pcu.8xp
+	$(TIFILEUTIL) wrap -n 'ROMDUMP' dump84pcu.bin -p -o dump84pcu.8xp
