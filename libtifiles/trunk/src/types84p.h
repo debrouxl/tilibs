@@ -49,8 +49,10 @@
 #define TI84p_TAB	 0x11	//deprecated
 #define TI84p_TABLE  0x11
 #define TI84p_BKUP   0x13
+#define TI84p_APPOBJ 0x14
 #define TI84p_APPVAR 0x15	//deprecated
 #define TI84p_APPV   0x15
+#define TI84p_TEMPPROGOBJ 0x16
 #define TI84p_GROUP  0x17
 #define TI83pce_SIMPLEFRAC 0x18
 #define TI84p_DIR    0x19

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2018-10-21 21:38+0200\n"
+"POT-Creation-Date: 2023-01-29 22:27+0100\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -196,56 +196,56 @@ msgstr "Expression"
 #: src/types68k.cc:78 src/types68k.cc:79 src/types68k.cc:80 src/types68k.cc:81
 #: src/types68k.cc:82 src/types68k.cc:83 src/types68k.cc:84 src/types68k.cc:85
 #: src/types68k.cc:86 src/types83p.cc:44 src/types83p.cc:45 src/types83p.cc:49
-#: src/types83p.cc:53 src/types83p.cc:55 src/types83p.cc:60 src/types83p.cc:69
-#: src/types83p.cc:73 src/types83p.cc:74 src/types83p.cc:75 src/types83p.cc:76
-#: src/types83p.cc:77 src/types83p.cc:78 src/types83p.cc:79 src/types83p.cc:80
-#: src/types83p.cc:81 src/types83p.cc:82 src/typesoldz80.cc:49
-#: src/typesoldz80.cc:50 src/typesoldz80.cc:53 src/typesoldz80.cc:54
-#: src/typesoldz80.cc:58 src/typesoldz80.cc:60 src/typesoldz80.cc:61
-#: src/typesoldz80.cc:62 src/typesoldz80.cc:63 src/typesoldz80.cc:64
-#: src/typesoldz80.cc:65 src/typesoldz80.cc:67 src/typesoldz80.cc:68
-#: src/typesoldz80.cc:69 src/typesoldz80.cc:70 src/typesoldz80.cc:71
-#: src/typesoldz80.cc:72 src/typesoldz80.cc:73 src/typesoldz80.cc:74
-#: src/typesoldz80.cc:78 src/typesoldz80.cc:79 src/typesoldz80.cc:80
-#: src/typesoldz80.cc:81 src/typesoldz80.cc:82 src/typesoldz80.cc:83
-#: src/typesoldz80.cc:84 src/typesoldz80.cc:85 src/typesoldz80.cc:86
-#: src/typesoldz80.cc:87 src/typesoldz80.cc:97 src/typesoldz80.cc:102
-#: src/typesoldz80.cc:103 src/typesoldz80.cc:109 src/typesoldz80.cc:110
-#: src/typesoldz80.cc:111 src/typesoldz80.cc:112 src/typesoldz80.cc:113
-#: src/typesoldz80.cc:114 src/typesoldz80.cc:115 src/typesoldz80.cc:116
-#: src/typesoldz80.cc:117 src/typesoldz80.cc:118 src/typesoldz80.cc:119
-#: src/typesoldz80.cc:120 src/typesoldz80.cc:121 src/typesoldz80.cc:122
-#: src/typesoldz80.cc:123 src/typesoldz80.cc:124 src/typesoldz80.cc:125
-#: src/typesoldz80.cc:126 src/typesoldz80.cc:127 src/typesoldz80.cc:128
-#: src/typesoldz80.cc:129 src/typesoldz80.cc:130 src/typesoldz80.cc:131
-#: src/typesoldz80.cc:132 src/typesoldz80.cc:133 src/typesoldz80.cc:134
-#: src/typesoldz80.cc:135 src/typesoldz80.cc:136 src/typesoldz80.cc:137
-#: src/typesoldz80.cc:138 src/typesoldz80.cc:139 src/typesoldz80.cc:140
-#: src/typesoldz80.cc:155 src/typesoldz80.cc:156 src/typesoldz80.cc:157
-#: src/typesoldz80.cc:159 src/typesoldz80.cc:160 src/typesoldz80.cc:164
-#: src/typesoldz80.cc:166 src/typesoldz80.cc:167 src/typesoldz80.cc:168
-#: src/typesoldz80.cc:169 src/typesoldz80.cc:170 src/typesoldz80.cc:171
-#: src/typesoldz80.cc:172 src/typesoldz80.cc:173 src/typesoldz80.cc:174
-#: src/typesoldz80.cc:175 src/typesoldz80.cc:176 src/typesoldz80.cc:177
-#: src/typesoldz80.cc:178 src/typesoldz80.cc:179 src/typesoldz80.cc:180
-#: src/typesoldz80.cc:181 src/typesoldz80.cc:182 src/typesoldz80.cc:183
-#: src/typesoldz80.cc:184 src/typesoldz80.cc:185 src/typesoldz80.cc:186
-#: src/typesoldz80.cc:187 src/typesoldz80.cc:188 src/typesoldz80.cc:189
-#: src/typesoldz80.cc:190 src/typesoldz80.cc:191 src/typesoldz80.cc:192
-#: src/typesoldz80.cc:193 src/typesoldz80.cc:210 src/typesoldz80.cc:221
-#: src/typesoldz80.cc:227 src/typesoldz80.cc:229 src/typesoldz80.cc:230
-#: src/typesoldz80.cc:231 src/typesoldz80.cc:232 src/typesoldz80.cc:233
-#: src/typesoldz80.cc:234 src/typesoldz80.cc:235 src/typesoldz80.cc:236
-#: src/typesoldz80.cc:237 src/typesoldz80.cc:238 src/typesoldz80.cc:239
-#: src/typesoldz80.cc:240 src/typesoldz80.cc:242 src/typesoldz80.cc:243
-#: src/typesoldz80.cc:244 src/typesoldz80.cc:245 src/typesoldz80.cc:246
-#: src/typesoldz80.cc:263 src/typesoldz80.cc:274 src/typesoldz80.cc:280
-#: src/typesoldz80.cc:282 src/typesoldz80.cc:283 src/typesoldz80.cc:284
-#: src/typesoldz80.cc:285 src/typesoldz80.cc:286 src/typesoldz80.cc:287
-#: src/typesoldz80.cc:288 src/typesoldz80.cc:289 src/typesoldz80.cc:290
-#: src/typesoldz80.cc:291 src/typesoldz80.cc:292 src/typesoldz80.cc:293
-#: src/typesoldz80.cc:294 src/typesoldz80.cc:295 src/typesoldz80.cc:296
-#: src/typesoldz80.cc:297 src/typesoldz80.cc:298 src/typesoldz80.cc:299
+#: src/types83p.cc:53 src/types83p.cc:60 src/types83p.cc:69 src/types83p.cc:73
+#: src/types83p.cc:74 src/types83p.cc:75 src/types83p.cc:76 src/types83p.cc:77
+#: src/types83p.cc:78 src/types83p.cc:79 src/types83p.cc:80 src/types83p.cc:81
+#: src/types83p.cc:82 src/typesoldz80.cc:49 src/typesoldz80.cc:50
+#: src/typesoldz80.cc:53 src/typesoldz80.cc:54 src/typesoldz80.cc:58
+#: src/typesoldz80.cc:60 src/typesoldz80.cc:61 src/typesoldz80.cc:62
+#: src/typesoldz80.cc:63 src/typesoldz80.cc:64 src/typesoldz80.cc:65
+#: src/typesoldz80.cc:67 src/typesoldz80.cc:68 src/typesoldz80.cc:69
+#: src/typesoldz80.cc:70 src/typesoldz80.cc:71 src/typesoldz80.cc:72
+#: src/typesoldz80.cc:73 src/typesoldz80.cc:74 src/typesoldz80.cc:78
+#: src/typesoldz80.cc:79 src/typesoldz80.cc:80 src/typesoldz80.cc:81
+#: src/typesoldz80.cc:82 src/typesoldz80.cc:83 src/typesoldz80.cc:84
+#: src/typesoldz80.cc:85 src/typesoldz80.cc:86 src/typesoldz80.cc:87
+#: src/typesoldz80.cc:97 src/typesoldz80.cc:102 src/typesoldz80.cc:103
+#: src/typesoldz80.cc:109 src/typesoldz80.cc:110 src/typesoldz80.cc:111
+#: src/typesoldz80.cc:112 src/typesoldz80.cc:113 src/typesoldz80.cc:114
+#: src/typesoldz80.cc:115 src/typesoldz80.cc:116 src/typesoldz80.cc:117
+#: src/typesoldz80.cc:118 src/typesoldz80.cc:119 src/typesoldz80.cc:120
+#: src/typesoldz80.cc:121 src/typesoldz80.cc:122 src/typesoldz80.cc:123
+#: src/typesoldz80.cc:124 src/typesoldz80.cc:125 src/typesoldz80.cc:126
+#: src/typesoldz80.cc:127 src/typesoldz80.cc:128 src/typesoldz80.cc:129
+#: src/typesoldz80.cc:130 src/typesoldz80.cc:131 src/typesoldz80.cc:132
+#: src/typesoldz80.cc:133 src/typesoldz80.cc:134 src/typesoldz80.cc:135
+#: src/typesoldz80.cc:136 src/typesoldz80.cc:137 src/typesoldz80.cc:138
+#: src/typesoldz80.cc:139 src/typesoldz80.cc:140 src/typesoldz80.cc:155
+#: src/typesoldz80.cc:156 src/typesoldz80.cc:157 src/typesoldz80.cc:159
+#: src/typesoldz80.cc:160 src/typesoldz80.cc:164 src/typesoldz80.cc:166
+#: src/typesoldz80.cc:167 src/typesoldz80.cc:168 src/typesoldz80.cc:169
+#: src/typesoldz80.cc:170 src/typesoldz80.cc:171 src/typesoldz80.cc:172
+#: src/typesoldz80.cc:173 src/typesoldz80.cc:174 src/typesoldz80.cc:175
+#: src/typesoldz80.cc:176 src/typesoldz80.cc:177 src/typesoldz80.cc:178
+#: src/typesoldz80.cc:179 src/typesoldz80.cc:180 src/typesoldz80.cc:181
+#: src/typesoldz80.cc:182 src/typesoldz80.cc:183 src/typesoldz80.cc:184
+#: src/typesoldz80.cc:185 src/typesoldz80.cc:186 src/typesoldz80.cc:187
+#: src/typesoldz80.cc:188 src/typesoldz80.cc:189 src/typesoldz80.cc:190
+#: src/typesoldz80.cc:191 src/typesoldz80.cc:192 src/typesoldz80.cc:193
+#: src/typesoldz80.cc:210 src/typesoldz80.cc:221 src/typesoldz80.cc:227
+#: src/typesoldz80.cc:229 src/typesoldz80.cc:230 src/typesoldz80.cc:231
+#: src/typesoldz80.cc:232 src/typesoldz80.cc:233 src/typesoldz80.cc:234
+#: src/typesoldz80.cc:235 src/typesoldz80.cc:236 src/typesoldz80.cc:237
+#: src/typesoldz80.cc:238 src/typesoldz80.cc:239 src/typesoldz80.cc:240
+#: src/typesoldz80.cc:242 src/typesoldz80.cc:243 src/typesoldz80.cc:244
+#: src/typesoldz80.cc:245 src/typesoldz80.cc:246 src/typesoldz80.cc:263
+#: src/typesoldz80.cc:274 src/typesoldz80.cc:280 src/typesoldz80.cc:282
+#: src/typesoldz80.cc:283 src/typesoldz80.cc:284 src/typesoldz80.cc:285
+#: src/typesoldz80.cc:286 src/typesoldz80.cc:287 src/typesoldz80.cc:288
+#: src/typesoldz80.cc:289 src/typesoldz80.cc:290 src/typesoldz80.cc:291
+#: src/typesoldz80.cc:292 src/typesoldz80.cc:293 src/typesoldz80.cc:294
+#: src/typesoldz80.cc:295 src/typesoldz80.cc:296 src/typesoldz80.cc:297
+#: src/typesoldz80.cc:298 src/typesoldz80.cc:299
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -366,6 +366,10 @@ msgstr "Zoom"
 #: src/typesoldz80.cc:163
 msgid "Table Setup"
 msgstr "Config Table"
+
+#: src/types83p.cc:55
+msgid "App Obj"
+msgstr "Objet Application"
 
 #: src/types83p.cc:56 src/typesoldz80.cc:66
 msgid "App Var"

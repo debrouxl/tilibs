@@ -1,0 +1,100 @@
+[4mTIFILEUTIL[24m(1)               General Commands Manual              [4mTIFILEUTIL[24m(1)
+
+[1mNAME[0m
+       tifileutil  - a program for manipulating computer files suitable for TI
+       graphing calculators
+
+
+[1mSYNOPSIS[0m
+       [1mtifileutil [22m[-h / --help] [-v / --version] [command] [arguments]
+
+
+[1mDESCRIPTION[0m
+       The [1mtifileutil [22mprogram allows you to perform various operations on com-
+       puter files suitable for the  TI-Z80,  TI-eZ80  and  TI-68k  series  of
+       graphing calculators.
+
+
+[1mOPTIONS[0m
+       [1mtifileutil [22maccepts the following options:
+
+
+       [1m-h, --help[0m
+              Display a list of all command line options and commands.
+
+
+       [1m-v, --version[0m
+              Output the version info.
+
+
+[1mEXAMPLES[0m
+       Dump a file supposed to be suitable for TI calculators as a C hex array
+       to an output file:
+
+
+       tifileutil dump -f chexarray romdump_9x/romdump.89z -o rom89.h -n rom-
+       Dump89 -s romDumpSize89 -c 8 -m 64
+
+
+       Create TI file header and footer for a raw binary:
+
+
+       tifileutil wrap -n 'ROMDUMP' dump83p.bin -p -o dump83p.8xp
+
+
+[1mCOPYRIGHT[0m
+       Copyright (C) 2006-2010 Benjamin Moody
+
+       Copyright (C) 2010      Jon Sturm
+
+       Copyright (C) 1999-2009 Romain Lievin
+
+       Copyright (C) 2009-2023 Lionel Debroux
+
+       Permission  to  use, copy, modify, and distribute this software and its
+       documentation for any purpose and without fee is hereby  granted,  pro-
+       vided  that  the  above  copyright notice appear in all copies and that
+       both that copyright notice and this permission notice  appear  in  sup-
+       porting documentation.
+
+       This  program and its source code is distributed under the terms of the
+       terms of the GNU General Public License as published by the Free  Soft-
+       ware  Foundation;  either version 2 of the License, or (at your option)
+       any later version.
+
+       This program is distributed in the hope that it  will  be  useful,  but
+       WITHOUT  ANY  WARRANTY;  without  even  the  implied  warranty  of MER-
+       CHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU  General
+       Public License for more details.
+
+       You should have received a copy of the GNU General Public License along
+       with this program; if not, write to the Free Software Foundation, Inc.,
+       51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+
+[1mSUGGESTIONS AND BUG REPORTS[0m
+       The  canonical place to find tifileutil and some miscellaneous informa-
+       tion is at https://github.com/debrouxl/tilibs (www.tilp.info).
+
+       You can also look at  http://lpg.ticalc.org  and  http://www.ticalc.org
+       for  others  TI related programs for Linux. French people can also look
+       at http://www.ti-fr.org and http://tiplanet.org.
+
+
+[1mAUTHOR[0m
+       Original authors: Romain Lievin  (tf2hex),  Benjamin  Moody  (tipack  &
+       titools).
+
+       tifileutil  unified  design and implementation, including modifications
+       to the original tools: Lionel Debroux.
+
+
+[1mTHANKS[0m
+       Thanks to the  original  authors  of  the  code  blocks  embedded  into
+       tifileutil.
+
+
+[1mSEE ALSO[0m
+       tilp(1)
+
+                                August 1, 2023                   [4mTIFILEUTIL[24m(1)

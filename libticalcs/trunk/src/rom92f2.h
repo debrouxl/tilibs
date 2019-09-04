@@ -151,4 +151,4 @@ static unsigned char romDump92[] = {
 0xe4, 0x00, 0xe8, 0x19, 0xe4, 0xe5, 0x00, 0x00, 
 0x40, 0xdc, 0x5f, 0x28, 
 };
-static unsigned int romDumpSize92 = 1204;
++static unsigned int romDumpSize92 = sizeof(romDump92)/sizeof(romDump92[0]); // 1204

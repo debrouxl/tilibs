@@ -44,8 +44,10 @@
 #define TI83p_TAB	 0x11	//deprecated
 #define TI83p_TABLE  0x11
 #define TI83p_BKUP   0x13
+#define TI83p_APPOBJ 0x14
 #define TI83p_APPVAR 0x15	//deprecated
 #define TI83p_APPV   0x15
+#define TI83p_TEMPPROGOBJ 0x16
 #define TI83p_GRP    0x17
 #define TI83p_DIR    0x19
 #define TI83p_AMS    0x23

@@ -185,6 +185,7 @@ add_subdirectory(libticonv/trunk)
 add_subdirectory(libtifiles/trunk)
 add_subdirectory(libticables/trunk)
 add_subdirectory(libticalcs/trunk)
+add_subdirectory(tifileutil)
 
 add_custom_target(check
     DEPENDS ticonv_check tifiles2_check ticables2_check ticalcs2_check
