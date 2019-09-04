@@ -36,7 +36,6 @@ AC_CONFIG_FILES([
   docs/Makefile
   po/Makefile.in
   src/Makefile
-  src/tf2hex/Makefile
   src/romdump_8x/Makefile
   src/romdump_84p_usb/Makefile
   src/romdump_9x/Makefile
@@ -204,12 +203,12 @@ AC_ARG_ENABLE([builtin-rom-dumpers],
   [], [enable_builtin_rom_dumpers=yes])
 
 AC_ARG_VAR([SPASM], [SPASM Z80 assembler])
-AC_ARG_VAR([TIPACK], [Tool for creating TI variable files])
+AC_ARG_VAR([TIFILEUTIL], [Tool for creating TI variable files])
 have_spasm=no
-have_tipack=no
+have_tifileutil=no
 have_tigcc=no
 : ${SPASM=spasm}
-: ${TIPACK=tipack}
+: ${TIFILEUTIL=tifileutil}
 
 if test "x$enable_builtin_rom_dumpers" != "xyes" ; then
   AC_MSG_CHECKING([whether $SPASM works])
@@ -224,13 +223,11 @@ EOF
   fi
   AC_MSG_RESULT([$have_spasm])
 
-  if test "x$have_spasm" = "xyes" ; then
-    AC_MSG_CHECKING([whether $TIPACK works])
-    if "$TIPACK" conftest.bin -p -o conftest.8xp >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
-      have_tipack=yes
-    fi
-    AC_MSG_RESULT([$have_tipack])
+  AC_MSG_CHECKING([whether $TIFILEUTIL works])
+  if "$TIFILEUTIL" wrap conftest.bin -p -o conftest.8xp >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
+    have_tifileutil=yes
   fi
+  AC_MSG_RESULT([$have_tifileutil])
 
   AC_MSG_CHECKING([whether tigcc works])
   cat >conftest.c <<EOF
@@ -256,12 +253,12 @@ EOF
   AC_MSG_RESULT([$have_tigcc])
 fi
 
-if test "x$have_spasm$have_tipack" = "xyesyes" ; then
+if test "x$have_spasm$have_tifileutil" = "xyesyes" ; then
   build_z80_rom_dumpers=yes
 else
   build_z80_rom_dumpers=no
   if test "x$enable_builtin_rom_dumpers" = "xno" ; then
-    AC_MSG_FAILURE([spasm and/or tipack are not installed or are not usable.])
+    AC_MSG_FAILURE([spasm and/or tifileutil are not installed or are not usable.])
   fi
 fi
 

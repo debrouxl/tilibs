@@ -722,6 +722,22 @@ char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_, unsigned
 }
 
 /**
+ * ticonv_varname_strdup:
+ * @varname: string to be duplicated.
+ *
+ * This function is mostly meant for internal use: duplicating a non-tokenized string with the same allocation function ticonv_varname_tokenize(),
+ * so that it can be passed to ticonv_varname_free().
+ **/
+TIEXPORT4 char* TICALL ticonv_varname_strdup(char * varname)
+{
+	if (NULL == varname)
+	{
+		return NULL;
+	}
+	return g_strdup(varname);
+}
+
+/**
  * ticonv_varname_free:
  * @varname: previously allocated varname string to be freed.
  *
