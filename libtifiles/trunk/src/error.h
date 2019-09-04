@@ -39,7 +39,8 @@ typedef enum {
 	ERR_UNSUPPORTED,		// Function not supported
 	ERR_FILE_IO,				// Stream error
 	ERR_INVALID_PARAM,		// Invalid parameter.
-	ERR_CERT_TRUNCATED		// Invalid certificate memory block.
+	ERR_CERT_TRUNCATED,		// Invalid certificate memory block.
+	ERR_DUPLICATE_KEY		// The key is already present in the metadata array.
 } FileError;
 
 #endif

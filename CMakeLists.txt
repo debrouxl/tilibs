@@ -62,6 +62,7 @@ endif()
 project(tilibs C CXX)
 
 option(BUILD_TESTS "Whether to build tests" ON)
+option(BUILD_TIFILEUTIL "Whether to build the tifileutil tool" ON)
 option(BUILD_SHARED_LIBS "Whether to build shared libs instead of static ones" ON)
 
 # Our modules
@@ -198,7 +199,11 @@ add_subdirectory(libtifiles/trunk)
 add_subdirectory(libticables/trunk)
 add_subdirectory(libticalcs/trunk)
 
-if (BUILD_TESTS)
+if(BUILD_TIFILEUTIL)
+    add_subdirectory(tifileutil)
+endif()
+
+if(BUILD_TESTS)
     add_custom_target(check
             DEPENDS ticonv_check tifiles2_check ticables2_check ticalcs2_check
             COMMENT "Run all torture tests"

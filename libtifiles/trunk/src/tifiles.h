@@ -316,6 +316,19 @@ typedef struct
 	CalcModel			model_dst;
 } TigContent;
 
+/**
+ * TifilesMetadataPair:
+ * @key: a metadata key.
+ * @value: the corresponding value.
+ *
+ * A single piece of metadata under a parsable "key"/"value" form.
+ **/
+typedef struct
+{
+	char *	key;
+	char *	value;
+} TifilesMetadataPair;
+
 /* Functions */
 
 // namespace scheme: library_class_function like tifiles_fext_get
@@ -415,6 +428,7 @@ typedef struct
 	TIEXPORT2 int TICALL tifiles_has_folder(CalcModel model);
 	TIEXPORT2 int TICALL tifiles_is_flash  (CalcModel model);
 	TIEXPORT2 int TICALL tifiles_has_backup(CalcModel model);
+	TIEXPORT2 int TICALL tifiles_has_attrs (CalcModel model);
 
 	TIEXPORT2 uint16_t TICALL tifiles_checksum(const uint8_t * buffer, unsigned int size);
 	TIEXPORT2 int TICALL      tifiles_hexdump(const uint8_t* ptr, unsigned int length);
@@ -450,6 +464,12 @@ typedef struct
 	TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content);
 
 	TIEXPORT2 int TICALL tifiles_file_display(const char *filename);
+
+	// metadata.c
+	TIEXPORT2 TifilesMetadataPair * TICALL tifiles_file_get_metadata(const char *filename);
+	TIEXPORT2 void TICALL tifiles_metadata_free(TifilesMetadataPair *pairs);
+	TIEXPORT2 int TICALL tifiles_metadata_add_pair(TifilesMetadataPair **pairs, unsigned int *count, const char *key, const char *value);
+	TIEXPORT2 TifilesMetadataPair * TICALL tifiles_metadata_find_pair(TifilesMetadataPair *pairs, const char *key);
 
 	// grouped.c
 	TIEXPORT2 FileContent** TICALL tifiles_content_create_group(unsigned int n_entries);

@@ -52,9 +52,9 @@ const TI83p_DATA TI83p_CONST[TI83p_MAXTYPES + 1] =
 	{"TABLE",  "8Xt",   "8Xt",   "8Xt",   "8Xt",   "8Xt",   "8Xt",   "Table Setup",  N_("Table Setup")},
 	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
 	{"BKUP",   "8Xb",   "8Xb",   "8Xb",   "8Xb",   "8Xb",   "8Xb",   "Backup",       N_("Backup")},
-	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")}, // 20, 0x14
+	{"APPOBJ", "8Xv",   "8Xv",   "8Xv",   "8Xv",   "8Xv",   "8Xv",   "Unknown",      N_("App Obj")}, /* AppObj */ // 20, 0x14
 	{"APPV",   "8Xv",   "8Xv",   "8Xv",   "8Xv",   "8Xv",   "8Xv",   "App Var",      N_("App Var")},
-	{"TPRGM",  "8Xp",   "8Xp",   "8Xp",   "8Xp",   "8Xp",   "8Xp",   "Program",      N_("Program")}, /* TempProg */
+	{"TPRGM",  "8Xp",   "8Xp",   "8Xp",   "8Xp",   "8Xp",   "8Xp",   "Program",      N_("Program")}, /* TempProgObj */
 	{"GRP",    "8Xo",   "8Xo",   "8Xo",   "8Xo",   "8Xo",   "8Xo",   "Group Var",    N_("Group Var")}, // Also 8Xg
 	{"REAL",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "Real",         N_("Real")}, /* Fraction */
 	{"DIR",    "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")}, // 25, 0x19

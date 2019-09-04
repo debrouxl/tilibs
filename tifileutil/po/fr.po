@@ -1,0 +1,630 @@
+# French locale for tifileutil
+# Copyright (C) 2019 Lionel Debroux
+# This file is distributed under the same license as the tifileutil package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: tifileutil 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-30 20:21+0200\n"
+"PO-Revision-Date: 2026-08-14 22:07+0200\n"
+"Language-Team: Français <tilp-users@lists.sf.net>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../src/group.cc:57 ../src/group.cc:83 ../src/group.cc:101
+#: ../src/group.cc:141 ../src/group.cc:246 ../src/group.cc:358
+#: ../src/group.cc:439 ../src/group.cc:459 ../src/group.cc:481
+#: ../src/group.cc:555 ../src/main.cc:404 ../src/metadata.cc:304
+#: ../src/metadata.cc:404 ../src/metadata.cc:470 ../src/metadata.cc:527
+#: ../src/metadata.cc:566 ../src/metadata.cc:605 ../src/metadata.cc:867
+#: ../src/metadata.cc:872 ../src/metadata.cc:876 ../src/metadata.cc:880
+#: ../src/metadata.cc:884 ../src/metadata.cc:888 ../src/metadata.cc:892
+#: ../src/metadata.cc:896 ../src/metadata.cc:904 ../src/squish.cc:570
+#: ../src/squish.cc:627 ../src/squish.cc:656 ../src/squish.cc:674
+#: ../src/squish.cc:697 ../src/squish.cc:720 ../src/squish.cc:740
+#: ../src/squish.cc:769 ../src/squish.cc:797 ../src/squish.cc:814
+#: ../src/squish.cc:835 ../src/squish.cc:853 ../src/squish.cc:960
+#: ../src/squish.cc:998 ../src/squish.cc:1086 ../src/squish.cc:1097
+#: ../src/squish.cc:1108 ../src/wrap.cc:276 ../src/wrap.cc:1048
+#: ../src/wrap.cc:1095 ../src/wrap.cc:1115
+#, c-format
+msgid "%s: cannot allocate memory."
+msgstr "%s: ne peut pas allouer de la mémoire."
+
+#: ../src/group.cc:70 ../src/group.cc:95 ../src/group.cc:136
+#, c-format
+msgid "%s: duplicate entry %s in %s."
+msgstr "%s: entrée en double %s dans %s."
+
+#: ../src/group.cc:77 ../src/group.cc:154 ../src/group.cc:160
+#, c-format
+msgid "%s: %s is not a file which can be put into a tigroup."
+msgstr "%s: %s n'est pas un fichier qui peut être mis dans un tigroup."
+
+#: ../src/group.cc:225 ../src/group.cc:326 ../src/group.cc:414
+#: ../src/group.cc:537 ../src/main.cc:100 ../src/main.cc:231 ../src/main.cc:376
+#: ../src/metadata.cc:80 ../src/metadata.cc:690 ../src/metadata.cc:840
+#: ../src/metadata.cc:1011 ../src/squish.cc:442 ../src/squish.cc:934
+#: ../src/wrap.cc:225 ../src/wrap.cc:1009
+#, c-format
+msgid "%s: unknown option -%c."
+msgstr "%s: option inconnue -%c."
+
+#: ../src/group.cc:241 ../src/group.cc:434 ../src/group.cc:570
+#, c-format
+msgid "%s: %s is not a tigroup file."
+msgstr "%s: %s n'est pas un fichier tigroup."
+
+#: ../src/group.cc:279
+#, c-format
+msgid "%s: listed %u entries of %s."
+msgstr "%s: %u entrées de %s listées."
+
+#: ../src/group.cc:338
+#, c-format
+msgid "%s: no group type specified."
+msgstr "%s: aucun type de groupe spécifié."
+
+#: ../src/group.cc:342
+#, c-format
+msgid "%s: unsupported group type %s."
+msgstr "%s: type de groupe %s non pris en charge."
+
+#: ../src/group.cc:346 ../src/main.cc:392 ../src/squish.cc:458
+#: ../src/squish.cc:1031
+#, c-format
+msgid "%s: no output file specified."
+msgstr "%s: aucun fichier de sortie spécifié."
+
+#: ../src/group.cc:370
+#, c-format
+msgid "%s: wrote %u entries to %s."
+msgstr "%s: %u entrées écrites dans %s."
+
+#: ../src/group.cc:430
+#, c-format
+msgid "%s: %s is not a directory."
+msgstr "%s: %s n'est pas un répertoire."
+
+#: ../src/group.cc:453 ../src/group.cc:475
+#, c-format
+msgid "%s: entry %s has an unsafe name."
+msgstr "%s: l'entrée %s a un nom dangereux."
+
+#: ../src/group.cc:494
+#, c-format
+msgid "%s: extracted %u entries to %s."
+msgstr "%s: %u entrées extraites dans %s."
+
+#: ../src/group.cc:586
+#, c-format
+msgid "%s: appended %u entries to %s."
+msgstr "%s: %u entrées ajoutées dans %s."
+
+#: ../src/group.cc:639
+#, c-format
+msgid "%s: unknown group mode %s."
+msgstr "%s: mode de groupe inconnu %s."
+
+#. Capture the value of an option: either the rest of the current argument
+#. (-oVALUE) or the next argument (-o VALUE); on a missing value, print an
+#. error and return the result of the given usage function.
+#. Like GET_OPTION_ARG, but discard the value (used to skip the -m MODE
+#. option already consumed by the dispatcher).
+#. Capture the value of a long-form option: --option=VALUE or --option VALUE;
+#. on a missing value or an unknown suffix, print an error and return the
+#. result of the given usage function.
+#: ../src/main.cc:64 ../src/main.cc:77 ../src/main.cc:95
+#, c-format
+msgid "%s: option %s requires an argument."
+msgstr "%s: l'option %s nécessite un argument."
+
+#: ../src/main.cc:110
+#, c-format
+msgid ""
+"%s: error in %s:\n"
+"%s"
+msgstr ""
+"%s: erreur dans %s:\n"
+"%s"
+
+#: ../src/main.cc:211
+#, c-format
+msgid "%s: invalid number of items per line."
+msgstr "%s: nombre d'éléments par ligne invalide."
+
+#: ../src/main.cc:221
+#, c-format
+msgid "%s: invalid minimum size."
+msgstr "%s: taille minimale invalide."
+
+#: ../src/main.cc:247
+#, c-format
+msgid "%s: unsupported format %s."
+msgstr "%s: format %s non pris en charge."
+
+#: ../src/main.cc:251
+#, c-format
+msgid "%s: no array name specified."
+msgstr "%s: aucun nom de tableau spécifié."
+
+#: ../src/main.cc:255
+#, c-format
+msgid "%s: no size variable name specified."
+msgstr "%s: aucune variable de taille spécifiée."
+
+#: ../src/main.cc:260
+#, c-format
+msgid ""
+"%s: the specified minimum size is too small for a valid TI graphing "
+"calculator file."
+msgstr ""
+"%s: la taille minimale spécifiée est trop petite pour un fichier valide de "
+"calculatrice graphique TI."
+
+#: ../src/main.cc:270
+#, c-format
+msgid "%s: unable to open input file."
+msgstr "%s: impossible d'ouvrir le fichier d'entrée."
+
+#: ../src/main.cc:293
+#, c-format
+msgid "%s: file is smaller than the specified minimum size."
+msgstr "%s: le fichier est plus petit que la taille minimale spécifiée."
+
+#: ../src/main.cc:302
+#, c-format
+msgid "%s: unable to open output file."
+msgstr "%s: impossible d'ouvrir le fichier de sortie."
+
+#: ../src/main.cc:325 ../src/wrap.cc:1053
+#, c-format
+msgid "%s: unable to read the entire input file."
+msgstr "%s: impossible de lire tout le fichier d'entrée."
+
+#: ../src/main.cc:398 ../src/squish.cc:953 ../src/wrap.cc:1088
+#, c-format
+msgid "%s: invalid input file %s."
+msgstr "%s: fichier d'entrée invalide %s."
+
+#: ../src/main.cc:417
+#, c-format
+msgid "%s: checksum mismatch in %s: computed: %0x04X / stored: %0x04X."
+msgstr ""
+"%s: somme de contrôle incohérente dans %s : calculée : %0x04X / stockée : "
+"%0x04X."
+
+#: ../src/main.cc:430
+#, c-format
+msgid "%s: wrote corrected file %s."
+msgstr "%s: fichier corrigé %s écrit."
+
+#: ../src/main.cc:556
+#, c-format
+msgid "%s: libticonv library version is %s but %s mini required."
+msgstr ""
+"%s: la version de la bibliothèque libticonv est %s mais la version minimale "
+"%s est requise."
+
+#: ../src/main.cc:562
+#, c-format
+msgid "%s: libtifiles library version is %s but %s mini required."
+msgstr ""
+"%s: la version de la bibliothèque libtifiles est %s mais la version minimale "
+"%s est requise."
+
+#: ../src/metadata.cc:98 ../src/metadata.cc:654 ../src/metadata.cc:715
+#, c-format
+msgid "%s: cannot read metadata from %s."
+msgstr "%s: impossible de lire les métadonnées de %s."
+
+#: ../src/metadata.cc:116
+#, c-format
+msgid "%s: wrote %u metadata pairs for %s."
+msgstr "%s: %u paires de métadonnées écrites pour %s."
+
+#: ../src/metadata.cc:175 ../src/metadata.cc:185 ../src/metadata.cc:201
+#: ../src/metadata.cc:211 ../src/metadata.cc:232 ../src/metadata.cc:250
+#: ../src/metadata.cc:336 ../src/metadata.cc:434 ../src/metadata.cc:494
+#: ../src/metadata.cc:560 ../src/metadata.cc:599 ../src/metadata.cc:614
+#, c-format
+msgid "%s: invalid value %s for key %s."
+msgstr "%s: valeur %s invalide pour la clé %s."
+
+#. TI-68k regular files have per-entry checksums only.
+#: ../src/metadata.cc:192 ../src/metadata.cc:226 ../src/metadata.cc:244
+#: ../src/metadata.cc:347 ../src/metadata.cc:442 ../src/metadata.cc:502
+#: ../src/metadata.cc:583 ../src/metadata.cc:634
+#, c-format
+msgid "%s: the metadata key %s cannot be set for %s files."
+msgstr ""
+"%s: la clé de métadonnées %s ne peut pas être définie pour les fichiers %s."
+
+#: ../src/metadata.cc:253 ../src/metadata.cc:381 ../src/metadata.cc:447
+#: ../src/metadata.cc:507 ../src/metadata.cc:627 ../src/metadata.cc:639
+#, c-format
+msgid "%s: unknown metadata key %s."
+msgstr "%s: clé de métadonnées inconnue %s."
+
+#: ../src/metadata.cc:322 ../src/metadata.cc:420 ../src/metadata.cc:486
+#: ../src/metadata.cc:543
+#, c-format
+msgid ""
+"%s: cannot change the class of %s: the metadata key file.class cannot be set "
+"to %s for a %s file."
+msgstr ""
+"%s: ne peut pas changer la classe de %s: la clé de métadonnées %s ne peut "
+"pas être définie à %s pour les fichiers %s."
+
+#: ../src/metadata.cc:354
+#, c-format
+msgid "%s: the magic %s does not match the model of %s."
+msgstr "%s: le magic %s ne correspond pas au modèle de %s."
+
+#: ../src/metadata.cc:361 ../src/metadata.cc:376 ../src/metadata.cc:574
+#: ../src/metadata.cc:622
+#, c-format
+msgid "%s: the metadata key %s cannot be set."
+msgstr "%s: la clé de métadonnées %s ne peut pas être définie."
+
+#: ../src/metadata.cc:366 ../src/metadata.cc:551
+#, c-format
+msgid "%s: entry %u does not exist in %s."
+msgstr "%s: l'entrée %u n'existe pas dans %s."
+
+#: ../src/metadata.cc:394 ../src/metadata.cc:460
+#, c-format
+msgid "%s: cannot write the stored checksum to %s."
+msgstr "%s: impossible d'écrire la somme de contrôle stockée dans %s."
+
+#: ../src/metadata.cc:513 ../src/metadata.cc:645
+#, c-format
+msgid "%s: cannot fix the checksum of %s files."
+msgstr "%s: impossible de corriger la somme de contrôle des fichiers %s."
+
+#: ../src/metadata.cc:701
+#, c-format
+msgid "%s: no option specified for get."
+msgstr "%s: aucune option spécifiée pour get."
+
+#: ../src/metadata.cc:705
+#, c-format
+msgid "%s: multiple options specified for get."
+msgstr "%s: plusieurs options spécifiées pour get."
+
+#: ../src/metadata.cc:723 ../src/metadata.cc:732
+#, c-format
+msgid "%s: the metadata key %s is not present in %s."
+msgstr "%s: la clé de métadonnées %s n'est pas présente dans %s."
+
+#: ../src/metadata.cc:852
+#, c-format
+msgid "%s: no option specified for set."
+msgstr "%s: aucune option spécifiée pour set."
+
+#: ../src/metadata.cc:913 ../src/metadata.cc:1073
+#, c-format
+msgid "%s: applied %u metadata pairs to %s."
+msgstr "%s: %u paires de métadonnées appliquées à %s."
+
+#: ../src/metadata.cc:1042
+#, c-format
+msgid "%s: cannot parse metadata line %u."
+msgstr "%s: impossible d'analyser la ligne de métadonnées %u."
+
+#: ../src/metadata.cc:1048 ../src/metadata.cc:1065
+#, c-format
+msgid "%s: missing metadata.version key."
+msgstr "%s: clé metadata.version manquante."
+
+#: ../src/metadata.cc:1052
+#, c-format
+msgid "%s: unsupported metadata version %s."
+msgstr "%s: version de métadonnées %s non prise en charge."
+
+#. The error codes of the metadata API are not part of the public
+#. API: report both possible failure causes.
+#: ../src/metadata.cc:1060
+#, c-format
+msgid "%s: cannot add the metadata pair %s: out of memory or already present."
+msgstr ""
+"%s: impossible d'ajouter la paire de métadonnées %s : mémoire insuffisante "
+"ou clé déjà présente."
+
+#: ../src/metadata.cc:1133
+#, c-format
+msgid "%s: unknown metadata mode %s."
+msgstr "%s: mode de métadonnées inconnu %s."
+
+#: ../src/squish.cc:109
+#, c-format
+msgid "%s: unterminated long name, passing it through."
+msgstr "%s: nom long non terminé, on le laisse passer."
+
+#: ../src/squish.cc:509
+#, c-format
+msgid ""
+"%s: unknown shell %s (expected TI-82: crash, ace, ash, sng; TI-73: mallard, "
+"nostub; TI-83: ion, ashell, venus, ion83, pse83, ice, sos; TI-83+/84+/CSE/"
+"CE: ion, ion83, pse83, ice, tse, mirage)."
+msgstr ""
+"%s: shell %s inconnu (attendu pour TI-82: crash, ace, ash, sng ; pour TI-73: "
+"mallard, nostub ; pour TI-83: ion, ashell, venus, ion83, pse83, ice, sos ; "
+"pour TI-83+/84+/CSE/CE: ion, ion83, pse83, ice, tse, mirage)."
+
+#: ../src/squish.cc:517 ../src/squish.cc:1022
+#, c-format
+msgid "%s: %s is not a supported TI-Z80 file."
+msgstr "%s: %s n'est pas un fichier TI-Z80 pris en charge."
+
+#: ../src/squish.cc:528
+#, c-format
+msgid "%s: the %s shell is for TI-73/83/83+, not TI-82."
+msgstr "%s: le shell %s est pour TI-73/83/83+, pas pour TI-82."
+
+#: ../src/squish.cc:535
+#, c-format
+msgid "%s: the %s shell is for TI-82, TI-73 or TI-83+, not TI-83."
+msgstr "%s: le shell %s est pour TI-82, TI-73 ou TI-83+, pas pour TI-83."
+
+#: ../src/squish.cc:544
+#, c-format
+msgid "%s: the %s shell is for TI-82, TI-83 or TI-83+, not TI-73."
+msgstr "%s: le shell %s est pour TI-82, TI-83 ou TI-83+, pas pour TI-73."
+
+#: ../src/squish.cc:553
+#, c-format
+msgid "%s: the %s shell is for TI-82, TI-73 or TI-83, not this model."
+msgstr "%s: le shell %s est pour TI-82, TI-73 ou TI-83, pas pour ce modèle."
+
+#: ../src/squish.cc:558
+#, c-format
+msgid "%s: -L requires a shell."
+msgstr "%s: -L nécessite un shell."
+
+#: ../src/squish.cc:563
+#, c-format
+msgid ""
+"%s: -L cannot be combined with -s %s, whose header carries no description."
+msgstr ""
+"%s: -L ne peut pas être combiné avec -s %s, dont l'en-tête ne comporte pas "
+"de description."
+
+#: ../src/squish.cc:581 ../src/squish.cc:971
+#, c-format
+msgid "%s: multi-entry file not supported."
+msgstr "%s: fichier à entrées multiples non pris en charge."
+
+#: ../src/squish.cc:587 ../src/squish.cc:1027
+#, c-format
+msgid "%s: variable type 0x%02X is not a program type."
+msgstr "%s: le type de variable 0x%02X n'est pas un type de programme."
+
+#: ../src/squish.cc:613
+#, c-format
+msgid ""
+"%s: the TI-73 nostub program contains squished binary data, not hex text."
+msgstr ""
+"%s: le programme nostub TI-73 contient des données binaires comprimées, pas "
+"du texte hexadécimal."
+
+#: ../src/squish.cc:621
+#, c-format
+msgid "%s: odd number of hex digits."
+msgstr "%s: nombre impair de chiffres hexadécimaux."
+
+#: ../src/squish.cc:635
+#, c-format
+msgid "%s: non-hexadecimal data at offset %u."
+msgstr "%s: données non hexadécimales au décalage %u."
+
+#: ../src/squish.cc:759
+#, c-format
+msgid ""
+"%s: %u bytes of binary data are too large for the TI-73 nostub format (max "
+"999 bytes)."
+msgstr ""
+"%s: %u octets de données binaires dépassent la limite du format nostub TI-73 "
+"(999 octets maximum)."
+
+#: ../src/squish.cc:763
+#, c-format
+msgid ""
+"%s: %u bytes of binary data are larger than the 900-byte limit of the TI-73 "
+"OS, the nostub program may not run."
+msgstr ""
+"%s: %u octets de données binaires dépassent la limite de 900 octets de l'OS "
+"TI-73, le programme nostub risque de ne pas fonctionner."
+
+#: ../src/squish.cc:874
+#, c-format
+msgid "%s: wrote %u bytes of binary data to %s."
+msgstr "%s: %u octets de données binaires écrits dans %s."
+
+#: ../src/squish.cc:988
+#, c-format
+msgid "%s: no 0xF3 tag found, the Exec string is unlikely to work."
+msgstr ""
+"%s: tag 0xF3 non trouvé, la chaîne Exec ne fonctionnera probablement pas."
+
+#: ../src/squish.cc:992
+#, c-format
+msgid "%s: %s is too short to be a valid ASM file."
+msgstr "%s: %s est trop court pour être un fichier ASM valide."
+
+#: ../src/squish.cc:1014
+#, c-format
+msgid "%s: wrote Exec string to %s."
+msgstr "%s: chaîne Exec écrite dans %s."
+
+#: ../src/squish.cc:1128
+#, c-format
+msgid "%s: wrote %u bytes of hex data to %s."
+msgstr "%s: %u octets de données hexadécimales écrits dans %s."
+
+#: ../src/wrap.cc:269
+#, c-format
+msgid "%s: no variable type specified."
+msgstr "%s: type de variable non spécifié."
+
+#: ../src/wrap.cc:285 ../src/wrap.cc:293
+#, c-format
+msgid "%s: invalid variable type %s."
+msgstr "%s: type de variable invalide %s."
+
+#: ../src/wrap.cc:300
+#, c-format
+msgid "%s: -P cannot be combined with -p, -C or -r."
+msgstr "%s: -P ne peut pas être combiné avec -p, -C ou -r."
+
+#: ../src/wrap.cc:306
+#, c-format
+msgid "%s: -P requires a TI-eZ80 model."
+msgstr "%s: -P nécessite un modèle TI-eZ80."
+
+#: ../src/wrap.cc:578
+#, c-format
+msgid ""
+"%s: input data too small or too large for a TI-68k picture (max 3090 bytes)."
+msgstr ""
+"%s: données d'entrée trop petites ou trop grandes pour une image TI-68k (max "
+"3090 octets)."
+
+#: ../src/wrap.cc:688
+#, c-format
+msgid "%s: Python AppVar size field (%u) differs from actual data length (%u)."
+msgstr ""
+"%s: le champ taille de l'AppVar Python (%u) et la vraie taille des données "
+"(%u) sont différents."
+
+#: ../src/wrap.cc:754
+#, c-format
+msgid "%s: squished program, no name prefix to strip."
+msgstr "%s: programme \"squished\", aucun préfixe de nom à enlever."
+
+#: ../src/wrap.cc:764
+#, c-format
+msgid "%s: no tokenized name prefix found, passing data through."
+msgstr "%s: aucun préfixe tokenisé de nom trouvé, on renvoie les données."
+
+#: ../src/wrap.cc:780
+#, c-format
+msgid "%s: no 0xF3 tag found, passing the last byte through."
+msgstr "%s: tag 0xF3 non trouvé, on laisse passer le dernier octet."
+
+#: ../src/wrap.cc:791
+#, c-format
+msgid "%s: string size field (%u) differs from actual data length (%u)."
+msgstr ""
+"%s: le champ taille de la chaîne (%u) et la vraie taille des données (%u) "
+"sont différents."
+
+#: ../src/wrap.cc:798
+#, c-format
+msgid "%s: no leading 0x00 byte found, passing data through."
+msgstr "%s: premier octet 0x00 non trouvé, on renvoie les données."
+
+#: ../src/wrap.cc:804
+#, c-format
+msgid "%s: no STR_TAG (0x2D) found, passing the trailing bytes through."
+msgstr "%s: tag STR_TAG (0x2D) non trouvé, on laisse passer les octets de fin."
+
+#: ../src/wrap.cc:816
+#, c-format
+msgid "%s: other data size field (%u) differs from actual data length (%u)."
+msgstr ""
+"%s: le champ taille des autres données (%u) et la vraie taille des données "
+"(%u) sont différents."
+
+#: ../src/wrap.cc:828
+#, c-format
+msgid "%s: no OTH_TAG (0xF8) found, passing the trailing bytes through."
+msgstr "%s: tag OTH_TAG (0xF8) non trouvé, on laisse passer les octets de fin."
+
+#: ../src/wrap.cc:842
+#, c-format
+msgid "%s: text size field (%u) differs from actual data length (%u)."
+msgstr ""
+"%s: le champ taille du texte (%u) et la vraie taille des données (%u) sont "
+"différents."
+
+#: ../src/wrap.cc:852
+#, c-format
+msgid "%s: no TEXT_TAG (0xE0) found, passing the last byte through."
+msgstr "%s: tag TEXT_TAG (0xE0) non trouvé, on laisse passer le dernier octet."
+
+#: ../src/wrap.cc:867
+#, c-format
+msgid "%s: unknown text line type 0x%02X."
+msgstr "%s: type de ligne de texte inconnu 0x%02X."
+
+#: ../src/wrap.cc:882
+#, c-format
+msgid "%s: trailing bytes after the end-of-file delimiter."
+msgstr "%s: octets de fin après le délimiteur de fin de fichier."
+
+#: ../src/wrap.cc:898
+#, c-format
+msgid "%s: picture size field (%u) differs from actual data length (%u)."
+msgstr ""
+"%s: le champ taille de l'image (%u) et la vraie taille des données (%u) sont "
+"différents."
+
+#: ../src/wrap.cc:911
+#, c-format
+msgid "%s: no PIC_TAG (0xDF) found, passing the last byte through."
+msgstr "%s: tag PIC_TAG (0xDF) non trouvé, on laisse passer le dernier octet."
+
+#: ../src/wrap.cc:914
+#, c-format
+msgid "%s: bitmap length (%u) differs from height*ceil(width/8) (%u)."
+msgstr ""
+"%s: la longueur du bitmap (%u) diffère de hauteur*plafond(largeur/8) (%u)."
+
+#. Not a Python AppVar payload: pass the data through.
+#: ../src/wrap.cc:925
+#, c-format
+msgid "%s: not a Python AppVar payload, passing data through."
+msgstr ""
+"%s: ce n'est pas une charge utile d'AppVar Python, on renvoie les données."
+
+#: ../src/wrap.cc:935
+#, c-format
+msgid "%s: malformed Python AppVar payload."
+msgstr "%s: charge utile d'AppVar Python mal formée."
+
+#: ../src/wrap.cc:1036
+#, c-format
+msgid "%s: cannot seek in input file."
+msgstr "%s: ne peut pas se positionner dans le fichier d'entrée."
+
+#: ../src/wrap.cc:1043
+#, c-format
+msgid "%s: input file too large."
+msgstr "%s: fichier d'entrée trop grand."
+
+#: ../src/wrap.cc:1072 ../src/wrap.cc:1121 ../src/wrap.cc:1134
+#, c-format
+msgid "%s: unable to write the entire output."
+msgstr "%s: impossible d'écrire toute la sortie."
+
+#: ../src/wrap.cc:1081
+#, c-format
+msgid "%s: %s is not a regular TI file."
+msgstr "%s: %s n'est pas un fichier TI ordinaire."
+
+#: ../src/wrap.cc:1105
+#, c-format
+msgid "%s: multi-entry file, unwrapping assumes a single entry."
+msgstr ""
+"%s: fichier à entrées multiples, le déballage (unwrap) suppose une entrée "
+"unique."
+
+#: ../src/wrap.cc:1142
+#, c-format
+msgid "%s: wrote %lu bytes."
+msgstr "%s: %lu octets écrits."
