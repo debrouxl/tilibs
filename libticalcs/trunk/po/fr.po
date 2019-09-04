@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-01-29 18:23+0100\n"
+"POT-Creation-Date: 2026-01-28 11:58+0100\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -46,19 +46,19 @@ msgstr "Nom FLASH:  \"%s\""
 msgid "FLASH size: %i bytes."
 msgstr "Taille FLASH: %i octets."
 
-#: src/calc_73.cc:1279 src/calc_84p.cc:1425 src/calc_84p.cc:1455
+#: src/calc_73.cc:1279 src/calc_84p.cc:1446 src/calc_84p.cc:1476
 #: src/calc_9x.cc:1455 src/calc_89t.cc:856
 msgid "Setting clock..."
 msgstr "Mise à jour de l'horloge..."
 
-#: src/calc_73.cc:1325 src/calc_84p.cc:1371 src/calc_84p.cc:1521
+#: src/calc_73.cc:1325 src/calc_84p.cc:1392 src/calc_84p.cc:1542
 #: src/calc_9x.cc:1499 src/calc_89t.cc:891
 msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
-#: src/calc_73.cc:1409 src/calc_84p.cc:1640 src/calc_8x.cc:1254
+#: src/calc_73.cc:1409 src/calc_84p.cc:1661 src/calc_8x.cc:1254
 #: src/calc_9x.cc:1563 src/calc_9x.cc:1595 src/calc_89t.cc:980
-#: src/calc_nsp.cc:852
+#: src/calc_nsp.cc:863
 #, c-format
 msgid "Deleting %s..."
 msgstr "Suppression de %s..."
@@ -99,35 +99,35 @@ msgstr "En-tête envoyé complètement"
 msgid "Receiving certificate"
 msgstr "Réception du certificat"
 
-#: src/calc_84p.cc:1385 src/calc_84p.cc:1535
+#: src/calc_84p.cc:1406 src/calc_84p.cc:1556
 #, c-format
 msgid "Could not determine clock type: %u %u"
 msgstr "Impossible de déterminer le type d'horloge: %u %u"
 
-#: src/calc_84p.cc:1394
+#: src/calc_84p.cc:1415
 msgid "Will set classic clock"
 msgstr "Va régler l'horloge de type ancien"
 
-#: src/calc_84p.cc:1453
+#: src/calc_84p.cc:1474
 msgid "Will set new clock"
 msgstr "Va régler l'horloge de type nouveau"
 
-#: src/calc_84p.cc:1549 src/calc_89t.cc:919
+#: src/calc_84p.cc:1570 src/calc_89t.cc:919
 msgid "Found valid classic clock"
 msgstr "Trouvé une horloge valide de type ancien"
 
-#: src/calc_84p.cc:1588 src/calc_89t.cc:958
+#: src/calc_84p.cc:1609 src/calc_89t.cc:958
 #, c-format
 msgid "Found classic clock but failed to retrieve its parameters: %u %u %u %u"
 msgstr ""
 "Trouvé une horloge de type ancien mais impossible de récupérer ses "
 "paramètres: %u %u %u %u"
 
-#: src/calc_84p.cc:1606
+#: src/calc_84p.cc:1627
 msgid "Found valid new clock"
 msgstr "Trouvé une horloge valide de type nouveau"
 
-#: src/calc_84p.cc:1621
+#: src/calc_84p.cc:1642
 #, c-format
 msgid ""
 "Found new clock but failed to retrieve its parameters: %u %u %u %u %u %u"
@@ -135,43 +135,43 @@ msgstr ""
 "Trouvé une horloge de type nouveau mais impossible de récupérer ses "
 "paramètres: %u %u %u %u %u %u"
 
-#: src/calc_84p.cc:1723 src/calc_89t.cc:1169
+#: src/calc_84p.cc:1744 src/calc_89t.cc:1169
 msgid "Getting version..."
 msgstr "Récupération de la version..."
 
-#: src/calc_84p.cc:1775
+#: src/calc_84p.cc:1796
 msgid "That's odd, product ID and calc ID do not match ?"
 msgstr ""
 "C'est bizarre, le numéro de produit et le numéro de calculatrice ne "
 "correspondent pas ?"
 
-#: src/calc_84p.cc:1993 src/calc_84p.cc:2002 src/calc_84p.cc:2011
-#: src/calc_84p.cc:2027 src/calc_84p.cc:2035
+#: src/calc_84p.cc:2014 src/calc_84p.cc:2023 src/calc_84p.cc:2032
+#: src/calc_84p.cc:2048 src/calc_84p.cc:2056
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr "Membre inconnu de la famille 84+ avec product_id=%d hw_version=%d"
 
-#: src/calc_84p.cc:2053
+#: src/calc_84p.cc:2074
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus via DirectLink"
 
-#: src/calc_84p.cc:2124
+#: src/calc_84p.cc:2145
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr "TI-84 Plus C Silver Edition via DirectLink"
 
-#: src/calc_84p.cc:2195
+#: src/calc_84p.cc:2216
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr "TI-83 Premium CE via DirectLink"
 
-#: src/calc_84p.cc:2266
+#: src/calc_84p.cc:2287
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr "TI-84 Plus CE via DirectLink"
 
-#: src/calc_84p.cc:2337
+#: src/calc_84p.cc:2358
 msgid "TI-82 Advanced thru DirectLink"
 msgstr "TI-82 Advanced via DirectLink"
 
-#: src/calc_84p.cc:2408
+#: src/calc_84p.cc:2429
 msgid "TI-84 Plus T thru DirectLink"
 msgstr "TI-84 Plus T via DirectLink"
 
@@ -207,7 +207,7 @@ msgstr "Lecture de %s/%s"
 msgid "Block #%2i"
 msgstr "Bloc n°%2i"
 
-#: src/calc_9x.cc:1625 src/calc_89t.cc:1076 src/calc_nsp.cc:882
+#: src/calc_9x.cc:1625 src/calc_89t.cc:1076 src/calc_nsp.cc:893
 #, c-format
 msgid "Creating %s..."
 msgstr "Création de %s..."
@@ -216,7 +216,7 @@ msgstr "Création de %s..."
 msgid "V200 Personal Learning Tool"
 msgstr "V200 Personal Learning Tool"
 
-#: src/calc_89t.cc:1011 src/calc_nsp.cc:1054
+#: src/calc_89t.cc:1011 src/calc_nsp.cc:1065
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr "Renommage de %s en %s..."
@@ -230,27 +230,27 @@ msgstr "Changement des attributs de %s..."
 msgid "TI-89 Titanium thru DirectLink"
 msgstr "TI-89 Titanium via DirectLink"
 
-#: src/calc_nsp.cc:232
+#: src/calc_nsp.cc:243
 #, c-format
 msgid "Unknown calculator model with %d bpp\n"
 msgstr "Modèle de calculatrice inconnu, avec %d bpp\n"
 
-#: src/calc_nsp.cc:388
+#: src/calc_nsp.cc:399
 #, c-format
 msgid "Name: %s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr "Nom: %s | Type: %8s | Attr: %i  | Taille: %08X"
 
-#: src/calc_nsp.cc:421
+#: src/calc_nsp.cc:432
 #, c-format
 msgid "Not enumerating documents in %s because it's not a folder\n"
 msgstr "N'énumère pas les documents dans %s car ce n'est pas un répertoire\n"
 
-#: src/calc_nsp.cc:438
+#: src/calc_nsp.cc:449
 #, c-format
 msgid "Directory listing in <%s>...\n"
 msgstr "Listage du dossier dans <%s>...\n"
 
-#: src/calc_nsp.cc:1077
+#: src/calc_nsp.cc:1088
 msgid "Nspire thru DirectLink"
 msgstr "Nspire via DirectLink"
 
