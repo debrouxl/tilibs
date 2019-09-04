@@ -394,7 +394,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
 		return ERR_INVALID_FILE;
 	}
 
-	if (!tifiles_file_is_backup(filename))
+	if (!tifiles_file_is_backup(filename) && !tifiles_file_has_ti_header(filename))
 	{
 		ret = ERR_INVALID_FILE;
 		goto tfrb2;
@@ -639,7 +639,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 		return ERR_INVALID_FILE;
 	}
 
-	if (!tifiles_file_is_flash(filename))
+	if (!tifiles_file_is_flash(filename) && !tifiles_file_has_tifl_header(filename, NULL, NULL))
 	{
 		ret = ERR_INVALID_FILE;
 		goto tfrf2;

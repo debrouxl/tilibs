@@ -1,0 +1,462 @@
+[4mTIFILEUTIL[24m(1)                General Commands Manual               [4mTIFILEUTIL[24m(1)
+
+[1mNAME[0m
+     tifileutil  -  a  program  for  manipulating computer files suitable for TI
+     graphing calculators
+
+
+[1mSYNOPSIS[0m
+     [1mtifileutil [22m[-h / --help] [-v / --version] [command] [arguments]
+
+
+[1mDESCRIPTION[0m
+     The [1mtifileutil [22mprogram allows you to perform various operations on computer
+     files suitable for the TI-Z80, TI-eZ80 and TI-68k series of graphing calcu-
+     lators.
+
+
+[1mOPTIONS[0m
+     [1mtifileutil [22maccepts the following options:
+
+
+     [1m-h, --help[0m
+            Display a list of all command line options and commands.
+
+
+     [1m-v, --version[0m
+            Output the version info.
+
+
+[1mCOMMANDS[0m
+     [1mtifileutil [22maccepts the following commands:
+
+
+     [1mwrap [OPTIONS] [FILE | -][0m
+            Wrap raw data into a regular TI variable file, adding the  computer-
+            side header, footer and checksum.
+
+            *      [1m-o OUTFILE[22m: output result to OUTFILE
+
+            *      [1m-n  NAME[22m: set on-calc variable name to NAME (TI-Z80, TI-eZ80,
+                   TI-68k)
+
+            *      [1m-f NAME[22m: set on-calc variable folder to NAME (TI-68k)
+
+            *      [1m-t TYPE[22m: set variable type to TYPE (e.g. 82p)
+
+            *      [1m-V VERSION[22m: set file version to VERSION (TI-Z80, TI-eZ80)
+
+            *      [1m-c COMMENT[22m: set file  comment  to  COMMENT  (strftime  format
+                   string)
+
+            *      [1m--raw-comment=COMMENT[22m:  set file comment to COMMENT literally
+                   (no strftime expansion; when both are given, the last  of  [1m-c[0m
+                   and [1m--raw-comment [22mwins)
+
+            *      [1m-x  EXTENSION[22m: set 1-4 chars "extension" for "other" variable
+                   type (TI-68k)
+
+            *      [1m-p[22m: protect program (TI-Z80, TI-eZ80)
+
+            *      [1m-C[22m: number/list/matrix is  complex  (TI-Z80,  TI-eZ80;  exact
+                   fractions, radicals and pi on TI-83PCE/TI-84PCE)
+
+            *      [1m-P[22m:  pack  data as a TI-83PCE/TI-84+CE Python AppVar (with [1m-t[0m
+                   [1m8xv[22m; the 8xv extension maps to the TI-83+ model, which is ac-
+                   cepted as well): the data is stored as a legacy Python AppVar
+                   payload   ([1mPYCD   [22mmagic),   which    TI-Connect    and    the
+                   TI-83PCE/TI-84+CE can run
+
+            When  wrapping  TI-68k  string,  assembly, text, picture and "other"
+            variables, the 2-byte size field  and  the  per-type  structure  are
+            added  automatically (TI-68k strings may contain 0x00 bytes, as sup-
+            ported by some old tools; assembly programs are emitted  as  [2-byte
+            size][code][relocation  data][0xF3];  text line endings, be they CR,
+            LF or CR+LF, map to CR; picture dimensions are synthesized from  the
+            input size, up to 240x103 pixels, i.e. 3090 bytes).
+
+            *      [1m-a[22m:  mark  file  for  sending  to  archive  (TI-Z80, TI-eZ80,
+                   TI-68k)
+
+            *      [1m-l[22m: mark file locked (TI-68k)
+
+            *      [1m-r[22m: raw mode (no length bytes)
+
+            *      [1m-v[22m: be verbose
+
+
+     [1munwrap [OPTIONS] FILE[0m
+            Strip the computer-side header and trailing checksum of a regular TI
+            file, in order to extract the raw binary content of the variable.
+
+            *      [1m-o OUTFILE[22m: output result to OUTFILE ([1m- [22mor absent: stdout)
+
+            *      [1m-d[22m: deep unwrapping  (beyond  the  computer-side  header  and
+                   footer):  for TI-83+/84+/CSE/CE protected programs, strip the
+                   tokenized name prefix; for TI-68k  files,  strip  the  2-byte
+                   size  field  and  the  per-type envelope (the relocation-size
+                   field and 0xF3 tag of assembly programs, the leading 0x00 and
+                   STR_TAG of string variables, the  extension  and  OTH_TAG  of
+                   other  data,  the cursor position, line types and TEXT_TAG of
+                   text variables, which are output with CR line endings, or the
+                   height, width and PIC_TAG of pictures); for  Python  AppVars,
+                   extract the script from the [1mPYCD [22m/ [1mPYSC [22mpayload
+
+            *      [1m-v[22m: be verbose
+
+     TI  flash  (OS and app) files have no header or trailing checksum to strip,
+     so they are passed through unchanged.
+
+
+     [1msquish [OPTIONS] FILE[0m
+            Convert   the   hexadecimal   text   stored    inside    a    TI-Z80
+            (TI-73/82/83/83+/84+/CSE/CE) program variable into binary code, pro-
+            ducing a protected program (type 0x06) whose data carries the 2-byte
+            length field and the model-specific squished-program marker (none on
+            TI-73/83,  D5  00  11  on  TI-82,  BB  6D  on  TI-83+/84+,  EF 69 on
+            TI-84+CSE, EF 7B on TI-83PCE/TI-84PCE), as used by  shells  such  as
+            SOS,  ASHELL  and  ZASMLOAD. On TI-82, the marker is followed by the
+            shell's long name, NUL-terminated; on TI-83, the shell headers carry
+            a description. On TI-73, the Mallard header (D9 00, the  4-character
+            program  name "Duck", the entry point at userMem + header length and
+            the NUL-terminated description)  or  the  shell-less  nostub  header
+            (prgm0000,  '1', the code size in decimal and a hard newline, run by
+            the built-in assembly support of OS 1.40+, limited to 900  bytes  of
+            code) can be emitted.
+
+            *      [1m-o OUTFILE[22m: output result to OUTFILE (required)
+
+            *      [1m-s  SHELL[22m:  target  shell - TI-82: crash (default, D5 00 11),
+                   ace (D5 00 A0), ash (D9 00 30) or sng ("SNG"); TI-73: mallard
+                   (D9  00  "Duck"  +  entry  point  +  description)  or  nostub
+                   (prgm0000  + '1' + decimal size + code, for OS 1.40+); TI-83:
+                   ion ([C9][30 len] + description), ashell ([00][18 XX] with  a
+                   title  pointer),  venus  (the  "E7 39 5F 5B 56 3F 00" magic),
+                   ion83, pse83, ice or sos  (the  tokenized  "Send(9prgm<name>"
+                   magics  of  Ion  v1.6, PSE, Ice and SOS, with the fixed shell
+                   names IONZ, PSEZ, ZICE and ZSOSL, followed by "3F D9  3F  2A"
+                   (line   separator,   "Stop",   line   separator,  quote)  for
+                   ion83/pse83 or by  "3F  E1"  (line  separator,  "ClLCD")  for
+                   ice/sos);  TI-83+/84+:  ion  (the marker and the ION header),
+                   ion83, pse83 or ice (the tokenized "Asm prgm<name>"  variants
+                   of  the same magics), tse ([C9]["TSE"][01] + a space-prefixed
+                   title + the 2-byte external data size) or mirage ([C9][01]  +
+                   a  30-byte  icon + a description); the default on TI-73/83 is
+                   the shell-less ZASMLOAD form
+
+            *      [1m-L NAME[22m: set the shell program  description  or  TSE/MirageOS
+                   title  (default:  the variable name; not usable with the nos-
+                   tub, ion83, pse83, ice and sos formats, whose  headers  carry
+                   no description)
+
+            *      [1m-v[22m: be verbose
+
+
+     [1munsquish [OPTIONS] FILE[0m
+            Convert  binary  code  stored  inside a TI-Z80 program variable into
+            hexadecimal text, producing an unprotected program (type 0x05) whose
+            data carries the 2-byte length field and which can be run on  shell-
+            less  TI-73/83 calculators (whose hex text is appended the "End 0000
+            End" trailer). On TI-82, the shell-specific marker (D5 00 11, D5  00
+            A0,  D9  00  30 or "SNG") and the shell's long name are stripped; on
+            TI-73/83/83+/84+, the ION header (marker, description and title)  is
+            stripped, on TI-73 additionally the Mallard header (D9 00, name, en-
+            try  point  and  description) and the nostub header (prgm0000, type,
+            size and hard newline, the hex text of an unsquished nostub  program
+            being  passed  through),  and  on  TI-83 also the ASHELL83 and Venus
+            headers, the "Send(9prgm<name>" headers of the Ion  v1.6,  PSE,  Ice
+            and  SOS  shells, the [C9][02] Ion module prefix and the [00 01] SOS
+            module prefix. On TI-83+/84+, the "Asm prgm<name>"  headers  of  the
+            Ion v1.6, PSE and Ice shells, the TSE header (["TSE"][01], title and
+            external data size), the MirageOS headers ([C9][01][icon] + descrip-
+            tion,  the  modified [C9][03][icon][quit address] + description, and
+            the [C9][02] external interface, whose prefix is also the Ion module
+            prefix) and the [C9][02] Ion module prefix are stripped as well.  As
+            a special case, a TI-68k assembly program (type 0x21) is turned into
+            a TI-BASIC Exec string, in the manner of ttasm2exec.pl.
+
+            *      [1m-o OUTFILE[22m: output result to OUTFILE ([1m-  [22mor  absent:  stdout;
+                   required for TI-Z80 files)
+
+            *      [1m-v[22m: be verbose
+
+
+     [1mchecksum [OPTIONS] FILE[0m
+            Check  the  checksum  of a regular TI file, and optionally recompute
+            and fix it.
+
+            *      [1m-f[22m: recompute the stored checksum and write a corrected  file
+                   (requires [1m-o[22m)
+
+            *      [1m-o  OUTFILE[22m:  output corrected file to OUTFILE (may equal the
+                   input file)
+
+            *      [1m-v[22m: be verbose
+
+     The computed checksum and the checksum embedded into the file are  printed.
+     If  they don't match, a message is printed on stderr and the exit status is
+     2.
+
+
+     [1mmetadata -m MODE [OPTIONS] [FILE | -][0m
+            Print, retrieve, set or apply metadata of a file  under  a  parsable
+            "[1mkey[22m":  "[1mvalue[22m"  form,  with  one  pair per line. The MODE is one of
+            [1mgather[22m, [1mapply[22m, [1mget [22mand [1mset[22m.
+
+            *      [1mgather[22m: print the metadata of the input file  to  the  output
+                   file (absent: stdout)
+
+            *      [1mapply[22m:  apply  the  metadata read from the [1m-i FILE [22minput file
+                   (absent: stdin) to the input TI file, writing the  result  to
+                   [1m-o  OUTFILE [22mif given, and rewriting the input file otherwise.
+                   The input stream must start with the "[1mmetadata.version[22m":  "1"
+                   pair emitted by gather; unknown, read-only and duplicate keys
+                   are errors.
+
+            *      [1mget[22m:  print  the  value of the metadata requested by a single
+                   option
+
+            *      [1mset[22m: set one or more metadata fields on the  input  TI  file,
+                   writing  the result to [1m-o OUTFILE [22mif given, and rewriting the
+                   input file otherwise
+
+            *      [1m-i FILE[22m: for apply, read metadata from FILE (absent: stdin)
+
+            *      [1m-o OUTFILE[22m: output result to OUTFILE  (gather:  absent  means
+                   stdout; apply and set: absent means rewriting the input file)
+
+            *      [1m-v[22m: be verbose
+
+     Single,  group,  backup, flash and tigroup files are supported. The file is
+     classified by its content (magic number and type byte), the extension being
+     only cross-checked, so that files with a missing, unrecognized or wrong ex-
+     tension are still parsed. The emitted pairs use  the  following  keys,  all
+     values being strings:
+
+            metadata.version           version of the interchange format (always "1")
+            file.class                 single, group, backup, flash or tigroup
+            file.model                 calculator model (e.g. "TI83+")
+            file.magic                 8 first bytes of the file (4 for ZIP-based tigroup files)
+            file.comment               file comment (regular, backup, tigroup)
+            file.name                  application or OS name (flash)
+            file.checksum.computed     computed data checksum (regular, backup)
+            file.checksum.stored       stored data checksum (regular, backup)
+            file.entries               number of entries (1 for single files)
+            file.warnings              space-separated list of warnings, when any:
+                                       "checksum" (stored and computed checksums differ),
+                                       "extension_mismatch" (extension and content disagree)
+            entry[N].name             on-calc variable name
+            entry[N].folder           on-calc variable folder (TI-68k)
+            entry[N].type             variable type as an integer
+            entry[N].type.name        variable type name (e.g. "PRGM")
+            entry[N].type.ext         variable type extension (e.g. "8xp")
+            entry[N].size             variable data size in bytes
+            entry[N].version          file version (TI-Z80, TI-eZ80)
+            entry[N].attr.archived    1 if archived, 0 otherwise
+            entry[N].attr.locked      1 if locked, 0 otherwise
+
+     Tigroup files additionally carry, per entry, the following keys:
+
+            entry[N].filename         member file name inside the archive
+            entry[N].class            "regular" or "flash"
+
+     The  [1mget  [22moptions  request a single metadata value: [1m-n [22mthe on-calc variable
+     name, [1m-f [22mthe on-calc folder name (TI-68k), [1m-t [22mthe variable type as an inte-
+     ger, [1m-h [22mthe file magic number, [1m-V [22mthe file version  (TI-Z80,  TI-eZ80),  [1m-c[0m
+     the  file  comment,  [1m-a  [22mand [1m-l [22mthe archived and locked information, [1m-x [22mthe
+     stored and computed data checksums. The requested value is printed on  std-
+     out.
+
+     The  [1mset [22moptions set the corresponding fields, and may be combined: [1m-n NAME[0m
+     the on-calc variable name, [1m-f NAME [22mthe on-calc  folder  name  (TI-68k),  [1m-t[0m
+     [1mTYPE  [22mthe variable type as an integer (which must be valid for the calcula-
+     tor model), [1m-h MAGIC [22mthe file magic number (which must match the calculator
+     model), [1m-V VERSION [22mthe file version (0-255, TI-Z80,  TI-eZ80),  [1m-c  COMMENT[0m
+     the file comment (strftime format string, expanded when it contains a '%'),
+     [1m--raw-comment=COMMENT  [22mthe file comment set literally (without strftime ex-
+     pansion; the last of [1m-c [22mand [1m--raw-comment [22mgiven wins), [1m-a 0/1 [22mthe  archived
+     information (archived implies locked; TI-83+/84+ and TI-68k files can carry
+     it),  [1m-l  0/1 [22mthe locked information (TI-68k), [1m-x VALUE|fix [22mthe stored data
+     checksum, set to the given value (regular TI-8x  and  backup  files,  which
+     store  it  in  the last 2 bytes of the file) or recomputed ([1mfix[22m). Setting a
+     metadata field which cannot be stored by the file format, or which is read-
+     only, is an error, as are invalid values; the file is rewritten  only  when
+     every requested change is valid.
+
+     Entries  are  numbered  starting  at 1, the regular entries first, then the
+     flash entries. If the input file is [1m-[22m, or has an unknown extension, or can-
+     not be parsed, an error message is printed on stderr and the exit status is
+     3.
+
+
+     [1mgroup -m MODE [OPTIONS] [FILE ...][0m
+            Work on tigroup files (ZIP archives of TI files, as produced by  TI-
+            Connect).  The MODE is one of [1mlist[22m, [1mcreate[22m, [1mextract [22mand [1mappend[22m.  All
+            options must precede the file name(s).
+
+            *      [1mlist[22m:  list  the  entries of a single tigroup file on stdout,
+                   under the form of a small table (model, comment, entry count,
+                   then the size, class and member file  name  of  every  entry,
+                   with the on-calc variable name and type for regular entries)
+
+            *      [1mcreate[22m: create a new tigroup file from a list of input files,
+                   which  can be single, group, flash or tigroup files, the lat-
+                   ter being merged entry by entry. The [1m-t [22moption is  mandatory,
+                   and only the "tigroup" type is supported for now. The [1m-o OUT-[0m
+                   [1mFILE [22moption is mandatory.
+
+            *      [1mextract[22m:  extract  the  entries of a single tigroup file into
+                   the directory given by the [1m-d PATH [22moption (default: the  cur-
+                   rent  directory),  each  entry being written under its member
+                   file name. Member names containing a directory separator,  or
+                   equal to "." or "..", are rejected.
+
+            *      [1mappend[22m: append a list of input files (single, group, flash or
+                   tigroup  files)  to an existing tigroup file, writing the re-
+                   sult to the [1m-o OUTFILE [22mfile if given, and rewriting the input
+                   tigroup file otherwise. Appending an entry whose member  file
+                   name  already exists in the tigroup is an error. If the input
+                   tigroup file does not exist, a new tigroup  file  is  created
+                   from  the given files, under the [1m-o OUTFILE [22mfile if given and
+                   under the (nonexistent) input file otherwise.
+
+            *      [1m-m MODE[22m: the mode (required)
+
+            *      [1m-t TYPE[22m: for  create,  the  type  of  file  to  create,  only
+                   "tigroup" is supported (required)
+
+            *      [1m-o  OUTFILE[22m:  for  create,  the  tigroup  file to create (re-
+                   quired); for append, the  output  file  (default:  the  input
+                   tigroup file)
+
+            *      [1m-d  PATH[22m:  for  extract,  the destination directory (default:
+                   current directory)
+
+            *      [1m-v[22m: be verbose
+
+
+[1mEXAMPLES[0m
+     Dump a file supposed to be suitable for TI calculators as a C hex array  to
+     an output file:
+
+
+     tifileutil dump -f chexarray romdump_9x/romdump.89z -o rom89.h -n romDump89
+     -s romDumpSize89 -c 8 -m 64
+
+
+     Create TI file header and footer for a raw binary:
+
+
+     tifileutil wrap -n 'ROMDUMP' dump83p.bin -p -o dump83p.8xp
+
+
+     Check the checksum of a file, and fix it if necessary:
+
+
+     tifileutil checksum dump83p.8xp
+
+
+     tifileutil checksum -f -o dump83p_fixed.8xp dump83p.8xp
+
+
+     Extract the raw binary content of a variable, stripping the header and
+     trailing checksum:
+
+
+     tifileutil unwrap dump83p.8xp -o dump83p.bin
+
+
+     Wrap data as a complex variable, e.g. a complex number for the TI-83+ fam-
+     ily
+            or a complex exact fraction/radical/pi for the TI-83PCE/TI-84PCE:
+
+
+     tifileutil wrap -n 'Z' value.bin -C -t 8xn -o z.8xc
+
+
+     Squish an assembly program stored as hexadecimal text in a TI-83 program,
+     and
+            unsquish it back:
+
+
+     tifileutil squish code.83p -o code.83p
+
+
+     tifileutil unsquish code.83p -o code.83p
+
+
+     Turn a TI-68k assembly program into a TI-BASIC Exec string:
+
+
+     tifileutil unsquish program.89z
+
+
+     Pack a Python script into a TI-83PCE/TI-84+CE Python AppVar, and extract it
+     back:
+
+
+     tifileutil wrap -P -n 'HELLO' -t 8xv hello.py -o hello.8xv
+
+
+     tifileutil unwrap -d hello.8xv -o hello.py
+
+
+[1mCOPYRIGHT[0m
+     Copyright (C) 2006-2010 Benjamin Moody
+
+     Copyright (C) 2010      Jon Sturm
+
+     Copyright (C) 1999-2009 Thomas Nussbaumer
+
+     Copyright (C) 1999-2009 Romain Lievin
+
+     Copyright (C) 2009-2026 Lionel Debroux
+
+     Copyright (C) 2015-2026 Adrien Bertrand
+
+     Permission to use, copy, modify, and distribute this software and its docu-
+     mentation  for any purpose and without fee is hereby granted, provided that
+     the above copyright notice appear in all copies and that  both  that  copy-
+     right notice and this permission notice appear in supporting documentation.
+
+     This  program  and  its  source  code is distributed under the terms of the
+     terms of the GNU General Public License as published by the  Free  Software
+     Foundation;  either version 2 of the License, or (at your option) any later
+     version.
+
+     This program is distributed in the hope that it will be useful, but WITHOUT
+     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or  FIT-
+     NESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     details.
+
+     You  should  have  received  a copy of the GNU General Public License along
+     with this program; if not, write to the Free Software Foundation, Inc.,  51
+     Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+
+[1mSUGGESTIONS AND BUG REPORTS[0m
+     The  canonical  place to find tifileutil and some miscellaneous information
+     is at https://github.com/debrouxl/tilibs (www.tilp.info).
+
+     You can also look at http://lpg.ticalc.org  and  http://www.ticalc.org  for
+     others  TI  related  programs  for  Linux.  French  people can also look at
+     http://www.ti-fr.org and http://tiplanet.org.
+
+
+[1mAUTHOR[0m
+     Original  authors:  Romain  Lievin  (tf2hex),  Benjamin  Moody  (tipack   &
+     titools),  Jon  Sturm (titools & tifileutils), Thomas Nussbaumer (tt*), Li-
+     onel Debroux (tf2hex), Adrien Bertrand (tivars_lib_cpp)
+
+     tifileutil unified design and implementation,  including  modifications  to
+     the original tools: Lionel Debroux.
+
+
+[1mTHANKS[0m
+     Thanks to the original authors of the code blocks embedded into tifileutil.
+
+
+[1mSEE ALSO[0m
+     tilp(1)
+
+                                 August 1, 2023                    [4mTIFILEUTIL[24m(1)

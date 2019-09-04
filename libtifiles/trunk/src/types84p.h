@@ -43,14 +43,17 @@
 #define TI84p_PIC    0x07
 #define TI84p_GDB    0x08
 #define TI84p_CPLX   0x0C
+#define TI84p_CPLXLIST   0x0D
 #define TI84p_WDW	 0x0F	//deprecated
 #define TI84p_WINDW  0x0F
 #define TI84p_ZSTO   0x10
 #define TI84p_TAB	 0x11	//deprecated
 #define TI84p_TABLE  0x11
 #define TI84p_BKUP   0x13
+#define TI84p_APPOBJ 0x14
 #define TI84p_APPVAR 0x15	//deprecated
 #define TI84p_APPV   0x15
+#define TI84p_TEMPPROGOBJ 0x16
 #define TI84p_GROUP  0x17
 #define TI83pce_SIMPLEFRAC 0x18
 #define TI84p_DIR    0x19

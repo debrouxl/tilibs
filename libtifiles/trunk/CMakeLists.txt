@@ -17,6 +17,7 @@ set(SRC_FILES
         src/filetypes.cc
         src/grouped.cc
         src/intelhex.cc
+        src/metadata.cc
         src/misc.cc
         src/rwfile.cc
         src/tifiles.cc

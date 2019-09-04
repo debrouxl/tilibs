@@ -1,0 +1,436 @@
+.TH TIFILEUTIL 1 "August 1, 2023"
+
+.SH NAME
+tifileutil - a program for manipulating computer files suitable for TI graphing calculators
+
+.SH SYNOPSIS
+\fBtifileutil\fP [\-h / \-\-help] [\-v / \-\-version] [command] [arguments]
+
+.SH DESCRIPTION
+The \fBtifileutil\fP program allows you to perform various operations on computer files suitable for the TI-Z80, TI-eZ80 and TI-68k series of graphing calculators.
+
+.SH OPTIONS
+\fBtifileutil\fP accepts the following options:
+
+.TP
+\fB\-h, \-\-help\fP
+Display a list of all command line options and commands.
+
+.TP
+\fB\-v, \-\-version\fP
+Output the version info.
+
+.SH COMMANDS
+\fBtifileutil\fP accepts the following commands:
+
+.TP
+.B wrap [OPTIONS] [FILE | \-]
+Wrap raw data into a regular TI variable file, adding the computer-side header,
+footer and checksum.
+.PP
+.RS
+.IP \(bu
+\fB\-o OUTFILE\fP: output result to OUTFILE
+.IP \(bu
+\fB\-n NAME\fP: set on-calc variable name to NAME (TI-Z80, TI-eZ80, TI-68k)
+.IP \(bu
+\fB\-f NAME\fP: set on-calc variable folder to NAME (TI-68k)
+.IP \(bu
+\fB\-t TYPE\fP: set variable type to TYPE (e.g. 82p)
+.IP \(bu
+\fB\-V VERSION\fP: set file version to VERSION (TI-Z80, TI-eZ80)
+.IP \(bu
+\fB\-c COMMENT\fP: set file comment to COMMENT (strftime format string)
+.IP \(bu
+\fB\-\-raw\-comment=COMMENT\fP: set file comment to COMMENT literally (no strftime
+expansion; when both are given, the last of \fB\-c\fP and \fB\-\-raw\-comment\fP wins)
+.IP \(bu
+\fB\-x EXTENSION\fP: set 1-4 chars "extension" for "other" variable type (TI-68k)
+.IP \(bu
+\fB\-p\fP: protect program (TI-Z80, TI-eZ80)
+.IP \(bu
+\fB\-C\fP: number/list/matrix is complex (TI-Z80, TI-eZ80; exact fractions,
+radicals and pi on TI-83PCE/TI-84PCE)
+.IP \(bu
+\fB\-P\fP: pack data as a TI-83PCE/TI-84+CE Python AppVar (with \fB\-t 8xv\fP;
+the 8xv extension maps to the TI-83+ model, which is accepted as well):
+the data is stored as a legacy Python AppVar payload (\fBPYCD\fP magic), which
+TI-Connect and the TI-83PCE/TI-84+CE can run
+.PP
+When wrapping TI-68k string, assembly, text, picture and "other" variables, the
+2-byte size field and the per-type structure are added automatically (TI-68k
+strings may contain 0x00 bytes, as supported by some old tools; assembly
+programs are emitted as [2-byte size][code][relocation data][0xF3]; text line
+endings, be they CR, LF or CR+LF, map to CR; picture dimensions are synthesized
+from the input size, up to 240x103 pixels, i.e. 3090 bytes).
+.IP \(bu
+\fB\-a\fP: mark file for sending to archive (TI-Z80, TI-eZ80, TI-68k)
+.IP \(bu
+\fB\-l\fP: mark file locked (TI-68k)
+.IP \(bu
+\fB\-r\fP: raw mode (no length bytes)
+.IP \(bu
+\fB\-v\fP: be verbose
+.RE
+
+.TP
+.B unwrap [OPTIONS] FILE
+Strip the computer-side header and trailing checksum of a regular TI file, in
+order to extract the raw binary content of the variable.
+.PP
+.RS
+.IP \(bu
+\fB\-o OUTFILE\fP: output result to OUTFILE (\fB\-\fP or absent: stdout)
+.IP \(bu
+\fB\-d\fP: deep unwrapping (beyond the computer-side header and footer): for
+TI-83+/84+/CSE/CE protected programs, strip the tokenized name prefix; for
+TI-68k files, strip the 2-byte size field and the per-type envelope (the
+relocation-size field and 0xF3 tag of assembly programs, the leading 0x00 and
+STR_TAG of string variables, the extension and OTH_TAG of other data, the
+cursor position, line types and TEXT_TAG of text variables, which are output
+with CR line endings, or the height, width and PIC_TAG of pictures);
+for Python AppVars, extract the script from the \fBPYCD\fP / \fBPYSC\fP payload
+.IP \(bu
+\fB\-v\fP: be verbose
+.RE
+.PP
+TI flash (OS and app) files have no header or trailing checksum to strip, so
+they are passed through unchanged.
+
+.TP
+.B squish [OPTIONS] FILE
+Convert the hexadecimal text stored inside a TI-Z80 (TI-73/82/83/83+/84+/CSE/CE)
+program variable into binary code, producing a protected program (type 0x06)
+whose data carries the 2-byte length field and the model-specific
+squished-program marker (none on TI-73/83, D5 00 11 on TI-82, BB 6D on
+TI-83+/84+, EF 69 on TI-84+CSE, EF 7B on TI-83PCE/TI-84PCE), as used by shells
+such as SOS, ASHELL and ZASMLOAD. On TI-82, the marker is followed by the
+shell's long name, NUL-terminated; on TI-83, the shell headers carry a
+description. On TI-73, the Mallard header (D9 00, the 4-character program
+name "Duck", the entry point at userMem + header length and the NUL-terminated
+description) or the shell-less nostub header (prgm0000, '1', the code size in
+decimal and a hard newline, run by the built-in assembly support of OS 1.40+,
+limited to 900 bytes of code) can be emitted.
+.PP
+.RS
+.IP \(bu
+\fB\-o OUTFILE\fP: output result to OUTFILE (required)
+.IP \(bu
+\fB\-s SHELL\fP: target shell - TI-82: crash (default, D5 00 11), ace (D5 00 A0),
+ash (D9 00 30) or sng ("SNG"); TI-73: mallard (D9 00 "Duck" + entry point +
+description) or nostub (prgm0000 + '1' + decimal size + code, for OS 1.40+);
+TI-83: ion ([C9][30 len] + description), ashell ([00][18 XX] with a title
+pointer), venus (the "E7 39 5F 5B 56 3F 00" magic), ion83, pse83, ice or sos
+(the tokenized "Send(9prgm<name>" magics of Ion v1.6, PSE, Ice and SOS, with
+the fixed shell names IONZ, PSEZ, ZICE and ZSOSL, followed by "3F D9 3F 2A"
+(line separator, "Stop", line separator, quote) for ion83/pse83 or by
+"3F E1" (line separator, "ClLCD") for ice/sos); TI-83+/84+:
+ion (the marker and the ION header), ion83, pse83 or ice (the tokenized
+"Asm prgm<name>" variants of the same magics), tse ([C9]["TSE"][01] + a
+space-prefixed title + the 2-byte external data size) or mirage ([C9][01] +
+a 30-byte icon + a description); the default on TI-73/83 is the shell-less
+ZASMLOAD form
+.IP \(bu
+\fB\-L NAME\fP: set the shell program description or TSE/MirageOS title
+(default: the variable name; not usable with the nostub, ion83, pse83, ice
+and sos formats, whose headers carry no description)
+.IP \(bu
+\fB\-v\fP: be verbose
+.RE
+
+.TP
+.B unsquish [OPTIONS] FILE
+Convert binary code stored inside a TI-Z80 program variable into hexadecimal
+text, producing an unprotected program (type 0x05) whose data carries the
+2-byte length field and which can be run on shell-less TI-73/83 calculators
+(whose hex text is appended the "End 0000 End" trailer). On TI-82, the
+shell-specific marker (D5 00 11, D5 00 A0, D9 00 30 or "SNG") and the
+shell's long name are stripped; on TI-73/83/83+/84+, the ION header (marker,
+description and title) is stripped, on TI-73 additionally the Mallard header
+(D9 00, name, entry point and description) and the nostub header (prgm0000,
+type, size and hard newline, the hex text of an unsquished nostub program
+being passed through), and on TI-83 also the ASHELL83 and Venus headers, the
+"Send(9prgm<name>" headers of the Ion v1.6, PSE, Ice and SOS shells, the
+[C9][02] Ion module prefix and the [00 01] SOS module prefix. On TI-83+/84+,
+the "Asm prgm<name>" headers of the Ion v1.6, PSE and Ice shells, the TSE
+header (["TSE"][01], title and external data size), the MirageOS headers
+([C9][01][icon] + description, the modified [C9][03][icon][quit address] +
+description, and the [C9][02] external interface, whose prefix is also the
+Ion module prefix) and the [C9][02] Ion module prefix are stripped as well.
+As a special case, a TI-68k
+assembly program (type 0x21) is turned into a TI-BASIC Exec string, in the
+manner of ttasm2exec.pl.
+.PP
+.RS
+.IP \(bu
+\fB\-o OUTFILE\fP: output result to OUTFILE (\fB\-\fP or absent: stdout; required
+for TI-Z80 files)
+.IP \(bu
+\fB\-v\fP: be verbose
+.RE
+
+.TP
+.B checksum [OPTIONS] FILE
+Check the checksum of a regular TI file, and optionally recompute and fix it.
+.PP
+.RS
+.IP \(bu
+\fB\-f\fP: recompute the stored checksum and write a corrected file (requires \fB\-o\fP)
+.IP \(bu
+\fB\-o OUTFILE\fP: output corrected file to OUTFILE (may equal the input file)
+.IP \(bu
+\fB\-v\fP: be verbose
+.RE
+.PP
+The computed checksum and the checksum embedded into the file are printed. If
+they don't match, a message is printed on stderr and the exit status is 2.
+
+.TP
+.B metadata -m MODE [OPTIONS] [FILE | -]
+Print, retrieve, set or apply metadata of a file under a parsable
+"\fBkey\fP": "\fBvalue\fP" form, with one pair per line. The MODE is one of
+\fBgather\fP, \fBapply\fP, \fBget\fP and \fBset\fP.
+.PP
+.RS
+.IP \(bu
+\fBgather\fP: print the metadata of the input file to the output file
+(absent: stdout)
+.IP \(bu
+\fBapply\fP: apply the metadata read from the \fB\-i FILE\fP input file
+(absent: stdin) to the input TI file, writing the result to \fB\-o OUTFILE\fP
+if given, and rewriting the input file otherwise. The input stream must start
+with the "\fBmetadata.version\fP": "1" pair emitted by gather; unknown,
+read-only and duplicate keys are errors.
+.IP \(bu
+\fBget\fP: print the value of the metadata requested by a single option
+.IP \(bu
+\fBset\fP: set one or more metadata fields on the input TI file, writing the
+result to \fB\-o OUTFILE\fP if given, and rewriting the input file otherwise
+.RE
+.PP
+.RS
+.IP \(bu
+\fB\-i FILE\fP: for apply, read metadata from FILE (absent: stdin)
+.IP \(bu
+\fB\-o OUTFILE\fP: output result to OUTFILE (gather: absent means stdout;
+apply and set: absent means rewriting the input file)
+.IP \(bu
+\fB\-v\fP: be verbose
+.RE
+.PP
+Single, group, backup, flash and tigroup files are supported. The file is
+classified by its content (magic number and type byte), the extension being
+only cross-checked, so that files with a missing, unrecognized or wrong
+extension are still parsed. The emitted pairs use the following keys, all
+values being strings:
+.PP
+.RS
+.nf
+metadata.version           version of the interchange format (always "1")
+file.class                 single, group, backup, flash or tigroup
+file.model                 calculator model (e.g. "TI83+")
+file.magic                 8 first bytes of the file (4 for ZIP-based tigroup files)
+file.comment               file comment (regular, backup, tigroup)
+file.name                  application or OS name (flash)
+file.checksum.computed     computed data checksum (regular, backup)
+file.checksum.stored       stored data checksum (regular, backup)
+file.entries               number of entries (1 for single files)
+file.warnings              space-separated list of warnings, when any:
+                           "checksum" (stored and computed checksums differ),
+                           "extension_mismatch" (extension and content disagree)
+entry[N].name             on-calc variable name
+entry[N].folder           on-calc variable folder (TI-68k)
+entry[N].type             variable type as an integer
+entry[N].type.name        variable type name (e.g. "PRGM")
+entry[N].type.ext         variable type extension (e.g. "8xp")
+entry[N].size             variable data size in bytes
+entry[N].version          file version (TI-Z80, TI-eZ80)
+entry[N].attr.archived    1 if archived, 0 otherwise
+entry[N].attr.locked      1 if locked, 0 otherwise
+.fi
+.RE
+.PP
+Tigroup files additionally carry, per entry, the following keys:
+.PP
+.RS
+.nf
+entry[N].filename         member file name inside the archive
+entry[N].class            "regular" or "flash"
+.fi
+.RE
+.PP
+The \fBget\fP options request a single metadata value: \fB\-n\fP the on-calc
+variable name, \fB\-f\fP the on-calc folder name (TI-68k), \fB\-t\fP the
+variable type as an integer, \fB\-h\fP the file magic number, \fB\-V\fP the
+file version (TI-Z80, TI-eZ80), \fB\-c\fP the file comment, \fB\-a\fP and
+\fB\-l\fP the archived and locked information, \fB\-x\fP the stored and
+computed data checksums. The requested value is printed on stdout.
+.PP
+The \fBset\fP options set the corresponding fields, and may be combined:
+\fB\-n NAME\fP the on-calc variable name, \fB\-f NAME\fP the on-calc folder
+name (TI-68k), \fB\-t TYPE\fP the variable type as an integer (which must be
+valid for the calculator model), \fB\-h MAGIC\fP the file magic number (which
+must match the calculator model), \fB\-V VERSION\fP the file version (0-255,
+TI-Z80, TI-eZ80), \fB\-c COMMENT\fP the file comment (strftime format string,
+expanded when it contains a '%'), \fB\-\-raw\-comment=COMMENT\fP the file
+comment set literally (without strftime expansion; the last of \fB\-c\fP and
+\fB\-\-raw\-comment\fP given wins), \fB\-a 0/1\fP the archived information
+(archived implies locked; TI-83+/84+ and TI-68k files can carry it),
+\fB\-l 0/1\fP the locked information (TI-68k), \fB\-x VALUE|fix\fP the stored
+data checksum, set to the given value (regular TI-8x and backup files, which
+store it in the last 2 bytes of the file) or recomputed (\fBfix\fP). Setting
+a metadata field which cannot be stored by the file format, or which is
+read-only, is an error, as are invalid values; the file is rewritten only
+when every requested change is valid.
+.PP
+Entries are numbered starting at 1, the regular entries first, then the flash
+entries. If the input file is \fB\-\fP, or has an
+unknown extension, or cannot be parsed, an error message is printed on stderr
+and the exit status is 3.
+
+.TP
+.B group -m MODE [OPTIONS] [FILE ...]
+Work on tigroup files (ZIP archives of TI files, as produced by TI-Connect).
+The MODE is one of \fBlist\fP, \fBcreate\fP, \fBextract\fP and \fBappend\fP.
+All options must precede the file name(s).
+.PP
+.RS
+.IP \(bu
+\fBlist\fP: list the entries of a single tigroup file on stdout, under the
+form of a small table (model, comment, entry count, then the size, class and
+member file name of every entry, with the on-calc variable name and type for
+regular entries)
+.IP \(bu
+\fBcreate\fP: create a new tigroup file from a list of input files, which can
+be single, group, flash or tigroup files, the latter being merged entry by
+entry. The \fB\-t\fP option is mandatory, and only
+the "tigroup" type is supported for now. The \fB\-o OUTFILE\fP option is
+mandatory.
+.IP \(bu
+\fBextract\fP: extract the entries of a single tigroup file into the
+directory given by the \fB\-d PATH\fP option (default: the current
+directory), each entry being written under its member file name. Member names
+containing a directory separator, or equal to "." or "..", are rejected.
+.IP \(bu
+\fBappend\fP: append a list of input files (single, group, flash or tigroup
+files) to an existing tigroup file,
+writing the result to the \fB\-o OUTFILE\fP file if given, and rewriting the
+input tigroup file otherwise. Appending an entry whose member file name
+already exists in the tigroup is an error. If the input tigroup file does not
+exist, a new tigroup file is created from the given files, under the
+\fB\-o OUTFILE\fP file if given and under the (nonexistent) input file
+otherwise.
+.RE
+.PP
+.RS
+.IP \(bu
+\fB\-m MODE\fP: the mode (required)
+.IP \(bu
+\fB\-t TYPE\fP: for create, the type of file to create, only "tigroup" is
+supported (required)
+.IP \(bu
+\fB\-o OUTFILE\fP: for create, the tigroup file to create (required); for
+append, the output file (default: the input tigroup file)
+.IP \(bu
+\fB\-d PATH\fP: for extract, the destination directory (default: current
+directory)
+.IP \(bu
+\fB\-v\fP: be verbose
+.RE
+
+.SH EXAMPLES
+Dump a file supposed to be suitable for TI calculators as a C hex array to an output file:
+
+.TP
+tifileutil dump -f chexarray romdump_9x/romdump.89z -o rom89.h -n romDump89 -s romDumpSize89 -c 8 -m 64
+
+.TP
+Create TI file header and footer for a raw binary:
+
+.TP
+tifileutil wrap \-n 'ROMDUMP' dump83p.bin \-p \-o dump83p.8xp
+
+.TP
+Check the checksum of a file, and fix it if necessary:
+
+.TP
+tifileutil checksum dump83p.8xp
+
+.TP
+tifileutil checksum \-f \-o dump83p_fixed.8xp dump83p.8xp
+
+.TP
+Extract the raw binary content of a variable, stripping the header and trailing checksum:
+
+.TP
+tifileutil unwrap dump83p.8xp \-o dump83p.bin
+
+.TP
+Wrap data as a complex variable, e.g. a complex number for the TI-83+ family
+or a complex exact fraction/radical/pi for the TI-83PCE/TI-84PCE:
+
+.TP
+tifileutil wrap \-n 'Z' value.bin \-C \-t 8xn \-o z.8xc
+
+.TP
+Squish an assembly program stored as hexadecimal text in a TI-83 program, and
+unsquish it back:
+
+.TP
+tifileutil squish code.83p \-o code.83p
+
+.TP
+tifileutil unsquish code.83p \-o code.83p
+
+.TP
+Turn a TI-68k assembly program into a TI-BASIC Exec string:
+
+.TP
+tifileutil unsquish program.89z
+
+.TP
+Pack a Python script into a TI-83PCE/TI-84+CE Python AppVar, and extract it back:
+
+.TP
+tifileutil wrap \-P \-n 'HELLO' \-t 8xv hello.py \-o hello.8xv
+
+.TP
+tifileutil unwrap \-d hello.8xv \-o hello.py
+
+.SH COPYRIGHT
+Copyright (C) 2006-2010 Benjamin Moody
+
+Copyright (C) 2010      Jon Sturm
+
+Copyright (C) 1999-2009 Thomas Nussbaumer
+
+Copyright (C) 1999-2009 Romain Lievin
+
+Copyright (C) 2009-2026 Lionel Debroux
+
+Copyright (C) 2015-2026 Adrien Bertrand
+
+Permission to use, copy, modify, and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies and that both that copyright notice and this permission notice appear in supporting documentation.
+
+This program and its source code is distributed under the terms of the 
+terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+.SH SUGGESTIONS AND BUG REPORTS
+The canonical place to find tifileutil and some miscellaneous information is at https://github.com/debrouxl/tilibs (www.tilp.info).
+
+You can also look at http://lpg.ticalc.org and http://www.ticalc.org for others TI related programs for Linux. French people can also look at http://www.ti-fr.org and http://tiplanet.org.
+
+.SH AUTHOR
+Original authors: Romain Lievin (tf2hex), Benjamin Moody (tipack & titools), Jon Sturm (titools & tifileutils), Thomas Nussbaumer (tt*), Lionel Debroux (tf2hex), Adrien Bertrand (tivars_lib_cpp)
+
+tifileutil unified design and implementation, including modifications to the original tools: Lionel Debroux.
+
+.SH THANKS
+Thanks to the original authors of the code blocks embedded into tifileutil.
+
+.SH SEE ALSO
+tilp(1)

@@ -27,6 +27,7 @@ libtifiles2_la_SOURCES = *.h \
 	filetypes.cc \
 	grouped.cc \
 	intelhex.cc \
+	metadata.cc \
 	misc.cc \
 	rwfile.cc \
 	tifiles.cc \

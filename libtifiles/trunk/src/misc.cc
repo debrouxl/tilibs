@@ -142,6 +142,27 @@ int TICALL tifiles_has_backup(CalcModel calc_type)
 }
 
 /**
+ * tifiles_has_attrs:
+ * @model: a calculator model.
+ *
+ * Returns TRUE if the calculator files carry attribute bytes or words
+ * (archived and locked information).
+ *
+ * Return value: a boolean value.
+ **/
+int TICALL tifiles_has_attrs(CalcModel calc_type)
+{
+	return ((calc_type == CALC_TI83P) || (calc_type == CALC_TI84P) ||
+	        (calc_type == CALC_TI84P_USB) || (calc_type == CALC_TI82A_USB) ||
+	        (calc_type == CALC_TI84PT_USB) || (calc_type == CALC_TI84PC) ||
+	        (calc_type == CALC_TI84PC_USB) || (calc_type == CALC_TI83PCE_USB) ||
+	        (calc_type == CALC_TI84PCE_USB) || (calc_type == CALC_TI89) ||
+	        (calc_type == CALC_TI89T) || (calc_type == CALC_TI92) ||
+	        (calc_type == CALC_TI92P) || (calc_type == CALC_V200) ||
+	        (calc_type == CALC_TI89T_USB));
+}
+
+/**
  * tifiles_checksum:
  * @buffer: an array of bytes.
  * @size: the length of the array.
@@ -185,7 +206,7 @@ int TICALL tifiles_hexdump(const uint8_t * ptr, unsigned int len)
 		unsigned int i;
 		unsigned int alloc_len = (len < 1024) ? len : 1024;
 
-		str = (char *)g_malloc(3 * alloc_len + 14);
+		str = (char *)g_malloc(3 * alloc_len + 19);
 		for (i = 0; i < alloc_len; i++)
 		{
 			sprintf(&str[3 * i], "%02X ", ptr[i]);

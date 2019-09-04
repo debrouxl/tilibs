@@ -193,6 +193,7 @@ typedef struct
 	TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigned char type);
 	// TODO TIEXPORT4 char* TICALL ticonv_varname_tokenize_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type);
 	TIEXPORT4 char* TICALL ticonv_varname_tokenize  (CalcModel model, const char *src, unsigned char type);
+	TIEXPORT4 char* TICALL ticonv_varname_strdup    (char *varname);
 	TIEXPORT4 void  TICALL ticonv_varname_free      (char *varname);
 
 	// filename.c
