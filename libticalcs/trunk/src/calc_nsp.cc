@@ -906,8 +906,11 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			break;
 		}
 
-		ticalcs_strlcpy(infos->product_name, (char *)data, sizeof(infos->product_name));
-		infos_mask = INFOS_PRODUCT_NAME;
+		{
+			const uint32_t maxsize = size < sizeof(infos->product_name) ? size + 1 : sizeof(infos->product_name);
+			ticalcs_strlcpy(infos->product_name, (char *)data, maxsize);
+			infos_mask = INFOS_PRODUCT_NAME;
+		}
 
 		g_free(data);
 

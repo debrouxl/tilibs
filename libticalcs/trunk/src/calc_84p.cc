@@ -1762,7 +1762,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 			if (params[i]->ok)
 			{
-				ticalcs_strlcpy(infos->product_name, (char *)params[i]->data, sizeof(infos->product_name));
+				const uint32_t maxsize = params[i]->size < sizeof(infos->product_name) ? params[i]->size + 1 : sizeof(infos->product_name);
+				ticalcs_strlcpy(infos->product_name, (char *)params[i]->data, maxsize);
 				infos_mask |= INFOS_PRODUCT_NAME;
 			}
 			i++;
