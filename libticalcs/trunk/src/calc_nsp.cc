@@ -513,18 +513,26 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 			ret = nsp_cmd_r_dev_infos(handle, &cmd, &size, &data);
 			if (!ret)
 			{
-				*flash = (  (((uint32_t)data[4]) << 24)
-				          | (((uint32_t)data[5]) << 16)
-				          | (((uint32_t)data[6]) <<  8)
-				          | (((uint32_t)data[7])      ));
+				if (size >= 24)
+				{
+					*flash = (  (((uint32_t)data[4]) << 24)
+					          | (((uint32_t)data[5]) << 16)
+					          | (((uint32_t)data[6]) <<  8)
+					          | (((uint32_t)data[7])      ));
 
-				*ram = (  (((uint32_t)data[20]) << 24)
-				        | (((uint32_t)data[21]) << 16)
-				        | (((uint32_t)data[22]) <<  8)
-				        | (((uint32_t)data[23])      ));
+					*ram = (  (((uint32_t)data[20]) << 24)
+					        | (((uint32_t)data[21]) << 16)
+					        | (((uint32_t)data[22]) <<  8)
+					        | (((uint32_t)data[23])      ));
+				}
+				else
+				{
+					ret = ERR_INVALID_PACKET;
+					*flash = 0;
+					*ram = 0;
+				}
 
 				g_free(data);
-
 			}
 		}
 
@@ -747,8 +755,16 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 			ret = nsp_cmd_r_dev_infos(handle, &cmd, &size, &data);
 			if (!ret)
 			{
-				strncpy((char *)id, (char*)(data + 82), 28);
-				id[28] = 0;
+				if (size >= 110)
+				{
+					strncpy((char *)id, (char*)(data + 82), 28);
+					id[28] = 0;
+				}
+				else
+				{
+					ret = ERR_INVALID_PACKET;
+					id[0] = 0;
+				}
 				g_free(data);
 			}
 		}
@@ -906,7 +922,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			break;
 		}
 
-		ticalcs_strlcpy(infos->product_name, (char *)data, sizeof(infos->product_name));
+		ticalcs_strlcpy(infos->product_name, (char *)data, size < sizeof(infos->product_name) ? size + 1 : sizeof(infos->product_name));
 		infos_mask = INFOS_PRODUCT_NAME;
 
 		g_free(data);
