@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: libtifiles2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
 "POT-Creation-Date: 2016-11-01 18:41+0100\n"
-"PO-Revision-Date: 2019-06-10 12:46+0200\n"
+"PO-Revision-Date: 2019-10-29 14:15+0100\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
-"Language-Team: German\n"
+"Language-Team: <debian-l10n-german@lists.debian.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -44,17 +44,17 @@ msgstr "Msg: die Größe einer Gruppendatei darf 64 KB nicht überschreiten."
 
 #: src/error.c:84
 msgid "Cause: too many variables/data."
-msgstr "Grund: zu viele Variablen/Data."
+msgstr "Grund: zu viele Variablen/Daten."
 
 #: src/error.c:90
 msgid "Msg: unknown calculator type."
-msgstr "Msg: unbekannter Taschenrechner."
+msgstr "Msg: unbekannter Taschenrechnertyp."
 
 #: src/error.c:92
 msgid "Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."
 msgstr ""
-"Grund: wahrscheinlich aufgrund eines Fehlers, kontaktiere tilp-users@lists."
-"sf.net."
+"Grund: wahrscheinlich aufgrund eines Fehlers, kontaktieren Sie »tilp-"
+"users@lists.sf.net«."
 
 #: src/error.c:99
 msgid "Msg: invalid file."
@@ -72,15 +72,16 @@ msgstr "Msg: Prüfsummen-Fehler."
 #: src/error.c:109
 msgid "Cause: the file has an incorrect checksum and may be corrupted."
 msgstr ""
-"Grund: die Datei hat eine ungültige Prüfsumme und ist möglicherweise korrupt."
+"Grund: die Datei hat eine ungültige Prüfsumme und ist möglicherweise "
+"beschädigt."
 
 #: src/error.c:115
 msgid "Msg: (Un)Zip error."
-msgstr "Msg: (Un)Zip Fehler."
+msgstr "Msg: (Un)Zip-Fehler."
 
 #: src/error.c:117
 msgid "Cause: unknown..."
-msgstr "Grund: unbekannt..."
+msgstr "Grund: unbekannt …"
 
 #: src/error.c:123
 msgid "Msg: unsupported function."
@@ -92,11 +93,11 @@ msgstr "Grund: die gewählte Funktion ist nicht verfügbar."
 
 #: src/error.c:131
 msgid "Msg: I/O file error."
-msgstr "Msg: I/O Datei Fehler."
+msgstr "Msg: I/O Dateifehler."
 
 #: src/error.c:133
 msgid "Cause: file is corrupted or invalid."
-msgstr "Grund: Datei ist korrupt oder ungültig."
+msgstr "Grund: Datei ist beschädigt oder ungültig."
 
 #: src/error.c:139
 msgid "Msg: invalid parameter."
@@ -107,12 +108,12 @@ msgid ""
 "Cause: the program which uses this library is buggy. Fire-up the developer!"
 msgstr ""
 "Grund: Das Programm, das diese Bibliothek benützt, ist\n"
-"Fehlerhaft. Kontaktiere den Entwickler!"
+"Fehlerhaft. Kontaktieren Sie den Entwickler!"
 
 #: src/filetypes.c:1426 src/filetypes.c:1530 src/types68k.c:74
 #: src/types83p.c:70 src/typesoldz80.c:75
 msgid "OS upgrade"
-msgstr "OS Upgrade"
+msgstr "Betriebssystem-Aktualisierung"
 
 #: src/filetypes.c:1436 src/filetypes.c:1540
 msgid "TIGroup"
@@ -129,7 +130,7 @@ msgstr "Gruppe"
 #: src/tifiles.c:88
 #, c-format
 msgid "tifiles library version %s"
-msgstr "tifiles Bibliothek Version %s"
+msgstr "tifiles-Bibliothek Version %s"
 
 #: src/type2str.c:66 src/type2str.c:86
 msgid "none     "
@@ -169,7 +170,7 @@ msgstr "tigroup"
 
 #: src/type2str.c:116 src/type2str.c:143
 msgid "os"
-msgstr "OS"
+msgstr "Betriebssystem"
 
 #: src/type2str.c:117 src/type2str.c:145
 msgid "application"
@@ -262,7 +263,7 @@ msgstr "Matrix"
 
 #: src/types68k.c:49
 msgid "Data"
-msgstr "Data"
+msgstr "Daten"
 
 #: src/types68k.c:50
 msgid "Text"
@@ -271,7 +272,7 @@ msgstr "Text"
 #: src/types68k.c:51 src/types83p.c:39 src/typesoldz80.c:44
 #: src/typesoldz80.c:150 src/typesoldz80.c:211 src/typesoldz80.c:264
 msgid "String"
-msgstr "String"
+msgstr "Zeichenkette"
 
 #: src/types68k.c:52 src/types83p.c:43 src/typesoldz80.c:48
 #: src/typesoldz80.c:101 src/typesoldz80.c:154 src/typesoldz80.c:212
@@ -318,11 +319,11 @@ msgstr "Backup"
 #: src/types68k.c:72 src/types83p.c:41 src/typesoldz80.c:46
 #: src/typesoldz80.c:152
 msgid "Asm Program"
-msgstr "Asm Programm"
+msgstr "Asm-Programm"
 
 #: src/types68k.c:73
 msgid "ID-LIST"
-msgstr "ID-LIST"
+msgstr "ID-LISTE"
 
 #: src/types68k.c:75 src/types83p.c:71 src/typesoldz80.c:76
 msgid "Application"
@@ -354,7 +355,7 @@ msgstr "Komplex"
 #: src/typesoldz80.c:275 src/typesoldz80.c:276 src/typesoldz80.c:277
 #: src/typesoldz80.c:278 src/typesoldz80.c:279
 msgid "Window Setup"
-msgstr "Window Setup"
+msgstr "Fenster Einstellungen"
 
 #: src/types83p.c:51 src/typesoldz80.c:56 src/typesoldz80.c:105
 #: src/typesoldz80.c:162 src/typesoldz80.c:226
@@ -364,15 +365,15 @@ msgstr "Zoom"
 #: src/types83p.c:52 src/typesoldz80.c:57 src/typesoldz80.c:106
 #: src/typesoldz80.c:163
 msgid "Table Setup"
-msgstr "Table Setup"
+msgstr "Tabellen Einstellungen"
 
 #: src/types83p.c:56 src/typesoldz80.c:66
 msgid "App Var"
-msgstr "App Var"
+msgstr "Anwendungsvariablen"
 
 #: src/types83p.c:58
 msgid "Group Var"
-msgstr "Group Var"
+msgstr "Gruppenvariablen"
 
 #: src/types83p.c:61
 msgid "Image"
@@ -440,4 +441,4 @@ msgstr "Parametrisch"
 
 #: src/typesoldz80.c:225
 msgid "Diff Equ"
-msgstr "Diff. Gleichung"
+msgstr "Diff.-Gleichung"
