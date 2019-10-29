@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: libticables2 1.3.6\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
 "POT-Creation-Date: 2016-11-06 12:06+0100\n"
-"PO-Revision-Date: 2019-06-07 21:03+0200\n"
+"PO-Revision-Date: 2019-10-29 13:55+0100\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
-"Language-Team: German\n"
+"Language-Team: <debian-l10n-german@lists.debian.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: src/bsd/detect.c:138 src/linux/detect.c:179 src/macos/detect.c:138
 #, c-format
 msgid "can't open '%s'."
-msgstr "Kann »%s« nicht öffnen."
+msgstr "kann '%s' nicht öffnen."
 
 #: src/bsd/detect.c:172 src/linux/detect.c:213 src/macos/detect.c:172
 #, c-format
@@ -86,24 +86,24 @@ msgstr ""
 
 #: src/bsd/detect.c:234 src/linux/detect.c:275 src/macos/detect.c:227
 msgid "    => you will have to restart your session, too"
-msgstr "    => Sie müssen zusätzlich neu anmelden"
+msgstr "    => Sie müssen sich zusätzlich neu anmelden"
 
 #: src/bsd/detect.c:253 src/linux/detect.c:294 src/macos/detect.c:245
 #, c-format
 msgid "Check for super-user access: %s"
-msgstr "Überprüfen Sie Ihren Super-User-Zugang: %s"
+msgstr "Prüfe Administrator-Zugang: %s"
 
 #: src/bsd/detect.c:263 src/linux/detect.c:308
 msgid "Check for tty support:"
-msgstr "Überprüfen Sie tty Unterstützung:"
+msgstr "Prüfe TTY-Unterstützung:"
 
 #: src/bsd/detect.c:264 src/linux/detect.c:310
 msgid "    tty support: available."
-msgstr "    tty Unterstützung: verfügbar."
+msgstr "    TTY-Unterstützung: verfügbar."
 
 #: src/bsd/detect.c:267 src/linux/detect.c:317 src/macos/detect.c:253
 msgid "Check for tty usability:"
-msgstr "Überprüfen Sie tty Verfügbarkeit:"
+msgstr "Prüfe TTY-Verfügbarkeit:"
 
 #: src/bsd/detect.c:279 src/linux/detect.c:348 src/linux/detect.c:388
 msgid "    is useable: yes"
@@ -111,7 +111,7 @@ msgstr "    benutzbar: ja"
 
 #: src/bsd/detect.c:292 src/linux/detect.c:406 src/macos/detect.c:267
 msgid "Check for libusb support:"
-msgstr "Prüfe libusb Unterstützung:"
+msgstr "Prüfe libusb-Unterstützung:"
 
 #: src/bsd/detect.c:294 src/linux/detect.c:408 src/macos/detect.c:269
 msgid "    usb support: available."
@@ -123,7 +123,7 @@ msgstr "USB-Unterstützung: nicht kompiliert."
 
 #: src/error.c:67
 msgid "Msg: link cable is busy."
-msgstr "Msg: Link Kabel beschäftigt."
+msgstr "Msg: Link-Kabel beschäftigt."
 
 #: src/error.c:69
 msgid "Cause: a transfer is in progress."
@@ -152,8 +152,8 @@ msgid ""
 msgstr ""
 "Grund: der Knoten /dev/ttySx existiert nicht oder Sie haben nicht die "
 "benötigten Zugriffsrechte. Wie benötigte Zugriffsrechte vergeben werden "
-"hängt von der Distribution ab, möglicherweise durch hinzufügen des Benutzers "
-"zur Gruppe 'dialout' oder 'uucp'. Dies kann durch editieren von /etc/group "
+"hängt von der Distribution ab, möglicherweise durch Hinzufügen des Benutzers "
+"zur Gruppe »dialout« oder »uucp«. Dies kann durch bearbeiten von /etc/group "
 "und hinzufügen des Benutzernamens nach ':'. Beispiel: dialout:x:20:romain "
 
 #: src/error.c:97
@@ -168,15 +168,15 @@ msgid ""
 "can be done by editing /etc/group and add the username after the ':'. "
 "Example: lp:x:7:romain "
 msgstr ""
-"Grund: der Knoten /dev/parportX existiert nicht oder Sie haben nicht die "
-"erforderlichen Berechtigungen. Wie benötigte Zugriffsrechte vergeben werden "
+"Grund: der Knoten /dev/parportX existiert nicht oder Sie haben nicht\n"
+"die benötigten Zugriffsrechte. Wie benötigte Zugriffsrechte vergeben werden "
 "hängt von der Distribution ab, möglicherweise durch hinzufügen des Benutzers "
-"zur Gruppe 'lp'. Dies kann durch editieren von /etc/group und hinzufügen des "
-"Benutzernamens nach ':'. Beispiel: lp:x:7:romain "
+"zur Gruppe »lp«. Dies kann durch bearbeiten von /etc/group und hinzufügen "
+"des Benutzernamens nach ':'. Beispiel: lp:x:7:romain "
 
 #: src/error.c:111
 msgid "Msg: unable to use USB pseudo file system."
-msgstr "Msg: kann USB pseudo Dateisystem nicht nutzen."
+msgstr "Msg: kann USB-Pseudodateisystem nicht nutzen."
 
 #: src/error.c:113
 msgid ""
@@ -190,27 +190,27 @@ msgid ""
 "automatically will be set up for you. Otherwise, manual setup steps, if any, "
 "are explained in the CONFIG file shipped with the ticables2 library. "
 msgstr ""
-"Grund: das USB Dateisystem ist nicht eingehängt oder auf das USB-Gerät kann "
-"nicht zugegriffen werden weil der Benutzer nicht die benötigten Rechte hat. "
+"Grund: das USB-Dateisystem ist nicht eingehängt oder auf das USB-Gerät kann "
+"nicht zugegriffen werden, weil der Benutzer nicht die benötigten Rechte hat. "
 "Wie man die Zugriffsrechte ändert, hängt von der Distribution ab. "
-"Möglicherweise müssen Änderungen an der Konfiguration von udev und/oder "
-"pam_console  vorgenommen werden und zusätzlich der Benutzer in Gruppen wie "
-"'usb' aufgenommen werden oder libusb Einhänge-Parameter müssen angepasst "
-"werden. Wenn Pakete von TiLP und seinen Bibliotheken für Ihre Distribution "
-"existieren wird empfohlen, diese zu verwenden, weil dann alles, soweit "
+"Möglicherweise müssen Änderungen an der Konfiguration von udev und/oder pam-"
+"console  vorgenommen werden und zusätzlich der Benutzer in Gruppen wie »usb« "
+"aufgenommen werden oder libusb-Einhänge-Parameter müssen angepasst werden. "
+"Wenn Pakete von TiLP und seinen Bibliotheken für Ihre Distribution "
+"existieren, wird empfohlen, diese zu verwenden, weil dann alles, soweit "
 "möglich, automatisch eingerichtet wird. Ansonsten sind die manuellen "
-"Schritte in der mit der ticables2 Bibliothek mitgelieferten CONFIG Datei "
+"Schritte in der mit der ticables2-Bibliothek mitgelieferten CONFIG-Datei "
 "enthalten. "
 
 #: src/error.c:130
 msgid "Msg: illegal operation or argument."
-msgstr "Msg: illegale Operation oder Argument."
+msgstr "Msg: illegale Aktion oder Argument."
 
 #: src/error.c:132
 msgid ""
 "Cause: the program which uses this library is buggy. Fire-up the developer!"
 msgstr ""
-"Grund: das Programm welches diese Bibliothek nutzt ist fehlerhaft. "
+"Grund: das Programm, welches diese Bibliothek nutzt, ist fehlerhaft. "
 "Kontaktiere den Entwickler!"
 
 #: src/error.c:138
@@ -222,7 +222,7 @@ msgid ""
 "Cause: the driver may have been not started yet; it may have been "
 "uninstalled; the library has been installed without administrator privileges."
 msgstr ""
-"Grund: der Treiber ist möglicherweise noch nicht geladen, ist deinstalliert, "
+"Grund: der Treiber ist möglicherweise noch nicht geladen, ist deinstalliert "
 "oder die Bibliothek ist ohne Administratorrechte installiert."
 
 #: src/error.c:146
@@ -231,11 +231,11 @@ msgstr "Msg: RwPorts-Treiber und/oder Bibliothek nicht gefunden."
 
 #: src/error.c:154
 msgid "Msg: error occured while writing to the device."
-msgstr "Msg: Fehler beim schreiben auf das Gerät."
+msgstr "Msg: Fehler beim Schreiben auf das Gerät."
 
 #: src/error.c:159
 msgid "Msg: timeout occured while writing to the device."
-msgstr "Msg: Timeout beim schreiben auf das Gerät."
+msgstr "Msg: Timeout beim Schreiben auf das Gerät."
 
 #: src/error.c:161 src/error.c:174
 msgid "Cause: check that link cable is plugged and/or the calculator is ready."
@@ -249,7 +249,7 @@ msgstr "Msg: Fehler beim Lesen vom Gerät."
 
 #: src/error.c:172
 msgid "Msg: timeout occured while reading from the device."
-msgstr "Msg: Timeout beim Lesen vom Gerät."
+msgstr "Msg: Zeitüberschreitung beim Lesen vom Gerät."
 
 #: src/error.c:180
 msgid "Msg: the probing of device failed."
@@ -257,7 +257,7 @@ msgstr "Msg: Ansprechen des Geräts fehlgeschlagen."
 
 #: src/error.c:182
 msgid "Cause: internal error. If you get it, this is a bug!"
-msgstr "Grund: Interner Fehler. Dieser Fehler ist ein Bug!"
+msgstr "Grund: Interner Fehler. Dies ist ein Fehler im Programm!"
 
 #: src/error.c:195
 msgid "Msg: unable to open serial port."
@@ -266,12 +266,12 @@ msgstr "Msg: kann seriellen Port nicht öffnen."
 #: src/error.c:197
 msgid "Cause: check that device is not used/locked by another application."
 msgstr ""
-"Grund: prüfe ob das Gerät nicht anderweitig von einem Programm benutzt/"
-"gesperrt ist."
+"Grund: Überprüfen Sie, ob das Gerät nicht anderweitig von einem Programm "
+"benutzt/gesperrt ist."
 
 #: src/error.c:205
 msgid "Msg: failed to get VTI handle."
-msgstr "Msg: VTI-handle nicht erhalten."
+msgstr "Msg: VTI-Handle nicht erhalten."
 
 #: src/error.c:207
 msgid "Cause: VTI may not be running. VTI must be launched before."
@@ -281,7 +281,7 @@ msgstr ""
 #: src/error.c:217
 msgid "Msg: unable to get a unique IPC (Inter Process Communication) key."
 msgstr ""
-"Msg: kann eindeutigen IPC (Inter Process Communication) Schlüssel nicht "
+"Msg: kann keinen eindeutigen IPC- (Inter Process Communication) Schlüssel "
 "erhalten."
 
 #: src/error.c:219
@@ -289,8 +289,8 @@ msgid ""
 "Cause: check that you have enough resources for allocating a shared memory "
 "segment."
 msgstr ""
-"Grund: Prüfe, dass genügend Ressourcen für ein 'shared memory segment' "
-"bereit stehen."
+"Grund: Prüfen Sie, ob genügend Ressourcen für ein gemeinsam benutztes "
+"Speichersegment bereit stehen."
 
 #: src/error.c:226
 msgid "Msg: unable to open/close pipes for virtual linking."
@@ -301,8 +301,8 @@ msgid ""
 "Cause: check that you have permissions to create a pipe in the /tmp "
 "directory."
 msgstr ""
-"Grund: Prüfe, dass Berechtigungen zum Erstellen einer Pipe im /tmp "
-"Verzeichnis vorliegen."
+"Grund: Prüfen Sie, ob die Berechtigungen zum Erstellen einer Pipe im "
+"Verzeichnis /tmp vorliegen."
 
 #: src/error.c:235
 msgid "Msg: unable to open serial device."
@@ -318,7 +318,7 @@ msgstr ""
 
 #: src/error.c:244
 msgid "Msg: unable to issue a specific command on serial device."
-msgstr "Msg: kann spezifisches Kommando nicht auf dem Gerät ausführen."
+msgstr "Msg: kann spezifischen Befehl nicht auf dem Gerät ausführen."
 
 #: src/error.c:252
 msgid "Msg: unable to open parallel device."
@@ -329,13 +329,13 @@ msgid ""
 "Cause: check that you have permissions on /dev/parportX device. Check that "
 "device is not locked."
 msgstr ""
-"Grund: prüfe, dass Berechtigungen für das Gerät /dev/parportX vorliegen. "
-"Prüfe, dass das Gerät nicht gesperrt ist."
+"Grund: Prüfen Sie, ob die Berechtigungen für das Gerät /dev/parportX "
+"vorliegen. Prüfen Sie, dass das Gerät nicht gesperrt ist."
 
 #: src/error.c:260
 msgid "Msg: unable to issue a specific command on parallel device."
 msgstr ""
-"Msg: kann spezifisches Kommando auf dem parallelen Gerät nicht ausführen."
+"Msg: kann spezifischen Befehl auf dem parallelen Gerät nicht ausführen."
 
 #: src/error.c:268
 msgid "Msg: unable to find the libusb-win32 driver."
@@ -365,13 +365,14 @@ msgstr "Msg: kann USB-Gerät nicht zurücksetzen."
 msgid ""
 "Cause: Check that cable is connected or not stalled. Try to unplug/plug it."
 msgstr ""
-"Grund: Prüfen Sie, dass das Kabel angeschlossen ist. Versuchen Sie es aus- "
-"und einzustecken."
+"Grund: Prüfen Sie, ob das Kabel angeschlossen ist. Versuchen Sie es aus- und "
+"einzustecken."
 
 #: src/error.c:294
 msgid "Msg: attempting to use a cable which has not been open before."
 msgstr ""
-"Msg: versuche ein Kabel zu verwenden, das zuvor noch nicht verwendet wurde."
+"Msg: Versuchen Sie, ein Kabel zu verwenden, das zuvor noch nicht verwendet "
+"wurde."
 
 #: src/error.c:296
 msgid "Cause: Internal error."
@@ -395,11 +396,11 @@ msgstr "Grund: Vielleicht wurde die DLL umbenannt?"
 
 #: src/error.c:318
 msgid "Msg: this cable does not support raw I/O."
-msgstr "Msg: dieses Kabel unterstützt kein raw I/O."
+msgstr "Msg: dieses Kabel unterstützt kein 'raw I/O'."
 
 #: src/error.c:320
 msgid "Cause: unsupported operation type on cable."
-msgstr "Grund: nicht unterstützte Operation auf dem Kabel."
+msgstr "Grund: nicht unterstützter Aktionstyp auf dem Kabel."
 
 #: src/error.c:329
 msgid "Msg: unable to open/close sockets for virtual linking."
@@ -407,27 +408,28 @@ msgstr "Msg: kann Socket für virtuelles Verbinden nicht öffnen/schließen."
 
 #: src/error.c:331
 msgid "Cause: check that you have permissions to open sockets."
-msgstr "Grund: Prüfe, dass Sie die Berechtigung zum Öffnen von Sockets haben."
+msgstr ""
+"Grund: Prüfen Sie, ob Sie die Berechtigung zum Öffnen von Sockets haben."
 
 #: src/link_nul.c:119
 msgid "Dummy link"
-msgstr "Dummy Link"
+msgstr "Pseudo-Link"
 
 #: src/link_nul.c:120
 msgid "Dummy link used when no cable is set"
-msgstr "Dummy Link wird benutzt wenn kein Kabel gesetzt ist"
+msgstr "Pseudo-Link wird benutzt, wenn kein Kabel gesetzt ist."
 
 #: src/link_nul.c:136
 msgid "Dummy link for TiEmu"
-msgstr "Dummy Link für TiEmu"
+msgstr "Pseudo-Link für TiEmu"
 
 #: src/link_nul.c:137
 msgid "Internal Link Port cable for TiEmu (internal use)"
-msgstr "Internal Link Port Kabel für TiEmu (interne Benutzung)"
+msgstr "»Internal Link Port«-Kabel für TiEmu (interne Benutzung)"
 
 #: src/linux/detect.c:312
 msgid "    tty support: not compiled."
-msgstr "    tty Unterstützung: nicht kompiliert."
+msgstr "    TTY-Unterstützung: nicht kompiliert."
 
 #: src/linux/detect.c:320
 msgid "not usable"
@@ -436,12 +438,12 @@ msgstr "nicht benutzbar"
 #: src/linux/detect.c:329
 #, c-format
 msgid "unable to open serial device '%s'"
-msgstr "kann serielles Gerät »%s« nicht nutzen"
+msgstr "kann serielles Gerät '%s' nicht nutzen"
 
 #: src/linux/detect.c:336
 #, c-format
 msgid "Error running TIOCGSERIAL ioctl on device %s - %s"
-msgstr "Fehler TIOCGSERIAL ioctl auf Gerät %s - %s auszuführen"
+msgstr "Fehler TIOCGSERIAL-Ioctl auf Gerät %s - %s auszuführen"
 
 #: src/linux/detect.c:343 src/linux/detect.c:383
 msgid "    is useable: no"
@@ -449,19 +451,19 @@ msgstr "    ist verwendbar: nein"
 
 #: src/linux/detect.c:359
 msgid "Check for parport support:"
-msgstr "Überprüfe parport Unterstützung:"
+msgstr "Überprüfe parport-Unterstützung:"
 
 #: src/linux/detect.c:361
 msgid "    parport support: available."
-msgstr "    parport Unterstützung: vorhanden."
+msgstr "    parport-Unterstützung: vorhanden."
 
 #: src/linux/detect.c:363
 msgid "    parport support: not compiled."
-msgstr "    parport Unterstützung: nicht kompiliert."
+msgstr "    parport-Unterstützung: nicht kompiliert."
 
 #: src/linux/detect.c:368
 msgid "Check for parport usability:"
-msgstr "Prüfe parport Verfügbarkeit:"
+msgstr "Prüfe parport-Verfügbarkeit:"
 
 #: src/linux/detect.c:414
 msgid "Check for libusb usability:"
@@ -471,20 +473,20 @@ msgstr "Prüfe Verfügbarkeit von libusb:"
 #: src/linux/detect.c:440
 #, c-format
 msgid "    usb filesystem (%s): %s"
-msgstr "    USB Dateisystem (%s): %s"
+msgstr "    USB-Dateisystem (%s): %s"
 
 #: src/linux/detect.c:446
 #, c-format
 msgid "    usb filesystem (/[proc|dev]/bus/usb): %s"
-msgstr "    USB Datesystem (/[proc|dev]/bus/usb): %s"
+msgstr "    USB-Datesystem (/[proc|dev]/bus/usb): %s"
 
 #: src/linux/detect.c:447
 msgid "    => you must have udev or usbfs support."
-msgstr "    => Sie benötigen udev oder usbfs Unterstützung."
+msgstr "    => Sie benötigen udev- oder usbfs-Unterstützung."
 
 #: src/linux/detect.c:448
 msgid "    => take a look at the ticables2/CONFIG file."
-msgstr "    => schauen Sie die Datei ticables2/CONFIG."
+msgstr "    => schauen Sie in die Datei ticables2/CONFIG."
 
 #: src/linux/ioports.c:71
 msgid "ioctl failed on parallel device: can't claim exclusive access."
@@ -493,33 +495,33 @@ msgstr "ioctl auf paralleles Gerät fehlgeschlagen: kein exklusiver Zugriff."
 #: src/linux/ioports.c:78
 msgid "ioctl failed on parallel device: can't claim parport."
 msgstr ""
-"ioctl auf dem parallelen Gerät funktioniert nicht: kann parport nicht "
-"verwenden."
+"ioctl auf dem parallelen Gerät fehlgeschlagen: kann parport nicht verwenden."
 
 #: src/linux/ioports.c:87
 msgid "ioctl failed on parallel device: can't change transfer mode."
 msgstr ""
-"ioctl auf dem parallelen Gerät funktioniert nicht: kann Transfermodus nicht "
+"ioctl auf dem parallelen Gerät fehlgeschlagen: kann Transfermodus nicht "
 "ändern."
 
 #: src/linux/ioports.c:99
 msgid "ioctl failed on parallel device: can't release parport."
 msgstr ""
-"ioctl auf dem parallelen Gerät funktioniert nicht: kann parport nicht lösen."
+"ioctl auf dem parallelen Gerät fehlgeschlagen: kann parport nicht lösen."
 
 #: src/linux/ioports.c:113
 msgid "ioctl failed on parallel device: can't read status lines."
 msgstr ""
-"ioctl auf dem parallelen Gerät funktioniert nicht: kann Status nicht lesen."
+"ioctl auf dem parallelen Gerät fehlgeschlagen: kann Status nicht lesen."
 
 #: src/linux/ioports.c:124
 msgid "ioctl failed on parallel device: can't write on data lines."
 msgstr ""
-"ioctl auf parallelem Gerät funktioniert nicht: kann keine Daten schreiben."
+"ioctl auf parallelem Gerät fehlgeschlagen: kann nicht auf die Datenleitung "
+"schreiben."
 
 #: src/linux/ioports.c:163 src/linux/ioports.c:179
 msgid "ioctl failed on serial device."
-msgstr "ioctl auf seriellem Gerät funktioniert nicht."
+msgstr "ioctl auf seriellem Gerät fehlgeschlagen."
 
 #: src/linux/link_gry.c:116
 #, c-format
@@ -536,7 +538,7 @@ msgstr "kann diesen seriellen Port nicht öffnen: %s\n"
 #: src/win32/link_gry.c:374 src/win32/link_par.c:374 src/win32/link_ser.c:403
 #, c-format
 msgid "unable to set device %s.\n"
-msgstr "kann %s Gerät nicht setzen.\n"
+msgstr "kann »%s«-Gerät nicht setzen.\n"
 
 #: src/linux/link_gry.c:329 src/win32/link_gry2.c:379 src/win32/link_gry.c:385
 msgid "GrayLink"
@@ -552,7 +554,7 @@ msgstr "Parallel"
 
 #: src/linux/link_par.c:391 src/win32/link_par.c:386
 msgid "Home-made parallel cable"
-msgstr "Home-made paralleles Kabel"
+msgstr "Selbstgemachtes paralleles Kabel"
 
 #: src/linux/link_tcpc.c:113
 msgid "TCPC"
@@ -560,7 +562,7 @@ msgstr "TCPC"
 
 #: src/linux/link_tcpc.c:114
 msgid "Virtual TCP client link"
-msgstr "Virtuller TCP Client Link"
+msgstr "Virtueller TCP-Client-Link"
 
 #: src/linux/link_tcps.c:113
 msgid "TCPS"
@@ -568,11 +570,11 @@ msgstr "TCPS"
 
 #: src/linux/link_tcps.c:114
 msgid "Virtual TCP server link"
-msgstr "Virtueller TCP Server Link"
+msgstr "Virtueller TCP-Server-Link"
 
 #: src/linux/link_ser.c:406 src/win32/link_ser.c:414
 msgid "BlackLink"
-msgstr "SchwarzerLink"
+msgstr "BlackLink"
 
 #: src/linux/link_ser.c:407 src/win32/link_ser.c:415
 msgid "BlackLink or home-made serial cable"
@@ -614,7 +616,7 @@ msgstr "DirectLink"
 
 #: src/linux/link_usb1.c:917 src/linux/link_usb.c:1141
 msgid "DirectLink (DIRECT USB) cable"
-msgstr "DirectLink (DIRECT USB) Kabel"
+msgstr "DirectLink- (DIRECT USB) Kabel"
 
 #: src/linux/link_usb.c:362
 #, c-format
@@ -640,16 +642,16 @@ msgstr "Virtueller Link für VTi"
 
 #: src/probe.c:114
 msgid "Link cable probing:"
-msgstr "Link Kabel Verbindungsaufbau:"
+msgstr "Link-Kabel-Verbindungsaufbau:"
 
 #: src/ticables.c:176
 #, c-format
 msgid "ticables library version %s"
-msgstr "ticables Bibliothek Version %s"
+msgstr "ticables-Bibliothek Version %s"
 
 #: src/ticables.c:550
 msgid "Link cable handle details:"
-msgstr "Link Kabel handle Details:"
+msgstr "Verbindungskabel-Handle-Details:"
 
 #: src/ticables.c:551
 #, c-format
@@ -664,12 +666,12 @@ msgstr "  Port    : %s"
 #: src/ticables.c:553
 #, c-format
 msgid "  timeout : %2.1fs"
-msgstr "  Timeout : %2.1fs"
+msgstr "  Zeitüberschreitung : %2.1fs"
 
 #: src/ticables.c:554
 #, c-format
 msgid "  delay   : %i us"
-msgstr "  Delay   : %i us"
+msgstr "  Verzögerung   : %i us"
 
 #: src/ticables.c:557
 #, c-format
@@ -683,7 +685,7 @@ msgstr "  Adresse : 0x%03x"
 
 #: src/win32/link_vti.c:108
 msgid "FATAL ERROR: unable to get an handle on the ticables-2 library."
-msgstr "FATALER FEHLER: kann handle für ticables-2 Bibliothek nicht bekommen."
+msgstr "FATALER FEHLER: kann handle für ticables-2 Bibliothek nicht erhalten."
 
 #: src/win32/link_vti.c:109
 msgid "Did you rename the library ?!"
