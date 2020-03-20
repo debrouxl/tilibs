@@ -31,6 +31,13 @@ project(tilibs C CXX)
 #   - WISH: add support for Windows (that will probably be annoying)
 #
 
+# Our modules
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.cmake)
+file(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/.cmake/*.cmake")
+foreach(file ${files})
+    include(${file})
+endforeach()
+
 set(USED_CMAKE_GENERATOR "${CMAKE_GENERATOR}" CACHE STRING "Expose CMAKE_GENERATOR" FORCE)
 
 message(STATUS "Detected system: ${CMAKE_SYSTEM_NAME} - host processor: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
@@ -110,13 +117,6 @@ endif()
 
 # For libs finding
 find_package(PkgConfig)
-
-# Our modules
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.cmake)
-file(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/.cmake/*.cmake")
-foreach(file ${files})
-    include(${file})
-endforeach()
 
 add_subdirectory(libticonv/trunk)
 add_subdirectory(libtifiles/trunk)
