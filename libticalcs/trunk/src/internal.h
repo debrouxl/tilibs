@@ -162,6 +162,22 @@
 			return ERR_BUSY; \
 		} \
 	} while(0);
+#define RETURN_ERR_MALLOC_IF_NULLPTR(data) \
+	if (NULL == data) \
+	{ \
+		return ERR_MALLOC; \
+	}
+#define SET_ERR_MALLOC_IF_NULLPTR(data) \
+	if (NULL == data) \
+	{ \
+		ret = ERR_MALLOC; \
+	}
+#define SET_ERR_MALLOC_AND_BREAK_IF_NULLPTR(data) \
+	if (NULL == data) \
+	{ \
+		ret = ERR_MALLOC; \
+		break; \
+	}
 
 static inline int ticalcs_validate_handle(CalcHandle * handle)
 {
@@ -439,9 +455,6 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 
 
 // dusb_cmd.c
-
-#define CA(x)   (const DUSBCalcAttr **)(x)
-#define CP(x)   (const DUSBCalcParam **)(x)
 
 #define VALIDATE_ATTRS(nattrs, attrs) \
 	if (nattrs != 0 && attrs == NULL) \

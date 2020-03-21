@@ -96,6 +96,8 @@ TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uin
 {
 	DUSBVirtualPacket* vtl = NULL;
 
+	// RFS: it's alright if data is nullptr at this stage.
+
 	if (ticalcs_validate_handle(handle))
 	{
 		vtl = (DUSBVirtualPacket *)g_malloc0(sizeof(DUSBVirtualPacket));
@@ -162,13 +164,25 @@ TIEXPORT3 void TICALL dusb_vtl_pkt_del(CalcHandle * handle, DUSBVirtualPacket* v
 	g_free(vtl);
 }
 
-TIEXPORT3 void * TICALL dusb_vtl_pkt_alloc_data(size_t size)
+TIEXPORT3 void * TICALL dusb_vtl_pkt_alloc_data(CalcHandle * handle, size_t size)
 {
+	if (!ticalcs_validate_handle(handle))
+	{
+		ticalcs_critical("%s: handle is invalid", __FUNCTION__);
+		return nullptr;
+	}
+
 	return g_malloc0(size + DUSB_DH_SIZE);
 }
 
-TIEXPORT3 DUSBVirtualPacket * TICALL dusb_vtl_pkt_realloc_data(DUSBVirtualPacket* vtl, size_t size)
+TIEXPORT3 DUSBVirtualPacket * TICALL dusb_vtl_pkt_realloc_data(CalcHandle * handle, DUSBVirtualPacket * vtl, size_t size)
 {
+	if (!ticalcs_validate_handle(handle))
+	{
+		ticalcs_critical("%s: handle is invalid", __FUNCTION__);
+		return nullptr;
+	}
+
 	if (vtl != NULL)
 	{
 		if (size + DUSB_DH_SIZE > size)
@@ -191,8 +205,14 @@ TIEXPORT3 DUSBVirtualPacket * TICALL dusb_vtl_pkt_realloc_data(DUSBVirtualPacket
 	return vtl;
 }
 
-TIEXPORT3 void TICALL dusb_vtl_pkt_free_data(void * data)
+TIEXPORT3 void TICALL dusb_vtl_pkt_free_data(CalcHandle * handle, void * data)
 {
+	if (!ticalcs_validate_handle(handle))
+	{
+		ticalcs_critical("%s: handle is invalid", __FUNCTION__);
+		return;
+	}
+
 	return g_free(data);
 }
 
