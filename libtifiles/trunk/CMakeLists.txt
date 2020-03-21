@@ -50,10 +50,17 @@ set(PUBLIC_HEADERS
         src/typesxx.h)
 
 # external deps lookup
-pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive ticonv)
+pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive ticonv zlib)
+
+try_static_libs_if_needed()
 
 # auto-creation of all targets with flags etc., alongside with internal deps
 create_targets_both_lib_types(tifiles2 ticonv)
+
+if(TRY_STATIC_LIBS)
+    find_package(BZip2 REQUIRED) # Needed for some reason
+    target_link_libraries(tifiles2_shared ${BZIP2_LIBRARIES})
+endif()
 
 # Takes care of the i18n po/pot/gmo/mo files
 i18n_mo_from_po_pot()
