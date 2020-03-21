@@ -2157,7 +2157,7 @@ static int dusb_get_param_ids(CalcHandle * h, int, char *)
 					}
 				}
 			}
-			dusb_cp_del_array(h, length / 2, params);
+			dusb_cp_del_array(h, params, length / 2);
 		}
 		else
 		{
@@ -2186,7 +2186,7 @@ static int dusb_set_param_id(CalcHandle * h, int, char * input)
 	if (!ret)
 	{
 		DUSBCalcParam *param;
-		uint8_t * data = (uint8_t *)dusb_cp_alloc_data(2048);
+		uint8_t * data = (uint8_t *)dusb_cp_alloc_data(h, 2048);
 
 		param = dusb_cp_new_ex(h, param_id, length, data);
 		ret = dusb_cmd_s_param_set(h, param);
@@ -2197,7 +2197,7 @@ static int dusb_set_param_id(CalcHandle * h, int, char * input)
 			ret = dusb_cmd_r_data_ack(h);
 		}
 
-		dusb_cp_free_data(data);
+		dusb_cp_free_data(h, data);
 	}
 	else
 	{

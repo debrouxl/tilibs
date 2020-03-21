@@ -118,13 +118,21 @@ TIEXPORT3 void TICALL nsp_vtl_pkt_del(CalcHandle *handle, NSPVirtualPacket* vtl)
 	g_free(vtl);
 }
 
-TIEXPORT3 void * TICALL nsp_vtl_pkt_alloc_data(size_t size)
+TIEXPORT3 void * TICALL nsp_vtl_pkt_alloc_data(CalcHandle * handle, size_t size)
 {
+	if (!ticalcs_validate_handle(handle))
+	{
+		return nullptr;
+	}
 	return g_malloc0(size + 1);
 }
 
-TIEXPORT3 NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(NSPVirtualPacket* vtl, size_t size)
+TIEXPORT3 NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(CalcHandle * handle, NSPVirtualPacket* vtl, size_t size)
 {
+	if (!ticalcs_validate_handle(handle))
+	{
+		return nullptr;
+	}
 	if (vtl != NULL)
 	{
 		if (size + 1 > size)
@@ -154,9 +162,12 @@ TIEXPORT3 NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(NSPVirtualPacket* v
 	return vtl;
 }
 
-TIEXPORT3 void TICALL nsp_vtl_pkt_free_data(void * data)
+TIEXPORT3 void TICALL nsp_vtl_pkt_free_data(CalcHandle * handle, void * data)
 {
-	return g_free(data);
+	if (ticalcs_validate_handle(handle))
+	{
+		g_free(data);
+	}
 }
 
 // Session Management
