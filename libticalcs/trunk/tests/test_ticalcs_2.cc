@@ -1006,7 +1006,7 @@ static int dusb_get_param_ids(CalcHandle * h)
 					}
 				}
 			}
-			dusb_cp_del_array(h, length / 2, params);
+			dusb_cp_del_array(h, params, length / 2);
 		}
 		else
 		{
@@ -1029,13 +1029,13 @@ static int dusb_set_param_id(CalcHandle * h)
 	uint32_t length = 0;
 	unsigned int param_id;
 
-	data = (uint8_t *)dusb_cp_alloc_data(2048);
+	data = (uint8_t *)dusb_cp_alloc_data(h, 2048);
 
 	printf("Enter DUSB parameter ID to be set (usually < 0x60): ");
 	ret = scanf("%i", &param_id);
 	if (ret < 1)
 	{
-		dusb_cp_free_data(data);
+		dusb_cp_free_data(h, data);
 		return 0;
 	}
 
@@ -1044,7 +1044,7 @@ static int dusb_set_param_id(CalcHandle * h)
 	ret = scanf("%4096[^\x04]", buffer);
 	if (ret < 1)
 	{
-		dusb_cp_free_data(data);
+		dusb_cp_free_data(h, data);
 		return 0;
 	}
 
@@ -1055,7 +1055,7 @@ static int dusb_set_param_id(CalcHandle * h)
 
 		param = dusb_cp_new_ex(h, param_id, length, data);
 		ret = dusb_cmd_s_param_set(h, param);
-		dusb_cp_del(h, param);
+		dusb_cp_del(h, param); // This frees data.
 
 		if (!ret)
 		{
@@ -1064,7 +1064,7 @@ static int dusb_set_param_id(CalcHandle * h)
 	}
 	else
 	{
-		dusb_cp_free_data(data);
+		dusb_cp_free_data(h, data);
 		printf("Failed to build raw data, not sent\n");
 	}
 
