@@ -63,9 +63,9 @@ TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new(CalcHandle * handle);
 TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uint32_t size, uint16_t type, uint8_t * data);
 TIEXPORT3 void TICALL dusb_vtl_pkt_fill(DUSBVirtualPacket* vtl, uint32_t size, uint16_t type, uint8_t * data);
 TIEXPORT3 void TICALL dusb_vtl_pkt_del(CalcHandle * handle, DUSBVirtualPacket* pkt);
-TIEXPORT3 void * TICALL dusb_vtl_pkt_alloc_data(size_t size);
-TIEXPORT3 DUSBVirtualPacket * TICALL dusb_vtl_pkt_realloc_data(DUSBVirtualPacket* vtl, size_t size);
-TIEXPORT3 void TICALL dusb_vtl_pkt_free_data(void * data);
+TIEXPORT3 void * TICALL dusb_vtl_pkt_alloc_data(CalcHandle * handle, size_t size);
+TIEXPORT3 DUSBVirtualPacket * TICALL dusb_vtl_pkt_realloc_data(CalcHandle * handle, DUSBVirtualPacket* vtl, size_t size);
+TIEXPORT3 void TICALL dusb_vtl_pkt_free_data(CalcHandle * handle, void * data);
 
 TIEXPORT3 int TICALL dusb_send_buf_size_request(CalcHandle *handle, uint32_t size);
 TIEXPORT3 int TICALL dusb_recv_buf_size_alloc(CalcHandle *handle, uint32_t *size);

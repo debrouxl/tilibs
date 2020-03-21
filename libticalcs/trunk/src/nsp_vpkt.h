@@ -66,9 +66,9 @@ TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new(CalcHandle *handle);
 TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle *handle, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data);
 TIEXPORT3 void TICALL nsp_vtl_pkt_fill(NSPVirtualPacket* vtl, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data);
 TIEXPORT3 void TICALL nsp_vtl_pkt_del(CalcHandle *handle, NSPVirtualPacket* vtl);
-TIEXPORT3 void * TICALL nsp_vtl_pkt_alloc_data(size_t size);
-TIEXPORT3 NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(NSPVirtualPacket* vtl, size_t size);
-TIEXPORT3 void TICALL nsp_vtl_pkt_free_data(void * data);
+TIEXPORT3 void * TICALL nsp_vtl_pkt_alloc_data(CalcHandle * handle, size_t size);
+TIEXPORT3 NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(CalcHandle * handle, NSPVirtualPacket* vtl, size_t size);
+TIEXPORT3 void TICALL nsp_vtl_pkt_free_data(CalcHandle * handle, void * data);
 
 TIEXPORT3 int TICALL nsp_session_open(CalcHandle *handle, uint16_t port);
 TIEXPORT3 int TICALL nsp_session_close(CalcHandle *handle);

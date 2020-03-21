@@ -277,14 +277,17 @@ static void torture_nsp()
     PRINTFVOID(nsp_vtl_pkt_fill, nullptr, 0x12345678, 0x1234, 0x1234, 0x1234, 0x1234, 0x12, nullptr);
     PRINTFVOID(nsp_vtl_pkt_del, nullptr, (NSPVirtualPacket*)0x12345678);
     PRINTFVOID(nsp_vtl_pkt_del, (CalcHandle*)0x12345678, nullptr);
-    ptr = nsp_vtl_pkt_alloc_data(0);
+    ptr = nsp_vtl_pkt_alloc_data(nullptr, 0);
     PRINTF(, PTR, ptr);
-    nsp_vtl_pkt_free_data(ptr);
+    nsp_vtl_pkt_free_data(nullptr, ptr);
 
-    ptr = nsp_vtl_pkt_realloc_data(nullptr, 1);
+    ptr = nsp_vtl_pkt_realloc_data(nullptr, nullptr, 1);
     PRINTF(, PTR, ptr);
-    nsp_vtl_pkt_free_data(ptr);
-    PRINTFVOID(nsp_vtl_pkt_free_data, nullptr);
+    nsp_vtl_pkt_free_data(nullptr, ptr);
+    ptr = nsp_vtl_pkt_realloc_data(nullptr, (NSPVirtualPacket *)0x12345678, 1);
+    PRINTF(, PTR, ptr);
+    nsp_vtl_pkt_free_data(nullptr, ptr);
+    PRINTFVOID(nsp_vtl_pkt_free_data, nullptr, (void *)0x12345678);
     PRINTF(nsp_session_open, INT, nullptr, 0);
     PRINTF(nsp_session_close, INT, nullptr);
     PRINTF(nsp_addr_request, INT, nullptr);
@@ -292,8 +295,8 @@ static void torture_nsp()
     PRINTF(nsp_send_ack, INT, nullptr);
     PRINTF(nsp_recv_ack, INT, nullptr);
     PRINTF(nsp_send_nack, INT, nullptr);
-    PRINTF(nsp_send_nack_ex, INT, nullptr, 0);
 
+    PRINTF(nsp_send_nack_ex, INT, nullptr, 0);
     PRINTF(nsp_send_data, INT, nullptr, (NSPVirtualPacket*)0x12345678);
     PRINTF(nsp_send_data, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(nsp_recv_data, INT, nullptr, (NSPVirtualPacket*)0x12345678);
@@ -304,8 +307,8 @@ static void torture_nsp()
     PRINTF(nsp_cmd_r_login, INT, nullptr);
     PRINTF(nsp_cmd_s_status, INT, nullptr, 0);
     PRINTF(nsp_cmd_r_status, INT, nullptr, (uint8_t*)0x12345678);
-    PRINTF(nsp_cmd_s_dev_infos, INT, nullptr, 0);
 
+    PRINTF(nsp_cmd_s_dev_infos, INT, nullptr, 0);
     PRINTF(nsp_cmd_r_dev_infos, INT, nullptr, (uint8_t*)0x12345678, (uint32_t*)0x12345678, (uint8_t**)0x12345678);
     PRINTF(nsp_cmd_r_dev_infos, INT, (CalcHandle*)0x12345678, (uint8_t*)0x12345678, nullptr, nullptr);
     PRINTF(nsp_cmd_r_dev_infos, INT, (CalcHandle*)0x12345678, nullptr, (uint32_t*)0x12345678, nullptr);
@@ -315,8 +318,8 @@ static void torture_nsp()
     PRINTF(nsp_cmd_r_screen_rle, INT, (CalcHandle*)0x12345678, nullptr, (uint32_t*)0x12345678, (uint8_t**)0x12345678);
     PRINTF(nsp_cmd_r_screen_rle, INT, (CalcHandle*)0x12345678, (uint8_t*)0x12345678, nullptr, (uint8_t**)0x12345678);
     PRINTF(nsp_cmd_r_screen_rle, INT, (CalcHandle*)0x12345678, (uint8_t*)0x12345678, (uint32_t*)0x12345678, nullptr);
-    PRINTF(nsp_cmd_s_dir_attributes, INT, nullptr, (const char*)0x12345678);
 
+    PRINTF(nsp_cmd_s_dir_attributes, INT, nullptr, (const char*)0x12345678);
     PRINTF(nsp_cmd_s_dir_attributes, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(nsp_cmd_r_dir_attributes, INT, nullptr, (uint32_t*)0x12345678, (uint8_t*)0x12345678, (uint32_t*)0x12345678);
     PRINTF(nsp_cmd_s_dir_enum_init, INT, nullptr, (const char*)0x12345678);
@@ -326,8 +329,8 @@ static void torture_nsp()
     PRINTF(nsp_cmd_r_dir_enum_next, INT, nullptr, (char*)0x12345678, (uint32_t*)0x12345678, (uint8_t*)0x12345678);
     PRINTF(nsp_cmd_r_dir_enum_next, INT, (CalcHandle*)0x12345678, nullptr, (uint32_t*)0x12345678, (uint8_t*)0x12345678);
     PRINTF(nsp_cmd_s_dir_enum_done, INT, nullptr);
-    PRINTF(nsp_cmd_r_dir_enum_done, INT, nullptr);
 
+    PRINTF(nsp_cmd_r_dir_enum_done, INT, nullptr);
     PRINTF(nsp_cmd_s_put_file, INT, nullptr, (const char*)0x12345678, 0);
     PRINTF(nsp_cmd_s_put_file, INT, (CalcHandle*)0x12345678, nullptr, 0);
     PRINTF(nsp_cmd_r_put_file, INT, nullptr);
@@ -337,8 +340,8 @@ static void torture_nsp()
     PRINTF(nsp_cmd_s_del_file, INT, nullptr, (const char*)0x12345678);
     PRINTF(nsp_cmd_s_del_file, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(nsp_cmd_r_del_file, INT, nullptr);
-    PRINTF(nsp_cmd_s_new_folder, INT, nullptr, (const char*)0x12345678);
 
+    PRINTF(nsp_cmd_s_new_folder, INT, nullptr, (const char*)0x12345678);
     PRINTF(nsp_cmd_s_new_folder, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(nsp_cmd_r_new_folder, INT, nullptr);
     PRINTF(nsp_cmd_s_del_folder, INT, nullptr, (const char*)0x12345678);
@@ -348,8 +351,8 @@ static void torture_nsp()
     PRINTF(nsp_cmd_s_copy_file, INT, (CalcHandle*)0x12345678, nullptr, (const char*)0x12345678);
     PRINTF(nsp_cmd_s_copy_file, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, nullptr);
     PRINTF(nsp_cmd_r_copy_file, INT, nullptr);
-    PRINTF(nsp_cmd_s_rename_file, INT, nullptr, (const char*)0x12345678, (const char*)0x12345678);
 
+    PRINTF(nsp_cmd_s_rename_file, INT, nullptr, (const char*)0x12345678, (const char*)0x12345678);
     PRINTF(nsp_cmd_s_rename_file, INT, (CalcHandle*)0x12345678, nullptr, (const char*)0x12345678);
     PRINTF(nsp_cmd_s_rename_file, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, nullptr);
     PRINTF(nsp_cmd_r_rename_file, INT, nullptr);
@@ -359,8 +362,8 @@ static void torture_nsp()
     PRINTF(nsp_cmd_s_file_contents, INT, (CalcHandle*)0x12345678, 0, nullptr);
     PRINTF(nsp_cmd_r_file_contents, INT, nullptr, (uint32_t*)0x12345678, (uint8_t**)0x12345678);
     PRINTF(nsp_cmd_r_file_contents, INT, (CalcHandle*)0x12345678, nullptr, (uint8_t**)0x12345678);
-    PRINTF(nsp_cmd_r_file_contents, INT, (CalcHandle*)0x12345678, (uint32_t*)0x12345678, nullptr);
 
+    PRINTF(nsp_cmd_r_file_contents, INT, (CalcHandle*)0x12345678, (uint32_t*)0x12345678, nullptr);
     PRINTF(nsp_cmd_s_os_install, INT, nullptr, 0);
     PRINTF(nsp_cmd_r_os_install, INT, nullptr);
     PRINTF(nsp_cmd_s_os_contents, INT, nullptr, 0, (uint8_t*)0x12345678);
@@ -370,8 +373,8 @@ static void torture_nsp()
     PRINTF(nsp_cmd_s_generic_data, INT, nullptr, 0, (uint8_t*)0x12345678, 0, 0);
     PRINTF(nsp_cmd_r_generic_data, INT, nullptr, (uint32_t*)0x12345678, (uint8_t**)0x12345678);
     PRINTF(nsp_cmd_s_echo, INT, nullptr, 0, (uint8_t*)0x12345678);
-    PRINTF(nsp_cmd_r_echo, INT, nullptr, (uint32_t*)0x12345678, (uint8_t**)0x12345678);
 
+    PRINTF(nsp_cmd_r_echo, INT, nullptr, (uint32_t*)0x12345678, (uint8_t**)0x12345678);
     PRINTF(nsp_cmd_s_keypress_event, INT, nullptr, (const uint8_t*)0x12345678);
     PRINTF(nsp_cmd_s_keypress_event, INT, (CalcHandle*)0x12345678, nullptr);
 }
@@ -392,14 +395,17 @@ static void torture_dusb()
     PRINTFVOID(dusb_vtl_pkt_fill, nullptr, 0, 0, (uint8_t*)0x12345678);
     PRINTFVOID(dusb_vtl_pkt_del, nullptr, (DUSBVirtualPacket*)0x12345678);
     PRINTFVOID(dusb_vtl_pkt_del, (CalcHandle*)0x12345678, nullptr);
-    ptr = dusb_vtl_pkt_alloc_data(0);
+    ptr = dusb_vtl_pkt_alloc_data(nullptr, 0);
     PRINTF(, PTR, ptr);
-    dusb_vtl_pkt_free_data(ptr);
+    dusb_vtl_pkt_free_data(nullptr, ptr);
 
-    ptr = dusb_vtl_pkt_realloc_data(nullptr, 1);
+    ptr = dusb_vtl_pkt_realloc_data(nullptr, nullptr, 1);
     PRINTF(, PTR, ptr);
-    dusb_vtl_pkt_free_data(ptr);
-    PRINTFVOID(dusb_vtl_pkt_free_data, nullptr);
+    dusb_vtl_pkt_free_data(nullptr, ptr);
+    ptr = dusb_vtl_pkt_realloc_data(nullptr, (DUSBVirtualPacket *)0x12345678, 1);
+    PRINTF(, PTR, ptr);
+    dusb_vtl_pkt_free_data(nullptr, ptr);
+    PRINTFVOID(dusb_vtl_pkt_free_data, nullptr, (void *)0x12345678);
     PRINTF(dusb_send_buf_size_request, INT, nullptr, 0);
     PRINTF(dusb_recv_buf_size_alloc, INT, nullptr, (uint32_t*)0x12345678);
     PRINTF(dusb_recv_buf_size_request, INT, nullptr, (uint32_t*)0x12345678);
@@ -407,8 +413,8 @@ static void torture_dusb()
     PRINTF(dusb_send_data, INT, nullptr, (DUSBVirtualPacket*)0x12345678);
     PRINTF(dusb_send_data, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(dusb_recv_data, INT, nullptr, (DUSBVirtualPacket*)0x12345678);
-    PRINTF(dusb_recv_data, INT, (CalcHandle*)0x12345678, nullptr);
 
+    PRINTF(dusb_recv_data, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(dusb_recv_data_varsize, INT, nullptr, (DUSBVirtualPacket*)0x12345678, (uint32_t*)0x12345678, 0);
     PRINTF(dusb_recv_data_varsize, INT, (CalcHandle*)0x12345678, nullptr, (uint32_t*)0x12345678, 0);
     PRINTF(dusb_recv_data_varsize, INT, (CalcHandle*)0x12345678, (DUSBVirtualPacket*)0x12345678, nullptr, 0);
@@ -418,118 +424,140 @@ static void torture_dusb()
     PRINTF(dusb_get_buf_size, INT, nullptr, (uint32_t*)0x12345678);
     PRINTF(dusb_get_buf_size, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(dusb_set_buf_size, INT, nullptr, 0);
-    PRINTF(dusb_cmd_param_type2name, STR, 0);
 
+    PRINTF(dusb_cmd_param_type2name, STR, 0);
 // dbus_cmd.c
     ptr = dusb_cp_new(nullptr, 0, 0);
     PRINTF(, PTR, ptr);
     ptr = dusb_cp_new_ex(nullptr, 0, 0, (uint8_t*)0x12345678);
     PRINTF(, PTR, ptr);
     PRINTFVOID(dusb_cp_fill, nullptr, 0, 0, (uint8_t*)0x12345678);
-    dusb_cp_del((CalcHandle*)0x12345678, static_cast<DUSBCalcParam*>(ptr));
+    dusb_cp_del((CalcHandle*)0x12345678, (DUSBCalcParam*)ptr);
     PRINTFVOID(dusb_cp_del, nullptr, (DUSBCalcParam*)0x12345678);
     PRINTFVOID(dusb_cp_del, (CalcHandle*)0x12345678, nullptr);
     ptr = dusb_cp_new_array(nullptr, 0);
     PRINTF(, PTR, ptr);
-    dusb_cp_del_array((CalcHandle*)0x12345678, 0, static_cast<DUSBCalcParam**>(ptr));
-    PRINTFVOID(dusb_cp_del_array, (CalcHandle*)0x12345678, 0, nullptr);
-    PRINTFVOID(dusb_cp_del_array, nullptr, 0, (DUSBCalcParam**)0x12345678);
-    ptr = dusb_cp_alloc_data(0);
+    dusb_cp_del_array((CalcHandle*)0x12345678, (DUSBCalcParam **)ptr, 0);
+    ptr = dusb_cp_new_array2(nullptr, 0);
     PRINTF(, PTR, ptr);
-    dusb_cp_free_data(ptr);
-    ptr = dusb_cp_realloc_data(nullptr, 1);
-    PRINTF(, PTR, ptr);
-    dusb_cp_free_data(ptr);
+    dusb_cp_del_array((CalcHandle *)0x12345678, (DUSBCalcParam **)ptr, 0);
+    PRINTFVOID(dusb_cp_del_array, (CalcHandle *)0x12345678, nullptr, 0);
+    PRINTFVOID(dusb_cp_del_array, nullptr, (DUSBCalcParam **)0x12345678, 0);
 
-    PRINTFVOID(dusb_cp_free_data, nullptr);
+    PRINTFVOID(dusb_cp_del_array2, (CalcHandle *)0x12345678, nullptr, 0, 0);
+    PRINTFVOID(dusb_cp_del_array2, nullptr, (DUSBCalcParam *)0x12345678, 0, 1);
+    ptr = dusb_cp_alloc_data(nullptr, 0);
+    PRINTF(, PTR, ptr);
+    dusb_cp_free_data(nullptr, ptr);
+    ptr = dusb_cp_realloc_data(nullptr, nullptr, 1);
+    PRINTF(, PTR, ptr);
+    dusb_cp_free_data(nullptr, ptr);
+    ptr = dusb_cp_realloc_data(nullptr, (DUSBCalcParam *)0x12345678, 1);
+    PRINTF(, PTR, ptr);
+    dusb_cp_free_data(nullptr, ptr);
+    PRINTFVOID(dusb_cp_free_data, nullptr, (void *)0x12345678);
+    PRINTFVOID(dusb_cp_free_data, (CalcHandle *)0x12345678, nullptr);
+    PRINTFVOID(dusb_cp_free_array_data, nullptr, (DUSBCalcParam *)0x12345678, 0);
+    PRINTFVOID(dusb_cp_free_array_data, (CalcHandle *)0x12345678, nullptr, 0);
     ptr = dusb_ca_new(nullptr, 0, 0);
     PRINTF(, PTR, ptr);
+
     ptr = dusb_ca_new_ex(nullptr, 0, 0, (uint8_t*)0x12345678);
     PRINTF(, PTR, ptr);
     PRINTFVOID(dusb_ca_fill, nullptr, 0, 0, (uint8_t*)0x12345678);
-    dusb_ca_del((CalcHandle*)0x12345678, (DUSBCalcAttr*)ptr);
-    PRINTFVOID(dusb_ca_del, nullptr, (DUSBCalcAttr*)0x12345678);
+    dusb_ca_del((CalcHandle*)0x12345678, (DUSBCalcAttr *)ptr);
+    PRINTFVOID(dusb_ca_del, nullptr, (DUSBCalcAttr *)0x12345678);
     PRINTFVOID(dusb_ca_del, (CalcHandle*)0x12345678, nullptr);
     ptr = dusb_ca_new_array(nullptr, 0);
     PRINTF(, PTR, ptr);
-    dusb_ca_del_array((CalcHandle*)0x12345678, 0, (DUSBCalcAttr**)ptr);
-    PRINTFVOID(dusb_ca_del_array, (CalcHandle*)0x12345678, 0, nullptr);
-    PRINTFVOID(dusb_ca_del_array, nullptr, 0, (DUSBCalcAttr**)0x12345678);
-    ptr = dusb_ca_alloc_data(0);
+    dusb_ca_del_array((CalcHandle*)0x12345678, (DUSBCalcAttr **)ptr, 0);
+    ptr = dusb_ca_new_array2(nullptr, 0);
     PRINTF(, PTR, ptr);
-    dusb_ca_free_data(ptr);
+    dusb_ca_del_array((CalcHandle *)0x12345678, (DUSBCalcAttr **)ptr, 0);
+    PRINTFVOID(dusb_ca_del_array, (CalcHandle *)0x12345678, nullptr, 0);
+    PRINTFVOID(dusb_ca_del_array, nullptr, (DUSBCalcAttr **)0x12345678, 0);
+    PRINTFVOID(dusb_ca_del_array2, (CalcHandle *)0x12345678, nullptr, 0, 0);
+    PRINTFVOID(dusb_ca_del_array2, nullptr, (DUSBCalcAttr *)0x12345678, 0, 1);
 
-    ptr = dusb_ca_realloc_data(nullptr, 1);
+    ptr = dusb_ca_alloc_data(nullptr, 0);
     PRINTF(, PTR, ptr);
-    dusb_ca_free_data(ptr);
-    PRINTFVOID(dusb_ca_free_data, nullptr);
+    dusb_ca_free_data(nullptr, ptr);
+    ptr = dusb_ca_realloc_data(nullptr, nullptr, 1);
+    PRINTF(, PTR, ptr);
+    dusb_ca_free_data(nullptr, ptr);
+    ptr = dusb_ca_realloc_data(nullptr, (DUSBCalcAttr *)0x12345678, 1);
+    PRINTF(, PTR, ptr);
+    dusb_ca_free_data(nullptr, ptr);
+    PRINTFVOID(dusb_ca_free_data, nullptr, (void *)0x12345678);
+    PRINTFVOID(dusb_ca_free_data, (CalcHandle *)0x12345678, nullptr);
+    PRINTFVOID(dusb_ca_free_array_data, nullptr, (DUSBCalcAttr *)0x12345678, 0);
+    PRINTFVOID(dusb_ca_free_array_data, (CalcHandle *)0x12345678, nullptr, 0);
     PRINTF(dusb_cmd_s_mode_set, INT, nullptr, mode);
     PRINTF(dusb_cmd_s_os_begin, INT, nullptr, 0);
     PRINTF(dusb_cmd_r_os_ack, INT, nullptr, (uint32_t*)0x12345678);
+
     PRINTF(dusb_cmd_s_os_header, INT, nullptr, 0, 0, 0, 0, (uint8_t*)0x12345678);
     PRINTF(dusb_cmd_s_os_header, INT, (CalcHandle*)0x12345678, 0, 0, 0, 0, nullptr);
     PRINTF(dusb_cmd_s_os_data, INT, nullptr, 0, 0, 0, 0, (uint8_t*)0x12345678);
     PRINTF(dusb_cmd_s_os_data, INT, (CalcHandle*)0x12345678, 0, 0, 0, 0, nullptr);
     PRINTF(dusb_cmd_s_os_header_89, INT, nullptr, 0, (uint8_t*)0x12345678);
-
     PRINTF(dusb_cmd_s_os_header_89, INT, (CalcHandle*)0x12345678, 0, nullptr);
     PRINTF(dusb_cmd_s_os_data_89, INT, nullptr, 0, (uint8_t*)0x12345678);
     PRINTF(dusb_cmd_s_os_data_89, INT, (CalcHandle*)0x12345678, 0, nullptr);
     PRINTF(dusb_cmd_r_eot_ack, INT, nullptr);
     PRINTF(dusb_cmd_s_param_request, INT, nullptr, 1, (const uint16_t*)0x12345678);
+
     PRINTF(dusb_cmd_s_param_request, INT, (CalcHandle*)0x12345678, 1, nullptr);
     PRINTF(dusb_cmd_r_param_data, INT, nullptr, 1, (DUSBCalcParam**)0x12345678);
     PRINTF(dusb_cmd_r_param_data, INT, (CalcHandle*)0x12345678, 1, nullptr);
     PRINTF(dusb_cmd_r_screenshot, INT, nullptr, (uint32_t*)0x12345678, (uint8_t**)0x12345678);
     PRINTF(dusb_cmd_r_screenshot, INT, (CalcHandle*)0x12345678, nullptr, (uint8_t**)0x12345678);
-
     PRINTF(dusb_cmd_r_screenshot, INT, (CalcHandle*)0x12345678, (uint32_t*)0x12345678, nullptr);
     PRINTF(dusb_cmd_s_dirlist_request, INT, nullptr, 1, (const uint16_t*)0x12345678);
     PRINTF(dusb_cmd_s_dirlist_request, INT, (CalcHandle*)0x12345678, 1, nullptr);
     PRINTF(dusb_cmd_r_var_header, INT, nullptr, (char*)0x12345678, (char*)0x12345678, (DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_r_var_header, INT, (CalcHandle*)0x12345678, nullptr, (char*)0x12345678, (DUSBCalcAttr**)0x12345678);
+
     PRINTF(dusb_cmd_r_var_header, INT, (CalcHandle*)0x12345678, (char*)0x12345678, nullptr, (DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_r_var_header, INT, (CalcHandle*)0x12345678, (char*)0x12345678, (char*)0x12345678, nullptr);
     PRINTF(dusb_cmd_s_rts, INT, nullptr, (const char*)0x12345678, (const char*)0x12345678, 0, 1, (const DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_s_rts, INT, (CalcHandle*)0x12345678, nullptr, (const char*)0x12345678, 0, 1, (const DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_s_rts, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, nullptr, 0, 1, (const DUSBCalcAttr**)0x12345678);
-
     PRINTF(dusb_cmd_s_rts, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, (const char*)0x12345678, 0, 1, nullptr);
     PRINTF(dusb_cmd_s_var_request, INT, nullptr, (const char*)0x12345678, (const char*)0x12345678, 1, (const uint16_t*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_s_var_request, INT, (CalcHandle*)0x12345678, nullptr, (const char*)0x12345678, 1, (const uint16_t*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_s_var_request, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, nullptr, 1, (const uint16_t*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_s_var_request, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, (const char*)0x12345678, 1, nullptr, 1, (const DUSBCalcAttr**)0x12345678);
+
     PRINTF(dusb_cmd_s_var_request, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, (const char*)0x12345678, 1, (const uint16_t*)0x12345678, 1, nullptr);
     PRINTF(dusb_cmd_s_var_content, INT, nullptr, 0, (uint8_t*)0x12345678);
     PRINTF(dusb_cmd_s_var_content, INT, (CalcHandle*)0x12345678, 0, nullptr);
     PRINTF(dusb_cmd_r_var_content, INT, nullptr, (uint32_t*)0x12345678, (uint8_t**)0x12345678);
     PRINTF(dusb_cmd_r_var_content, INT, (CalcHandle*)0x12345678, (uint32_t*)0x12345678, nullptr);
-
     PRINTF(dusb_cmd_s_param_set, INT, nullptr, (const DUSBCalcParam*)0x12345678);
     PRINTF(dusb_cmd_s_param_set, INT, (CalcHandle*)0x12345678, nullptr);
     PRINTF(dusb_cmd_s_var_modify, INT, nullptr, (const char*)0x12345678, (const char*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678, (const char*)0x12345678, (const char*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_s_var_modify, INT, (CalcHandle*)0x12345678, nullptr, (const char*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678, (const char*)0x12345678, (const char*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_s_var_modify, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, nullptr, 1, (const DUSBCalcAttr**)0x12345678, (const char*)0x12345678, (const char*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678);
+
     PRINTF(dusb_cmd_s_var_modify, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, (const char*)0x12345678, 1, nullptr, (const char*)0x12345678, (const char*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_s_var_modify, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, (const char*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678, nullptr, (const char*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_s_var_modify, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, (const char*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678, (const char*)0x12345678, nullptr, 1, (const DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_s_var_modify, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, (const char*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678, (const char*)0x12345678, (const char*)0x12345678, 1, nullptr);
     PRINTF(dusb_cmd_s_var_delete, INT, nullptr, (const char*)0x12345678, (const char*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678);
-
     PRINTF(dusb_cmd_s_var_delete, INT, (CalcHandle*)0x12345678, nullptr, (const char*)0x12345678, 1, (const DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_s_var_delete, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, nullptr, 1, (const DUSBCalcAttr**)0x12345678);
     PRINTF(dusb_cmd_s_var_delete, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, (const char*)0x12345678, 1, nullptr);
     PRINTF(dusb_cmd_s_execute, INT, nullptr, (const char*)0x12345678, (const char*)0x12345678, 0, (const char*)0x12345678, 0);  // It's OK to have args = nullptr
     PRINTF(dusb_cmd_s_execute, INT, (CalcHandle*)0x12345678, nullptr, (const char*)0x12345678, 0, (const char*)0x12345678, 0);
+
     PRINTF(dusb_cmd_s_execute, INT, (CalcHandle*)0x12345678, (const char*)0x12345678, nullptr, 0, (const char*)0x12345678, 0);
     PRINTF(dusb_cmd_r_mode_ack, INT, nullptr);
     PRINTF(dusb_cmd_r_data_ack, INT, nullptr);
     PRINTF(dusb_cmd_r_delay_ack, INT, nullptr);
     PRINTF(dusb_cmd_s_eot, INT, nullptr);
-
     PRINTF(dusb_cmd_r_eot, INT, nullptr);
     PRINTF(dusb_cmd_s_error, INT, nullptr, 0);
-
     PRINTF(dusb_cmd_s_param_set_r_data_ack, INT, nullptr, 0, 0, (const uint8_t*)0x12345678);
 }
 
