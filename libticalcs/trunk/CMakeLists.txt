@@ -62,10 +62,17 @@ set(PUBLIC_HEADERS
         src/cmd68k.h)
 
 # external deps lookup
-pkg_check_modules(DEPS REQUIRED glib-2.0 ticonv ticables2 tifiles2)
+pkg_check_modules(DEPS REQUIRED glib-2.0 ticonv ticables2 tifiles2 zlib)
+
+try_static_libs_if_needed()
 
 # auto-creation of all targets with flags etc., alongside with internal deps
 create_targets_both_lib_types(ticalcs2 tifiles2 ticables2 ticonv)
+
+if(TRY_STATIC_LIBS)
+    find_package(BZip2 REQUIRED) # Needed for some reason
+    target_link_libraries(ticalcs2_shared ${BZIP2_LIBRARIES})
+endif()
 
 # Takes care of the i18n po/pot/gmo/mo files
 i18n_mo_from_po_pot()

@@ -36,6 +36,15 @@ message(STATUS "Detected system: ${CMAKE_SYSTEM_NAME} - host processor: ${CMAKE_
 
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 
+option(TRY_STATIC_LIBS "Build using as many static libs as possible" OFF)
+if(TRY_STATIC_LIBS)
+    if(WIN32)
+        set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
+    else()
+        set(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
+    endif()
+endif()
+
 include(GNUInstallDirs)
 include(CheckSymbolExists)
 
@@ -63,9 +72,13 @@ add_definitions(-Drestrict=__restrict)
 # i18n support checking
 include(FindGettext)
 include(FindIntl)
-if(Intl_FOUND AND GETTEXT_FOUND)
+if(0 AND Intl_FOUND AND GETTEXT_FOUND)
     set(ENABLE_NLS 1)
     add_definitions(-DENABLE_NLS=1)
+    if(TRY_STATIC_LIBS)
+        # needed by __nl_find_msg in libintl.a(dcigettext.o)...
+        find_package(Iconv REQUIRED)
+    endif()
 else()
     message(WARNING "The Intl and GetText libs are needed for translations - Only English will be available")
 endif()

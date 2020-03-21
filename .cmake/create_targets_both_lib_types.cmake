@@ -30,8 +30,16 @@ function(create_targets_both_lib_types basename)
     target_include_directories(${lib_objlib} PRIVATE src)
 
     # Link-related properties, flags...
-    link_directories(${DEPS_LIBRARY_DIRS})
-    target_link_libraries(${lib_shared} "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES} ${Intl_LIBRARIES})
+    if(TRY_STATIC_LIBS)
+        target_link_libraries(${lib_shared} ${TRY_STATIC_DEPS_LDFLAGS})
+        if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
+            target_include_directories(${lib_shared} PRIVATE ${Iconv_INCLUDE_DIRS})
+            target_link_libraries(${lib_shared} ${Iconv_LIBRARIES})
+        endif()
+    else()
+        link_directories(${DEPS_LIBRARY_DIRS})
+        target_link_libraries(${lib_shared} "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES} ${Intl_LIBRARIES})
+    endif()
 
     # Stuff to install and developer-related things
     install(TARGETS ${lib_shared} ${lib_static}
