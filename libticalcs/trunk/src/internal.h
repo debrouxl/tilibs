@@ -162,6 +162,22 @@
 			return ERR_BUSY; \
 		} \
 	} while(0);
+#define RETURN_ERR_MALLOC_IF_NULLPTR(data) \
+	if (NULL == data) \
+	{ \
+		return ERR_MALLOC; \
+	}
+#define SET_ERR_MALLOC_IF_NULLPTR(data) \
+	if (NULL == data) \
+	{ \
+		ret = ERR_MALLOC; \
+	}
+#define SET_ERR_MALLOC_AND_BREAK_IF_NULLPTR(data) \
+	if (NULL == data) \
+	{ \
+		ret = ERR_MALLOC; \
+		break; \
+	}
 
 // Used internally by functions which can be called either directly or indirectly, e.g.
 // * dbus_{send,recv,recv_header,recv_data}()

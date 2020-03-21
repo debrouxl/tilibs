@@ -216,25 +216,31 @@ typedef struct
 TIEXPORT3 const char* TICALL dusb_cmd_param_type2name(uint16_t id);
 
 // Helpers for calc params and attrs.
-TIEXPORT3 DUSBCalcParam*  TICALL dusb_cp_new(CalcHandle * handle, uint16_t id, uint16_t size);
-TIEXPORT3 DUSBCalcParam*  TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data);
-TIEXPORT3 void            TICALL dusb_cp_fill(DUSBCalcParam * cp, uint16_t id, uint16_t size, uint8_t * data);
-TIEXPORT3 void            TICALL dusb_cp_del(CalcHandle * handle, DUSBCalcParam* cp);
-TIEXPORT3 DUSBCalcParam** TICALL dusb_cp_new_array(CalcHandle * handle, unsigned int size);
-TIEXPORT3 void            TICALL dusb_cp_del_array(CalcHandle * handle, unsigned int size, DUSBCalcParam **params);
-TIEXPORT3 void *          TICALL dusb_cp_alloc_data(uint16_t size);
-TIEXPORT3 DUSBCalcParam * TICALL dusb_cp_realloc_data(DUSBCalcParam* vtl, uint16_t size);
-TIEXPORT3 void            TICALL dusb_cp_free_data(void * data);
+TIEXPORT3 DUSBCalcParam *  TICALL dusb_cp_new(CalcHandle * handle, uint16_t id, uint16_t size);
+TIEXPORT3 DUSBCalcParam *  TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data);
+TIEXPORT3 void             TICALL dusb_cp_fill(DUSBCalcParam * cp, uint16_t id, uint16_t size, uint8_t * data);
+TIEXPORT3 void             TICALL dusb_cp_del(CalcHandle * handle, DUSBCalcParam * cp);
+TIEXPORT3 DUSBCalcParam ** TICALL dusb_cp_new_array(CalcHandle * handle, unsigned int size);
+TIEXPORT3 DUSBCalcParam *  TICALL dusb_cp_new_array2(CalcHandle * handle, unsigned int size);
+TIEXPORT3 void             TICALL dusb_cp_del_array(CalcHandle * handle, DUSBCalcParam ** params, unsigned int size);
+TIEXPORT3 void             TICALL dusb_cp_del_array2(CalcHandle * handle, DUSBCalcParam * params, unsigned int size, int is_allocated);
+TIEXPORT3 void *           TICALL dusb_cp_alloc_data(CalcHandle * handle, uint16_t size);
+TIEXPORT3 DUSBCalcParam *  TICALL dusb_cp_realloc_data(CalcHandle * handle, DUSBCalcParam * cp, uint16_t size);
+TIEXPORT3 void             TICALL dusb_cp_free_data(CalcHandle * handle, void * data);
+TIEXPORT3 void             TICALL dusb_cp_free_array_data(CalcHandle * handle, DUSBCalcParam * params, unsigned int size);
 
-TIEXPORT3 DUSBCalcAttr*   TICALL dusb_ca_new(CalcHandle * handle, uint16_t id, uint16_t size);
-TIEXPORT3 DUSBCalcAttr*   TICALL dusb_ca_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data);
-TIEXPORT3 void            TICALL dusb_ca_fill(DUSBCalcAttr * ca, uint16_t id, uint16_t size, uint8_t * data);
-TIEXPORT3 void            TICALL dusb_ca_del(CalcHandle * handle, DUSBCalcAttr* cp);
-TIEXPORT3 DUSBCalcAttr**  TICALL dusb_ca_new_array(CalcHandle * handle, unsigned int size);
-TIEXPORT3 void            TICALL dusb_ca_del_array(CalcHandle * handle, unsigned int size, DUSBCalcAttr **attrs);
-TIEXPORT3 void *          TICALL dusb_ca_alloc_data(uint16_t size);
-TIEXPORT3 DUSBCalcParam * TICALL dusb_ca_realloc_data(DUSBCalcParam* vtl, uint16_t size);
-TIEXPORT3 void            TICALL dusb_ca_free_data(void * data);
+TIEXPORT3 DUSBCalcAttr  *  TICALL dusb_ca_new(CalcHandle * handle, uint16_t id, uint16_t size);
+TIEXPORT3 DUSBCalcAttr  *  TICALL dusb_ca_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data);
+TIEXPORT3 void             TICALL dusb_ca_fill(DUSBCalcAttr * ca, uint16_t id, uint16_t size, uint8_t * data);
+TIEXPORT3 void             TICALL dusb_ca_del(CalcHandle * handle, DUSBCalcAttr * ca);
+TIEXPORT3 DUSBCalcAttr  ** TICALL dusb_ca_new_array(CalcHandle * handle, unsigned int size);
+TIEXPORT3 DUSBCalcAttr  *  TICALL dusb_ca_new_array2(CalcHandle * handle, unsigned int size);
+TIEXPORT3 void             TICALL dusb_ca_del_array(CalcHandle * handle, DUSBCalcAttr ** attrs, unsigned int size);
+TIEXPORT3 void             TICALL dusb_ca_del_array2(CalcHandle * handle, DUSBCalcAttr * attrs, unsigned int size, int is_allocated);
+TIEXPORT3 void *           TICALL dusb_ca_alloc_data(CalcHandle * handle, uint16_t size);
+TIEXPORT3 DUSBCalcAttr  *  TICALL dusb_ca_realloc_data(CalcHandle * handle, DUSBCalcAttr * cp, uint16_t size);
+TIEXPORT3 void             TICALL dusb_ca_free_data(CalcHandle * handle, void * data);
+TIEXPORT3 void             TICALL dusb_ca_free_array_data(CalcHandle * handle, DUSBCalcAttr * attrs, unsigned int size);
 
 // Command wrappers
 TIEXPORT3 int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, const DUSBModeSet mode);

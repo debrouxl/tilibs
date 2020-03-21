@@ -277,7 +277,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				{
 					ret = 0;
 				}
-				dusb_ca_del_array(handle, size, attr);
+				dusb_ca_del_array(handle, attr, size);
 				break;
 			}
 
@@ -289,7 +289,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			            | (((uint32_t)(attr[0]->data[3]))      ));
 			ve->type = (uint32_t)(attr[1]->data[3]);
 			ve->attr = attr[2]->data[0] ? ATTRB_ARCHIVED : ATTRB_NONE;
-			dusb_ca_del_array(handle, size, attr);
+			dusb_ca_del_array(handle, attr, size);
 
 			node = dirlist_create_append_node(ve, (ve->type != TI73_APPL) ? &folder : &root);
 			if (!node)
@@ -332,7 +332,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 			         | (((uint32_t)(params[1]->data[7]))      ));
 		}
 	}
-	dusb_cp_del_array(handle, size, params);
+	dusb_cp_del_array(handle, params, size);
 
 	return ret;
 }
@@ -431,7 +431,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	ret = dusb_cmd_s_eot(handle);
 
  end:
-	dusb_ca_del_array(handle, nattrs, attrs);
+	dusb_ca_del_array(handle, attrs, nattrs);
 	g_free(data);
 	
 	return ret;
@@ -480,7 +480,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		}
 
 		ret = dusb_cmd_s_rts(handle, "", entry->name, size, nattrs, CA(attrs));
-		dusb_ca_del_array(handle, nattrs, attrs);
+		dusb_ca_del_array(handle, attrs, nattrs);
 		if (ret)
 		{
 			break;
@@ -536,7 +536,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
 	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
-	dusb_ca_del_array(handle, nattrs, attrs);
+	dusb_ca_del_array(handle, attrs, nattrs);
 	if (!ret)
 	{
 		attrs = dusb_ca_new_array(handle, naids);
@@ -586,7 +586,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 				g_free(data);
 			}
 		}
-		dusb_ca_del_array(handle, naids, attrs);
+		dusb_ca_del_array(handle, attrs, naids);
 	}
 
 	return ret;
@@ -673,7 +673,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	attrs[1]->data[0] = 0;
 
 	ret = dusb_cmd_s_rts(handle, "", ptr->name, size, nattrs, CA(attrs));
-	dusb_ca_del_array(handle, nattrs, attrs);
+	dusb_ca_del_array(handle, attrs, nattrs);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);
@@ -739,7 +739,7 @@ static int		send_flash_834pce	(CalcHandle* handle, FlashContent* content)
 	attrs[1]->data[0] = 1;
 
 	ret = dusb_cmd_s_rts(handle, "", ptr->name, size, nattrs, CA(attrs));
-	dusb_ca_del_array(handle, nattrs, attrs);
+	dusb_ca_del_array(handle, attrs, nattrs);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);
@@ -784,7 +784,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
 	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
-	dusb_ca_del_array(handle, nattrs, attrs);
+	dusb_ca_del_array(handle, attrs, nattrs);
 	if (!ret)
 	{
 		attrs = dusb_ca_new_array(handle, naids);
@@ -840,7 +840,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 				g_free(data);
 			}
 		}
-		dusb_ca_del_array(handle, naids, attrs);
+		dusb_ca_del_array(handle, attrs, naids);
 	}
 
 	return ret;
@@ -866,7 +866,7 @@ static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarReq
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
 	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
-	dusb_ca_del_array(handle, nattrs, attrs);
+	dusb_ca_del_array(handle, attrs, nattrs);
 	if (!ret)
 	{
 		attrs = dusb_ca_new_array(handle, naids);
@@ -888,7 +888,7 @@ static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarReq
 				// Do NOT g_free(data);
 			}
 		}
-		dusb_ca_del_array(handle, naids, attrs);
+		dusb_ca_del_array(handle, attrs, naids);
 	}
 
 	return ret;
@@ -984,11 +984,11 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		ret = dusb_cmd_r_param_data(handle, size, params);
 		if (ret)
 		{
-			dusb_cp_del_array(handle, size, params);
+			dusb_cp_del_array(handle, params, size);
 			break;
 		}
 		boot = !params[0]->data[0];
-		dusb_cp_del_array(handle, size, params);
+		dusb_cp_del_array(handle, params, size);
 
 		// start OS transfer
 		ret = dusb_cmd_s_os_begin(handle, os_size);
@@ -1246,7 +1246,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI83p_IDLIST;
 
 	ret = dusb_cmd_s_var_request(handle, "", "IDList", naids, aids, nattrs, CA(attrs));
-	dusb_ca_del_array(handle, nattrs, attrs);
+	dusb_ca_del_array(handle, attrs, nattrs);
 	if (!ret)
 	{
 		attrs = dusb_ca_new_array(handle, naids);
@@ -1269,7 +1269,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 				g_free(data);
 			}
 		}
-		dusb_ca_del_array(handle, naids, attrs);
+		dusb_ca_del_array(handle, attrs, naids);
 	}
 
 	return ret;
@@ -1506,7 +1506,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 			}
 		}
 	}
-	dusb_cp_del_array(handle, size, params);
+	dusb_cp_del_array(handle, params, size);
 
 	return ret;
 }
@@ -1629,7 +1629,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 			}
 		}
 	}
-	dusb_cp_del_array(handle, size, params);
+	dusb_cp_del_array(handle, params, size);
 
 	return ret;
 }
@@ -1652,7 +1652,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
 
 	ret = dusb_cmd_s_var_delete(handle, "", vr->name, size, CA(attr));
-	dusb_ca_del_array(handle, size, attr);
+	dusb_ca_del_array(handle, attr, size);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);
@@ -1673,7 +1673,7 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = oldname->type;
 
 	ret = dusb_cmd_s_var_modify(handle, "", oldname->name, 1, CA(attrs), "", newname->name, 0, NULL);
-	dusb_ca_del_array(handle, size, attrs);
+	dusb_ca_del_array(handle, attrs, size);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);
@@ -1699,8 +1699,8 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 	dstattrs[0]->data[0] = (attr == ATTRB_ARCHIVED ? 0xff : 0x00);
 
 	ret = dusb_cmd_s_var_modify(handle, "", vr->name, 1, CA(srcattrs), "", vr->name, 1, CA(dstattrs));
-	dusb_ca_del_array(handle, 1, dstattrs);
-	dusb_ca_del_array(handle, 1, srcattrs);
+	dusb_ca_del_array(handle, dstattrs, 1);
+	dusb_ca_del_array(handle, srcattrs, 1);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);
@@ -2045,7 +2045,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->mask = (InfosMask)infos_mask;
 		}
 	}
-	dusb_cp_del_array(handle, size, params);
+	dusb_cp_del_array(handle, params, size);
 
 	return ret;
 }
