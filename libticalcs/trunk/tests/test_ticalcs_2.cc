@@ -2128,9 +2128,9 @@ static int dusb_get_param_ids(CalcHandle * h, int, char *)
 	{
 		if ((length & 1) == 0)
 		{
-			DUSBCalcParam **params;
+			DUSBCalcParam *params;
 
-			params = dusb_cp_new_array(h, length / 2);
+			params = dusb_cp_new_array2(h, length / 2);
 			ret = dusb_cmd_s_param_request(h, length / 2, (uint16_t *)pktdata2);
 			if (!ret)
 			{
@@ -2139,12 +2139,12 @@ static int dusb_get_param_ids(CalcHandle * h, int, char *)
 				{
 					for (uint32_t i = 0; i < length / 2; i++)
 					{
-						printf("%04X\t%s\t%04X (%u)\n\t\t", params[i]->id, params[i]->ok ? "OK" : "NOK", params[i]->size, params[i]->size);
-						if (params[i]->ok && params[i]->size > 0 && params[i]->data != NULL)
+						printf("%04X\t%s\t%04X (%u)\n\t\t", params[i].id, params[i].ok ? "OK" : "NOK", params[i].size, params[i].size);
+						if (params[i].ok && params[i].size > 0 && params[i].data != NULL)
 						{
 							uint16_t j;
-							uint8_t * ptr = params[i]->data;
-							for (j = 0; j < params[i]->size;)
+							uint8_t * ptr = params[i].data;
+							for (j = 0; j < params[i].size;)
 							{
 								printf("%02X ", *ptr++);
 								if (!(++j & 15))
@@ -2157,7 +2157,7 @@ static int dusb_get_param_ids(CalcHandle * h, int, char *)
 					}
 				}
 			}
-			dusb_cp_del_array(h, length / 2, params);
+			dusb_cp_del_array2(h, params, length / 2, 1);
 		}
 		else
 		{
@@ -2185,19 +2185,13 @@ static int dusb_set_param_id(CalcHandle * h, int, char * input)
 	ret = get_hex_input(inbuf, sizeof(inbuf), pktdata2, sizeof(pktdata2), &length, "raw data", xstr(INBUF_DATA_SIZE));
 	if (!ret)
 	{
-		DUSBCalcParam *param;
-		uint8_t * data = (uint8_t *)dusb_cp_alloc_data(2048);
-
-		param = dusb_cp_new_ex(h, param_id, length, data);
-		ret = dusb_cmd_s_param_set(h, param);
-		dusb_cp_del(h, param);
+		DUSBCalcParam param { (uint16_t)param_id, 0, (uint16_t)length, pktdata2 };
+		ret = dusb_cmd_s_param_set(h, &param);
 
 		if (!ret)
 		{
 			ret = dusb_cmd_r_data_ack(h);
 		}
-
-		dusb_cp_free_data(data);
 	}
 	else
 	{
