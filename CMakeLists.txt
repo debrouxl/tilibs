@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.9)
 
 project(tilibs C CXX)
 
@@ -33,6 +33,8 @@ project(tilibs C CXX)
 set(USED_CMAKE_GENERATOR "${CMAKE_GENERATOR}" CACHE STRING "Expose CMAKE_GENERATOR" FORCE)
 
 message(STATUS "Detected system: ${CMAKE_SYSTEM_NAME} - host processor: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
+
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 include(GNUInstallDirs)
 include(CheckSymbolExists)
