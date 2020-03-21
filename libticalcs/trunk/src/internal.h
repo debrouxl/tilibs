@@ -479,9 +479,6 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 
 // dusb_cmd.c
 
-#define CA(x)   (const DUSBCalcAttr **)(x)
-#define CP(x)   (const DUSBCalcParam **)(x)
-
 #define VALIDATE_ATTRS(nattrs, attrs) \
 	if (nattrs != 0 && attrs == NULL) \
 	{ \
