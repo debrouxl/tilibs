@@ -26,6 +26,8 @@ set(PUBLIC_HEADERS
 pkg_check_modules(DEPS REQUIRED glib-2.0)
 find_package(Iconv REQUIRED)
 
+try_static_libs_if_needed()
+
 # auto-creation of all targets with flags etc., alongside with internal deps
 create_targets_both_lib_types(ticonv)
 

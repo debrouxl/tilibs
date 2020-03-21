@@ -41,6 +41,8 @@ set(PUBLIC_HEADERS
 # external deps lookup
 pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16)
 
+try_static_libs_if_needed()
+
 # auto-creation of all targets with flags etc., alongside with internal deps
 create_targets_both_lib_types(ticables2)
 
