@@ -72,7 +72,7 @@ add_definitions(-Drestrict=__restrict)
 # i18n support checking
 include(FindGettext)
 include(FindIntl)
-if(0 AND Intl_FOUND AND GETTEXT_FOUND)
+if(Intl_FOUND AND GETTEXT_FOUND)
     set(ENABLE_NLS 1)
     add_definitions(-DENABLE_NLS=1)
     if(TRY_STATIC_LIBS)

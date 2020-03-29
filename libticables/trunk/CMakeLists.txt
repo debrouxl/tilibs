@@ -47,8 +47,10 @@ try_static_libs_if_needed()
 create_targets_both_lib_types(ticables2)
 
 # Takes care of the i18n po/pot/gmo/mo files
-i18n_mo_from_po_pot()
-add_dependencies(ticables2_objlib potfiles_2)
+if(ENABLE_NLS)
+    i18n_mo_from_po_pot()
+    add_dependencies(ticables2_objlib potfiles_2)
+endif()
 
 # additional internal defines
 target_compile_definitions(ticables2_objlib PUBLIC HAVE_LIBUSB_1_0=1 HAVE_LIBUSB10_STRERROR=1 HAVE_TERMIOS_H=1)
