@@ -27,7 +27,7 @@ macro B_CALL, arg
     dw arg
 endm
 
-if defined TI84P
+if ! defined TI84PC
 _LdHLind         equ 4009h
 _cphlde          equ 400Ch
 _PutC            equ 4504h
@@ -156,17 +156,23 @@ outputBuffer    equ appBackUpScreen+2
 org userMem-2
 if defined TI84P
         db 0BBh,6Dh
+        B_CALL _runIndicOff
 endif
 if defined TI84PC
         db 0EFh,69h
         res appTextSave,(iy+appFlags)
         ld a,1
         out (20h),a
-endif
         B_CALL _runIndicOff
+endif
+if defined TI82A
+; ION-style header for CalcUtil
+        xor a
+        db 00h,00h
+endif
 ; Unlock Flash, if possible.
 ; The purpose is to get an accurate dump of the certificate page (page 3Eh/7Eh).
-if defined TI84P
+if defined TI84P || defined TI82A
         in a,(6)
         push af
         call Unlock
@@ -873,7 +879,7 @@ endReceive:
 
 ;----------------------------------------------------------------------------
 
-if defined TI84P
+if defined TI84P || defined TI82A
 
 ;;; Table of supported OS and boot code versions
 VersionTable:
