@@ -89,7 +89,10 @@ rom84p.h: romdump_84p_usb/dump84p.8xp $(tf2hex)
 rom84pcu.h: romdump_84p_usb/dump84pcu.8xp $(tf2hex)
 	$(tf2hex) romdump_84p_usb/dump84pcu.8xp $(srcdir)/rom84pcu.h 84pcu
 
-romdump_84p_usb/dump84p.8xp romdump_84p_usb/dump84pcu.8xp:
+rom82a.h: romdump_84p_usb/dump82a.8xp $(tf2hex)
+	$(tf2hex) romdump_84p_usb/dump82a.8xp $(srcdir)/rom82a.h 82a
+
+romdump_84p_usb/dump84p.8xp romdump_84p_usb/dump84pcu.8xp romdump_84p_usb/dump82a.8xp:
 	cd romdump_84p_usb && $(MAKE)
 
 rom834pceu.h: romdump_834pce_usb/dump834pceu.8xp $(tf2hex)

@@ -156,14 +156,20 @@ outputBuffer    equ appBackUpScreen+2
 org userMem-2
 if defined TI84P
         db 0BBh,6Dh
+        B_CALL _runIndicOff
 endif
 if defined TI84PC
         db 0EFh,69h
         res appTextSave,(iy+appFlags)
         ld a,1
         out (20h),a
-endif
         B_CALL _runIndicOff
+endif
+if defined TI82A
+; ION-style header for CalcUtil
+        xor a,a
+        db 00h,00h
+endif
 ; Unlock Flash, if possible.
 ; The purpose is to get an accurate dump of the certificate page (page 3Eh/7Eh).
 if defined TI84P

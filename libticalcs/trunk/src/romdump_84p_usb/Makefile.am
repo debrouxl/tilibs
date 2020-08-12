@@ -14,8 +14,14 @@ dump84p.bin: romdump.z80
 dump84pcu.bin: romdump.z80
 	$(PASMO) $(PASMOFLAGS) -E TI84PC $(srcdir)/romdump.z80 dump84pcu.bin
 
+dump82a.bin: romdump.z80
+	$(PASMO) $(PASMOFLAGS) -E TI82A $(srcdir)/romdump.z80 dump82a.bin
+
 dump84p.8xp: dump84p.bin
 	$(TIPACK) -n 'ROMDUMP' dump84p.bin -p -o dump84p.8xp
 
 dump84pcu.8xp: dump84pcu.bin
 	$(TIPACK) -n 'ROMDUMP' dump84pcu.bin -p -o dump84pcu.8xp
+
+dump82a.8xp: dump82a.bin
+	$(TIPACK) -n 'ROMDUMP' dump82a.bin -p -o dump82a.8xp
