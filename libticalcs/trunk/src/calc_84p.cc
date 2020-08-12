@@ -43,6 +43,7 @@
 #include "dusb_cmd.h"
 #include "rom84p.h"
 #include "rom84pcu.h"
+#include "rom82a.h"
 #include "rom834pceu.h"
 #include "romdump.h"
 #include "keys83p.h"
@@ -1293,6 +1294,10 @@ static int		dump_rom_1	(CalcHandle* handle)
 		{
 			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize84pcu, romDump84pcu);
 		}
+		else if (infos.model == CALC_TI82A_USB)
+		{
+			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize82a, romDump82a);
+		}
 		else if (infos.model == CALC_TI84PCE_USB || infos.model == CALC_TI83PCE_USB)
 		{
 			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize834pceu, romDump834pceu);
@@ -2336,7 +2341,7 @@ extern const CalcFncts calc_82a_usb =
 	"TI-82 Advanced",
 	N_("TI-82 Advanced thru DirectLink"),
 	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | /*OPS_FLASH |*/ OPS_OS |
-	OPS_IDLIST | /*OPS_ROMDUMP |*/ OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
+	OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
 	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	PRODUCT_ID_TI82A,

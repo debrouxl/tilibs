@@ -103,11 +103,17 @@ rom84p.h: romdump_84p_usb/dump84p.8xp
 rom84pcu.h: romdump_84p_usb/dump84pcu.8xp
 	$(TIFILEUTIL) dump -f chexarray romdump_84p_usb/dump84pcu.8xp -o $(srcdir)/rom84pcu.h -n romDump84pcu -s romDumpSize84pcu -c 8 -m 64
 
+rom82a.h: romdump_84p_usb/dump82a.8xp $(tf2hex)
+	$(TIFILEUTIL) dump -f chexarray romdump_84p_usb/dump82a.8xp -o $(srcdir)/rom82a.h -n romDump82a -s romDumpSize82a -c 8 -m 64
+
 romdump_84p_usb/dump84p.8xp:
 	cd romdump_84p_usb && $(MAKE) dump84p.8xp
 
 romdump_84p_usb/dump84pcu.8xp:
 	cd romdump_84p_usb && $(MAKE) dump84pcu.8xp
+
+romdump_84p_usb/dump82a.8xp:
+	cd romdump_84p_usb && $(MAKE) dump82a.8xp
 
 rom834pceu.h: romdump_834pce_usb/dump834pceu.8xp
 	$(TIFILEUTIL) dump -f chexarray romdump_834pce_usb/dump834pceu.8xp -o $(srcdir)/rom834pceu.h -n romDump834pceu -s romDumpSize834pceu -c 8 -m 64
