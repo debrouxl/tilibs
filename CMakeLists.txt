@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.9)
 
 project(tilibs C CXX)
 
-#########################################
-# Experimental CMake support for tilibs #
-#########################################
+############################
+# CMake support for tilibs #
+############################
 #
 # This aims to provide a much simpler way to build and install libti* on
 # computers that have decent and recent OS and toolchains.
@@ -21,6 +21,13 @@ project(tilibs C CXX)
 #   - not all the autotools/configure options are available
 #   - no updatepot/updatepo targets are available, but simply executing intltool-update does the job...
 #   - probably doesn't work very well with ancient toolchains or on uncommon OSes
+#
+# Notes:
+#   - this has been succesfully tested on recent macOS and Linux.
+#   - The TRY_STATIC_LIBS CMake option will try to build the libs (both shared and static) using as many static
+#     dependent libraries as possible.
+#     Let's note however that there is currently not much advantage in building that way, using shared libs is preferred,
+#     but at least you have the choice to do whatever you want should you ever really need a static build.
 #
 # In the future...:
 #   - TODO: add support to build tifileutil
