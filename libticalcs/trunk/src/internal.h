@@ -163,6 +163,24 @@
 		} \
 	} while(0);
 
+// Used internally by functions which can be called either directly or indirectly, e.g.
+// * dbus_{send,recv,recv_header,recv_data}()
+// * dusb_{send,recv}()
+// * nsp_{send,recv}()
+// * rd_{dump,is_ready}()
+// * several other direct or indirect callers of ticables_cable_{send,recv}().
+#define SET_HANDLE_BUSY_IF_NECESSARY(handle) \
+	int busy = handle->busy; \
+	if (!busy) \
+	{ \
+		handle->busy = 1; \
+	}
+#define CLEAR_HANDLE_BUSY_IF_NECESSARY(handle) \
+	if (!busy) \
+	{ \
+		handle->busy = 0; \
+	}
+
 static inline int ticalcs_validate_handle(CalcHandle * handle)
 {
 	return handle != NULL;
@@ -409,6 +427,11 @@ int noop_rename_var (CalcHandle* handle, VarRequest* oldname, VarRequest* newnam
 int noop_change_attr (CalcHandle* handle, VarRequest* vr, FileAttr attr);
 int noop_send_all_vars_backup (CalcHandle* handle, FileContent* content);
 int noop_recv_all_vars_backup (CalcHandle* handle, FileContent* content);
+
+
+// calc_xx.c
+
+int ticalcs_calc_send_var2_(CalcHandle* handle, CalcMode mode, const char* filename, int take_busy);
 
 
 // cmdz80.c

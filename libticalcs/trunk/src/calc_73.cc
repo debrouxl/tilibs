@@ -1143,7 +1143,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 	// Send dumping program
 	if (handle->model == CALC_TI73)
 	{
-		return rd_send(handle, "romdump.73p", romDumpSize73, romDump73);
+		return rd_send_dumper(handle, "romdump.73p", romDumpSize73, romDump73);
 	}
 	else
 	{
@@ -1154,11 +1154,11 @@ static int		dump_rom_1	(CalcHandle* handle)
 		{
 			if (infos.hw_version < 5)
 			{
-				ret = rd_send(handle, "romdump.8Xp", romDumpSize8Xp, romDump8Xp);
+				ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize8Xp, romDump8Xp);
 			}
 			else
 			{
-				ret = rd_send(handle, "romdump.8Xp", romDumpSize84pc, romDump84pc);
+				ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize84pc, romDump84pc);
 			}
 		}
 
@@ -1218,7 +1218,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 				// Get dump
 				// (Normally there would be another ACK after the program exits,
 				// but the ROM dumper disables that behavior)
-				ret = rd_dump(handle, filename);
+				ret = rd_read_dump(handle, filename);
 			}
 		}
 	}
@@ -1584,6 +1584,7 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 		ret = RECV_ACK(handle, NULL);
 		if (!ret)
 		{
+			// No need to take busy around this libticables call, it's already been taken by ticalcs_calc_recv_cert() before this is reached.
 			ret = ticables_cable_recv(handle->cable, buf, 4);	//VAR w/ no header
 			if (!ret)
 			{

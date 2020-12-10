@@ -201,6 +201,8 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 		return ERR_INVALID_HANDLE;
 	}
 
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	ticables_progress_reset(handle->cable);
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_DBUS_PKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
@@ -312,6 +314,8 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 	ticalcs_event_fill_dbus_pkt(&event, /* length */ length, /* id */ target, /* cmd */ cmd, /* data */ data);
 	ret = ticalcs_event_send(handle, &event);
 
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	return ret;
 }
 
@@ -325,6 +329,8 @@ TIEXPORT3 int TICALL dbus_recv_header(CalcHandle *handle, uint8_t* host, uint8_t
 	VALIDATE_NONNULL(host);
 	VALIDATE_NONNULL(cmd);
 	VALIDATE_NONNULL(length);
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_DBUS_PKT_HEADER, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_dbus_pkt(&event, /* length */ 0, /* id */ 0, /* cmd */ 0, /* data */ NULL);
@@ -359,6 +365,8 @@ TIEXPORT3 int TICALL dbus_recv_header(CalcHandle *handle, uint8_t* host, uint8_t
 	ticalcs_event_fill_dbus_pkt(&event, /* length */ *length, /* id */ *host, /* cmd */ *cmd, /* data */ NULL);
 	ret = ticalcs_event_send(handle, &event);
 
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	return ret;
 }
 
@@ -374,6 +382,8 @@ TIEXPORT3 int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(length);
 	VALIDATE_NONNULL(data);
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_DBUS_PKT_DATA, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_dbus_pkt(&event, /* length */ *length, /* id */ 0, /* cmd */ 0, /* data */ data);
@@ -457,6 +467,8 @@ TIEXPORT3 int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_
 	ticalcs_event_fill_dbus_pkt(&event, /* length */ *length, /* id */ 0, /* cmd */ 0, /* data */ data);
 	ret = ticalcs_event_send(handle, &event);
 
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	return ret;
 }
 
@@ -473,46 +485,58 @@ TIEXPORT3 int TICALL dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, 
 	static int ref = 0;
 	int ret;
 
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(host);
+	VALIDATE_NONNULL(cmd);
+	VALIDATE_NONNULL(length);
+
+	// Subroutines don't take busy if it's already taken.
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	ret = dbus_recv_header(handle, host, cmd, length);
 	if (!ret)
 	{
 		if (*cmd == DBUS_CMD_ERR || *cmd == DBUS_CMD_ERR2)
 		{
-			return ERR_CHECKSUM; // THIS RETURNS !
+			ret = ERR_CHECKSUM;
 		}
-
-		switch (*cmd)
+		else
 		{
-		case DBUS_CMD_VAR:	// std packet ( data + checksum)
-		case DBUS_CMD_XDP:
-		case DBUS_CMD_SKP:
-		case DBUS_CMD_SID:
-		case DBUS_CMD_REQ:
-		case DBUS_CMD_IND:
-		case DBUS_CMD_RTS:
-			ret = dbus_recv_data(handle, length, data);
-			break;
-		case DBUS_CMD_CTS:	// short packet (no data)
-		case DBUS_CMD_ACK:
-		case DBUS_CMD_ERR:
-		case DBUS_CMD_ERR2:
-		case DBUS_CMD_RDY:
-		case DBUS_CMD_SCR:
-		case DBUS_CMD_RID:
-		case DBUS_CMD_KEY:
-		case DBUS_CMD_EOT:
-		case DBUS_CMD_CNT:
-			break;
-		default:
-			return ERR_INVALID_CMD; // THIS RETURNS !
-		}
+			switch (*cmd)
+			{
+			case DBUS_CMD_VAR:	// std packet ( data + checksum)
+			case DBUS_CMD_XDP:
+			case DBUS_CMD_SKP:
+			case DBUS_CMD_SID:
+			case DBUS_CMD_REQ:
+			case DBUS_CMD_IND:
+			case DBUS_CMD_RTS:
+				ret = dbus_recv_data(handle, length, data);
+				break;
+			case DBUS_CMD_CTS:	// short packet (no data)
+			case DBUS_CMD_ACK:
+			case DBUS_CMD_ERR:
+			case DBUS_CMD_ERR2:
+			case DBUS_CMD_RDY:
+			case DBUS_CMD_SCR:
+			case DBUS_CMD_RID:
+			case DBUS_CMD_KEY:
+			case DBUS_CMD_EOT:
+			case DBUS_CMD_CNT:
+				break;
+			default:
+				return ERR_INVALID_CMD; // THIS RETURNS !
+			}
 
-		if (!ret && !(ref++ % 4))
-		{
-			// force periodic refresh
-			handle->updat->refresh();
+			if (!ret && !(ref++ % 4))
+			{
+				// force periodic refresh
+				handle->updat->refresh();
+			}
 		}
 	}
+
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	return ret;
 }
