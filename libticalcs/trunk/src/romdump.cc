@@ -82,7 +82,7 @@ static int send_pkt(CalcHandle* handle, uint16_t cmd, uint16_t len, uint8_t* dat
 
 	if (!ret)
 	{
-		ret = ticables_cable_send(handle->cable, buf, len+6);
+		ret = ticables_cable_send(handle->cable, buf, len + 6);
 	}
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_SEND_ROMDUMP_PKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
@@ -321,7 +321,7 @@ static int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 
 // --- Dumping Layer
 
-int rd_dump(CalcHandle* handle, const char *filename)
+TIEXPORT3 int TICALL rd_read_dump(CalcHandle* handle, const char *filename)
 {
 	FILE *f;
 	int ret = 0;
@@ -332,6 +332,7 @@ int rd_dump(CalcHandle* handle, const char *filename)
 	uint8_t * data;
 
 	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
 
 	data = (uint8_t *)handle->buffer;
 
@@ -340,6 +341,8 @@ int rd_dump(CalcHandle* handle, const char *filename)
 	{
 		return ERR_OPEN_FILE;
 	}
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ticalcs_strlcpy(handle->updat->text, "Receiving data...", sizeof(handle->updat->text));
 	ticalcs_update_label(handle);
@@ -459,29 +462,47 @@ exit:
 		PAUSE(1000);
 	}
 
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	return ret;
 }
 
-int rd_is_ready(CalcHandle* handle)
+TIEXPORT3 int TICALL rd_is_ready(CalcHandle* handle)
 {
 	int ret;
 
 	VALIDATE_HANDLE(handle);
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ret = rom_send_RDY(handle);
 	if (!ret)
 	{
 		ret = rom_recv_RDY(handle);
 	}
+
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	return ret;
 }
 
-int rd_send(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *data)
+TIEXPORT3 int TICALL rd_send_dumper(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *data)
 {
 	char *templatename, *tempfname;
 	int fd, ret;
 
 	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(prgname);
+	VALIDATE_NONNULL(data);
+
+	if (size < 64)
+	{
+		// File too short.
+		return ERR_INVALID_PARAMETER;
+	}
+
+	// busy will be taken adequately by the subroutines.
+
 	/* Write ROM dumper to a temporary file (note that the file must have
 	   the correct suffix or tifiles_file_read_regular will be
 	   confused) */
@@ -499,9 +520,8 @@ int rd_send(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *dat
 	close(fd);
 	if (ret == size)
 	{
-		// Transfer program to calc
-		handle->busy = 0;
-		ret = ticalcs_calc_send_var2(handle, MODE_SEND_EXEC_ASM, tempfname);
+		// Transfer program to calc, using special internal API, taking busy if it's not taken.
+		ret = ticalcs_calc_send_var2_(handle, MODE_SEND_EXEC_ASM, tempfname, !handle->busy);
 	}
 	else
 	{
@@ -512,5 +532,20 @@ int rd_send(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *dat
 	g_free(tempfname);
 
 end:
+	return ret;
+}
+
+TIEXPORT3 int TICALL rd_send_dumper2(CalcHandle *handle, const char *filename)
+{
+	int ret;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
+
+	// busy will be taken adequately by the subroutines.
+
+	// Transfer program to calc, using special internal API, taking busy if it's not taken.
+	ret = ticalcs_calc_send_var2_(handle, MODE_SEND_EXEC_ASM, filename, !handle->busy);
+
 	return ret;
 }

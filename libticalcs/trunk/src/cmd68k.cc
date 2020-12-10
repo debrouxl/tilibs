@@ -179,12 +179,32 @@ TIEXPORT3 int TICALL ti68k_send_CNT(CalcHandle* handle, uint8_t target)
 
 TIEXPORT3 int TICALL ti68k_send_KEY(CalcHandle* handle, uint16_t scancode, uint8_t target)
 {
+	int ret;
 	uint8_t buf[4] = { target, DBUS_CMD_KEY, LSB(scancode), MSB(scancode) };
+	CalcEventData event;
 
 	VALIDATE_HANDLE(handle);
 
 	ticalcs_info(" PC->TI: KEY");
-	return ticables_cable_send(handle->cable, buf, 4);
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_DBUS_PKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ scancode, /* id */ target, /* cmd */ DBUS_CMD_KEY, /* data */ NULL);
+	ret = ticalcs_event_send(handle, &event);
+
+	if (!ret)
+	{
+		ret = ticables_cable_send(handle->cable, buf, 4);
+	}
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_SEND_DBUS_PKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ scancode, /* id */ target, /* cmd */ DBUS_CMD_KEY, /* data */ NULL);
+	ret = ticalcs_event_send(handle, &event);
+
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
+
+	return ret;
 }
 
 TIEXPORT3 int TICALL ti68k_send_EOT(CalcHandle* handle, uint8_t target)

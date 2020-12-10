@@ -790,7 +790,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 		if (!ret)
 		{
 			// Send dumping program
-			ret = rd_send(handle, "romdump.89z", romDumpSize89t, romDump89t);
+			ret = rd_send_dumper(handle, "romdump.89z", romDumpSize89t, romDump89t);
 			PAUSE(1000);
 		}
 	}
@@ -809,7 +809,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 		if (!ret)
 		{
 			// Get dump
-			ret = rd_dump(handle, filename);
+			ret = rd_read_dump(handle, filename);
 		}
 	}
 
