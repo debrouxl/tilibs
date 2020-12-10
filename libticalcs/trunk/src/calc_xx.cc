@@ -494,17 +494,8 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent*
 	return ret;
 }
 
-/**
- * ticalcs_calc_send_var:
- * @handle: a previously allocated handle
- * @mode: to document
- * @content: file content to send
- *
- * Send one or more variables (silent mode).
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode, FileContent* content)
+// ticalcs_calc_send_var_: core of ticalcs_calc_send_var, the take_busy argument enables avoiding playing games with handle->busy in rd_send_dumper() / rd_send_dumper2().
+static int ticalcs_calc_send_var_(CalcHandle* handle, CalcMode mode, FileContent* content, int take_busy)
 {
 	const CalcFncts *calc;
 	int ret = 0;
@@ -518,10 +509,15 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode, Fi
 
 	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
-	RETURN_IF_HANDLE_BUSY(handle);
+
+	if (take_busy)
+	{
+		RETURN_IF_HANDLE_BUSY(handle);
+		handle->busy = 1;
+	}
 
 	ticalcs_info("%s", _("Sending one or more variables:"));
-	handle->busy = 1;
+
 	if (calc->send_var)
 	{
 		CalcEventData event;
@@ -536,9 +532,28 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode, Fi
 		event.data.ptrval = (void *)content;
 		ret = ticalcs_event_send(handle, &event);
 	}
-	handle->busy = 0;
+
+	if (take_busy)
+	{
+		handle->busy = 0;
+	}
 
 	return ret;
+}
+
+/**
+ * ticalcs_calc_send_var:
+ * @handle: a previously allocated handle
+ * @mode: to document
+ * @content: file content to send
+ *
+ * Send one or more variables (silent mode).
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode, FileContent* content)
+{
+	return ticalcs_calc_send_var_(handle, mode, content, 1);
 }
 
 /**
@@ -1553,6 +1568,34 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *f
 	return ret;
 }
 
+// ticalcs_calc_send_var2_: core of ticalcs_calc_send_var2, the take_busy argument enables avoiding playing games with handle->busy in rd_send_dumper() / rd_send_dumper2().
+int ticalcs_calc_send_var2_(CalcHandle* handle, CalcMode mode, const char* filename, int take_busy)
+{
+	FileContent *content;
+	int ret;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	if (take_busy)
+	{
+		RETURN_IF_HANDLE_BUSY(handle);
+	}
+
+	content = tifiles_content_create_regular(handle->model);
+	ret = tifiles_file_read_regular(filename, content);
+	if (!ret)
+	{
+		ret = ticalcs_calc_send_var_(handle, mode, content, take_busy);
+		tifiles_content_delete_regular(content);
+	}
+	// content is destroyed by the functions behind tifiles_file_read_regular() if an error occurs.
+
+	return ret;
+}
+
 /**
  * ticalcs_calc_send_var2:
  * @handle: a previously allocated handle
@@ -1565,26 +1608,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *f
  **/
 TIEXPORT3 int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode, const char* filename)
 {
-	FileContent *content;
-	int ret;
-
-	VALIDATE_HANDLE(handle);
-	VALIDATE_NONNULL(filename);
-
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
-	RETURN_IF_HANDLE_NOT_OPEN(handle);
-	RETURN_IF_HANDLE_BUSY(handle);
-
-	content = tifiles_content_create_regular(handle->model);
-	ret = tifiles_file_read_regular(filename, content);
-	if (!ret)
-	{
-		ret = ticalcs_calc_send_var(handle, mode, content);
-		tifiles_content_delete_regular(content);
-	}
-	// content is destroyed by the functions behind tifiles_file_read_regular() if an error occurs.
-
-	return ret;
+	return ticalcs_calc_send_var2_(handle, mode, filename, 1);
 }
 
 /**

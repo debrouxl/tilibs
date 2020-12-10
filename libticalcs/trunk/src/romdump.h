@@ -19,11 +19,22 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef __ROMDUMP_H__
-#define __ROMDUMP_H__
+// /!\ NOTE: for this file, backwards compatibility will not necessarily be maintained as strongly as it is for ticalcs.h !
 
-int rd_dump(CalcHandle* handle, const char *filename);
-int rd_is_ready(CalcHandle* handle);
-int rd_send(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *data);
+#ifndef __TICALCS_ROMDUMP_H__
+#define __TICALCS_ROMDUMP_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+TIEXPORT3 int TICALL rd_send_dumper(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *data);
+TIEXPORT3 int TICALL rd_send_dumper2(CalcHandle *handle, const char *filename);
+TIEXPORT3 int TICALL rd_is_ready(CalcHandle* handle);
+TIEXPORT3 int TICALL rd_read_dump(CalcHandle* handle, const char *filename);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

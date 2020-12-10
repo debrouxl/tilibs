@@ -198,6 +198,8 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(pkt);
 
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_NSP_RPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_nsp_rpkt(&event, /* src_addr */ pkt->src_addr, /* src_port */ pkt->src_port, /* dst_addr */ pkt->dst_addr, /* dst_port */ pkt->dst_port,
 	                            /* data_sum */ pkt->data_sum, /* data_size */ pkt->data_size, /* ack */ pkt->ack, /* seq */ pkt->seq, /* hdr_sum */ pkt->hdr_sum, /* data */ pkt->data);
@@ -270,6 +272,8 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 	                            /* data_sum */ pkt->data_sum, /* data_size */ pkt->data_size, /* ack */ pkt->ack, /* seq */ pkt->seq, /* hdr_sum */ pkt->hdr_sum, /* data */ pkt->data);
 	ret = ticalcs_event_send(handle, &event);
 
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	return ret;
 }
 
@@ -281,6 +285,8 @@ TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(pkt);
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_NSP_RPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_nsp_rpkt(&event, /* src_addr */ 0, /* src_port */ 0, /* dst_addr */ 0, /* dst_port */ 0,
@@ -350,6 +356,8 @@ TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 	ticalcs_event_fill_nsp_rpkt(&event, /* src_addr */ pkt->src_addr, /* src_port */ pkt->src_port, /* dst_addr */ pkt->dst_addr, /* dst_port */ pkt->dst_port,
 	                            /* data_sum */ pkt->data_sum, /* data_size */ pkt->data_size, /* ack */ pkt->ack, /* seq */ pkt->seq, /* hdr_sum */ pkt->hdr_sum, /* data */ pkt->data);
 	ret = ticalcs_event_send(handle, &event);
+
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	return ret;
 }

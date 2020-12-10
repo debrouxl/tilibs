@@ -1287,15 +1287,15 @@ static int		dump_rom_1	(CalcHandle* handle)
 		PAUSE(100);
 		if (infos.model == CALC_TI84P_USB)
 		{
-			ret = rd_send(handle, "romdump.8Xp", romDumpSize84p, romDump84p);
+			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize84p, romDump84p);
 		}
 		else if (infos.model == CALC_TI84PC_USB)
 		{
-			ret = rd_send(handle, "romdump.8Xp", romDumpSize84pcu, romDump84pcu);
+			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize84pcu, romDump84pcu);
 		}
 		else if (infos.model == CALC_TI84PCE_USB || infos.model == CALC_TI83PCE_USB)
 		{
-			ret = rd_send(handle, "romdump.8Xp", romDumpSize834pceu, romDump834pceu);
+			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize834pceu, romDump834pceu);
 		}
 		else
 		{
@@ -1353,7 +1353,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 			PAUSE(3000);
 
 			// Get dump
-			ret = rd_dump(handle, filename);
+			ret = rd_read_dump(handle, filename);
 		}
 	}
 
