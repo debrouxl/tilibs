@@ -75,6 +75,8 @@ TIEXPORT3 int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(pkt);
 
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_DUSB_RPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_dusb_rpkt(&event, /* size */ pkt->size, /* type */ pkt->type, /* data */ pkt->data);
 	ret = ticalcs_event_send(handle, &event);
@@ -117,6 +119,8 @@ TIEXPORT3 int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 	ticalcs_event_fill_dusb_rpkt(&event, /* size */ pkt->size, /* type */ pkt->type, /* data */ pkt->data);
 	ret = ticalcs_event_send(handle, &event);
 
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	return ret;
 }
 
@@ -128,6 +132,8 @@ TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(pkt);
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_DUSB_RPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_dusb_rpkt(&event, /* size */ 0, /* type */ 0, /* data */ pkt->data);
@@ -189,6 +195,8 @@ TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_RECV_DUSB_RPKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_dusb_rpkt(&event, /* size */ pkt->size, /* type */ pkt->type, /* data */ pkt->data);
 	ret = ticalcs_event_send(handle, &event);
+
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	return ret;
 }

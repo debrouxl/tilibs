@@ -1584,6 +1584,7 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 		ret = RECV_ACK(handle, NULL);
 		if (!ret)
 		{
+			// No need to take busy around this libticables call, it's already been taken by ticalcs_calc_recv_cert() before this is reached.
 			ret = ticables_cable_recv(handle->cable, buf, 4);	//VAR w/ no header
 			if (!ret)
 			{

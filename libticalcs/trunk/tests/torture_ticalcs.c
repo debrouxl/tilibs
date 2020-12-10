@@ -9,6 +9,7 @@
 #include <dusb_cmd.h>
 #include <cmdz80.h>
 #include <cmd68k.h>
+#include <romdump.h>
 #include "../src/error.h"
 
 #define PRINTF(FUNCTION, TYPE, args...) \
@@ -744,6 +745,18 @@ static void torture_cmd68k(void)
     PRINTF(ti92_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
 }
 
+static void torture_romdump(void)
+{
+// romdump.c
+    PRINTF(rd_dump, INT, NULL, (void *)0x12345678);
+    PRINTF(rd_dump, INT, (void *)0x12345678, NULL);
+    PRINTF(rd_is_ready, INT, NULL);
+    PRINTF(rd_send, INT, NULL, (void *)0x12345678, 0, (void *)0x12345678);
+    PRINTF(rd_send, INT, (void *)0x12345678, NULL, 0, (void *)0x12345678);
+    PRINTF(rd_send, INT, (void *)0x12345678, (void *)0x12345678, 0, NULL);
+    PRINTF(rd_send, INT, (void *)0x12345678, (void *)0x12345678, 0, (void *)0x12345678);
+}
+
 static const uint8_t dbus_bad_req_ver_80[] = { 0x00, 0x2D };
 static const uint8_t dbus_good_req_scr_80[] = { 0x00, 0x6D };
 static const uint8_t dbus_good_rep_ack_80[] = { 0x80, 0x56 };
@@ -926,6 +939,7 @@ int main(int argc, char **argv)
     torture_dbus();
     torture_cmdz80();
     torture_cmd68k();
+    torture_romdump();
 
     dissect_functions_unit_test_1();
     dissect_functions_unit_test_2();
