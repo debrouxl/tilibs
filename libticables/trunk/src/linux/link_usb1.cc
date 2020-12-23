@@ -528,7 +528,7 @@ static int slv_put(CableHandle* h, uint8_t *data, uint32_t len)
 	return send_block(h, data, len);
 }
 
-static void bulk_transfer_cb(struct libusb_transfer *transfer2)
+static void LIBUSB_CALL bulk_transfer_cb(struct libusb_transfer *transfer2)
 {
 	// This comes from libusb.
 	int *completed2 = (int *)(transfer2->user_data);

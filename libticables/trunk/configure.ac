@@ -87,7 +87,9 @@ if [test "x$cab_cv_use_libusb" != xno]; then
   if [test "x$cab_cv_use_libusb10" != xno]; then
     PKG_CHECK_MODULES([LIBUSB10], [ libusb-1.0 >= 1.0.0 ],
       [HAVE_LIBUSB10=yes
-       AC_CHECK_LIB([usb-1.0], [libusb_strerror],
+       LIBS="$LIBUSB10_LIBS"
+       CFLAGS="$LIBUSB10_CFLAGS"
+       AC_TRY_LINK([#include <libusb.h>], [  const char *s = libusb_strerror(0)],
                     [AC_DEFINE([HAVE_LIBUSB10_STRERROR], [1], [libusb 1.0.x has libusb_strerror])],
                     [AC_ERROR([Use a version of libusb which provides libusb_strerror])])
       ])
@@ -111,9 +113,12 @@ fi
 if test "x$HAVE_LIBUSB10" = xyes; then
   AC_DEFINE([HAVE_LIBUSB_1_0], [1],
             [Define to 1 to enable EXPERIMENTAL libusb 1.0.x support.])
+  TICABLES_LIBUSB_REQUIRES_PRIVATE="libusb-1.0"
 elif test "x$HAVE_LIBUSB" = xyes; then
   AC_DEFINE([HAVE_LIBUSB], [1], [Define to 1 to enable libusb 0.1.x support.])
+  TICABLES_LIBUSB_REQUIRES_PRIVATE="libusb"
 fi
+AC_SUBST(TICABLES_LIBUSB_REQUIRES_PRIVATE)
 
 AC_SUBST(LIBUSB_CFLAGS)
 AC_SUBST(LIBUSB_LIBS)
