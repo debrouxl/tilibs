@@ -26,7 +26,6 @@ option(USE_ICONV "Use libiconv at runtime for libticonv (whether to link with th
 
 # external deps lookup
 pkg_check_modules(DEPS REQUIRED glib-2.0)
-find_package(Iconv REQUIRED)
 
 try_static_libs_if_needed()
 
