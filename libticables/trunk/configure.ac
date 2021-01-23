@@ -161,7 +161,7 @@ case "$host" in
   m68k-*-linux-*)        ARCH="-D__M68K__ -D__LINUX__" ;;
   mips*-*-linux-*)       ARCH="-D__MIPS__ -D__LINUX__" ;;
   powerpc-*-linux-*)     ARCH="-D__PPC__  -D__LINUX__" ;;
-  powerpc64*-*-linux-*)   ARCH="-D__PPC__  -D__LINUX__" ;;
+  powerpc64*-*-linux-*)  ARCH="-D__PPC__  -D__LINUX__" ;;
   powerpc64le-*-linux-*) ARCH="-D__PPC__  -D__LINUX__" ;;
   powerpc-apple-darwin*) ARCH="-D__PPC__  -D__MACOSX__" ;;
   powerpc64-apple-darwin*) ARCH="-D__PPC__  -D__MACOSX__" ;;
