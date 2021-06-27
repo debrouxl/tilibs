@@ -192,7 +192,8 @@ typedef enum
 	CABLE_VARIANT_NSPIRE_CAS,         /* CABLE_FAMILY_USB_NSPIRE */
 	CABLE_VARIANT_NSPIRE_CRADLE,      /* CABLE_FAMILY_USB_NSPIRE_CRADLE */
 // The CX II series doesn't seem to make it possible to distinguish its four members (three product IDs and OS versions) at the USB level.
-	CABLE_VARIANT_NSPIRE_CXII        /* CABLE_FAMILY_USB_NSPIRE_CXII */
+	CABLE_VARIANT_NSPIRE_CXII,        /* CABLE_FAMILY_USB_NSPIRE_CXII */
+	CABLE_VARIANT_TI82AEP             /* CABLE_FAMILY_USB_TI8X */
 } CableVariant;
 
 /**

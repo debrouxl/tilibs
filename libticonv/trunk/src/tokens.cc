@@ -85,6 +85,7 @@ static char *detokenize_vartype(CalcModel model, const char *src, unsigned char 
 	case CALC_TI84PCE_USB:
 	case CALC_TI82A_USB:
 	case CALC_TI84PT_USB:
+	case CALC_TI82AEP_USB:
 		if (type == 0x0F)
 		{
 			return (dst = g_strdup("Window"));
@@ -555,6 +556,7 @@ char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigne
 	case CALC_TI84PCE_USB:
 	case CALC_TI82A_USB:
 	case CALC_TI84PT_USB:
+	case CALC_TI82AEP_USB:
 	case CALC_TI89T_USB:
 		return g_strdup(src);
 	case CALC_NSPIRE:
@@ -699,6 +701,7 @@ char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_, unsigned
 		case CALC_NSPIRE_CXII_CAS:
 		case CALC_NSPIRE_CXIIT:
 		case CALC_NSPIRE_CXIIT_CAS:
+		case CALC_TI82AEP_USB:
 		default:
 		break;
 	}

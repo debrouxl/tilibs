@@ -938,7 +938,7 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 		case DUSB_VPKT_OS_HEADER:
 		case DUSB_VPKT_OS_DATA:
 		{
-			if (model == CALC_TI83PCE_USB || model == CALC_TI84PCE_USB)
+			if (model == CALC_TI83PCE_USB || model == CALC_TI84PCE_USB || model == CALC_TI82AEP_USB)
 			{
 				uint32_t addr = (((uint32_t)data[3]) << 24) | (((uint32_t)data[2]) << 16) | (((uint32_t)data[1]) << 8) | (((uint32_t)data[0]) << 0);
 				fprintf(f, "Address: %08lX\n", (unsigned long)addr);

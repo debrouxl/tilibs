@@ -360,6 +360,10 @@ void translate_usb_device_info(CableDeviceInfo *info, const USBCableInfo *usbinf
 		{
 			info->variant = CABLE_VARIANT_TI84PT;
 		}
+		else if (!strcmp(usbinfo->product_str, "TI-82 Advanced Edition Python"))
+		{
+			info->variant = CABLE_VARIANT_TI82AEP;
+		}
 		else if (usbinfo->version <= 0x0110)
 		{
 			info->variant = CABLE_VARIANT_TI84PSE;
@@ -375,6 +379,10 @@ void translate_usb_device_info(CableDeviceInfo *info, const USBCableInfo *usbinf
 		else if (usbinfo->version == 0x0260)
 		{
 			info->variant = CABLE_VARIANT_TI83PCE;
+		}
+		else if (usbinfo->version == 0x0660)
+		{
+			info->variant = CABLE_VARIANT_TI82AEP;
 		}
 		else
 		{

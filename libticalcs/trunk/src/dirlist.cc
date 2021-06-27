@@ -262,8 +262,9 @@ VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *s)
 			if (   !strcmp(ve->name, s->name)
 			    && (   !((info->model >= CALC_TI73 && info->model <= CALC_TI84P)
 			        || info->model == CALC_TI84P_USB || info->model == CALC_TI83PCE_USB
-			        || info->model == CALC_TI84PCE_USB || info->model == CALC_TI82A_USB)
-			        || info->model == CALC_TI84PT_USB || (ve->type == s->type)))
+			        || info->model == CALC_TI84PCE_USB || info->model == CALC_TI82A_USB
+			        || info->model == CALC_TI84PT_USB || info->model == CALC_TI82AEP_USB)
+			        || (ve->type == s->type)))
 			{
 				return ve;
 			}
