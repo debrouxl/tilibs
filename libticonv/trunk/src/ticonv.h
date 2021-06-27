@@ -73,6 +73,7 @@ typedef enum
 	CALC_NSPIRE_CX, CALC_NSPIRE_CX_CAS, CALC_NSPIRE_CMC, CALC_NSPIRE_CMC_CAS, // 31
 	CALC_NSPIRE_CXII, CALC_NSPIRE_CXII_CAS, CALC_NSPIRE_CXIIT, CALC_NSPIRE_CXIIT_CAS, // 35
 	CALC_CBL, CALC_CBR, CALC_CBL2, CALC_CBR2, CALC_LABPRO, CALC_TIPRESENTER, // 41
+	CALC_TI82AEP_USB, // 42
 	CALC_MAX
 } CalcModel;
 
@@ -105,7 +106,9 @@ typedef enum
         PRODUCT_ID_NSPIRE_CMC = 0x12,
         PRODUCT_ID_TI83PCE = 0x13, // These two similar models use the same ID as well.
         PRODUCT_ID_TI84PCE = 0x13,
-        // No known calculators or lab equipments use 0x14-0x1A.
+        // No known calculators or lab equipments use 0x14.
+        PRODUCT_ID_TI82AEP = 0x15,
+        // No known calculators or lab equipments use 0x16-0x1A.
         PRODUCT_ID_TI84PT = 0x1B,
         PRODUCT_ID_NSPIRE_CXII_CAS = 0x1C,
         PRODUCT_ID_NSPIRE_CXII = 0x1D,

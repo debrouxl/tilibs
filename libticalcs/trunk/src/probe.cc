@@ -688,6 +688,10 @@ TIEXPORT3 CalcModel TICALL ticalcs_device_info_to_model(const CableDeviceInfo *i
 			{
 				model = CALC_TI84PT_USB;
 			}
+			else if (info->variant == CABLE_VARIANT_TI82AEP)
+			{
+				model = CALC_TI82AEP_USB;
+			}
 			else
 			{
 				ticalcs_warning("Unexpected variant %d for TI-(e)Z80 USB cable, assuming 84+CE", info->variant);

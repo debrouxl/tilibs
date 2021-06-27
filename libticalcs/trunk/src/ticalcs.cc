@@ -173,6 +173,9 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_TIPRESENTER
 	&calc_tipresenter,
 #endif
+#ifndef NO_TI82AEP_USB
+	&calc_82aep_usb,
+#endif
 	NULL
 };
 
@@ -300,6 +303,9 @@ static const uint64_t supported_calcs =
 #endif
 #ifndef NO_TIPRESENTER
 	| (UINT64_C(1) << CALC_TIPRESENTER)
+#endif
+#ifndef NO_TI82AEP_USB
+	| (UINT64_C(1) << CALC_TI82AEP_USB)
 #endif
 ;
 
@@ -836,7 +842,8 @@ TIEXPORT3 int TICALL ticalcs_model_supports_dusb(CalcModel model)
 	            || model == CALC_TI83PCE_USB
 	            || model == CALC_TI84PCE_USB
 	            || model == CALC_TI82A_USB
-	            || model == CALC_TI84PT_USB));
+	            || model == CALC_TI84PT_USB
+	            || model == CALC_TI82AEP_USB));
 }
 
 /**
@@ -866,6 +873,7 @@ TIEXPORT3 int TICALL ticalcs_model_supports_installing_flashapps(CalcModel model
 {
 	return ticonv_model_has_flash_memory(model) && !(   model == CALC_TI82A_USB
 	                                                 || model == CALC_TI84PT_USB
+	                                                 || model == CALC_TI82AEP_USB
 	                                                 || ticonv_model_is_tinspire(model)
 	                                                 || model == CALC_CBL2
 	                                                 || model == CALC_CBR2
