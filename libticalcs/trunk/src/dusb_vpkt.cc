@@ -283,10 +283,10 @@ int TICALL dusb_recv_buf_size_alloc(CalcHandle* handle, uint32_t *size)
 			ticalcs_critical("Clamping overly large buffer size allocation to %u bytes", (unsigned int)sizeof(raw.data));
 			tmp = sizeof(raw.data);
 		}
-		if (   (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
+		if (   (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB || handle->model == CALC_TI82AEP_USB)
 		    && tmp > 1018)
 		{
-			ticalcs_info("The 83PCE/84+CE allocate more than they support. Clamping buffer size to 1018");
+			ticalcs_info("The 83PCE/84+CE/82AEP allocate more than they support. Clamping buffer size to 1018");
 			tmp = 1018;
 		}
 		if (size)
@@ -520,7 +520,7 @@ static void workaround_send(CalcHandle *handle, DUSBRawPacket *raw, DUSBVirtualP
 			ticables_cable_send(handle->cable, buf, 0);
 		}
 	}
-	else if (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
+	else if (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB || handle->model == CALC_TI82AEP_USB)
 	{
 		if (raw->type == DUSB_RPKT_VIRT_DATA_LAST && ((((raw->size + 5) % 64) == 0)/* || (vtl->size > 1018 && ((vtl->size + 6) % 1018) == 0)*/))
 		{
@@ -676,7 +676,7 @@ int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 #if (VPKT_DBG == 2)
 					ticalcs_info("  PC->TI: Virtual Packet Data Final");
 #endif
-					// XXX is that workaround necessary on 83PCE/84+CE/84+CE-T ?
+					// XXX is that workaround necessary on 83PCE/84+CE/84+CE-T/82AEP ?
 					if (handle->model != CALC_TI84P_USB && handle->model != CALC_TI84PC_USB && handle->model != CALC_TI82A_USB && handle->model != CALC_TI84PT_USB)
 					{
 						workaround_send(handle, &raw, vtl);
@@ -729,7 +729,7 @@ static void workaround_recv(CalcHandle *handle, DUSBRawPacket * raw, DUSBVirtual
 			ticables_cable_recv(handle->cable, buf, 0);
 		}
 	}
-	else if (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
+	else if (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB || handle->model == CALC_TI82AEP_USB)
 	{
 		// These models don't seem to need receive workarounds.
 	}
