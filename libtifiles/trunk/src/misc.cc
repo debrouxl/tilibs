@@ -127,6 +127,7 @@ int TICALL tifiles_has_backup(CalcModel calc_type)
 	        (calc_type == CALC_TI83) || (calc_type == CALC_TI83P) ||
 	        (calc_type == CALC_TI84P) || (calc_type == CALC_TI84PC) ||
 	        (calc_type == CALC_TI84PC_USB) || (calc_type == CALC_TI82A_USB) ||
+	        (calc_type == CALC_TI82AEP_USB) ||
 	        (calc_type == CALC_TI84PT_USB) || (calc_type == CALC_TI85) ||
 	        (calc_type == CALC_TI86) || (calc_type == CALC_TI92));
 }

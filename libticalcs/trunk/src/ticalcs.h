@@ -143,7 +143,7 @@ typedef enum
 	ROMSIZE_512KB = 512,    /* TI-83+ */
 	ROMSIZE_1MB   = 1024,   /* TI-84+, TI-92, TI-82A */
 	ROMSIZE_2MB   = 2048,   /* TI-83+SE, TI-84+SE, TI-89, TI-92 II, TI-92+, TI-84+T */
-	ROMSIZE_4MB   = 4096,   /* TI-84+CSE, TI-89T, V200, TI-83PCE, TI-84+CE */
+	ROMSIZE_4MB   = 4096,   /* TI-84+CSE, TI-89T, V200, TI-83PCE, TI-84+CE, TI-82AEP */
 } CalcDumpSize;
 
 /**
