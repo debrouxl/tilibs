@@ -155,7 +155,7 @@ int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 			{
 				ticalcs_warning("Raw packet is unexpectedly large: %u bytes", pkt->size);
 			}
-			else if (   (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
+			else if (   (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB || handle->model == CALC_TI82AEP_USB)
 				 && pkt->size > 1018)
 			{
 				ticalcs_warning("Raw packet is unexpectedly large: %u bytes", pkt->size);

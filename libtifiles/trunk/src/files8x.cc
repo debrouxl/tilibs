@@ -60,7 +60,7 @@ static int is_ti83p(CalcModel model)
 {
 	return ((model == CALC_TI83P) || (model == CALC_TI84P) || (model == CALC_TI84P_USB)
 	        || (model == CALC_TI84PC) || (model == CALC_TI84PC_USB)
-	        || (model == CALC_TI83PCE_USB) || (model == CALC_TI84PCE_USB) || (model == CALC_TI82A_USB) || (model == CALC_TI84PT_USB));
+	        || (model == CALC_TI83PCE_USB) || (model == CALC_TI84PCE_USB) || (model == CALC_TI82A_USB) || (model == CALC_TI84PT_USB) || (model == CALC_TI82AEP_USB));
 }
 
 static uint16_t compute_backup_sum(BackupContent* content, uint16_t header_size)

@@ -110,20 +110,20 @@ msgstr ""
 "Cause: le programme qui utilise cette librairie est buggé. Virez le "
 "développeur!"
 
-#: src/filetypes.cc:1634 src/filetypes.cc:1757 src/types68k.cc:74
+#: src/filetypes.cc:1646 src/filetypes.cc:1771 src/types68k.cc:74
 #: src/types83p.cc:70 src/typesoldz80.cc:75
 msgid "OS upgrade"
 msgstr "maj OS"
 
-#: src/filetypes.cc:1645 src/filetypes.cc:1768
+#: src/filetypes.cc:1657 src/filetypes.cc:1782
 msgid "TIGroup"
 msgstr "TIGroup"
 
-#: src/filetypes.cc:1658 src/filetypes.cc:1781
+#: src/filetypes.cc:1670 src/filetypes.cc:1795
 msgid "Group/Backup"
 msgstr "Groupe/sauvegarde"
 
-#: src/filetypes.cc:1661 src/filetypes.cc:1784
+#: src/filetypes.cc:1673 src/filetypes.cc:1798
 msgid "Group"
 msgstr "Groupe"
 

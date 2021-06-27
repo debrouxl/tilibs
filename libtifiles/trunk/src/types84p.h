@@ -30,6 +30,7 @@
 #define TI84pce_MAXTYPES 48
 #define TI82a_MAXTYPES 48
 #define TI84pt_MAXTYPES 48
+#define TI82aep_MAXTYPES 48
 
 #define TI84p_REAL   0x00
 #define TI84p_LIST   0x01
