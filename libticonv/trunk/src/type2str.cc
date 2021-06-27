@@ -59,6 +59,7 @@ const char * TICALL ticonv_model_to_string(CalcModel model)
 	case CALC_TI83PCE_USB: return "TI83PCE USB";
 	case CALC_TI84PCE_USB: return "TI84+CE USB";
 	case CALC_TI82A_USB: return "TI82A USB";
+	case CALC_TI82AEP_USB: return "TI82AEP USB";
 	case CALC_TI84PT_USB: return "TI84+T USB";
 	case CALC_NSPIRE_CRADLE: return "Nspire Cradle";
 	case CALC_NSPIRE_CLICKPAD: return "Nspire Clickpad";
@@ -223,6 +224,14 @@ CalcModel TICALL ticonv_string_to_model(const char *str)
 		         || !g_ascii_strcasecmp(str, "82A")
 		        )
 			return CALC_TI82A_USB;
+		else if (   !g_ascii_strcasecmp(str, "TI-82AEP USB")
+		         || !g_ascii_strcasecmp(str, "TI82AEP USB")
+		         || !g_ascii_strcasecmp(str, "TI-82AEP")
+		         || !g_ascii_strcasecmp(str, "TI82AEP")
+		         || !g_ascii_strcasecmp(str, "82AEP USB")
+		         || !g_ascii_strcasecmp(str, "82AEP")
+		        )
+			return CALC_TI82AEP_USB;
 		else if (   !g_ascii_strcasecmp(str, "TI-84+T USB")
 		         || !g_ascii_strcasecmp(str, "TI-84PT USB")
 		         || !g_ascii_strcasecmp(str, "TI84+T USB")

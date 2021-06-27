@@ -175,6 +175,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 			}
 			case CALC_TI83PCE_USB:
 			case CALC_TI84PCE_USB:
+			case CALC_TI82AEP_USB:
 			{
 				if (size == TI84PC_ROWS * TI84PC_COLS * 2)
 				{
@@ -243,7 +244,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			ve = tifiles_ve_create();
 			// Actually, "RclWindw" works even on an old 84+ running OS 2.43, but libticalcs
 			// has been using "RclWin" successfully on TI-Z80 DUSB models since the beginning...
-			ticalcs_strlcpy(ve->name, (handle->model == CALC_TI84PC_USB || handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB) ? "RclWindw" : "RclWin", sizeof(ve->name));
+			ticalcs_strlcpy(ve->name, (handle->model == CALC_TI84PC_USB || handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB || handle->model == CALC_TI82AEP_USB) ? "RclWindw" : "RclWin", sizeof(ve->name));
 			ve->type = TI84p_ZSTO;
 			node = dirlist_create_append_node(ve, &folder);
 			if (node != NULL)
@@ -1286,25 +1287,35 @@ static int		dump_rom_1	(CalcHandle* handle)
 	if (!ret)
 	{
 		PAUSE(100);
-		if (infos.model == CALC_TI84P_USB)
+		switch (infos.model)
+		{
+		case CALC_TI84P_USB:
 		{
 			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize84p, romDump84p);
+			break;
 		}
-		else if (infos.model == CALC_TI84PC_USB)
+		case CALC_TI84PC_USB:
 		{
 			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize84pcu, romDump84pcu);
+			break;
 		}
-		else if (infos.model == CALC_TI82A_USB)
+		case CALC_TI82A_USB:
 		{
 			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize82a, romDump82a);
+			break;
 		}
-		else if (infos.model == CALC_TI84PCE_USB || infos.model == CALC_TI83PCE_USB)
+		case CALC_TI84PCE_USB:
+		case CALC_TI83PCE_USB:
+		case CALC_TI82AEP_USB:
 		{
 			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize834pceu, romDump834pceu);
+			break;
 		}
-		else
+		default:
 		{
 			ret = 0;
+			break;
+		}
 		}
 	}
 
@@ -1320,7 +1331,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	if (!ret)
 	{
 		PAUSE(100);
-		if (infos.model == CALC_TI84PCE_USB || infos.model == CALC_TI83PCE_USB)
+		if (infos.model == CALC_TI84PCE_USB || infos.model == CALC_TI83PCE_USB || infos.model == CALC_TI82AEP_USB)
 		{
 			// The TI-eZ80 series does no longer provide direct remote program launch...
 			// Therefore, use a less sophisticated and more complicated way to queue keypresses.
@@ -2033,6 +2044,15 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 					}
 					break;
 				}
+				case PRODUCT_ID_TI82AEP:
+				{
+					infos->model = CALC_TI82AEP_USB;
+					if (!infos->exact_math || infos->hw_version < 8)
+					{
+						ticalcs_warning(_("Unhandled 84+ family member with product_id=%d hw_version=%d"), product_id, infos->hw_version);
+					}
+					break;
+				}
 				default:
 				{
 					// Default to generic 84+(SE).
@@ -2460,6 +2480,77 @@ extern const CalcFncts calc_84pt_usb =
 	&send_flash,
 	&recv_flash,
 	&send_os,
+	&recv_idlist,
+	&dump_rom_1,
+	&dump_rom_2,
+	&set_clock,
+	&get_clock,
+	&del_var,
+	&noop_new_folder,
+	&get_version,
+	&noop_send_cert,
+	&noop_recv_cert,
+	&rename_var,
+	&change_attr,
+	&send_all_vars_backup,
+	&tixx_recv_all_vars_backup
+};
+
+extern const CalcFncts calc_82aep_usb =
+{
+	CALC_TI82AEP_USB,
+	"TI82AEP",
+	"TI-82 Advanced Edition Python",
+	N_("TI-82 Advanced Edition Python thru DirectLink"),
+	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
+	/*OPS_IDLIST |*/ OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
+	OPS_RENAME | OPS_CHATTR |
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	PRODUCT_ID_TI82AEP,
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "1L",   /* get_dirlist */
+	 "",     /* get_memfree */
+	 "",     /* send_backup */
+	 "",     /* recv_backup */
+	 "2P1L", /* send_var */
+	 "1P1L", /* recv_var */
+	 "",     /* send_var_ns */
+	 "",     /* recv_var_ns */
+	 "2P1L", /* send_app */
+	 "2P1L", /* recv_app */
+	 "2P",   /* send_os */
+	 "1L",   /* recv_idlist */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "1L",   /* del_var */
+	 "1L",   /* new_folder */
+	 "",     /* get_version */
+	 "1L",   /* send_cert */
+	 "1L",   /* recv_cert */
+	 "",     /* rename */
+	 "",     /* chattr */
+	 "2P",   /* send_all_vars_backup */
+	 "2P",   /* recv_all_vars_backup */ },
+	&is_ready,
+	&send_key,
+	&execute,
+	&recv_screen,
+	&get_dirlist,
+	&get_memfree,
+	&noop_send_backup,
+	&noop_recv_backup,
+	&send_var,
+	&recv_var,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
+	&noop_send_flash,
+	&noop_recv_flash,
+	&send_os_834pce,
 	&recv_idlist,
 	&dump_rom_1,
 	&dump_rom_2,
