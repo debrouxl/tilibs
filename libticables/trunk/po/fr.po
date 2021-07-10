@@ -108,7 +108,7 @@ msgstr "    support tty: disponible."
 msgid "Check for tty usability:"
 msgstr "Vérification de l'utilisabilité du tty:"
 
-#: src/bsd/detect.cc:277 src/linux/detect.cc:346 src/linux/detect.cc:386
+#: src/bsd/detect.cc:277 src/linux/detect.cc:339 src/linux/detect.cc:386
 msgid "    is usable: yes"
 msgstr "    est utilisable: oui"
 
@@ -445,9 +445,20 @@ msgid "Error running TIOCGSERIAL ioctl on device %s - %s"
 msgstr ""
 "Erreur lors de l'exécution de l'ioctl TIOCGSERIAL sur le périphérique %s - %s"
 
-#: src/linux/detect.cc:341 src/linux/detect.cc:381
-msgid "    is usable: no"
-msgstr "    est utilisable: non"
+#: src/linux/detect.cc:335 src/linux/detect.cc:343
+msgid ""
+"NOTE: proceeding nevertheless, in an attempt to help usage of libticables "
+"with some USB/RS232 adapters, though most do not work at all for the "
+"purposes of TI's protocol"
+msgstr ""
+"NOTE: on poursuit quand même, pour tenter d'aider à l'utilisation de "
+"libticables avec certains adaptateurs USB/RS232, bien que la plupart ne "
+"fonctionnent pas du tout pour l'utilisation du protocole de TI"
+
+#: src/linux/detect.cc:342
+#, c-format
+msgid "Serial port has unknown type %d"
+msgstr "Le port série a le type inconnu %d"
 
 #: src/linux/detect.cc:357
 msgid "Check for parport support:"
@@ -464,6 +475,10 @@ msgstr "    support parport: pas compilé."
 #: src/linux/detect.cc:366
 msgid "Check for parport usability:"
 msgstr "Vérification de l'utilisabilité du port parallèle:"
+
+#: src/linux/detect.cc:381
+msgid "    is usable: no"
+msgstr "    est utilisable: non"
 
 #: src/linux/detect.cc:412
 msgid "Check for libusb usability:"

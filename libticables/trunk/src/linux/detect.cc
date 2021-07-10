@@ -332,18 +332,18 @@ int linux_check_tty(const char *devname)
     if (ioctl(fd, TIOCGSERIAL, &serinfo) < 0)
     {
         ticables_warning(_("Error running TIOCGSERIAL ioctl on device %s - %s"), devname, strerror(errno));
-        close(fd);
-        return ERR_TTDEV;
+        ticables_warning("%s", _("NOTE: proceeding nevertheless, in an attempt to help usage of libticables with some USB/RS232 adapters, though most do not work at all for the purposes of TI's protocol"));
     }
-
-    if(serinfo.type == PORT_UNKNOWN || serinfo.type == PORT_MAX)
+    else
     {
-        ticables_info("%s", _("    is usable: no"));
-        close(fd);
-        return ERR_TTDEV;
+        ticables_info("%s", _("    is usable: yes"));
+        if (serinfo.type == PORT_UNKNOWN || serinfo.type == PORT_MAX)
+        {
+            ticables_warning(_("Serial port has unknown type %d"), serinfo.type);
+            ticables_warning("%s", _("NOTE: proceeding nevertheless, in an attempt to help usage of libticables with some USB/RS232 adapters, though most do not work at all for the purposes of TI's protocol"));
+        }
     }
 
-    ticables_info("%s", _("    is usable: yes"));
     close(fd);
 #endif
 

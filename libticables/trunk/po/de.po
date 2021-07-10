@@ -105,7 +105,7 @@ msgstr "    TTY-Unterstützung: verfügbar."
 msgid "Check for tty usability:"
 msgstr "Prüfe TTY-Verfügbarkeit:"
 
-#: src/bsd/detect.cc:277 src/linux/detect.cc:346 src/linux/detect.cc:386
+#: src/bsd/detect.cc:277 src/linux/detect.cc:339 src/linux/detect.cc:386
 msgid "    is usable: yes"
 msgstr "    benutzbar: ja"
 
@@ -445,9 +445,17 @@ msgstr "kann serielles Gerät '%s' nicht nutzen"
 msgid "Error running TIOCGSERIAL ioctl on device %s - %s"
 msgstr "Fehler TIOCGSERIAL-Ioctl auf Gerät %s - %s auszuführen"
 
-#: src/linux/detect.cc:341 src/linux/detect.cc:381
-msgid "    is usable: no"
-msgstr "    ist benutzbar: nein"
+#: src/linux/detect.cc:335 src/linux/detect.cc:343
+msgid ""
+"NOTE: proceeding nevertheless, in an attempt to help usage of libticables "
+"with some USB/RS232 adapters, though most do not work at all for the "
+"purposes of TI's protocol"
+msgstr ""
+
+#: src/linux/detect.cc:342
+#, c-format
+msgid "Serial port has unknown type %d"
+msgstr ""
 
 #: src/linux/detect.cc:357
 msgid "Check for parport support:"
@@ -464,6 +472,10 @@ msgstr "    parport-Unterstützung: nicht kompiliert."
 #: src/linux/detect.cc:366
 msgid "Check for parport usability:"
 msgstr "Prüfe parport-Verfügbarkeit:"
+
+#: src/linux/detect.cc:381
+msgid "    is usable: no"
+msgstr "    ist benutzbar: nein"
 
 #: src/linux/detect.cc:412
 msgid "Check for libusb usability:"
