@@ -148,6 +148,7 @@ dnl AC_CANONICAL_HOST
 case "$host" in
   i[[3456]]86-*-*bsd*)   ARCH="-D__BSD__ -D__I386__" ;;
   *-*-*bsd*)             ARCH="-D__BSD__" ;;
+  aarch64-apple-darwin*) ARCH="-D__MACOSX__" ;;
   aarch64-*-linux-*)     ARCH="-D__LINUX__" ;;
   alpha*-*-linux-*)      ARCH="-D__ALPHA__ -D__LINUX__" ;;
   alpha*-*-*-*)          ARCH="-D__ALPHA__ -D__LINUX__" ;;
@@ -174,7 +175,11 @@ case "$host" in
   sh*-*-linux-*)         ARCH="-D__LINUX__" ;;
   sparc*-*-linux-*)      ARCH="-D__SPARC__ -D__LINUX__" ;;
   sparc*-sun-solaris*)   ARCH="-D__SPARC__ -D__SOL__" ;;
+  *)                     ARCH="ERROR" ;;
 esac
+if test "x$ARCH" = xERROR; then
+   AC_ERROR([Unhandled target triple, please open a bug report mentioning "$host"])
+fi
 CFLAGS="$CFLAGS $ARCH"
 CXXFLAGS="$CXXFLAGS $ARCH"
 
