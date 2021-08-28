@@ -400,10 +400,9 @@ int rd_dump(CalcHandle* handle, const char *filename)
 			ret = 0;
 		}
 
-#if 0
-		if(tifiles_calc_is_ti9x(handle->model) && addr >= 0x10000 && addr < 0x12000)
+		if (tifiles_calc_is_ti9x(handle->model) && handle->model != CALC_TI92 && addr >= 0x10000 && addr < 0x12000)
 		{
-			// certificate is read protected: skip
+			// certificate is read protected, with inconsistent reads: skip
 			memset(data, 0xff, length);
 			if (fwrite(data, length, 1, f) < 1)
 			{
@@ -413,7 +412,6 @@ int rd_dump(CalcHandle* handle, const char *filename)
 			addr += length;
 			continue;
 		}
-#endif
 
 		// receive data
 		ret = rom_send_DATA(handle, addr);
