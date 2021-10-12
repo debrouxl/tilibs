@@ -171,6 +171,7 @@ case "$host" in
   powerpc64le-*-linux-*) ARCH="-D__PPC__  -D__LINUX__" ;;
   powerpc-apple-darwin*) ARCH="-D__PPC__  -D__MACOSX__" ;;
   powerpc64-apple-darwin*) ARCH="-D__PPC__  -D__MACOSX__" ;;
+  riscv64-*-linux-*)     ARCH="-D__RISCV__ -D__LINUX__" ;;
   s390*-*-linux-*)       ARCH="-D__LINUX__" ;;
   sh*-*-linux-*)         ARCH="-D__LINUX__" ;;
   sparc*-*-linux-*)      ARCH="-D__SPARC__ -D__LINUX__" ;;
