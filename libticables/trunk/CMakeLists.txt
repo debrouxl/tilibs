@@ -61,7 +61,15 @@ if(ENABLE_NLS)
 endif()
 
 # additional internal defines
-target_compile_definitions(ticables2_objlib PUBLIC HAVE_LIBUSB_1_0=1 HAVE_LIBUSB10_STRERROR=1 HAVE_TERMIOS_H=1 HAVE_LINUX_PARPORT_H=${HAVE_LINUX_PARPORT_H} HAVE_LINUX_SERIAL_H=${HAVE_LINUX_SERIAL_H})
+target_compile_definitions(ticables2_objlib PUBLIC HAVE_LIBUSB_1_0=1 HAVE_LIBUSB10_STRERROR=1 HAVE_TERMIOS_H=1)
+
+# check includes for parallel and serial support
+if (HAVE_LINUX_PARPORT_H)
+    target_compile_definitions(ticables2_objlib PUBLIC HAVE_LINUX_PARPORT_H=1)
+endif()
+if (HAVE_LINUX_SERIAL_H)
+    target_compile_definitions(ticables2_objlib PUBLIC HAVE_LINUX_SERIAL_H=1)
+endif()
 
 # public export define
 target_compile_definitions(ticables2_objlib PUBLIC TICABLES_EXPORTS)
