@@ -8,14 +8,7 @@ add_executable(test_ticalcs_2 test_ticalcs_2.cc)
 
 pkg_check_modules(DEPS REQUIRED glib-2.0)
 
-set(internal_libdir "-L${CMAKE_BINARY_DIR}/libticonv/trunk \
-                     -L${CMAKE_BINARY_DIR}/libtifiles/trunk \
-                     -L${CMAKE_BINARY_DIR}/libticables/trunk \
-                     -L${CMAKE_BINARY_DIR}/libticalcs/trunk")
-
 foreach(tar torture_ticalcs test_ticalcs_2)
-    add_dependencies(${tar} ticalcs2_shared)
-
     target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
 
     target_include_directories(${tar} PRIVATE
@@ -24,7 +17,7 @@ foreach(tar torture_ticalcs test_ticalcs_2)
         ${CMAKE_SOURCE_DIR}/libticables/trunk/src
         ${CMAKE_SOURCE_DIR}/libticalcs/trunk/src)
 
-    target_link_libraries(${tar} "${internal_libdir}" ticonv tifiles2 ticables2 ticalcs2 "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
+    target_link_libraries(${tar} ticonv_shared tifiles2_shared ticables2_shared ticalcs2_shared "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
 endforeach()
 
 set(builddirlibpaths "${CMAKE_BINARY_DIR}/libticonv/trunk:${CMAKE_BINARY_DIR}/libtifiles/trunk:${CMAKE_BINARY_DIR}/libticables/trunk:${CMAKE_BINARY_DIR}/libticalcs/trunk")

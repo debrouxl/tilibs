@@ -8,17 +8,13 @@ add_executable(test_ticonv test_ticonv.cc)
 
 pkg_check_modules(DEPS REQUIRED glib-2.0)
 
-set(internal_libdir "-L${CMAKE_BINARY_DIR}/libticonv/trunk")
-
 foreach(tar torture_ticonv test_ticonv)
-    add_dependencies(${tar} ticonv_shared)
-
     target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
 
     target_include_directories(${tar} PRIVATE
         ${CMAKE_SOURCE_DIR}/libticonv/trunk/src)
 
-    target_link_libraries(${tar} "${internal_libdir}" ticonv "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
+    target_link_libraries(${tar} ticonv_shared "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
 endforeach()
 
 set(builddirlibpaths "${CMAKE_BINARY_DIR}/libticonv/trunk")
