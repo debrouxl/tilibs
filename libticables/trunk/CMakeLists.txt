@@ -54,7 +54,7 @@ set(TICABLES_LIBUSB_REQUIRES_PRIVATE "libusb-1.0")
 # auto-creation of all targets with flags etc.
 create_targets_both_lib_types(ticables2)
 
-set_target_properties(ticables2_shared PROPERTIES SOVERSION 8.0.0)
+set_target_properties(ticables2_shared PROPERTIES VERSION 8.0.0 SOVERSION 8)
 
 # Takes care of the i18n po/pot/gmo/mo files
 if(ENABLE_NLS)

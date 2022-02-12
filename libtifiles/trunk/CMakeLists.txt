@@ -57,7 +57,7 @@ try_static_libs_if_needed()
 # auto-creation of all targets with flags etc., alongside with internal deps
 create_targets_both_lib_types(tifiles2 ticonv)
 
-set_target_properties(tifiles2_shared PROPERTIES SOVERSION 11.2.0)
+set_target_properties(tifiles2_shared PROPERTIES VERSION 11.0.2 SOVERSION 11)
 
 if(TRY_STATIC_LIBS)
     find_package(BZip2 REQUIRED) # Needed for some reason
