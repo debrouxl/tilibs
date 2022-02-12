@@ -8,17 +8,13 @@ add_executable(test_ticables_2 test_ticables_2.cc)
 
 pkg_check_modules(DEPS REQUIRED glib-2.0)
 
-set(internal_libdir "-L${CMAKE_BINARY_DIR}/libticables/trunk")
-
 foreach(tar torture_ticables test_ticables_2)
-    add_dependencies(${tar} ticables2_shared)
-
     target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
 
     target_include_directories(${tar} PRIVATE
         ${CMAKE_SOURCE_DIR}/libticables/trunk/src)
 
-    target_link_libraries(${tar} "${internal_libdir}" ticables2 "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
+    target_link_libraries(${tar} ticables2_shared "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
 endforeach()
 
 set(builddirlibpaths "${CMAKE_BINARY_DIR}/libticables/trunk")

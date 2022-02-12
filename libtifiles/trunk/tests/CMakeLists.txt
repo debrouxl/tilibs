@@ -8,19 +8,14 @@ add_executable(test_tifiles_2 test_tifiles_2.cc)
 
 pkg_check_modules(DEPS REQUIRED glib-2.0)
 
-set(internal_libdir "-L${CMAKE_BINARY_DIR}/libticonv/trunk \
-                     -L${CMAKE_BINARY_DIR}/libtifiles/trunk")
-
 foreach(tar torture_tifiles test_tifiles_2)
-    add_dependencies(${tar} tifiles2_shared)
-
     target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
 
     target_include_directories(${tar} PRIVATE
         ${CMAKE_SOURCE_DIR}/libticonv/trunk/src
         ${CMAKE_SOURCE_DIR}/libtifiles/trunk/src)
 
-    target_link_libraries(${tar} "${internal_libdir}" ticonv tifiles2 "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
+    target_link_libraries(${tar} ticonv_shared tifiles2_shared "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
 endforeach()
 
 set(builddirlibpaths "${CMAKE_BINARY_DIR}/libticonv/trunk:${CMAKE_BINARY_DIR}/libtifiles/trunk")
