@@ -32,7 +32,7 @@ try_static_libs_if_needed()
 # auto-creation of all targets with flags etc., alongside with internal deps
 create_targets_both_lib_types(ticonv)
 
-set_target_properties(ticonv_shared PROPERTIES SOVERSION 9.4.0)
+set_target_properties(ticonv_shared PROPERTIES VERSION 9.0.4 SOVERSION 9)
 
 if(USE_ICONV)
     find_package(Iconv REQUIRED)

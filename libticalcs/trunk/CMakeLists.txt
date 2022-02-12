@@ -69,7 +69,7 @@ try_static_libs_if_needed()
 # auto-creation of all targets with flags etc., alongside with internal deps
 create_targets_both_lib_types(ticalcs2 tifiles2 ticables2 ticonv)
 
-set_target_properties(ticalcs2_shared PROPERTIES SOVERSION 13.3.0)
+set_target_properties(ticalcs2_shared PROPERTIES VERSION 13.0.3 SOVERSION 13)
 
 if(TRY_STATIC_LIBS)
     find_package(BZip2 REQUIRED) # Needed for some reason
