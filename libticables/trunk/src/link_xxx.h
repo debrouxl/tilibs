@@ -35,6 +35,7 @@ extern const CableFncts cable_raw;
 extern CableFncts cable_ilp;
 extern const CableFncts cable_tcpc;
 extern const CableFncts cable_tcps;
+extern const CableFncts cable_gpio;
 
 #endif
 
