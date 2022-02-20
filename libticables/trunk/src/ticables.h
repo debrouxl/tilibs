@@ -238,7 +238,7 @@ typedef struct _CableHandle  CableHandle;
  * @set_d0: set D0/red wire
  * @set_d1: set D1/white wire
  * @get_d0 get D0/red wire
- * @get_d1 set D1/red wire
+ * @get_d1 set D1/white wire
  * @set_raw: set both wires
  * @get_raw: read both wires
  *
