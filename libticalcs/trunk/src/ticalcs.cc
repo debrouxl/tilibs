@@ -43,7 +43,7 @@
 /* Internal data */
 /*****************/
 
-extern const CalcUpdate default_update;
+extern CalcUpdate default_update;
 
 static CalcFncts const *const calcs[] =
 {
