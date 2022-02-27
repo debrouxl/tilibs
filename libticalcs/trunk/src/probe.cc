@@ -392,7 +392,7 @@ static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 	return ret;
 }
 
-extern const CalcUpdate default_update;
+extern CalcUpdate default_update;
 
 /**
  * ticalcs_probe_calc:
