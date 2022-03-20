@@ -145,8 +145,9 @@ typedef enum
 	CABLE_FNCT_GET_D1,
 	CABLE_FNCT_SET_RAW,
 	CABLE_FNCT_GET_RAW,
-	CABLE_FNCT_SET_DEVICE,
 	CABLE_FNCT_GET_DEVICE_INFO,
+	CABLE_FNCT_SET_EXTRA_OPTIONS,
+	CABLE_FNCT_GET_EXTRA_OPTIONS,
 	CABLE_FNCT_LAST // Keep this one last
 } CableFnctsIdx;
 
@@ -208,6 +209,89 @@ typedef struct
 	CableFamily     family;
 	CableVariant    variant;
 } CableDeviceInfo;
+
+/**
+ * CableOptions:
+ * @model: model
+ * @port: port
+ * @timeout: timeout in tenth of seconds
+ * @delay: inter-bit delay in us
+ * @calc: calculator model
+ *
+ * A convenient structure free for use by the user.
+ **/
+typedef struct
+{
+	CableModel      model;
+	CablePort       port;
+	unsigned int    timeout;
+	unsigned int    delay;
+
+	int             calc; // unused
+} CableOptions;
+
+/**
+ * CableExtraOptions:
+ * @version: version number for the struct
+ * @has_parameters: special cable-specific options for the relevant cable types
+ *
+ * A structure for defining special, cable-dependent options.
+ **/
+typedef struct
+{
+	unsigned int    version;
+	unsigned int    has_parameters;
+	union
+	{
+		struct
+		{
+			const char * device;
+			unsigned int address;
+			unsigned int quirk_speed_input;
+			unsigned int quirk_speed_output;
+			unsigned int quirk_enable_rtscts;
+		} parameters_gry;
+		struct
+		{
+			const char * device;
+			unsigned int address;
+		} parameters_blk;
+		struct
+		{
+			const char * device;
+			unsigned int address;
+		} parameters_par;
+		struct
+		{
+			uint8_t      use_fd;
+			uint16_t     connect_port;
+			int          fd;
+			const char * connect_address;
+		} parameters_tcpc;
+		struct
+		{
+			uint8_t      use_fd;
+			uint16_t     bind_port;
+			int          fd;
+			const char * server_address;
+			const char * advertised_address;
+			const char * bind_address;
+		} parameters_tcps;
+		struct
+		{
+			const char * device;
+			const char * chip;
+			unsigned int pin_d0;
+			unsigned int pin_d1;
+		} parameters_gpio_lib;
+		struct
+		{
+			int          fd;
+			unsigned int pin_d0;
+			unsigned int pin_d1;
+		} parameters_gpio_mmap;
+	} parameters;
+} CableExtraOptions;
 
 /**
  * DataRate:
@@ -283,8 +367,9 @@ struct _CableFncts
 	int (*get_d1)	(CableHandle *);
 	int (*set_raw)  (CableHandle *, int);
 	int (*get_raw)  (CableHandle *, int *);
-	int (*set_device) (CableHandle*, const char*);
 	int (*get_device_info) (CableHandle *, CableDeviceInfo *);
+	int (*set_extra_options) (CableHandle *, CableExtraOptions *); // TODO implement in link_*.cc.
+	int (*get_extra_options) (CableHandle *, CableExtraOptions *); // TODO implement in link_*.cc.
 };
 
 typedef int (*ticables_pre_send_hook_type)(CableHandle * handle, uint8_t * data, uint32_t len);
@@ -368,13 +453,10 @@ typedef int (*ticables_event_hook_type)(CableHandle * handle, uint32_t event_cou
  * @priv3: idem (static)
  * @open: set if cable has been open
  * @busy: set if cable is busy
- * @pre_send_hook: callback fired before sending a block of data (deprecated).
- * @post_send_hook: callback fired after sending a block of data (deprecated).
- * @pre_recv_hook: callback fired before receiving a block of data (deprecated).
- * @post_recv_hook: callback fired after receiving a block of data (deprecated).
- * @event_hook: callback fired upon various events (replaces and expands on the deprecated callbacks).
+ * @event_hook: callback fired upon various events.
  * @user_pointer: user-set pointer passed to the event callbacks.
  * @event_count: number of events sent since this handle was created.
+ * @options_ex: extra cable options for special configuration purposes.
  *
  * A structure used to store information as an handle.
  * !!! This structure is for private use !!!
@@ -404,27 +486,9 @@ struct _CableHandle
 	ticables_event_hook_type event_hook;
 	void * user_pointer;
 	uint32_t event_count;
+
+	CableExtraOptions options_ex;
 };
-
-/**
- * CableOptions:
- * @cable_model: model
- * @cable_port: port
- * @cable_timeout: timeout in tenth of seconds
- * @cable_delay: inter-bit delay in us
- * @calc_model: calculator model
- *
- * A convenient structure free of use by the user.
- **/
-typedef struct
-{
-	CableModel      model;
-	CablePort       port;
-	unsigned int    timeout;
-	unsigned int    delay;
-
-	int             calc; // unused
-} CableOptions;
 
 // namespace scheme: library_class_function like ticables_fext_get
 
@@ -484,9 +548,12 @@ typedef struct
 	TIEXPORT1 int TICALL ticables_cable_set_raw(CableHandle *handle, int state);
 	TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle *handle, int *state);
 
-	TIEXPORT1 int TICALL ticables_cable_set_device(CableHandle *handle, const char *device);
+	TILIBS_DEPRECATED TIEXPORT1 int TICALL ticables_cable_set_device(CableHandle *handle, const char *device);
 
 	TIEXPORT1 int TICALL ticables_cable_get_device_info(CableHandle *handle, CableDeviceInfo *info);
+
+	TIEXPORT1 int TICALL ticables_cable_set_extra_options(CableHandle *handle, CableExtraOptions *options_ex);
+	TIEXPORT1 int TICALL ticables_cable_get_extra_options(CableHandle *handle, CableExtraOptions *options_ex);
 
 	TIEXPORT1 int TICALL ticables_progress_reset(CableHandle *handle);
 	TIEXPORT1 int TICALL ticables_progress_get(CableHandle *handle, int *count, int *msec, float *rate);

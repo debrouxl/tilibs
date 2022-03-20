@@ -49,6 +49,8 @@
 
 static int tcpc_prepare(CableHandle *h)
 {
+	// TODO pay attention to cable options.
+
 	return 0;
 }
 
@@ -87,23 +89,22 @@ static int tcpc_check(CableHandle *h, int *status)
 	return 0;
 }
 
-static int tcpc_set_device(CableHandle *h, const char * device)
+static int tcpc_set_extra_options(CableHandle * h, CableExtraOptions * options_ex)
 {
-	if (device != NULL)
-	{
-		char * device2 = strdup(device);
-		if (device2 != NULL)
-		{
-			free(h->device);
-			h->device = device2;
-		}
-		else
-		{
-			ticables_warning(_("unable to set device %s.\n"), device);
-		}
-		return 0;
-	}
+	(void)h, (void)options_ex;
 	return ERR_ILLEGAL_ARG;
+}
+
+static int tcpc_get_extra_options(CableHandle * h, CableExtraOptions * options_ex)
+{
+	options_ex->version = 1;
+	options_ex->has_parameters = 1;
+	memset((void *)&options_ex->parameters, 0, sizeof(options_ex->parameters));
+	options_ex->parameters.parameters_tcpc.use_fd = 0; // TODO
+	options_ex->parameters.parameters_tcpc.fd = 0; // TODO
+	options_ex->parameters.parameters_tcpc.connect_port = 0; // TODO
+	options_ex->parameters.parameters_tcpc.connect_address = NULL; // TODO
+	return 0;
 }
 
 extern const CableFncts cable_tcpc =
@@ -119,6 +120,6 @@ extern const CableFncts cable_tcpc =
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&tcpc_set_device,
-	NULL
+	NULL,
+	&tcpc_set_extra_options, &tcpc_get_extra_options
 };

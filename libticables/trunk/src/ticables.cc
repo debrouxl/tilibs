@@ -337,6 +337,9 @@ CableHandle* TICALL ticables_handle_new(CableModel model, CablePort port)
 		}
 	}
 
+	handle->options_ex.version = 1;
+	handle->options_ex.has_parameters = 0;
+
 	if (handle->cable == NULL)
 	{
 		free(handle);
@@ -566,11 +569,15 @@ int TICALL ticables_handle_show(CableHandle* handle)
 		ticables_info(_("  port    : %s"), ticables_port_to_string(handle->port));
 		ticables_info(_("  timeout : %2.1fs"), (float)handle->timeout / 10);
 		ticables_info(_("  delay   : %i us"), handle->delay);
-		if(handle->device)
+		if (handle->device)
 		{
 			ticables_info(_("  device  : %s"), handle->device);
 			ticables_info(_("  address : 0x%03x"), handle->address);
 		}
+		ticables_info(_("  options :"));
+		ticables_info(_("    version : %u"), handle->options_ex.version);
+		ticables_info(_("    has_parameters : %u"), handle->options_ex.has_parameters);
+		// TODO show options according to cable type.
 	}
 	else
 	{

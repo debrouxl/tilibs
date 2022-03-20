@@ -235,7 +235,7 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 			else if (*ext == 'l' || *ext == 'L')
 			{
 				ext++;
-				if (*ext == 'o' || *ext == 'O')
+				if (*ext == 'o' || *ext == 'O' || *ext == 'd' || *ext == 'D')
 				{
 					target_model = CALC_NSPIRE_CRADLE;
 				}
