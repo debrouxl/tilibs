@@ -771,7 +771,7 @@ co:
 			}
 			else if (c == 'l' || c == 'L')
 			{
-				return ext[2] == 'o' || ext[2] == 'O';
+				return ext[2] == 'o' || ext[2] == 'O' || ext[2] == 'd' || ext[2] == 'D';
 			}
 		}
 	}
