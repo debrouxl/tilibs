@@ -43,6 +43,8 @@ static int par_prepare(CableHandle *h)
 	const char * device;
 	int ret;
 
+	// TODO pay attention to cable options.
+
 	switch(h->port)
 	{
 	case PORT_1: h->address = 0x378; device = "/dev/parport0"; break;
@@ -387,6 +389,22 @@ static int par_set_device(CableHandle *h, const char * device)
 	return ERR_ILLEGAL_ARG;
 }
 
+static int par_set_options(CableHandle * h, CableOptions * options)
+{
+	(void)h, (void)options;
+	return ERR_ILLEGAL_ARG;
+}
+
+static int par_get_options(CableHandle * h, CableOptions * options)
+{
+	ticables_copy_cable_options(h, options);
+	options->version = 1;
+	options->has_parameters = 1;
+	options->parameters.parameters_par.device = h->device;
+	options->parameters.parameters_par.address = h->address;
+	return 0;
+}
+
 extern const CableFncts cable_par = 
 {
 	CABLE_PAR,
@@ -400,6 +418,6 @@ extern const CableFncts cable_par =
 	&par_set_red_wire, &par_set_white_wire,
 	&par_get_red_wire, &par_get_white_wire,
 	&par_set_raw, &par_get_raw,
-	&par_set_device,
-	NULL
+	NULL,
+	&par_set_options, &par_get_options
 };

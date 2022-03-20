@@ -266,6 +266,18 @@ TIEXPORT1 uint32_t TICALL ticables_max_ports(void)
 	return PORT_MAX;
 }
 
+/**
+ * ticables_max_cable_function_idx:
+ *
+ * This function returns the maximum index of supported cable functions (mostly for internal usage).
+ *
+ * Return value: the CABLE_FNCT_LAST value against which the library was built.
+ **/
+TIEXPORT1 uint32_t TICALL ticables_max_cable_function_idx(void)
+{
+	return CABLE_FNCT_LAST;
+}
+
 static int default_event_hook(CableHandle * handle, uint32_t event_count, const CableEventData * event, void * user_pointer)
 {
 	(void)user_pointer;
@@ -325,6 +337,8 @@ TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort po
 		}
 	}
 
+	// TODO allocate and fill in handle->options with default values.
+
 	if (handle->cable == NULL)
 	{
 		free(handle);
@@ -351,6 +365,8 @@ TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort po
 TIEXPORT1 int TICALL ticables_handle_del(CableHandle* handle)
 {
 	VALIDATE_HANDLE(handle);
+
+	// TODO free handle->options
 
 	free(handle->priv2);
 	handle->priv2 = NULL;
@@ -382,6 +398,11 @@ TIEXPORT1 unsigned int TICALL ticables_options_set_timeout(CableHandle* handle, 
 
 		handle->timeout = timeout;
 		cable = handle->cable;
+
+		if (handle->options)
+		{
+			handle->options->timeout = timeout;
+		}
 
 		if(!handle->open)
 		{
@@ -423,6 +444,10 @@ TIEXPORT1 unsigned int TICALL ticables_options_set_delay(CableHandle* handle, un
 	{
 		unsigned int old_delay = handle->delay;
 		handle->delay = delay;
+		if (handle->options)
+		{
+			handle->options->delay = delay;
+		}
 		return old_delay;
 	}
 	else
@@ -559,6 +584,7 @@ TIEXPORT1 int TICALL ticables_handle_show(CableHandle* handle)
 			ticables_info(_("  device  : %s"), handle->device);
 			ticables_info(_("  address : 0x%03x"), handle->address);
 		}
+		// TODO show options.
 	}
 	else
 	{

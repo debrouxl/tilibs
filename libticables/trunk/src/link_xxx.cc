@@ -700,35 +700,9 @@ TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle* handle, int *state)
  **/
 TIEXPORT1 int TICALL ticables_cable_set_device(CableHandle* handle, const char * device)
 {
-	int ret = 0;
+	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	VALIDATE_HANDLE(handle);
-	VALIDATE_NONNULL(device);
-
-	const CableFncts * cable = handle->cable;
-	VALIDATE_CABLEFNCTS(cable);
-
-	RETURN_IF_HANDLE_OPEN(handle);
-	RETURN_IF_HANDLE_BUSY(handle);
-
-	handle->busy = 1;
-	if (cable->set_device)
-	{
-		CableEventData event;
-		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_SET_DEVICE);
-		event.data.cptrval = (const void *)device;
-		ret = ticables_event_send(handle, &event);
-		if (!ret)
-		{
-			ret = cable->set_device(handle, device);
-		}
-		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_SET_DEVICE);
-		event.data.cptrval = (const void *)device;
-		ret = ticables_event_send(handle, &event);
-	}
-	handle->busy = 0;
-
-	return ret;
+	return ERR_ILLEGAL_ARG;
 }
 
 /**
@@ -771,6 +745,90 @@ TIEXPORT1 int TICALL ticables_cable_get_device_info(CableHandle *handle, CableDe
 	{
 		info->family = CABLE_FAMILY_DBUS;
 		info->variant = CABLE_VARIANT_UNKNOWN;
+	}
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
+ * ticables_cable_set_options:
+ * @handle: a previously allocated handle
+ * @options: pointer to structure containing cable options to be set
+ *
+ * Set special cable options for the given cable. To be called before ticables_cable_open().
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT1 int TICALL ticables_cable_set_options(CableHandle *handle, CableOptions *options)
+{
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(options);
+
+	const CableFncts * cable = handle->cable;
+	VALIDATE_CABLEFNCTS(cable);
+
+	RETURN_IF_HANDLE_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	handle->busy = 1;
+	if (cable->set_options)
+	{
+		CableEventData event;
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_SET_OPTIONS);
+		event.data.cptrval = (const void *)options;
+		ret = ticables_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = cable->set_options(handle, &options);
+		}
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_SET_OPTIONS);
+		event.data.cptrval = (const void *)options;
+		ret = ticables_event_send(handle, &event);
+	}
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
+ * ticables_cable_get_options:
+ * @handle: a previously allocated handle
+ * @options: pointer to structure where cable options will be stored
+ *
+ * Get special cable options for the given cable.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT1 int TICALL ticables_cable_get_options(CableHandle *handle, CableOptions *options)
+{
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(options);
+
+	const CableFncts * cable = handle->cable;
+	VALIDATE_CABLEFNCTS(cable);
+
+	// There's no problem in getting the special options of a cable which isn't open.
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	handle->busy = 1;
+	if (cable->get_options)
+	{
+		CableEventData event;
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ CABLE_FNCT_GET_OPTIONS);
+		event.data.cptrval = (const void *)options;
+		ret = ticables_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = cable->get_options(handle, &options);
+		}
+		ticables_event_fill_header(handle, &event, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_GET_OPTIONS);
+		event.data.cptrval = (const void *)options;
+		ret = ticables_event_send(handle, &event);
 	}
 	handle->busy = 0;
 

@@ -57,6 +57,8 @@ static int ser_prepare(CableHandle *h)
 	const char * device;
 	int ret;
 
+	// TODO pay attention to cable options.
+
 	switch(h->port)
 	{
 		case PORT_1: h->address = 0x3f8; device = "/dev/" DEVNAME "0"; break;
@@ -399,6 +401,22 @@ static int ser_set_device(CableHandle *h, const char * device)
 	return ERR_ILLEGAL_ARG;
 }
 
+static int ser_set_options(CableHandle * h, CableOptions * options)
+{
+	(void)h, (void)options;
+	return ERR_ILLEGAL_ARG;
+}
+
+static int ser_get_options(CableHandle * h, CableOptions * options)
+{
+	ticables_copy_cable_options(h, options);
+	options->version = 1;
+	options->has_parameters = 1;
+	options->parameters.parameters_blk.device = h->device;
+	options->parameters.parameters_blk.address = h->address;
+	return 0;
+}
+
 extern const CableFncts cable_ser = 
 {
 	CABLE_BLK,
@@ -412,6 +430,6 @@ extern const CableFncts cable_ser =
 	&ser_set_red_wire, &ser_set_white_wire,
 	&ser_get_red_wire, &ser_get_white_wire,
 	&ser_set_raw, &ser_get_raw,
-	&ser_set_device,
-	NULL
+	NULL,
+	&ser_set_options, &ser_get_options
 };

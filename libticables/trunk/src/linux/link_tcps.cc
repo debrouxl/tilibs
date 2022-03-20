@@ -49,6 +49,8 @@
 
 static int tcps_prepare(CableHandle *h)
 {
+	// TODO pay attention to cable options.
+
 	return 0;
 }
 
@@ -106,6 +108,24 @@ static int tcps_set_device(CableHandle *h, const char * device)
 	return ERR_ILLEGAL_ARG;
 }
 
+static int tcpc_set_options(CableHandle * h, CableOptions * options)
+{
+	(void)h, (void)options;
+	return ERR_ILLEGAL_ARG;
+}
+
+static int tcpc_get_options(CableHandle * h, CableOptions * options)
+{
+	ticables_copy_cable_options(h, options);
+	options->version = 1;
+	options->has_parameters = 1;
+	options->parameters.parameters_tcps.bind_address = NULL; // TODO
+	options->parameters.parameters_tcps.port = 0; // TODO
+	options->parameters.parameters_tcps.use_fd = 0; // TODO
+	options->parameters.parameters_tcps.fd = 0; // TODO
+	return 0;
+}
+
 extern const CableFncts cable_tcps =
 {
 	CABLE_TCPS,
@@ -119,6 +139,6 @@ extern const CableFncts cable_tcps =
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&tcps_set_device,
-	NULL
+	NULL,
+	&tcps_set_options, &tcps_get_options
 };

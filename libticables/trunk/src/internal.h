@@ -134,6 +134,14 @@ static inline int ticables_event_send(CableHandle * handle, CableEventData * eve
 	return ret;
 }
 
+static inline void ticables_copy_cable_options(CableHandle * handle, CableOptions * options)
+{
+	options->model = cable->model;
+	options->port = cable->port;
+	options->timeout = cable->timeout;
+	options->delay = cable->delay;
+}
+
 typedef struct {
 	uint16_t    vid;
 	uint16_t    pid;
@@ -150,18 +158,22 @@ int dusb_decomp(const char *filename);
 int nsp_decomp(const char *filename);
 
 // link_nul.c
-int noop_prepare(CableHandle *h);
-int noop_probe(CableHandle *h);
-int noop_open(CableHandle *h);
-int noop_close(CableHandle *h);
-int noop_reset(CableHandle *h);
-int noop_put(CableHandle *h, uint8_t *data, uint32_t len);
-int noop_get(CableHandle *h, uint8_t *data, uint32_t len);
-int noop_check(CableHandle *h, int *status);
-int noop_set_red_wire(CableHandle *h, int b);
-int noop_set_white_wire(CableHandle *h, int b);
-int noop_get_red_wire(CableHandle *h);
-int noop_get_white_wire(CableHandle *h);
-int noop_set_device(CableHandle *h, const char * device);
+int noop_prepare(CableHandle * h);
+int noop_probe(CableHandle * h);
+int noop_open(CableHandle * h);
+int noop_close(CableHandle * h);
+int noop_reset(CableHandle * h);
+int noop_put(CableHandle * h, uint8_t * data, uint32_t len);
+int noop_get(CableHandle * h, uint8_t * data, uint32_t len);
+int noop_check(CableHandle * h, int * status);
+int noop_set_red_wire(CableHandle * h, int b);
+int noop_set_white_wire(CableHandle * h, int b);
+int noop_get_red_wire(CableHandle * h);
+int noop_get_white_wire(CableHandle * h);
+int noop_set_raw(CableHandle * h, int state);
+int noop_get_raw(CableHandle * h, int * state);
+int noop_get_device_info(CableHandle * h, CableDeviceInfo * info);
+int noop_set_options(CableHandle * h, CableOptions * options);
+int noop_get_options(CableHandle * h, CableOptions * options);
 
 #endif

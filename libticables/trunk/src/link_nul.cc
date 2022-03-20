@@ -33,83 +33,97 @@
 #include "gettext.h"
 #include "internal.h"
 
-int noop_prepare(CableHandle *h)
+int noop_prepare(CableHandle * h)
 {
 	(void)h;
 	return 0;
 }
 
-int noop_probe(CableHandle *h)
+int noop_probe(CableHandle * h)
 {
 	(void)h;
 	return 0;
 }
 
-int noop_open(CableHandle *h)
+int noop_open(CableHandle * h)
 {
 	(void)h;
 	return 0;
 }
 
-int noop_close(CableHandle *h)
+int noop_close(CableHandle * h)
 {
 	(void)h;
 	return 0;
 }
 
-int noop_reset(CableHandle *h)
+int noop_reset(CableHandle * h)
 {
 	(void)h;
 	return 0;
 }
 
-int noop_put(CableHandle *h, uint8_t *data, uint32_t len)
+int noop_put(CableHandle * h, uint8_t * data, uint32_t len)
 {
 	(void)h, (void)data, (void)len;
 	return 0;
 }
 
-int noop_get(CableHandle *h, uint8_t *data, uint32_t len)
+int noop_get(CableHandle * h, uint8_t * data, uint32_t len)
 {
 	(void)h, (void)data, (void)len;
 	return 0;
 }
 
-int noop_check(CableHandle *h, int *status)
+int noop_check(CableHandle * h, int * status)
 {
 	(void)h;
 	*status = STATUS_NONE;
 	return 0;
 }
 
-int noop_set_red_wire(CableHandle *h, int b)
+int noop_set_red_wire(CableHandle * h, int b)
 {
 	(void)h, (void)b;
 	return 0;
 }
 
-int noop_set_white_wire(CableHandle *h, int b)
+int noop_set_white_wire(CableHandle * h, int b)
 {
 	(void)h, (void)b;
 	return 0;
 }
 
-int noop_get_red_wire(CableHandle *h)
+int noop_get_red_wire(CableHandle * h)
 {
 	(void)h;
 	return 1;
 }
 
-int noop_get_white_wire(CableHandle *h)
+int noop_get_white_wire(CableHandle * h)
 {
 	(void)h;
 	return 1;
 }
 
-int noop_set_device(CableHandle *h, const char * device)
+int noop_get_device_info(CableHandle * h, CableDeviceInfo * info)
 {
-	(void)h, (void)device;
+	(void)h, (void)info;
+	return 1;
+}
+
+int noop_set_options(CableHandle * h, CableOptions * options)
+{
+	(void)h, (void)options;
 	return 0;
+}
+
+int noop_get_options(CableHandle * h, CableOptions * options)
+{
+	ticables_copy_cable_options(h, options);
+	options->version = 1;
+	options->has_parameters = 0;
+	memset((void *)&options->parameters, 0, sizeof(options->parameters));
 }
 
 extern const CableFncts cable_nul = 
@@ -125,8 +139,8 @@ extern const CableFncts cable_nul =
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&noop_set_device,
-	NULL
+	&noop_get_device_info,
+	&noop_set_options, &noop_get_options
 };
 
 /* no const ! */ CableFncts cable_ilp =
@@ -142,6 +156,6 @@ extern const CableFncts cable_nul =
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&noop_set_device,
-	NULL
+	&noop_get_device_info,
+	&noop_set_options, &noop_get_options
 };

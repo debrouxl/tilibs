@@ -861,8 +861,8 @@ extern const CableFncts cable_slv =
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&noop_set_device,
-	&slv_get_device_info
+	&slv_get_device_info,
+	&noop_set_options, &noop_get_options
 };
 
 extern const CableFncts cable_raw =
@@ -878,8 +878,8 @@ extern const CableFncts cable_raw =
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&noop_set_device,
-	&slv_get_device_info
+	&slv_get_device_info,
+	&noop_set_options, &noop_get_options
 };
 
 //=======================

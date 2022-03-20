@@ -63,6 +63,8 @@ static int gry_prepare(CableHandle *h)
 	const char * device;
 	int ret;
 
+	// TODO pay attention to cable options.
+
 	switch (h->port)
 	{
 		case PORT_1: h->address = 0x3f8; device = "/dev/" DEVNAME "0"; break;
@@ -135,6 +137,7 @@ static int gry_open(CableHandle *h)
 	termset->c_cc[VMIN] = 0;
 	termset->c_cc[VTIME] = h->timeout;
 
+	// TODO pay attention to cable options.
 	cfsetispeed(termset, B9600);
 	cfsetospeed(termset, B9600);
 	tcsetattr(dev_fd, TCSANOW, termset);
@@ -210,7 +213,7 @@ static int gry_get(CableHandle* h, uint8_t *data, uint32_t len)
 	return 0;
 }
 
-// Migrate these functions into ioports.c
+// TODO Migrate these functions into ioports.c
 static int dcb_read_io(CableHandle *h)
 {
 #ifdef HAVE_TERMIOS_H
@@ -225,7 +228,7 @@ static int dcb_read_io(CableHandle *h)
 #endif
 }
 
-static int dcb_write_io(CableHandle *h, int data)
+static int dcb_write_io(CableHandle *h, const int data)
 {
 #ifdef HAVE_TERMIOS_H
 	unsigned int flags = 0;
@@ -244,8 +247,8 @@ static int dcb_write_io(CableHandle *h, int data)
 static int gry_probe(CableHandle *h)
 {
 	int i;
-	int seq_in[] =  { 3, 2, 0, 1, 3 };
-	int seq_out[] = { 2, 0, 0, 2, 2 };
+	static const int seq_in[] =  { 3, 2, 0, 1, 3 };
+	static const int seq_out[] = { 2, 0, 0, 2, 2 };
 
 	for (i = 0; i < 5; i++) 
 	{
@@ -322,6 +325,25 @@ static int gry_set_device(CableHandle *h, const char * device)
 	return ERR_ILLEGAL_ARG;
 }
 
+static int gry_set_options(CableHandle * h, CableOptions * options)
+{
+	(void)h, (void)options;
+	return ERR_ILLEGAL_ARG;
+}
+
+static int gry_get_options(CableHandle * h, CableOptions * options)
+{
+	ticables_copy_cable_options(h, options);
+	options->version = 1;
+	options->has_parameters = 1;
+	options->parameters.parameters_gry.device = h->device;
+	options->parameters.parameters_gry.address = h->address;
+	options->parameters.parameters_gry.quirk_speed_input = 0; // TODO
+	options->parameters.parameters_gry.quirk_speed_output = 0; // TODO
+	options->parameters.parameters_gry.qurik_enable_rtscts = 0; // TODO
+	return 0;
+}
+
 extern const CableFncts cable_gry = 
 {
 	CABLE_GRY,
@@ -335,6 +357,6 @@ extern const CableFncts cable_gry =
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
 	NULL, NULL,
-	&gry_set_device,
-	NULL
+	NULL,
+	&gry_set_options, &gry_get_options
 };
