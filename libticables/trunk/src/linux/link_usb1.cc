@@ -39,7 +39,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
-#ifdef __BSD__
+#if defined(__BSD__) || defined(__MACOSX__)
 #include <libusb.h>
 #else
 #include <libusb-1.0/libusb.h>
