@@ -22,11 +22,14 @@ jobs:
         
     - name: Prepare build
       run: |
-        export PREBUILDER=autotools
-        export BUILDER=make
-        .travis/script.sh
+        mkdir prefix
+        prefixpath="$(pwd)/prefix"
+        export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:${prefixpath}/lib/pkgconfig
+        mkdir build && cd build
+        cmake -GNinja -DCMAKE_INSTALL_PREFIX=${prefixpath} ..
     
     - uses: vapier/coverity-scan-action@v1
       with:
         email: ${{ secrets.COVERITY_SCAN_EMAIL }}
         token: ${{ secrets.COVERITY_SCAN_TOKEN }}
+        working-directory: "${{ github.workspace }}/build"
