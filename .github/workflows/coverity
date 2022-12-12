@@ -1,0 +1,32 @@
+name: Coverity Scan
+
+# We only want to test official release code, not every pull request.
+on:
+  push:
+    branches: [master]
+
+jobs:
+  coverity:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Git Repo
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+
+    - name: Install Linux dependencies (Ubuntu 18.04+)
+      run: |
+        set -e
+        sudo apt-get update
+        sudo apt-get build-essential git autoconf automake autopoint libtool libglib2.0-dev zlib1g-dev libusb-1.0-0-dev gettext bison flex groff texinfo libarchive-dev ninja-build liblz4-dev liblzma-dev
+        
+    - name: Prepare build
+      run: |
+        export PREBUILDER=autotools
+        export BUILDER=make
+        .travis/script.sh
+    
+    - uses: vapier/coverity-scan-action@v1
+      with:
+        email: ${{ secrets.COVERITY_SCAN_EMAIL }}
+        token: ${{ secrets.COVERITY_SCAN_TOKEN }}
