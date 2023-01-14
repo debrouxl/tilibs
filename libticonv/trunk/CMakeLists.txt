@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.12)
 
 project(libticonv
         VERSION     1.1.6
@@ -37,11 +37,10 @@ set_target_properties(ticonv_shared PROPERTIES VERSION 9.0.4 SOVERSION 9)
 if(USE_ICONV)
     find_package(Iconv REQUIRED)
     # flags/link for external deps
-    add_definitions(-DUSE_ICONV)
+    add_compile_definitions(USE_ICONV)
     if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
         target_include_directories(ticonv_objlib PRIVATE ${Iconv_INCLUDE_DIRS})
         target_link_libraries(ticonv_shared ${Iconv_LIBRARIES})
-        target_link_libraries(ticonv_static ${Iconv_LIBRARIES})
     endif()
 endif()
 

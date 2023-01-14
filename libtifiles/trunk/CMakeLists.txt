@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.12)
 
 project(libtifiles2
         VERSION     1.1.8
@@ -50,8 +50,7 @@ set(PUBLIC_HEADERS
         src/typesxx.h)
 
 # external deps lookup
-pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive ticonv zlib)
-
+pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive zlib)
 try_static_libs_if_needed()
 
 # auto-creation of all targets with flags etc., alongside with internal deps
@@ -59,7 +58,11 @@ create_targets_both_lib_types(tifiles2 ticonv)
 
 set_target_properties(tifiles2_shared PROPERTIES VERSION 11.0.2 SOVERSION 11)
 
-if(TRY_STATIC_LIBS)
+# there are relocation issues when linking BZip2 and zlib on linux:
+#   /usr/bin/ld: /usr/lib/x86_64-linux-gnu/libbz2.a(bzlib.o): relocation R_X86_64_PC32 against symbol `BZ2_crc32Table'
+#   /usr/bin/ld: /usr/lib/x86_64-linux-gnu/libz.a(deflate.o): relocation R_X86_64_PC32 against symbol `z_errmsg'
+#                can not be used when making a shared object; recompile with -fPIC
+if(TRY_STATIC_LIBS AND NOT LINUX)
     find_package(BZip2 REQUIRED) # Needed for some reason
     target_link_libraries(tifiles2_shared ${BZIP2_LIBRARIES})
 endif()
@@ -69,9 +72,6 @@ if(ENABLE_NLS)
     i18n_mo_from_po_pot()
     add_dependencies(tifiles2_objlib potfiles_1)
 endif()
-
-# internal deps
-add_dependencies(tifiles2_objlib buildandinstall_libticonv)
 
 # public export define
 target_compile_definitions(tifiles2_objlib PUBLIC TIFILES_EXPORTS)

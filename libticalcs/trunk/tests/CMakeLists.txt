@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.12)
 
 project(libticalcs2-tests
         LANGUAGES   C CXX)
@@ -6,7 +6,7 @@ project(libticalcs2-tests
 add_executable(torture_ticalcs torture_ticalcs.c)
 add_executable(test_ticalcs_2 test_ticalcs_2.cc)
 
-pkg_check_modules(DEPS REQUIRED glib-2.0)
+pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16 libarchive zlib)
 
 foreach(tar torture_ticalcs test_ticalcs_2)
     target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
@@ -17,7 +17,14 @@ foreach(tar torture_ticalcs test_ticalcs_2)
         ${CMAKE_SOURCE_DIR}/libticables/trunk/src
         ${CMAKE_SOURCE_DIR}/libticalcs/trunk/src)
 
-    target_link_libraries(${tar} ticonv_shared tifiles2_shared ticables2_shared ticalcs2_shared "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
+    target_link_directories(${tar} PRIVATE
+        ${DEPS_LIBRARY_DIRS}
+        ${CMAKE_BINARY_DIR}/libticonv/trunk
+        ${CMAKE_BINARY_DIR}/libtifiles/trunk
+        ${CMAKE_BINARY_DIR}/libticables/trunk
+        ${CMAKE_BINARY_DIR}/libticalcs/trunk)
+
+    target_link_libraries(${tar} ${DEPS_LIBRARIES} ticonv_shared tifiles2_shared ticables2_shared ticalcs2_shared)
 endforeach()
 
 set(builddirlibpaths "${CMAKE_BINARY_DIR}/libticonv/trunk:${CMAKE_BINARY_DIR}/libtifiles/trunk:${CMAKE_BINARY_DIR}/libticables/trunk:${CMAKE_BINARY_DIR}/libticalcs/trunk")
