@@ -5,7 +5,6 @@ function(create_targets_both_lib_types basename)
 
     # Object target to unify source building for both (shared/static) real targets
     add_library(${lib_objlib} OBJECT ${SRC_FILES})
-    set_target_properties(${lib_objlib} PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
     # The two real targets
     add_library(${lib_shared} SHARED $<TARGET_OBJECTS:${lib_objlib}>)
@@ -13,13 +12,35 @@ function(create_targets_both_lib_types basename)
 
     # Internal deps
     foreach(idep ${ARGN})
+        add_dependencies(${lib_objlib} ${idep}_objlib)
         add_dependencies(${lib_shared} ${idep}_shared)
-        add_dependencies(${lib_static} ${idep}_static)
+        if(${idep} MATCHES "^(ti[a-z]+)2$")
+            set(INTERNAL_DEP_LIB_DIR ${CMAKE_BINARY_DIR}/lib${CMAKE_MATCH_1}/trunk)
+            set(INTERNAL_DEP_INC_DIR ${CMAKE_SOURCE_DIR}/lib${CMAKE_MATCH_1}/trunk/src)
+        else()
+            set(INTERNAL_DEP_LIB_DIR ${CMAKE_BINARY_DIR}/lib${idep}/trunk)
+            set(INTERNAL_DEP_INC_DIR ${CMAKE_SOURCE_DIR}/lib${idep}/trunk/src)
+        endif()
+        target_include_directories(${lib_objlib} PRIVATE ${INTERNAL_DEP_INC_DIR})
+        if(TRY_STATIC_LIBS)
+            target_link_libraries(${lib_shared} "${INTERNAL_DEP_LIB_DIR}/${STATIC_LIB_PREFIX}${idep}${STATIC_LIB_EXT}")
+        else()
+            target_link_directories(${lib_shared} PRIVATE "${INTERNAL_DEP_LIB_DIR}")
+            target_link_libraries(${lib_shared} "${idep}")
+        endif()
     endforeach()
 
     # Main properties
-    set_target_properties(${lib_shared} ${lib_static} PROPERTIES
+    if(MSVC)
+        set(static_lib_output_name "${basename}-static")
+    else()
+        set(static_lib_output_name "${basename}")
+    endif()
+    set_target_properties(${lib_shared} PROPERTIES
         OUTPUT_NAME     ${basename}
+        PUBLIC_HEADER  "${PUBLIC_HEADERS}")
+    set_target_properties(${lib_static} PROPERTIES
+        OUTPUT_NAME     ${static_lib_output_name}
         PUBLIC_HEADER  "${PUBLIC_HEADERS}")
 
     # Defines
@@ -30,15 +51,11 @@ function(create_targets_both_lib_types basename)
     target_include_directories(${lib_objlib} PRIVATE src)
 
     # Link-related properties, flags...
+    target_link_directories(${lib_shared} PRIVATE ${DEPS_LIBRARY_DIRS})
     if(TRY_STATIC_LIBS)
-        target_link_libraries(${lib_shared} ${TRY_STATIC_DEPS_LDFLAGS})
-        if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
-            target_include_directories(${lib_shared} PRIVATE ${Iconv_INCLUDE_DIRS})
-            target_link_libraries(${lib_shared} ${Iconv_LIBRARIES})
-        endif()
+        target_link_libraries(${lib_shared} ${TRY_STATIC_DEPS_LIBRARIES})
     else()
-        link_directories(${DEPS_LIBRARY_DIRS})
-        target_link_libraries(${lib_shared} "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES} ${Intl_LIBRARIES})
+        target_link_libraries(${lib_shared} ${DEPS_LIBRARIES})
     endif()
 
     # Stuff to install and developer-related things
@@ -49,6 +66,4 @@ function(create_targets_both_lib_types basename)
         PUBLIC_HEADER   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/tilp2)
 
     configure_and_install_pc_file(${basename} ${PROJECT_VERSION})
-
-    create_buildandinstall_target(${PROJECT_NAME} ${lib_shared} ${lib_static})
 endfunction()

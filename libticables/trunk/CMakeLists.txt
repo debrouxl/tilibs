@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.12)
 
 project(libticables2
         VERSION     1.3.6
@@ -38,13 +38,13 @@ set(PUBLIC_HEADERS
         src/export1.h
         src/timeout.h)
 
+if(WIN32)
+    list(APPEND HEADER_FILES "src/win64/rwp.h")
+    list(APPEND SRC_FILES "src/win64/rwp.c")
+endif()
+
 # external deps lookup
 pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16)
-
-# check includes for parallel and serial support
-include(CheckIncludeFile)
-CHECK_INCLUDE_FILE(linux/parport.h HAVE_LINUX_PARPORT_H)
-CHECK_INCLUDE_FILE(linux/serial.h HAVE_LINUX_SERIAL_H)
 
 try_static_libs_if_needed()
 
@@ -66,11 +66,16 @@ endif()
 target_compile_definitions(ticables2_objlib PUBLIC HAVE_LIBUSB_1_0=1 HAVE_LIBUSB10_STRERROR=1 HAVE_TERMIOS_H=1)
 
 # check includes for parallel and serial support
-if (HAVE_LINUX_PARPORT_H)
-    target_compile_definitions(ticables2_objlib PUBLIC HAVE_LINUX_PARPORT_H=1)
-endif()
-if (HAVE_LINUX_SERIAL_H)
-    target_compile_definitions(ticables2_objlib PUBLIC HAVE_LINUX_SERIAL_H=1)
+if(LINUX)
+    include(CheckIncludeFile)
+    CHECK_INCLUDE_FILE(linux/parport.h HAVE_LINUX_PARPORT_H)
+    CHECK_INCLUDE_FILE(linux/serial.h HAVE_LINUX_SERIAL_H)
+    if (HAVE_LINUX_PARPORT_H)
+        target_compile_definitions(ticables2_objlib PUBLIC HAVE_LINUX_PARPORT_H=1)
+    endif()
+    if (HAVE_LINUX_SERIAL_H)
+        target_compile_definitions(ticables2_objlib PUBLIC HAVE_LINUX_SERIAL_H=1)
+    endif()
 endif()
 
 # public export define

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.12)
 
 project(libticonv-tests
         LANGUAGES   C CXX)
@@ -14,7 +14,11 @@ foreach(tar torture_ticonv test_ticonv)
     target_include_directories(${tar} PRIVATE
         ${CMAKE_SOURCE_DIR}/libticonv/trunk/src)
 
-    target_link_libraries(${tar} ticonv_shared "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
+    target_link_directories(${tar} PRIVATE
+        ${DEPS_LIBRARY_DIRS}
+        ${CMAKE_BINARY_DIR}/libticonv/trunk)
+
+    target_link_libraries(${tar} ${DEPS_LIBRARIES} ticonv_shared)
 endforeach()
 
 set(builddirlibpaths "${CMAKE_BINARY_DIR}/libticonv/trunk")

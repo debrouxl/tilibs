@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.12)
 
 project(libticalcs2
         VERSION     1.1.10
@@ -45,6 +45,7 @@ set(SRC_FILES
 set(PUBLIC_HEADERS
         src/ticalcs.h
         src/export3.h
+        src/romdump.h
         src/keys73.h
         src/keys83.h
         src/keys83p.h
@@ -62,7 +63,11 @@ set(PUBLIC_HEADERS
         src/cmd68k.h)
 
 # external deps lookup
-pkg_check_modules(DEPS REQUIRED glib-2.0 ticonv ticables2 tifiles2 zlib)
+if(TRY_STATIC_LIBS)
+    # from libticables and libtifiles...
+    set(external_deps_if_static "libusb-1.0>=1.0.16" "libarchive")
+endif()
+pkg_check_modules(DEPS REQUIRED glib-2.0 zlib ${external_deps_if_static})
 
 try_static_libs_if_needed()
 
@@ -71,7 +76,11 @@ create_targets_both_lib_types(ticalcs2 tifiles2 ticables2 ticonv)
 
 set_target_properties(ticalcs2_shared PROPERTIES VERSION 13.0.3 SOVERSION 13)
 
-if(TRY_STATIC_LIBS)
+# there are relocation issues when linking BZip2 and zlib on linux:
+#   /usr/bin/ld: /usr/lib/x86_64-linux-gnu/libbz2.a(bzlib.o): relocation R_X86_64_PC32 against symbol `BZ2_crc32Table'
+#   /usr/bin/ld: /usr/lib/x86_64-linux-gnu/libz.a(deflate.o): relocation R_X86_64_PC32 against symbol `z_errmsg'
+#                can not be used when making a shared object; recompile with -fPIC
+if(TRY_STATIC_LIBS AND NOT LINUX)
     find_package(BZip2 REQUIRED) # Needed for some reason
     target_link_libraries(ticalcs2_shared ${BZIP2_LIBRARIES})
 endif()
@@ -82,11 +91,8 @@ if(ENABLE_NLS)
     add_dependencies(ticalcs2_objlib potfiles_3)
 endif()
 
-# internal deps
-add_dependencies(ticalcs2_objlib buildandinstall_libticonv buildandinstall_libticables2 buildandinstall_libtifiles2)
-
 # public export define
-target_compile_definitions(ticables2_objlib PUBLIC TICALCS_EXPORTS)
+target_compile_definitions(ticalcs2_objlib PUBLIC TICALCS_EXPORTS)
 
 # tests
 add_subdirectory(tests)

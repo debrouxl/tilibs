@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.12)
 
 project(libtifiles2-tests
         LANGUAGES   C CXX)
@@ -6,7 +6,7 @@ project(libtifiles2-tests
 add_executable(torture_tifiles torture_tifiles.c)
 add_executable(test_tifiles_2 test_tifiles_2.cc)
 
-pkg_check_modules(DEPS REQUIRED glib-2.0)
+pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive zlib)
 
 foreach(tar torture_tifiles test_tifiles_2)
     target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
@@ -15,7 +15,12 @@ foreach(tar torture_tifiles test_tifiles_2)
         ${CMAKE_SOURCE_DIR}/libticonv/trunk/src
         ${CMAKE_SOURCE_DIR}/libtifiles/trunk/src)
 
-    target_link_libraries(${tar} ticonv_shared tifiles2_shared "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
+    target_link_directories(${tar} PRIVATE
+        ${DEPS_LIBRARY_DIRS}
+        ${CMAKE_BINARY_DIR}/libticonv/trunk
+        ${CMAKE_BINARY_DIR}/libtifiles/trunk)
+
+    target_link_libraries(${tar} ${DEPS_LIBRARIES} ticonv_shared tifiles2_shared)
 endforeach()
 
 set(builddirlibpaths "${CMAKE_BINARY_DIR}/libticonv/trunk:${CMAKE_BINARY_DIR}/libtifiles/trunk")
