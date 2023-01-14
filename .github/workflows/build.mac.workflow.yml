@@ -1,0 +1,70 @@
+name: Build macOS
+
+on:
+  push:
+    branches: [ master, feature/github-actions ]
+  pull_request:
+    branches: [ master, feature/github-actions ]
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: "Build: ${{ matrix.os }} - ${{ matrix.deps_type }} deps"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macOS-latest]
+        try_static_deps: ['OFF','ON']
+        include:
+          - try_static_deps: 'OFF'
+            deps_type: shared
+          - try_static_deps: 'ON'
+            deps_type: static
+            
+    steps:
+    - name: Checkout Git Repo
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+
+    - name: Install dependencies
+      run: |
+        set -e
+        brew install cmake ninja gettext libarchive glib libusb libiconv intltool expat bzip2 zlib
+
+    # Workaround!
+    # libarchive.pc now has (lib)iconv in Requires.private, which doesn't work here
+    # See https://github.com/libarchive/libarchive/pull/1813 and other issues
+    - name: Fix libarchive pkg-config file
+      run: |
+        sudo sed -i '' -E '/^Requires.private: (lib)?iconv/d' /usr/local/opt/libarchive/lib/pkgconfig/libarchive.pc
+
+    - name: Build tilibs
+      run: |
+        set -e
+        mkdir prefix
+        prefixpath="$(pwd)/prefix"
+        mkdir build && cd build
+        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DTRY_STATIC_LIBS=${{ matrix.try_static_deps }} -DCMAKE_INSTALL_PREFIX=${prefixpath} ..
+        cmake --build . --target all
+
+    - name: Test tilibs
+      run: |
+        cd build
+        cmake --build . --target check
+
+    - name: Install tilibs
+      run: |
+        cd build
+        cmake --build . --target install
+
+    - name: Prepare install folder for upload
+      run: mv prefix tilibs_mac_${{ matrix.deps_type }}Deps_${{ github.sha }}
+
+    - name: Upload install folder
+      uses: actions/upload-artifact@v3
+      with:
+        name: tilibs_mac_${{ matrix.deps_type }}Deps_${{ github.sha }}
+        path: tilibs_mac_${{ matrix.deps_type }}Deps_${{ github.sha }}/
