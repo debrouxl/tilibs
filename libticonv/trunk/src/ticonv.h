@@ -43,6 +43,13 @@
 extern "C" {
 #endif
 
+// Work around a Windows SDK issue that prevents us from just using "restrict" directly in both C/C++.
+#if defined(__cplusplus) || defined(_MSC_VER)
+#define _ticonv_restrict_backup restrict
+#undef restrict
+#define restrict __restrict
+#endif
+
 	/***********************/
 	/* Types & Definitions */
 	/***********************/
@@ -212,6 +219,11 @@ typedef struct
 	/************************/
 	/* Deprecated functions */
 	/************************/
+
+#if defined(__cplusplus) || defined(_MSC_VER)
+#undef restrict
+#define restrict _ticonv_restrict_backup
+#endif
 
 #ifdef __cplusplus
 }
