@@ -38,7 +38,7 @@
 #include "bsd/detect.h"
 #include "macos/detect.h"
 
-TIEXPORT1 int TICALL ticables_probing_found(int *array)
+int TICALL ticables_probing_found(int *array)
 {
 	if (array != NULL)
 	{
@@ -59,7 +59,7 @@ TIEXPORT1 int TICALL ticables_probing_found(int *array)
 	return 0;
 }
 
-TIEXPORT1 void TICALL ticables_probing_show(int **array)
+void TICALL ticables_probing_show(int **array)
 {
 	if (array != NULL)
 	{
@@ -97,7 +97,7 @@ TIEXPORT1 void TICALL ticables_probing_show(int **array)
  *
  * Return value: 0 if successful, ERR_NO_CABLE if no cables found.
  **/
-TIEXPORT1 int TICALL ticables_probing_do(int ***result, unsigned int timeout, ProbingMethod method)
+int TICALL ticables_probing_do(int ***result, unsigned int timeout, ProbingMethod method)
 {
 	int port;
 	int model;
@@ -209,7 +209,7 @@ TIEXPORT1 int TICALL ticables_probing_do(int ***result, unsigned int timeout, Pr
  *
  * Return value: always 0.
  **/
-TIEXPORT1 int TICALL ticables_probing_finish(int ***result)
+int TICALL ticables_probing_finish(int ***result)
 {
 	int i;
 
@@ -239,7 +239,7 @@ TIEXPORT1 int TICALL ticables_probing_finish(int ***result)
  *
  * Return value: !0 if available, 0 otherwise.
  **/
-TIEXPORT1 int TICALL ticables_is_usb_enabled(void)
+int TICALL ticables_is_usb_enabled(void)
 {
 #if defined(__WIN32__)
 	return !win32_check_libusb();
@@ -265,7 +265,7 @@ TIEXPORT1 int TICALL ticables_is_usb_enabled(void)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_get_usb_devices(int **list, int *len)
+int TICALL ticables_get_usb_devices(int **list, int *len)
 {
 	if (list != NULL)
 	{
@@ -300,7 +300,7 @@ TIEXPORT1 int TICALL ticables_get_usb_devices(int **list, int *len)
  * \param array the array previously allocated by ticables_get_usb_devices()
  * \return Always 0
  */
-TIEXPORT1 int TICALL ticables_free_usb_devices(int *array)
+int TICALL ticables_free_usb_devices(int *array)
 {
 	free(array);
 	return 0;
@@ -410,7 +410,7 @@ void translate_usb_device_info(CableDeviceInfo *info, const USBCableInfo *usbinf
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_get_usb_device_info(CableDeviceInfo **list, int *len)
+int TICALL ticables_get_usb_device_info(CableDeviceInfo **list, int *len)
 {
 	if (list != NULL)
 	{
@@ -445,7 +445,7 @@ TIEXPORT1 int TICALL ticables_get_usb_device_info(CableDeviceInfo **list, int *l
  * \param array the array previously allocated by ticables_get_usb_device_info()
  * \return Always 0
  */
-TIEXPORT1 int TICALL ticables_free_usb_device_info(CableDeviceInfo *list)
+int TICALL ticables_free_usb_device_info(CableDeviceInfo *list)
 {
 	free(list);
 	return 0;

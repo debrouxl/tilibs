@@ -110,7 +110,7 @@ static const DBUSMachineInfo machine_types[] =
 
 };
 
-TIEXPORT3 const char* TICALL dbus_cmd2name(uint8_t id)
+const char* TICALL dbus_cmd2name(uint8_t id)
 {
 	unsigned int i;
 
@@ -125,7 +125,7 @@ TIEXPORT3 const char* TICALL dbus_cmd2name(uint8_t id)
 	return "";
 }
 
-TIEXPORT3 const char* TICALL dbus_cmd2officialname(uint8_t id)
+const char* TICALL dbus_cmd2officialname(uint8_t id)
 {
 	unsigned int i;
 
@@ -140,7 +140,7 @@ TIEXPORT3 const char* TICALL dbus_cmd2officialname(uint8_t id)
 	return "";
 }
 
-TIEXPORT3 const char* TICALL dbus_cmd2desc(uint8_t id)
+const char* TICALL dbus_cmd2desc(uint8_t id)
 {
 	unsigned int i;
 
@@ -155,7 +155,7 @@ TIEXPORT3 const char* TICALL dbus_cmd2desc(uint8_t id)
 	return "";
 }
 
-TIEXPORT3 const char* TICALL dbus_mid2direction(uint8_t id)
+const char* TICALL dbus_mid2direction(uint8_t id)
 {
 	unsigned int i;
 
@@ -181,7 +181,7 @@ TIEXPORT3 const char* TICALL dbus_mid2direction(uint8_t id)
     - data [in]   : data to send (or 0x00 if NULL)
     - int [out]   : an error code
 */
-TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uint8_t* data)
+int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uint8_t* data)
 {
 	int i;
 	uint16_t sum;
@@ -319,7 +319,7 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 	return ret;
 }
 
-TIEXPORT3 int TICALL dbus_recv_header(CalcHandle *handle, uint8_t* host, uint8_t* cmd, uint16_t* length)
+int TICALL dbus_recv_header(CalcHandle *handle, uint8_t* host, uint8_t* cmd, uint16_t* length)
 {
 	int ret = 0;
 	uint8_t buf[4];
@@ -370,7 +370,7 @@ TIEXPORT3 int TICALL dbus_recv_header(CalcHandle *handle, uint8_t* host, uint8_t
 	return ret;
 }
 
-TIEXPORT3 int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_t* data)
+int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_t* data)
 {
 	int ret = 0;
 	int i;
@@ -480,7 +480,7 @@ TIEXPORT3 int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_
   - data [out]	 : received data (depending on command)
   - int [out]	 : an error code
 */
-TIEXPORT3 int TICALL dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data)
+int TICALL dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data)
 {
 	static int ref = 0;
 	int ret;
@@ -541,7 +541,7 @@ TIEXPORT3 int TICALL dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, 
 	return ret;
 }
 
-TIEXPORT3 int TICALL dbus_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len)
+int TICALL dbus_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len)
 {
 	uint8_t mid, cmd;
 	uint16_t length = 0;

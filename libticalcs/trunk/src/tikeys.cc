@@ -43,7 +43,7 @@ extern const CalcKey TI92P_KEYS[];
  *
  * Return value: a TI key.
  **/
-TIEXPORT3 const CalcKey* TICALL ticalcs_keys_73(uint8_t ascii_code)
+const CalcKey* TICALL ticalcs_keys_73(uint8_t ascii_code)
 {
 	return &TI73_KEYS[ascii_code];
 }
@@ -56,7 +56,7 @@ TIEXPORT3 const CalcKey* TICALL ticalcs_keys_73(uint8_t ascii_code)
  *
  * Return value: a TI key.
  **/
-TIEXPORT3 const CalcKey*  TICALL ticalcs_keys_83(uint8_t ascii_code)
+const CalcKey*  TICALL ticalcs_keys_83(uint8_t ascii_code)
 {
 	return &TI83_KEYS[ascii_code];
 }
@@ -69,7 +69,7 @@ TIEXPORT3 const CalcKey*  TICALL ticalcs_keys_83(uint8_t ascii_code)
  *
  * Return value: a TI key.
  **/
-TIEXPORT3 const CalcKey*  TICALL ticalcs_keys_83p(uint8_t ascii_code)
+const CalcKey*  TICALL ticalcs_keys_83p(uint8_t ascii_code)
 {
 	return &TI83P_KEYS[ascii_code];
 }
@@ -82,7 +82,7 @@ TIEXPORT3 const CalcKey*  TICALL ticalcs_keys_83p(uint8_t ascii_code)
  *
  * Return value: a TI key.
  **/
-TIEXPORT3 const CalcKey*  TICALL ticalcs_keys_86(uint8_t ascii_code)
+const CalcKey*  TICALL ticalcs_keys_86(uint8_t ascii_code)
 {
 	return &TI86_KEYS[ascii_code];
 }
@@ -95,7 +95,7 @@ TIEXPORT3 const CalcKey*  TICALL ticalcs_keys_86(uint8_t ascii_code)
  *
  * Return value: a TI key.
  **/
-TIEXPORT3 const CalcKey*  TICALL ticalcs_keys_89(uint8_t ascii_code)
+const CalcKey*  TICALL ticalcs_keys_89(uint8_t ascii_code)
 {
 	return &TI89_KEYS[ascii_code];
 }
@@ -108,7 +108,7 @@ TIEXPORT3 const CalcKey*  TICALL ticalcs_keys_89(uint8_t ascii_code)
  *
  * Return value: a TI key.
  **/
-TIEXPORT3 const CalcKey*  TICALL ticalcs_keys_92p(uint8_t ascii_code)
+const CalcKey*  TICALL ticalcs_keys_92p(uint8_t ascii_code)
 {
 	return &TI92P_KEYS[ascii_code];
 }

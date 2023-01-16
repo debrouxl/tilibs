@@ -47,7 +47,7 @@
  *
  * Return value: the allocated block.
  **/
-TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
+FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 {
 	FileContent* content = (FileContent *)g_malloc0(sizeof(FileContent));
 
@@ -76,7 +76,7 @@ TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
  *
  * Return value: 0.
  **/
-TIEXPORT2 int TICALL tifiles_content_delete_regular(FileContent *content)
+int TICALL tifiles_content_delete_regular(FileContent *content)
 {
 	unsigned int i;
 
@@ -120,7 +120,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_regular(FileContent *content)
  *
  * Return value: none.
  **/
-TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
+FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
 {
 	FileContent *dup = NULL;
 	unsigned int i;
@@ -179,7 +179,7 @@ TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT2 int tifiles_file_read_regular(const char *filename, FileContent *content)
+int tifiles_file_read_regular(const char *filename, FileContent *content)
 {
 	if (filename == NULL || content == NULL)
 	{
@@ -225,7 +225,7 @@ TIEXPORT2 int tifiles_file_read_regular(const char *filename, FileContent *conte
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT2 int tifiles_file_write_regular(const char *filename, FileContent *content, char **real_fname)
+int tifiles_file_write_regular(const char *filename, FileContent *content, char **real_fname)
 {
 	if (content == NULL || (filename == NULL && real_fname == NULL))
 	{
@@ -265,7 +265,7 @@ TIEXPORT2 int tifiles_file_write_regular(const char *filename, FileContent *cont
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT2 int TICALL tifiles_file_display_regular(FileContent *content)
+int TICALL tifiles_file_display_regular(FileContent *content)
 {
 	unsigned int i;
 	char trans[257];
@@ -351,7 +351,7 @@ TIEXPORT2 int TICALL tifiles_file_display_regular(FileContent *content)
  *
  * Return value: the allocated block.
  **/
-TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
+BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 {
 	BackupContent* content = (BackupContent *)g_malloc0(sizeof(BackupContent));
 
@@ -380,7 +380,7 @@ TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
  *
  * Return value: none.
  **/
-TIEXPORT2 int TICALL tifiles_content_delete_backup(BackupContent *content)
+int TICALL tifiles_content_delete_backup(BackupContent *content)
 {
 #ifdef TRACE_CONTENT_INSTANCES
 	tifiles_info("tifiles_content_delete_backup: %p", content);
@@ -423,7 +423,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_backup(BackupContent *content)
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT2 int tifiles_file_read_backup(const char *filename, BackupContent *content)
+int tifiles_file_read_backup(const char *filename, BackupContent *content)
 {
 	if (filename == NULL || content == NULL)
 	{
@@ -457,7 +457,7 @@ TIEXPORT2 int tifiles_file_read_backup(const char *filename, BackupContent *cont
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT2 int tifiles_file_write_backup(const char *filename, BackupContent *content)
+int tifiles_file_write_backup(const char *filename, BackupContent *content)
 {
 	if (filename == NULL || content == NULL)
 	{
@@ -490,7 +490,7 @@ TIEXPORT2 int tifiles_file_write_backup(const char *filename, BackupContent *con
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT2 int TICALL tifiles_file_display_backup(BackupContent *content)
+int TICALL tifiles_file_display_backup(BackupContent *content)
 {
 	if (content == NULL)
 	{
@@ -523,7 +523,7 @@ TIEXPORT2 int TICALL tifiles_file_display_backup(BackupContent *content)
  *
  * Return value: the allocated block.
  **/
-TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
+FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 {
 	FlashContent* content = (FlashContent *)g_malloc0(sizeof(FlashContent));
 
@@ -570,7 +570,7 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
  *
  * Return value: always 0.
  **/
-TIEXPORT2 int TICALL tifiles_content_delete_flash(FlashContent *content)
+int TICALL tifiles_content_delete_flash(FlashContent *content)
 {
 #ifdef TRACE_CONTENT_INSTANCES
 	tifiles_info("tifiles_content_delete_flash: %p", content);
@@ -623,7 +623,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_flash(FlashContent *content)
  *
  * Return value: none.
  **/
-TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
+FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 {
 	FlashContent *dup = NULL;
 	FlashContent *p, *q;
@@ -696,7 +696,7 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT2 int tifiles_file_read_flash(const char *filename, FlashContent *content)
+int tifiles_file_read_flash(const char *filename, FlashContent *content)
 {
 	if (filename == NULL || content == NULL)
 	{
@@ -742,7 +742,7 @@ TIEXPORT2 int tifiles_file_read_flash(const char *filename, FlashContent *conten
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT2 int tifiles_file_write_flash2(const char *filename, FlashContent *content, char **real_fname)
+int tifiles_file_write_flash2(const char *filename, FlashContent *content, char **real_fname)
 {
 	if (content == NULL || (filename == NULL && real_fname == NULL))
 	{
@@ -777,7 +777,7 @@ TIEXPORT2 int tifiles_file_write_flash2(const char *filename, FlashContent *cont
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT2 int tifiles_file_write_flash(const char *filename, FlashContent *content)
+int tifiles_file_write_flash(const char *filename, FlashContent *content)
 {
 	return tifiles_file_write_flash2(filename, content, NULL);
 }
@@ -790,7 +790,7 @@ TIEXPORT2 int tifiles_file_write_flash(const char *filename, FlashContent *conte
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT2 int TICALL tifiles_file_display_flash(FlashContent *content)
+int TICALL tifiles_file_display_flash(FlashContent *content)
 {
 	if (content == NULL)
 	{
@@ -823,7 +823,7 @@ TIEXPORT2 int TICALL tifiles_file_display_flash(FlashContent *content)
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT2 int TICALL tifiles_file_display(const char *filename)
+int TICALL tifiles_file_display(const char *filename)
 {
 	if (tifiles_file_is_tigroup(filename))
 	{
@@ -872,7 +872,7 @@ TIEXPORT2 int TICALL tifiles_file_display(const char *filename)
  * Return value: a 2-dimensions allocated integer array. Must be freed with tifiles_free_table_of_entries when
  * no longer used.
  **/
-TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, unsigned int *nfolders)
+int** tifiles_create_table_of_entries(FileContent *content, unsigned int *nfolders)
 {
 	unsigned int num_folders = 0;
 	unsigned int i, j;
@@ -955,7 +955,7 @@ TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, unsigned i
 	return table;
 }
 
-TIEXPORT2 void tifiles_free_table_of_entries(int ** table)
+void tifiles_free_table_of_entries(int ** table)
 {
 	if (table != NULL)
 	{

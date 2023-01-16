@@ -101,6 +101,8 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${GLOBAL_DEBUG_FLAGS} ")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${GLOBAL_DEBUG_FLAGS} ")
     set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} ${GLOBAL_DEBUG_FLAGS} ")
+    # only for clang/gcc
+    add_compile_definitions(HAVE_FVISIBILITY=1)
 endif()
 
 if(APPLE)
@@ -144,7 +146,7 @@ endif()
 set(LOCALEDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LOCALEDIR}")
 
 # Global defines
-add_definitions(-DHAVE_FVISIBILITY=1 -DLOCALEDIR="${LOCALEDIR}")
+add_compile_definitions(LOCALEDIR="${LOCALEDIR}")
 check_symbol_exists(ctime_r "time.h" HAVE_CTIME_R)
 check_symbol_exists(localtime_r "time.h" HAVE_LOCALTIME_R)
 check_symbol_exists(asctime_r "time.h" HAVE_ASCTIME_R)

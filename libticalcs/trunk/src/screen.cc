@@ -40,7 +40,7 @@
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_screen_convert_bw_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
+int TICALL ticalcs_screen_convert_bw_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
 {
 	unsigned int i;
 
@@ -90,7 +90,7 @@ TIEXPORT3 int TICALL ticalcs_screen_convert_bw_to_rgb888(const uint8_t * src, un
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_screen_convert_bw_to_blurry_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
+int TICALL ticalcs_screen_convert_bw_to_blurry_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
 {
 	unsigned int i;
 
@@ -140,7 +140,7 @@ TIEXPORT3 int TICALL ticalcs_screen_convert_bw_to_blurry_rgb888(const uint8_t * 
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_screen_convert_gs4_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
+int TICALL ticalcs_screen_convert_gs4_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
 {
 	unsigned int i;
 
@@ -182,7 +182,7 @@ TIEXPORT3 int TICALL ticalcs_screen_convert_gs4_to_rgb888(const uint8_t * src, u
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_screen_convert_rgb565le_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
+int TICALL ticalcs_screen_convert_rgb565le_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
 {
 	unsigned int i;
 
@@ -220,7 +220,7 @@ TIEXPORT3 int TICALL ticalcs_screen_convert_rgb565le_to_rgb888(const uint8_t * s
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_screen_convert_native_to_rgb888(CalcPixelFormat format, const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
+int TICALL ticalcs_screen_convert_native_to_rgb888(CalcPixelFormat format, const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
 {
 	int ret;
 
@@ -270,7 +270,7 @@ TIEXPORT3 int TICALL ticalcs_screen_convert_native_to_rgb888(CalcPixelFormat for
  *
  * Return value: 0 if successful, an error code otherwise.
  */
-TIEXPORT3 int TICALL ticalcs_screen_nspire_rle_uncompress(CalcPixelFormat format, const uint8_t *src, uint32_t input_size, uint8_t * dst, uint32_t max_output_size)
+int TICALL ticalcs_screen_nspire_rle_uncompress(CalcPixelFormat format, const uint8_t *src, uint32_t input_size, uint8_t * dst, uint32_t max_output_size)
 {
 	int ret = 0;
 
@@ -392,7 +392,7 @@ TIEXPORT3 int TICALL ticalcs_screen_nspire_rle_uncompress(CalcPixelFormat format
  *
  * Return value: 0 if successful, an error code otherwise.
  */
-TIEXPORT3 int TICALL ticalcs_screen_84pcse_rle_uncompress(const uint8_t *src, uint32_t src_length, uint8_t *dst, uint32_t dst_length)
+int TICALL ticalcs_screen_84pcse_rle_uncompress(const uint8_t *src, uint32_t src_length, uint8_t *dst, uint32_t dst_length)
 {
 	const uint8_t *palette;
 	unsigned int palette_size, i, c, n;

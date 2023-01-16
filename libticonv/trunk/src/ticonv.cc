@@ -46,7 +46,7 @@
  *
  * Return value: a constant string.
  **/
-TIEXPORT4 const char *TICALL ticonv_version_get(void)
+const char *TICALL ticonv_version_get(void)
 {
 	return LIBCONV_VERSION;
 }
@@ -59,7 +59,7 @@ TIEXPORT4 const char *TICALL ticonv_version_get(void)
  *
  * Return value: number of characters. Surrogate pairs are counted as 2 characters each.
  **/
-TIEXPORT4 size_t TICALL ticonv_utf16_strlen(const unsigned short *str)
+size_t TICALL ticonv_utf16_strlen(const unsigned short *str)
 {
 	size_t l = 0;
 	if (str != NULL)
@@ -85,7 +85,7 @@ TIEXPORT4 size_t TICALL ticonv_utf16_strlen(const unsigned short *str)
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT4 unsigned short* ticonv_utf8_to_utf16(const char *str)
+unsigned short* ticonv_utf8_to_utf16(const char *str)
 {
 	gunichar2* dst;
 	const gchar* src = str;
@@ -112,7 +112,7 @@ TIEXPORT4 unsigned short* ticonv_utf8_to_utf16(const char *str)
  *
  * This function frees an UTF-16 string previously allocated by e.g. ticonv_utf8_to_utf16().
  **/
-TIEXPORT4 void TICALL ticonv_utf16_free(unsigned short *str)
+void TICALL ticonv_utf16_free(unsigned short *str)
 {
 	g_free((void *)str);
 }
@@ -125,7 +125,7 @@ TIEXPORT4 void TICALL ticonv_utf16_free(unsigned short *str)
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT4 char* ticonv_utf16_to_utf8(const unsigned short *str)
+char* ticonv_utf16_to_utf8(const unsigned short *str)
 {
 	const gunichar2* src = str;
 	gchar* dst;
@@ -152,7 +152,7 @@ TIEXPORT4 char* ticonv_utf16_to_utf8(const unsigned short *str)
  *
  * This function frees an UTF-8 string previously allocated by e.g. ticonv_utf16_to_utf8().
  **/
-TIEXPORT4 void TICALL ticonv_utf8_free(char *str)
+void TICALL ticonv_utf8_free(char *str)
 {
 	g_free((void *)str);
 }
@@ -169,7 +169,7 @@ TIEXPORT4 void TICALL ticonv_utf8_free(char *str)
  *
  * Return value: the %ti string or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short *utf16, char *ti)
+char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short *utf16, char *ti)
 {
 	if (utf16 != NULL && ti != NULL)
 	{
@@ -228,7 +228,7 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned short *utf16)
+char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned short *utf16)
 {
 	char * out = NULL;
 	if (utf16 != NULL)
@@ -253,7 +253,7 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigne
  *
  * This function frees a string in TI format previously allocated by e.g. ticonv_charset_utf16_to_ti().
  **/
-TIEXPORT4 void TICALL ticonv_ti_free(char *str)
+void TICALL ticonv_ti_free(char *str)
 {
 	g_free((void *)str);
 }
@@ -271,7 +271,7 @@ TIEXPORT4 void TICALL ticonv_ti_free(char *str)
  *
  * Return value: the %utf16 string or NULL if error.
  **/
-TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char *ti, unsigned short *utf16)
+unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char *ti, unsigned short *utf16)
 {
 	if (ti != NULL && utf16 != NULL)
 	{
@@ -325,7 +325,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti)
+unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti)
 {
 	unsigned short * out = NULL;
 	if (ti != NULL)
@@ -359,7 +359,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, con
  *
  * Return value: the %dst string or NULL if error.
  **/
-TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned char type)
+unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned char type)
 {
 	if (src != NULL && dst != NULL)
 	{
@@ -389,7 +389,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, cons
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const char *src, unsigned char type)
+unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const char *src, unsigned char type)
 {
 	if (src != NULL)
 	{
@@ -421,7 +421,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const 
  *
  * Return value: the %dst string or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_to_utf8_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type)
+char* TICALL ticonv_varname_to_utf8_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type)
 {
 	if (src != NULL && dst != NULL && maxlen >= 1)
 	{
@@ -460,7 +460,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_utf8_sn(CalcModel model, const char *sr
  *
  * Return value: the %dst string or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst, unsigned char type)
+char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst, unsigned char type)
 {
 	if (src != NULL && dst != NULL)
 	{
@@ -497,7 +497,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, unsigned char type)
+char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, unsigned char type)
 {
 	if (src != NULL)
 	{
@@ -532,7 +532,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, 
  *
  * Return value: %dst or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_to_filename_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type)
+char* TICALL ticonv_varname_to_filename_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type)
 {
 	if (src != NULL && dst != NULL && maxlen >= 1)
 	{
@@ -574,7 +574,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_filename_sn(CalcModel model, const char
  *
  * Return value: %dst or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst, unsigned char type)
+char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst, unsigned char type)
 {
 	if (src != NULL && dst != NULL)
 	{
@@ -612,7 +612,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char 
  *
  * Return value: %dst as a newly allocated string or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src, unsigned char type)
+char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src, unsigned char type)
 {
 	if (src != NULL)
 	{
@@ -644,7 +644,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_filename(CalcModel model, const char *s
  *
  * Return value: %dst or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_to_tifile_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type)
+char* TICALL ticonv_varname_to_tifile_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type)
 {
 	if (src != NULL && dst != NULL && maxlen >= 1)
 	{
@@ -683,7 +683,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile_sn(CalcModel model, const char *
  *
  * Return value: %dst or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type)
+char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type)
 {
 	if (src != NULL && dst != NULL)
 	{
@@ -718,7 +718,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *s
  *
  * Return value: %dst as a newly allocated string or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src, unsigned char type)
+char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src, unsigned char type)
 {
 	unsigned short *utf16;
 	char *ti;
@@ -784,7 +784,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src
  *
  * Return value: %dst as a newly allocated string or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_from_tifile_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type)
+char* TICALL ticonv_varname_from_tifile_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type)
 {
 	if (src != NULL && dst != NULL && maxlen >= 1)
 	{
@@ -823,7 +823,7 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile_sn(CalcModel model, const char
  *
  * Return value: %dst as a newly allocated string or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type)
+char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type)
 {
 	if (src != NULL && dst != NULL)
 	{
@@ -858,7 +858,7 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char 
  *
  * Return value: %dst as a newly allocated string or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *src, unsigned char type)
+char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *src, unsigned char type)
 {
 	unsigned short *utf16;
 	char *ti;
@@ -913,7 +913,7 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *s
  *
  * Return value: nonzero if the calculator uses UTF-8, zero if it doesn't.
  */
-TIEXPORT4 int TICALL ticonv_model_uses_utf8(CalcModel model)
+int TICALL ticonv_model_uses_utf8(CalcModel model)
 {
 	// In early 2019, the blacklist condition is about twice longer than the equivalent whitelist condition,
 	// but less likely to get future models (most of which should have exclusively direct USB connectivity) wrong.
@@ -943,7 +943,7 @@ TIEXPORT4 int TICALL ticonv_model_uses_utf8(CalcModel model)
  *
  * Return value: nonzero if the calculator is a TI-Z80 calculator, zero if it doesn't.
  */
-TIEXPORT4 int TICALL ticonv_model_is_tiz80(CalcModel model)
+int TICALL ticonv_model_is_tiz80(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
 	        &&*/ ( model == CALC_TI73
@@ -968,7 +968,7 @@ TIEXPORT4 int TICALL ticonv_model_is_tiz80(CalcModel model)
  *
  * Return value: nonzero if the calculator is a TI-eZ80 calculator, zero if it doesn't.
  */
-TIEXPORT4 int TICALL ticonv_model_is_tiez80(CalcModel model)
+int TICALL ticonv_model_is_tiez80(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
 	        &&*/ ( model == CALC_TI83PCE_USB
@@ -983,7 +983,7 @@ TIEXPORT4 int TICALL ticonv_model_is_tiez80(CalcModel model)
  *
  * Return value: nonzero if the calculator is a TI-68k calculator, zero if it doesn't.
  */
-TIEXPORT4 int TICALL ticonv_model_is_ti68k(CalcModel model)
+int TICALL ticonv_model_is_ti68k(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
 	        &&*/ ( model == CALC_TI89
@@ -1002,7 +1002,7 @@ TIEXPORT4 int TICALL ticonv_model_is_ti68k(CalcModel model)
  *
  * Return value: nonzero if the calculator is a TI-Nspire calculator, zero if it doesn't.
  */
-TIEXPORT4 int TICALL ticonv_model_is_tinspire(CalcModel model)
+int TICALL ticonv_model_is_tinspire(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
 	        &&*/ (model == CALC_NSPIRE));
@@ -1016,7 +1016,7 @@ TIEXPORT4 int TICALL ticonv_model_is_tinspire(CalcModel model)
  *
  * Return value: nonzero if the calculator has a legacy I/O port, zero if it doesn't.
  */
-TIEXPORT4 int TICALL ticonv_model_has_legacy_ioport(CalcModel model)
+int TICALL ticonv_model_has_legacy_ioport(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
 	        &&*/ ( model == CALC_TI73
@@ -1043,7 +1043,7 @@ TIEXPORT4 int TICALL ticonv_model_has_legacy_ioport(CalcModel model)
  *
  * Return value: nonzero if the calculator has an USB I/O port, zero if it doesn't.
  */
-TIEXPORT4 int TICALL ticonv_model_has_usb_ioport(CalcModel model)
+int TICALL ticonv_model_has_usb_ioport(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
 	        &&*/ ( model == CALC_TI84P_USB
@@ -1064,7 +1064,7 @@ TIEXPORT4 int TICALL ticonv_model_has_usb_ioport(CalcModel model)
  *
  * Return value: nonzero if the calculator has Flash memory, zero if it doesn't.
  */
-TIEXPORT4 int TICALL ticonv_model_has_flash_memory(CalcModel model)
+int TICALL ticonv_model_has_flash_memory(CalcModel model)
 {
 	// In early 2019, the blacklist condition is shorter the equivalent whitelist condition,
 	// and less likely to get future models (all of which should have Flash memory) wrong.
@@ -1086,7 +1086,7 @@ TIEXPORT4 int TICALL ticonv_model_has_flash_memory(CalcModel model)
  *
  * Return value: nonzero if the calculator has a physical screen, zero if it doesn't.
  */
-TIEXPORT4 int TICALL ticonv_model_has_real_screen(CalcModel model)
+int TICALL ticonv_model_has_real_screen(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
 	        &&*/ 1); // All models currently handled by libti* have a real physical screen.
@@ -1100,7 +1100,7 @@ TIEXPORT4 int TICALL ticonv_model_has_real_screen(CalcModel model)
  *
  * Return value: nonzero if the calculator has a monochrome screen, zero if it doesn't.
  */
-TIEXPORT4 int TICALL ticonv_model_has_monochrome_screen(CalcModel model)
+int TICALL ticonv_model_has_monochrome_screen(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
 	        &&*/ ( model == CALC_TI73
@@ -1131,7 +1131,7 @@ TIEXPORT4 int TICALL ticonv_model_has_monochrome_screen(CalcModel model)
  *
  * Return value: nonzero if the calculator has a color screen, zero if it doesn't.
  */
-TIEXPORT4 int TICALL ticonv_model_has_color_screen(CalcModel model)
+int TICALL ticonv_model_has_color_screen(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
 	        &&*/ ( model == CALC_NSPIRE    // Some Nspire models have color screens

@@ -43,7 +43,7 @@
  *
  * Return value: 0 if error has been caught, the error number otherwise (propagation).
  **/
-TIEXPORT2 int TICALL tifiles_error_get(int number, char **message)
+int TICALL tifiles_error_get(int number, char **message)
 {
 	if (message == NULL)
 	{
@@ -158,7 +158,7 @@ TIEXPORT2 int TICALL tifiles_error_get(int number, char **message)
  *
  * Return value: 0 if the argument was valid and the message was freed, nonzero otherwise.
  **/
-TIEXPORT2 int TICALL tifiles_error_free(char *message)
+int TICALL tifiles_error_free(char *message)
 {
 	if (message == NULL)
 	{

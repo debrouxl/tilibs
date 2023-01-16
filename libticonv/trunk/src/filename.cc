@@ -53,7 +53,7 @@
  *
  * Return value: %dst as a newly allocated string or NULL if error.
  **/
-TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
+char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 {
 	int is_utf8 = ticonv_environment_is_utf8();
 	const char *str;
@@ -229,7 +229,7 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
  *
  * This function frees a gfe previously allocated by ticonv_utf16_to_gfe().
  **/
-TIEXPORT4 void TICALL ticonv_gfe_free(char *src)
+void TICALL ticonv_gfe_free(char *src)
 {
 	g_free(src);
 }
@@ -245,7 +245,7 @@ TIEXPORT4 void TICALL ticonv_gfe_free(char *src)
  *
  * Return value: %dst as a newly allocated string.
  **/
-TIEXPORT4 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
+char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 {
 	char *src, *p;
 	char *dst, *q;
@@ -318,7 +318,7 @@ TIEXPORT4 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
  *
  * This function frees a zfe previously allocated by ticonv_gfe_to_zfe().
  **/
-TIEXPORT4 void TICALL ticonv_zfe_free(char *src)
+void TICALL ticonv_zfe_free(char *src)
 {
 	g_free(src);
 }
@@ -330,7 +330,7 @@ TIEXPORT4 void TICALL ticonv_zfe_free(char *src)
  *
  * Return value: TRUE when the current locale uses an UTF-8 charset, FALSE otherwise.
  **/
-TIEXPORT4 int TICALL ticonv_environment_is_utf8(void)
+int TICALL ticonv_environment_is_utf8(void)
 {
 #ifdef __WIN32__
 	return G_WIN32_HAVE_WIDECHAR_API();
@@ -346,7 +346,7 @@ TIEXPORT4 int TICALL ticonv_environment_is_utf8(void)
  *
  * Return value: TRUE when the filename charset is UTF-8, FALSE otherwise.
  **/
-TIEXPORT4 int TICALL ticonv_environment_has_utf8_filenames(void)
+int TICALL ticonv_environment_has_utf8_filenames(void)
 {
 	return g_get_filename_charsets(NULL);
 }

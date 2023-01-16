@@ -38,7 +38,7 @@
  *
  * Return value: the entry or NULL if error.
  **/
-TIEXPORT2 VarEntry* TICALL tifiles_ve_create(void)
+VarEntry* TICALL tifiles_ve_create(void)
 {
 	return (VarEntry *)g_malloc0(sizeof(VarEntry));
 }
@@ -51,7 +51,7 @@ TIEXPORT2 VarEntry* TICALL tifiles_ve_create(void)
  *
  * Return value: the entry or NULL if error.
  **/
-TIEXPORT2 VarEntry* TICALL tifiles_ve_create_alloc_data(uint32_t size)
+VarEntry* TICALL tifiles_ve_create_alloc_data(uint32_t size)
 {
 	VarEntry* ve = tifiles_ve_create();
 	if (ve != NULL)
@@ -68,7 +68,7 @@ TIEXPORT2 VarEntry* TICALL tifiles_ve_create_alloc_data(uint32_t size)
  *
  * Deprecated version of tifiles_ve_create_alloc_data().
  **/
-TIEXPORT2 VarEntry* TICALL tifiles_ve_create_with_data(uint32_t size)
+VarEntry* TICALL tifiles_ve_create_with_data(uint32_t size)
 {
 	return tifiles_ve_create_alloc_data(size);
 }
@@ -82,7 +82,7 @@ TIEXPORT2 VarEntry* TICALL tifiles_ve_create_with_data(uint32_t size)
  *
  * Return value: the entry or NULL if error.
  **/
-TIEXPORT2 VarEntry* TICALL tifiles_ve_create_with_data2(uint32_t size, uint8_t * data)
+VarEntry* TICALL tifiles_ve_create_with_data2(uint32_t size, uint8_t * data)
 {
 	VarEntry* ve = tifiles_ve_create();
 	if (ve != NULL)
@@ -102,7 +102,7 @@ TIEXPORT2 VarEntry* TICALL tifiles_ve_create_with_data2(uint32_t size, uint8_t *
  *
  * Return value: none.
  **/
-TIEXPORT2 void TICALL tifiles_ve_delete(VarEntry* ve)
+void TICALL tifiles_ve_delete(VarEntry* ve)
 {
 	if (ve != NULL)
 	{
@@ -123,7 +123,7 @@ TIEXPORT2 void TICALL tifiles_ve_delete(VarEntry* ve)
  *
  * Return value: allocated space or NULL if error.
  **/
-TIEXPORT2 void * TICALL tifiles_ve_alloc_data(size_t size)
+void * TICALL tifiles_ve_alloc_data(size_t size)
 {
 	return g_malloc0((size+1) * sizeof(uint8_t));
 }
@@ -136,7 +136,7 @@ TIEXPORT2 void * TICALL tifiles_ve_alloc_data(size_t size)
  *
  * Return value: allocated space or NULL if error.
  **/
-TIEXPORT2 VarEntry * TICALL tifiles_ve_realloc_data(VarEntry* ve, size_t size)
+VarEntry * TICALL tifiles_ve_realloc_data(VarEntry* ve, size_t size)
 {
 	if (ve != NULL)
 	{
@@ -156,7 +156,7 @@ TIEXPORT2 VarEntry * TICALL tifiles_ve_realloc_data(VarEntry* ve, size_t size)
  *
  * Free space for data field of VarEntry.
  **/
-TIEXPORT2 void TICALL tifiles_ve_free_data(void * data)
+void TICALL tifiles_ve_free_data(void * data)
 {
 	return g_free(data);
 }
@@ -170,7 +170,7 @@ TIEXPORT2 void TICALL tifiles_ve_free_data(void * data)
  *
  * Return value: the array or NULL if error.
  **/
-TIEXPORT2 VarEntry** TICALL tifiles_ve_create_array(unsigned int nelts)
+VarEntry** TICALL tifiles_ve_create_array(unsigned int nelts)
 {
 	return (VarEntry **)g_malloc0((nelts + 1) * sizeof(VarEntry *));
 }
@@ -185,7 +185,7 @@ TIEXPORT2 VarEntry** TICALL tifiles_ve_create_array(unsigned int nelts)
  *
  * Return value: the array or NULL if error.
  **/
-TIEXPORT2 VarEntry** TICALL tifiles_ve_resize_array(VarEntry** array, unsigned int nelts)
+VarEntry** TICALL tifiles_ve_resize_array(VarEntry** array, unsigned int nelts)
 {
 	VarEntry ** ptr = (VarEntry **)g_realloc(array, (nelts + 1) * sizeof(VarEntry *));
 	if (ptr != NULL)
@@ -203,7 +203,7 @@ TIEXPORT2 VarEntry** TICALL tifiles_ve_resize_array(VarEntry** array, unsigned i
  *
  * Return value: none.
  **/
-TIEXPORT2 void TICALL tifiles_ve_delete_array(VarEntry** array)
+void TICALL tifiles_ve_delete_array(VarEntry** array)
 {
 	VarEntry** ptr;
 
@@ -231,7 +231,7 @@ TIEXPORT2 void TICALL tifiles_ve_delete_array(VarEntry** array)
  *
  * Return value: the dst pointer or NULL if malloc error.
  **/
-TIEXPORT2 VarEntry* TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src)
+VarEntry* TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src)
 {
 	int alloc;
 
@@ -265,7 +265,7 @@ TIEXPORT2 VarEntry* TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src)
  *
  * Return value: a newly allocated entry (must be freed with #tifiles_ve_delete when no longer needed).
  **/
-TIEXPORT2 VarEntry* TICALL tifiles_ve_dup(VarEntry* src)
+VarEntry* TICALL tifiles_ve_dup(VarEntry* src)
 {
 	VarEntry* dst = NULL;
 
@@ -300,7 +300,7 @@ TIEXPORT2 VarEntry* TICALL tifiles_ve_dup(VarEntry* src)
  *
  * Return value: the entry or NULL if error.
  **/
-TIEXPORT2 FlashPage* TICALL tifiles_fp_create(void)
+FlashPage* TICALL tifiles_fp_create(void)
 {
 	return (FlashPage *)g_malloc0(sizeof(FlashPage));
 }
@@ -313,7 +313,7 @@ TIEXPORT2 FlashPage* TICALL tifiles_fp_create(void)
  *
  * Return value: allocated space or NULL if error.
  **/
-TIEXPORT2 void * TICALL tifiles_fp_alloc_data(size_t size)
+void * TICALL tifiles_fp_alloc_data(size_t size)
 {
 	uint8_t *data;
 
@@ -334,7 +334,7 @@ TIEXPORT2 void * TICALL tifiles_fp_alloc_data(size_t size)
  *
  * Return value: flash page, or NULL if error.
  **/
-TIEXPORT2 FlashPage * TICALL tifiles_fp_realloc_data(FlashPage* fp, size_t size)
+FlashPage * TICALL tifiles_fp_realloc_data(FlashPage* fp, size_t size)
 {
 	if (fp != NULL)
 	{
@@ -354,7 +354,7 @@ TIEXPORT2 FlashPage * TICALL tifiles_fp_realloc_data(FlashPage* fp, size_t size)
  *
  * Free space for data field of FlashPage.
  **/
-TIEXPORT2 void TICALL tifiles_fp_free_data(void * data)
+void TICALL tifiles_fp_free_data(void * data)
 {
 	return g_free(data);
 }
@@ -367,7 +367,7 @@ TIEXPORT2 void TICALL tifiles_fp_free_data(void * data)
  *
  * Return value: the entry or NULL if error.
  **/
-TIEXPORT2 FlashPage* TICALL tifiles_fp_create_alloc_data(uint32_t size)
+FlashPage* TICALL tifiles_fp_create_alloc_data(uint32_t size)
 {
 	FlashPage* ve = tifiles_fp_create();
 	if (ve != NULL)
@@ -384,7 +384,7 @@ TIEXPORT2 FlashPage* TICALL tifiles_fp_create_alloc_data(uint32_t size)
  *
  * Deprecated version of tifiles_ve_create_alloc_data().
  **/
-TIEXPORT2 FlashPage* TICALL tifiles_fp_create_with_data(uint32_t size)
+FlashPage* TICALL tifiles_fp_create_with_data(uint32_t size)
 {
 	return tifiles_fp_create_alloc_data(size);
 }
@@ -398,7 +398,7 @@ TIEXPORT2 FlashPage* TICALL tifiles_fp_create_with_data(uint32_t size)
  *
  * Return value: the entry or NULL if error.
  **/
-TIEXPORT2 FlashPage* TICALL tifiles_fp_create_with_data2(uint32_t size, uint8_t * data)
+FlashPage* TICALL tifiles_fp_create_with_data2(uint32_t size, uint8_t * data)
 {
 	FlashPage* ve = tifiles_fp_create();
 	if (ve != NULL)
@@ -419,7 +419,7 @@ TIEXPORT2 FlashPage* TICALL tifiles_fp_create_with_data2(uint32_t size, uint8_t 
  *
  * Return value: the array or NULL if error.
  **/
-TIEXPORT2 FlashPage** TICALL tifiles_fp_create_array(unsigned int nelts)
+FlashPage** TICALL tifiles_fp_create_array(unsigned int nelts)
 {
 	return (FlashPage **)g_malloc0((nelts + 1) * sizeof(FlashPage*));
 }
@@ -434,7 +434,7 @@ TIEXPORT2 FlashPage** TICALL tifiles_fp_create_array(unsigned int nelts)
  *
  * Return value: the array or NULL if error.
  **/
-TIEXPORT2 FlashPage** TICALL tifiles_fp_resize_array(FlashPage** array, unsigned int nelts)
+FlashPage** TICALL tifiles_fp_resize_array(FlashPage** array, unsigned int nelts)
 {
 	FlashPage ** ptr = (FlashPage **)g_realloc(array, (nelts + 1) * sizeof(FlashPage *));
 	if (ptr != NULL)
@@ -452,7 +452,7 @@ TIEXPORT2 FlashPage** TICALL tifiles_fp_resize_array(FlashPage** array, unsigned
  *
  * Return value: none.
  **/
-TIEXPORT2 void TICALL tifiles_fp_delete(FlashPage* fp)
+void TICALL tifiles_fp_delete(FlashPage* fp)
 {
 	if (fp != NULL)
 	{
@@ -473,7 +473,7 @@ TIEXPORT2 void TICALL tifiles_fp_delete(FlashPage* fp)
  *
  * Return value: none.
  **/
-TIEXPORT2 void TICALL tifiles_fp_delete_array(FlashPage** array)
+void TICALL tifiles_fp_delete_array(FlashPage** array)
 {
 	FlashPage** ptr;
 

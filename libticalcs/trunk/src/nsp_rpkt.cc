@@ -81,7 +81,7 @@ static const NSPServiceId nspsids[] =
 	{ 0x8009, "8009" },
 };
 
-TIEXPORT3 const char* TICALL nsp_addr2name(uint16_t id)
+const char* TICALL nsp_addr2name(uint16_t id)
 {
 	unsigned int i;
 
@@ -96,7 +96,7 @@ TIEXPORT3 const char* TICALL nsp_addr2name(uint16_t id)
 	return "";
 }
 
-TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id)
+const char* TICALL nsp_sid2name(uint16_t id)
 {
 	unsigned int i;
 
@@ -188,7 +188,7 @@ static int hexdump(uint8_t *data, uint32_t size)
 	return 0;
 }
 
-TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
+int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 {
 	uint8_t buf[sizeof(NSPRawPacket)] = { 0 };
 	uint32_t size;
@@ -277,7 +277,7 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 	return ret;
 }
 
-TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
+int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 {
 	uint8_t buf[NSP_HEADER_SIZE];
 	int ret;
@@ -378,7 +378,7 @@ static const char* ep_way(uint8_t ep)
 	}
 }
 
-TIEXPORT3 int TICALL nsp_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len, uint8_t ep)
+int TICALL nsp_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len, uint8_t ep)
 {
 	int ret = 0;
 	uint16_t unused;

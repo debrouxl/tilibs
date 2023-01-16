@@ -40,7 +40,7 @@
 
 /* Allocate descriptor for code conversion from codeset FROMCODE to
    codeset TOCODE.  */
-TIEXPORT4 ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const char *fromcode)
+ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const char *fromcode)
 {
   ticonv_iconv_t cd;
   cd.src_calc=ticonv_string_to_model(fromcode);
@@ -61,7 +61,7 @@ TIEXPORT4 ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const cha
 /* Convert at most *INBYTESLEFT bytes from *INBUF according to the
    code conversion algorithm specified by CD and place up to
    *OUTBYTESLEFT bytes in buffer at *OUTBUF.  */
-TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
+size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
                                       size_t * restrict inbytesleft,
                                       char ** restrict outbuf,
                                       size_t * restrict outbytesleft)
@@ -253,7 +253,7 @@ TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
 }
 
 /* Free resources allocated for descriptor CD for code conversion.  */
-TIEXPORT4 int TICALL ticonv_iconv_close (ticonv_iconv_t cd)
+int TICALL ticonv_iconv_close (ticonv_iconv_t cd)
 {
 #if USE_ICONV
   return iconv_close(cd.iconv_desc);

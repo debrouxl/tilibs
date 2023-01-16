@@ -50,7 +50,7 @@ static const DUSBRawPacketInfo dusbrawpackets[] =
 	{ DUSB_RPKT_VIRT_DATA_ACK, 0, 2, "Virtual Packet Data Acknowledgement" }
 };
 
-TIEXPORT3 const char* TICALL dusb_rpkt_type2name(uint8_t id)
+const char* TICALL dusb_rpkt_type2name(uint8_t id)
 {
 	unsigned int i;
 
@@ -65,7 +65,7 @@ TIEXPORT3 const char* TICALL dusb_rpkt_type2name(uint8_t id)
 	return "";
 }
 
-TIEXPORT3 int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
+int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 {
 	uint8_t buf[sizeof(pkt->data) + 5];
 	uint32_t size;
@@ -124,7 +124,7 @@ TIEXPORT3 int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 	return ret;
 }
 
-TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
+int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 {
 	uint8_t buf[5];
 	int ret;
@@ -217,7 +217,7 @@ static const char* ep_way(uint8_t ep)
 	}
 }
 
-TIEXPORT3 int TICALL dusb_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len, uint8_t ep, uint8_t * first)
+int TICALL dusb_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len, uint8_t ep, uint8_t * first)
 {
 	int ret = 0;
 	uint32_t raw_size;

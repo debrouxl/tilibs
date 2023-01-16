@@ -404,7 +404,7 @@ extern CalcUpdate default_update;
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_probe_calc(CableHandle* cable, CalcModel* model)
+int TICALL ticalcs_probe_calc(CableHandle* cable, CalcModel* model)
 {
 	CalcHandle calc;
 	int ret = 0;
@@ -457,7 +457,7 @@ TIEXPORT3 int TICALL ticalcs_probe_calc(CableHandle* cable, CalcModel* model)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model)
+int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model)
 {
 	CalcHandle calc;
 	int ret = ERR_NO_CALC;
@@ -512,7 +512,7 @@ TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model, int all)
+int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model, int all)
 {
 	CableHandle *handle;
 	int ret = 0;
@@ -581,7 +581,7 @@ TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcMod
  *
  * Return value: != CALC_NONE if a precise calculator model can be determined through the cable+device info, CALC_NONE if invalid argument or SilverLink cable.
  */
-TIEXPORT3 CalcModel TICALL ticalcs_device_info_to_model(const CableDeviceInfo *info)
+CalcModel TICALL ticalcs_device_info_to_model(const CableDeviceInfo *info)
 {
 	CalcModel model = CALC_NONE;
 
@@ -662,7 +662,7 @@ TIEXPORT3 CalcModel TICALL ticalcs_device_info_to_model(const CableDeviceInfo *i
  *
  * Return value: the new calculator model, which can be the same as the passed one.
  **/
-TIEXPORT3 CalcModel TICALL ticalcs_remap_model_from_usb(CableModel cable, CalcModel calc)
+CalcModel TICALL ticalcs_remap_model_from_usb(CableModel cable, CalcModel calc)
 {
 	if (cable == CABLE_USB)
 	{
@@ -694,7 +694,7 @@ TIEXPORT3 CalcModel TICALL ticalcs_remap_model_from_usb(CableModel cable, CalcMo
  *
  * Return value: the new calculator model, which can be the same as the passed one.
  **/
-TIEXPORT3 CalcModel TICALL ticalcs_remap_model_to_usb(CableModel cable, CalcModel calc)
+CalcModel TICALL ticalcs_remap_model_to_usb(CableModel cable, CalcModel calc)
 {
 	if (cable == CABLE_USB)
 	{

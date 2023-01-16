@@ -36,7 +36,7 @@
  *
  * Return value: a string like "TI92+".
  **/
-TIEXPORT3 const char *TICALL ticalcs_model_to_string(CalcModel model)
+const char *TICALL ticalcs_model_to_string(CalcModel model)
 {
 	return tifiles_model_to_string(model);
 }
@@ -49,13 +49,13 @@ TIEXPORT3 const char *TICALL ticalcs_model_to_string(CalcModel model)
  *
  * Return value: a calculator model.
  **/
-TIEXPORT3 CalcModel TICALL ticalcs_string_to_model(const char *str)
+CalcModel TICALL ticalcs_string_to_model(const char *str)
 {
 	return tifiles_string_to_model(str);
 }
 
 
-TIEXPORT3 const char *TICALL ticalcs_scrfmt_to_string(CalcScreenFormat format)
+const char *TICALL ticalcs_scrfmt_to_string(CalcScreenFormat format)
 {
 	switch (format)
 	{
@@ -65,7 +65,7 @@ TIEXPORT3 const char *TICALL ticalcs_scrfmt_to_string(CalcScreenFormat format)
 	}
 }
 
-TIEXPORT3 CalcScreenFormat TICALL ticalcs_string_to_scrfmt(const char *str)
+CalcScreenFormat TICALL ticalcs_string_to_scrfmt(const char *str)
 {
 	if (str != NULL)
 	{
@@ -87,7 +87,7 @@ TIEXPORT3 CalcScreenFormat TICALL ticalcs_string_to_scrfmt(const char *str)
 }
 
 
-TIEXPORT3 const char *TICALL ticalcs_pathtype_to_string(CalcPathType type)
+const char *TICALL ticalcs_pathtype_to_string(CalcPathType type)
 {
 	switch (type)
 	{
@@ -97,7 +97,7 @@ TIEXPORT3 const char *TICALL ticalcs_pathtype_to_string(CalcPathType type)
 	}
 }
 
-TIEXPORT3 CalcPathType TICALL ticalcs_string_to_pathtype(const char *str)
+CalcPathType TICALL ticalcs_string_to_pathtype(const char *str)
 {
 	if (str != NULL)
 	{
@@ -119,7 +119,7 @@ TIEXPORT3 CalcPathType TICALL ticalcs_string_to_pathtype(const char *str)
 }
 
 
-TIEXPORT3 const char *TICALL ticalcs_memtype_to_string(CalcMemType type)
+const char *TICALL ticalcs_memtype_to_string(CalcMemType type)
 {
 	switch (type)
 	{
@@ -129,7 +129,7 @@ TIEXPORT3 const char *TICALL ticalcs_memtype_to_string(CalcMemType type)
 	}
 }
 
-TIEXPORT3 CalcMemType TICALL ticalcs_string_to_memtype(const char *str)
+CalcMemType TICALL ticalcs_string_to_memtype(const char *str)
 {
 	if (str != NULL)
 	{
@@ -146,7 +146,7 @@ TIEXPORT3 CalcMemType TICALL ticalcs_string_to_memtype(const char *str)
 	return MEMORY_NONE;
 }
 
-TIEXPORT3 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen)
+int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen)
 {
 	if (infos != NULL)
 	{

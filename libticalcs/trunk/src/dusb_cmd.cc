@@ -117,7 +117,7 @@ static const DUSBCmdParamInfo param_types[] =
 	{ 0xFFFF, NULL}
 };
 
-TIEXPORT3 const char* TICALL dusb_cmd_param_type2name(uint16_t id)
+const char* TICALL dusb_cmd_param_type2name(uint16_t id)
 {
 	const DUSBCmdParamInfo *p;
 
@@ -134,12 +134,12 @@ TIEXPORT3 const char* TICALL dusb_cmd_param_type2name(uint16_t id)
 
 // Helpers
 
-TIEXPORT3 DUSBCalcParam* TICALL dusb_cp_new(CalcHandle * handle, uint16_t id, uint16_t size)
+DUSBCalcParam* TICALL dusb_cp_new(CalcHandle * handle, uint16_t id, uint16_t size)
 {
 	return dusb_cp_new_ex(handle, id, size, (uint8_t *)g_malloc0(size));
 }
 
-TIEXPORT3 DUSBCalcParam* TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data)
+DUSBCalcParam* TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data)
 {
 	DUSBCalcParam* cp = NULL;
 
@@ -167,7 +167,7 @@ TIEXPORT3 DUSBCalcParam* TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id,
 	return cp;
 }
 
-TIEXPORT3 void TICALL dusb_cp_fill(DUSBCalcParam * cp, uint16_t id, uint16_t size, uint8_t * data)
+void TICALL dusb_cp_fill(DUSBCalcParam * cp, uint16_t id, uint16_t size, uint8_t * data)
 {
 	if (cp != NULL)
 	{
@@ -182,7 +182,7 @@ TIEXPORT3 void TICALL dusb_cp_fill(DUSBCalcParam * cp, uint16_t id, uint16_t siz
 	}
 }
 
-TIEXPORT3 void TICALL dusb_cp_del(CalcHandle * handle, DUSBCalcParam* cp)
+void TICALL dusb_cp_del(CalcHandle * handle, DUSBCalcParam* cp)
 {
 	//GList *cpca_list;
 
@@ -205,7 +205,7 @@ TIEXPORT3 void TICALL dusb_cp_del(CalcHandle * handle, DUSBCalcParam* cp)
 	g_free(cp);
 }
 
-TIEXPORT3 DUSBCalcParam ** TICALL dusb_cp_new_array(CalcHandle * handle, unsigned int size)
+DUSBCalcParam ** TICALL dusb_cp_new_array(CalcHandle * handle, unsigned int size)
 {
 	DUSBCalcParam ** array = NULL;
 
@@ -221,7 +221,7 @@ TIEXPORT3 DUSBCalcParam ** TICALL dusb_cp_new_array(CalcHandle * handle, unsigne
 	return array;
 }
 
-TIEXPORT3 void TICALL dusb_cp_del_array(CalcHandle * handle, unsigned int size, DUSBCalcParam **params)
+void TICALL dusb_cp_del_array(CalcHandle * handle, unsigned int size, DUSBCalcParam **params)
 {
 	unsigned int i;
 
@@ -244,12 +244,12 @@ TIEXPORT3 void TICALL dusb_cp_del_array(CalcHandle * handle, unsigned int size, 
 	g_free(params);
 }
 
-TIEXPORT3 void * TICALL dusb_cp_alloc_data(uint16_t size)
+void * TICALL dusb_cp_alloc_data(uint16_t size)
 {
 	return g_malloc0(size);
 }
 
-TIEXPORT3 DUSBCalcParam * TICALL dusb_cp_realloc_data(DUSBCalcParam* cp, uint16_t size)
+DUSBCalcParam * TICALL dusb_cp_realloc_data(DUSBCalcParam* cp, uint16_t size)
 {
 	if (cp != NULL)
 	{
@@ -271,19 +271,19 @@ TIEXPORT3 DUSBCalcParam * TICALL dusb_cp_realloc_data(DUSBCalcParam* cp, uint16_
 	return cp;
 }
 
-TIEXPORT3 void TICALL dusb_cp_free_data(void * data)
+void TICALL dusb_cp_free_data(void * data)
 {
 	return g_free(data);
 }
 
 /////////////----------------
 
-TIEXPORT3 DUSBCalcAttr* TICALL dusb_ca_new(CalcHandle * handle, uint16_t id, uint16_t size)
+DUSBCalcAttr* TICALL dusb_ca_new(CalcHandle * handle, uint16_t id, uint16_t size)
 {
 	return dusb_ca_new_ex(handle, id, size, (uint8_t *)g_malloc0(size));
 }
 
-TIEXPORT3 DUSBCalcAttr* TICALL dusb_ca_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data)
+DUSBCalcAttr* TICALL dusb_ca_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data)
 {
 	DUSBCalcAttr* ca = NULL;
 
@@ -311,7 +311,7 @@ TIEXPORT3 DUSBCalcAttr* TICALL dusb_ca_new_ex(CalcHandle * handle, uint16_t id, 
 	return ca;
 }
 
-TIEXPORT3 void TICALL dusb_ca_fill(DUSBCalcAttr * ca, uint16_t id, uint16_t size, uint8_t * data)
+void TICALL dusb_ca_fill(DUSBCalcAttr * ca, uint16_t id, uint16_t size, uint8_t * data)
 {
 	if (ca != NULL)
 	{
@@ -326,7 +326,7 @@ TIEXPORT3 void TICALL dusb_ca_fill(DUSBCalcAttr * ca, uint16_t id, uint16_t size
 	}
 }
 
-TIEXPORT3 void TICALL dusb_ca_del(CalcHandle * handle, DUSBCalcAttr* ca)
+void TICALL dusb_ca_del(CalcHandle * handle, DUSBCalcAttr* ca)
 {
 	//GList *cpca_list;
 
@@ -349,7 +349,7 @@ TIEXPORT3 void TICALL dusb_ca_del(CalcHandle * handle, DUSBCalcAttr* ca)
 	g_free(ca);
 }
 
-TIEXPORT3 DUSBCalcAttr ** TICALL dusb_ca_new_array(CalcHandle * handle, unsigned int size)
+DUSBCalcAttr ** TICALL dusb_ca_new_array(CalcHandle * handle, unsigned int size)
 {
 	DUSBCalcAttr ** array = NULL;
 
@@ -365,7 +365,7 @@ TIEXPORT3 DUSBCalcAttr ** TICALL dusb_ca_new_array(CalcHandle * handle, unsigned
 	return array;
 }
 
-TIEXPORT3 void TICALL dusb_ca_del_array(CalcHandle * handle, unsigned int size, DUSBCalcAttr **attrs)
+void TICALL dusb_ca_del_array(CalcHandle * handle, unsigned int size, DUSBCalcAttr **attrs)
 {
 	unsigned int i;
 
@@ -388,12 +388,12 @@ TIEXPORT3 void TICALL dusb_ca_del_array(CalcHandle * handle, unsigned int size, 
 	g_free(attrs);
 }
 
-TIEXPORT3 void * TICALL dusb_ca_alloc_data(uint16_t size)
+void * TICALL dusb_ca_alloc_data(uint16_t size)
 {
 	return g_malloc0(size);
 }
 
-TIEXPORT3 DUSBCalcParam * TICALL dusb_ca_realloc_data(DUSBCalcParam* ca, uint16_t size)
+DUSBCalcParam * TICALL dusb_ca_realloc_data(DUSBCalcParam* ca, uint16_t size)
 {
 	if (ca != NULL)
 	{
@@ -415,7 +415,7 @@ TIEXPORT3 DUSBCalcParam * TICALL dusb_ca_realloc_data(DUSBCalcParam* ca, uint16_
 	return ca;
 }
 
-TIEXPORT3 void TICALL dusb_ca_free_data(void * data)
+void TICALL dusb_ca_free_data(void * data)
 {
 	return g_free(data);
 }
@@ -879,7 +879,7 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 	}
 
 // 0x0001: set mode or ping
-TIEXPORT3 int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, const DUSBModeSet mode)
+int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, const DUSBModeSet mode)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -917,7 +917,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, const DUSBModeSet m
 }
 
 // 0x0002: begin OS transfer
-TIEXPORT3 int TICALL dusb_cmd_s_os_begin(CalcHandle *handle, uint32_t size)
+int TICALL dusb_cmd_s_os_begin(CalcHandle *handle, uint32_t size)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -940,7 +940,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_begin(CalcHandle *handle, uint32_t size)
 }
 
 // 0x0003: acknowledgement of OS transfer
-TIEXPORT3 int TICALL dusb_cmd_r_os_ack(CalcHandle *handle, uint32_t *size)
+int TICALL dusb_cmd_r_os_ack(CalcHandle *handle, uint32_t *size)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1003,19 +1003,19 @@ static int s_os(uint8_t type, CalcHandle *handle, uint16_t addr, uint8_t page, u
 }
 
 // 0x0004: OS header
-TIEXPORT3 int TICALL dusb_cmd_s_os_header(CalcHandle *handle, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
+int TICALL dusb_cmd_s_os_header(CalcHandle *handle, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
 	return s_os(DUSB_VPKT_OS_HEADER, handle, addr, page, flag, size, data);
 }
 
 // 0x0005: OS data
-TIEXPORT3 int TICALL dusb_cmd_s_os_data(CalcHandle *handle, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
+int TICALL dusb_cmd_s_os_data(CalcHandle *handle, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
 	return s_os(DUSB_VPKT_OS_DATA, handle, addr, page, flag, size, data);
 }
 
 // 0x0004: OS header
-TIEXPORT3 int TICALL dusb_cmd_s_os_header_89(CalcHandle *handle, uint32_t size, uint8_t *data)
+int TICALL dusb_cmd_s_os_header_89(CalcHandle *handle, uint32_t size, uint8_t *data)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1035,7 +1035,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_header_89(CalcHandle *handle, uint32_t size, 
 }
 
 // 0x0005: OS data
-TIEXPORT3 int TICALL dusb_cmd_s_os_data_89(CalcHandle *handle, uint32_t size, uint8_t *data)
+int TICALL dusb_cmd_s_os_data_89(CalcHandle *handle, uint32_t size, uint8_t *data)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1055,7 +1055,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_data_89(CalcHandle *handle, uint32_t size, ui
 }
 
 // 0x0005: OS data
-TIEXPORT3 int TICALL dusb_cmd_s_os_data_834pce(CalcHandle *handle, uint32_t addr, uint32_t size, uint8_t *data)
+int TICALL dusb_cmd_s_os_data_834pce(CalcHandle *handle, uint32_t addr, uint32_t size, uint8_t *data)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1079,7 +1079,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_data_834pce(CalcHandle *handle, uint32_t addr
 }
 
 // 0x0006: acknowledgement of EOT
-TIEXPORT3 int TICALL dusb_cmd_r_eot_ack(CalcHandle *handle)
+int TICALL dusb_cmd_r_eot_ack(CalcHandle *handle)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1111,7 +1111,7 @@ end:
 }
 
 // 0x0007: parameter request
-TIEXPORT3 int TICALL dusb_cmd_s_param_request(CalcHandle *handle, unsigned int npids, const uint16_t *pids)
+int TICALL dusb_cmd_s_param_request(CalcHandle *handle, unsigned int npids, const uint16_t *pids)
 {
 	DUSBVirtualPacket* pkt;
 	unsigned int i;
@@ -1140,7 +1140,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_param_request(CalcHandle *handle, unsigned int n
 }
 
 // 0x0008: parameter data
-TIEXPORT3 int TICALL dusb_cmd_r_param_data(CalcHandle *handle, unsigned int nparams, DUSBCalcParam **params)
+int TICALL dusb_cmd_r_param_data(CalcHandle *handle, unsigned int nparams, DUSBCalcParam **params)
 {
 	DUSBVirtualPacket* pkt;
 	unsigned int i, j;
@@ -1219,7 +1219,7 @@ end:
 }
 
 // 0x0008 (variant): screenshot data (for TI-84 Plus C support)
-TIEXPORT3 int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, uint8_t **data)
+int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, uint8_t **data)
 {
 	DUSBVirtualPacket* pkt;
 	uint32_t declared_size;
@@ -1267,7 +1267,7 @@ end:
 }
 
 // 0x0009: request directory listing
-TIEXPORT3 int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, unsigned int naids, const uint16_t *aids)
+int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, unsigned int naids, const uint16_t *aids)
 {
 	DUSBVirtualPacket* pkt;
 	unsigned int i;
@@ -1305,7 +1305,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, unsigned int
 
 // 0x000A: variable header (name is utf-8)
 // beware: attr array contents is allocated by function
-TIEXPORT3 int TICALL dusb_cmd_r_var_header(CalcHandle *handle, char *folder, char *name, DUSBCalcAttr **attr)
+int TICALL dusb_cmd_r_var_header(CalcHandle *handle, char *folder, char *name, DUSBCalcAttr **attr)
 {
 	DUSBVirtualPacket* pkt;
 	uint8_t fld_len;
@@ -1454,19 +1454,19 @@ static int dusb_cmd_s_rts2(CalcHandle *handle, const char *folder, const char *n
 }
 
 // 0x000B: request to send ("silent")
-TIEXPORT3 int TICALL dusb_cmd_s_rts(CalcHandle *handle, const char *folder, const char *name, uint32_t size, unsigned int nattrs, const DUSBCalcAttr **attrs)
+int TICALL dusb_cmd_s_rts(CalcHandle *handle, const char *folder, const char *name, uint32_t size, unsigned int nattrs, const DUSBCalcAttr **attrs)
 {
 	return dusb_cmd_s_rts2(handle, folder, name, size, nattrs, attrs, 0x01);
 }
 
 // 0x000B: request to send ("non-silent")
-TIEXPORT3 int TICALL dusb_cmd_s_rts_ns(CalcHandle *handle, const char *folder, const char *name, uint32_t size, unsigned int nattrs, const DUSBCalcAttr **attrs)
+int TICALL dusb_cmd_s_rts_ns(CalcHandle *handle, const char *folder, const char *name, uint32_t size, unsigned int nattrs, const DUSBCalcAttr **attrs)
 {
 	return dusb_cmd_s_rts2(handle, folder, name, size, nattrs, attrs, 0x02);
 }
 
 // 0x000C: variable request
-TIEXPORT3 int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const char *name, unsigned int naids, const uint16_t *aids, unsigned int nattrs, const DUSBCalcAttr **attrs)
+int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const char *name, unsigned int naids, const uint16_t *aids, unsigned int nattrs, const DUSBCalcAttr **attrs)
 {
 	DUSBVirtualPacket* pkt;
 	int pks;
@@ -1543,7 +1543,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *fold
 }
 
 // 0x000D: variable contents (recv)
-TIEXPORT3 int TICALL dusb_cmd_r_var_content(CalcHandle *handle, uint32_t *size, uint8_t **data)
+int TICALL dusb_cmd_r_var_content(CalcHandle *handle, uint32_t *size, uint8_t **data)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1594,7 +1594,7 @@ end:
 }
 
 // 0x000D: variable contents (send)
-TIEXPORT3 int TICALL dusb_cmd_s_var_content(CalcHandle *handle, uint32_t size, uint8_t *data)
+int TICALL dusb_cmd_s_var_content(CalcHandle *handle, uint32_t size, uint8_t *data)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1614,7 +1614,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_content(CalcHandle *handle, uint32_t size, u
 }
 
 // 0x000E: parameter set
-TIEXPORT3 int TICALL dusb_cmd_s_param_set(CalcHandle *handle, const DUSBCalcParam *param)
+int TICALL dusb_cmd_s_param_set(CalcHandle *handle, const DUSBCalcParam *param)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1639,7 +1639,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_param_set(CalcHandle *handle, const DUSBCalcPara
 }
 
 // 0x0010: modify/rename/delete variable
-TIEXPORT3 int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
+int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
                      const char *src_folder, const char *src_name,
                      unsigned int n_src_attrs, const DUSBCalcAttr **src_attrs,
                      const char *dst_folder, const char *dst_name,
@@ -1767,13 +1767,13 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 	return retval;
 }
 
-TIEXPORT3 int TICALL dusb_cmd_s_var_delete(CalcHandle *handle, const char *folder, const char *name, unsigned int nattrs, const DUSBCalcAttr **attrs)
+int TICALL dusb_cmd_s_var_delete(CalcHandle *handle, const char *folder, const char *name, unsigned int nattrs, const DUSBCalcAttr **attrs)
 {
 	return dusb_cmd_s_var_modify(handle, folder, name, nattrs, attrs, "", "", 0, NULL);
 }
 
 // 0x0011: remote control
-TIEXPORT3 int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, const char *name, uint8_t action, const char *args, uint16_t code)
+int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, const char *name, uint8_t action, const char *args, uint16_t code)
 {
 	DUSBVirtualPacket* pkt = NULL;
 	int pks;
@@ -1859,7 +1859,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, 
 }
 
 // 0x0012: acknowledgement of mode setting
-TIEXPORT3 int TICALL dusb_cmd_r_mode_ack(CalcHandle *handle)
+int TICALL dusb_cmd_r_mode_ack(CalcHandle *handle)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1891,7 +1891,7 @@ end:
 }
 
 // 0xAA00: acknowledgement of data
-TIEXPORT3 int TICALL dusb_cmd_r_data_ack(CalcHandle *handle)
+int TICALL dusb_cmd_r_data_ack(CalcHandle *handle)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1924,7 +1924,7 @@ end:
 }
 
 // 0xBB00: delay acknowledgement
-TIEXPORT3 int TICALL dusb_cmd_r_delay_ack(CalcHandle *handle)
+int TICALL dusb_cmd_r_delay_ack(CalcHandle *handle)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1956,7 +1956,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_delay_ack(CalcHandle *handle)
 }
 
 // 0xDD00: end of transmission (send)
-TIEXPORT3 int TICALL dusb_cmd_s_eot(CalcHandle *handle)
+int TICALL dusb_cmd_s_eot(CalcHandle *handle)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1973,7 +1973,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_eot(CalcHandle *handle)
 }
 
 // 0xDD00: end of transmission (recv)
-TIEXPORT3 int TICALL dusb_cmd_r_eot(CalcHandle *handle)
+int TICALL dusb_cmd_r_eot(CalcHandle *handle)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -2007,7 +2007,7 @@ end:
 }
 
 // 0xEE00: error
-TIEXPORT3 int TICALL dusb_cmd_s_error(CalcHandle *handle, uint16_t code)
+int TICALL dusb_cmd_s_error(CalcHandle *handle, uint16_t code)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -2028,7 +2028,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_error(CalcHandle *handle, uint16_t code)
 
 /////////////----------------
 
-TIEXPORT3 int TICALL dusb_cmd_s_param_set_r_data_ack(CalcHandle *handle, uint16_t id, uint16_t size, const uint8_t * data)
+int TICALL dusb_cmd_s_param_set_r_data_ack(CalcHandle *handle, uint16_t id, uint16_t size, const uint8_t * data)
 {
 	DUSBCalcParam *param;
 	int retval = 0;

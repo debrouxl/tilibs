@@ -33,7 +33,7 @@
 
 #include "ticonv.h"
 
-TIEXPORT4 const char * TICALL ticonv_model_to_string(CalcModel model)
+const char * TICALL ticonv_model_to_string(CalcModel model)
 {
 	switch (model)
 	{
@@ -64,7 +64,7 @@ TIEXPORT4 const char * TICALL ticonv_model_to_string(CalcModel model)
 	}
 }
 
-TIEXPORT4 CalcModel TICALL ticonv_string_to_model(const char *str)
+CalcModel TICALL ticonv_string_to_model(const char *str)
 {
 	if (str != NULL)
 	{

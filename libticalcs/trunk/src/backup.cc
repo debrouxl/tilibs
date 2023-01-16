@@ -150,7 +150,7 @@ end:
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
+int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
 {
 	TigEntry **ptr;
 	GNode *vars, *apps;
@@ -290,7 +290,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
+int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
 {
 	int i, j;
 	GNode *vars, *apps;

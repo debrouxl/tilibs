@@ -201,7 +201,7 @@ int ticalcs_instance = 0;	// counts # of instances
  *
  * Return value: the instance count.
  **/
-TIEXPORT3 int TICALL ticalcs_library_init(void)
+int TICALL ticalcs_library_init(void)
 {
 	char locale_dir[65536 + 20];
 
@@ -256,7 +256,7 @@ TIEXPORT3 int TICALL ticalcs_library_init(void)
  *
  * Return value: the instance count.
  **/
-TIEXPORT3 int TICALL ticalcs_library_exit(void)
+int TICALL ticalcs_library_exit(void)
 {
 	return (--ticalcs_instance);
 }
@@ -272,7 +272,7 @@ TIEXPORT3 int TICALL ticalcs_library_exit(void)
  *
  * Return value: a string.
  **/
-TIEXPORT3 const char *TICALL ticalcs_version_get(void)
+const char *TICALL ticalcs_version_get(void)
 {
 	return LIBCALCS_VERSION;
 }
@@ -285,7 +285,7 @@ TIEXPORT3 const char *TICALL ticalcs_version_get(void)
  * Return value: an integer containing a binary OR of (1 << CALC_*) values,
  * where CALC_* values are defined in enum CalcModel.
  **/
-TIEXPORT3 uint32_t TICALL ticalcs_supported_calcs (void)
+uint32_t TICALL ticalcs_supported_calcs (void)
 {
 	return supported_calcs;
 }
@@ -443,7 +443,7 @@ static int default_event_hook(CalcHandle * handle, uint32_t event_count, const C
  *
  * Return value: NULL if error, an handle otherwise.
  **/
-TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
+CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 {
 	CalcHandle *handle = NULL;
 	CalcFncts * calc = NULL;
@@ -502,7 +502,7 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
  *
  * Return value: always 0.
  **/
-TIEXPORT3 int TICALL ticalcs_handle_del(CalcHandle* handle)
+int TICALL ticalcs_handle_del(CalcHandle* handle)
 {
 	VALIDATE_HANDLE(handle);
 
@@ -535,7 +535,7 @@ TIEXPORT3 int TICALL ticalcs_handle_del(CalcHandle* handle)
  *
  * Return value: always 0.
  **/
-TIEXPORT3 int TICALL ticalcs_handle_show(CalcHandle* handle)
+int TICALL ticalcs_handle_show(CalcHandle* handle)
 {
 	VALIDATE_HANDLE(handle);
 
@@ -553,7 +553,7 @@ TIEXPORT3 int TICALL ticalcs_handle_show(CalcHandle* handle)
  *
  * Return value: an integer containing the calc handle's calculator model.
  **/
-TIEXPORT3 CalcModel TICALL ticalcs_get_model(CalcHandle *handle)
+CalcModel TICALL ticalcs_get_model(CalcHandle *handle)
 {
 	if (!ticalcs_validate_handle(handle))
 	{
@@ -573,7 +573,7 @@ TIEXPORT3 CalcModel TICALL ticalcs_get_model(CalcHandle *handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable)
+int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable)
 {
 	int ret = 0;
 
@@ -606,7 +606,7 @@ TIEXPORT3 int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle* handle)
+int TICALL ticalcs_cable_detach(CalcHandle* handle)
 {
 	int ret = 0;
 
@@ -639,7 +639,7 @@ TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle* handle)
  *
  * Return value: the cable handle or NULL.
  **/
-TIEXPORT3 CableHandle* TICALL ticalcs_cable_get(CalcHandle *handle)
+CableHandle* TICALL ticalcs_cable_get(CalcHandle *handle)
 {
 	if (ticalcs_validate_handle(handle))
 	{
@@ -658,7 +658,7 @@ TIEXPORT3 CableHandle* TICALL ticalcs_cable_get(CalcHandle *handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_update_set(CalcHandle* handle, CalcUpdate* upd)
+int TICALL ticalcs_update_set(CalcHandle* handle, CalcUpdate* upd)
 {
 	VALIDATE_HANDLE(handle);
 	VALIDATE_CALCUPDATE(upd);
@@ -675,7 +675,7 @@ TIEXPORT3 int TICALL ticalcs_update_set(CalcHandle* handle, CalcUpdate* upd)
  *
  * Return value: the update struct pointer or NULL.
  **/
-TIEXPORT3 CalcUpdate* TICALL ticalcs_update_get(CalcHandle *handle)
+CalcUpdate* TICALL ticalcs_update_get(CalcHandle *handle)
 {
 	if (ticalcs_validate_handle(handle))
 	{
@@ -694,7 +694,7 @@ TIEXPORT3 CalcUpdate* TICALL ticalcs_update_get(CalcHandle *handle)
  *
  * Return value: nonzero if the calculator supports the DBUS protocol, zero if it doesn't.
  */
-TIEXPORT3 int TICALL ticalcs_model_supports_dbus(CalcModel model)
+int TICALL ticalcs_model_supports_dbus(CalcModel model)
 {
 	return ticonv_model_has_legacy_ioport(model);
 }
@@ -708,7 +708,7 @@ TIEXPORT3 int TICALL ticalcs_model_supports_dbus(CalcModel model)
  *
  * Return value: nonzero if the calculator supports the DUSB protocol, zero if it doesn't.
  */
-TIEXPORT3 int TICALL ticalcs_model_supports_dusb(CalcModel model)
+int TICALL ticalcs_model_supports_dusb(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
 	        &&*/ ( model == CALC_TI84P_USB
@@ -729,7 +729,7 @@ TIEXPORT3 int TICALL ticalcs_model_supports_dusb(CalcModel model)
  *
  * Return value: nonzero if the calculator supports the NSP protocol, zero if it doesn't.
  */
-TIEXPORT3 int TICALL ticalcs_model_supports_nsp(CalcModel model)
+int TICALL ticalcs_model_supports_nsp(CalcModel model)
 {
 	return (   /*model <  CALC_MAX
 	        &&*/ ( model == CALC_NSPIRE));
@@ -744,7 +744,7 @@ TIEXPORT3 int TICALL ticalcs_model_supports_nsp(CalcModel model)
  *
  * Return value: nonzero if the calculator supports installing additional FlashApps onto the calculator, zero if it doesn't.
  */
-TIEXPORT3 int TICALL ticalcs_model_supports_installing_flashapps(CalcModel model)
+int TICALL ticalcs_model_supports_installing_flashapps(CalcModel model)
 {
 	return ticonv_model_has_flash_memory(model) && !(   model == CALC_NSPIRE
 	                                                 || model == CALC_TI82A_USB
@@ -758,7 +758,7 @@ TIEXPORT3 int TICALL ticalcs_model_supports_installing_flashapps(CalcModel model
  *
  * Return value: a function pointer.
  */
-TIEXPORT3 ticalcs_event_hook_type TICALL ticalcs_calc_get_event_hook(CalcHandle *handle)
+ticalcs_event_hook_type TICALL ticalcs_calc_get_event_hook(CalcHandle *handle)
 {
 	if (!ticalcs_validate_handle(handle))
 	{
@@ -777,7 +777,7 @@ TIEXPORT3 ticalcs_event_hook_type TICALL ticalcs_calc_get_event_hook(CalcHandle 
  *
  * Return value: the previous post recv hook, so that the caller can use it to chain hooks.
  */
-TIEXPORT3 ticalcs_event_hook_type TICALL ticalcs_calc_set_event_hook(CalcHandle *handle, ticalcs_event_hook_type hook)
+ticalcs_event_hook_type TICALL ticalcs_calc_set_event_hook(CalcHandle *handle, ticalcs_event_hook_type hook)
 {
 	ticalcs_event_hook_type old_hook;
 
@@ -800,7 +800,7 @@ TIEXPORT3 ticalcs_event_hook_type TICALL ticalcs_calc_set_event_hook(CalcHandle 
  *
  * Return value: the previous post recv hook, so that the caller can use it to chain hooks.
  */
-TIEXPORT3 void * ticalcs_calc_get_event_user_pointer(CalcHandle *handle)
+void * ticalcs_calc_get_event_user_pointer(CalcHandle *handle)
 {
 	if (!ticalcs_validate_handle(handle))
 	{
@@ -819,7 +819,7 @@ TIEXPORT3 void * ticalcs_calc_get_event_user_pointer(CalcHandle *handle)
  *
  * Return value: the previous post recv hook, so that the caller can use it to chain hooks.
  */
-TIEXPORT3 void * ticalcs_calc_set_event_user_pointer(CalcHandle *handle, void * user_pointer)
+void * ticalcs_calc_set_event_user_pointer(CalcHandle *handle, void * user_pointer)
 {
 	void * old_pointer;
 
@@ -842,7 +842,7 @@ TIEXPORT3 void * ticalcs_calc_set_event_user_pointer(CalcHandle *handle, void * 
  *
  * Return value: an unsigned integer.
  */
-TIEXPORT3 uint32_t TICALL ticalcs_calc_get_event_count(CalcHandle *handle)
+uint32_t TICALL ticalcs_calc_get_event_count(CalcHandle *handle)
 {
 	if (!ticalcs_validate_handle(handle))
 	{
@@ -864,7 +864,7 @@ TIEXPORT3 uint32_t TICALL ticalcs_calc_get_event_count(CalcHandle *handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  */
-TIEXPORT3 int TICALL ticalcs_calc_fire_user_event(CalcHandle *handle, CalcEventType type, int retval, void * user_data, uint32_t user_len)
+int TICALL ticalcs_calc_fire_user_event(CalcHandle *handle, CalcEventType type, int retval, void * user_data, uint32_t user_len)
 {
 	int ret = 0;
 

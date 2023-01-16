@@ -52,7 +52,7 @@ extern int nsp_reset;
  *
  * Return value: 0 if error has been caught, the error number otherwise (propagation).
  **/
-TIEXPORT3 int TICALL ticalcs_error_get(int number, char **message)
+int TICALL ticalcs_error_get(int number, char **message)
 {
 	// free memory
 	//dusb_vtl_pkt_purge();
@@ -492,7 +492,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(int number, char **message)
  *
  * Return value: 0 if the argument was valid and the message was freed, nonzero otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_error_free(char *message)
+int TICALL ticalcs_error_free(char *message)
 {
 	if (message == NULL)
 	{

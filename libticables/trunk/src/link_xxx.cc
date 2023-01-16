@@ -39,7 +39,7 @@
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_open(CableHandle* handle)
+int TICALL ticables_cable_open(CableHandle* handle)
 {
 	int ret = 0;
 
@@ -95,7 +95,7 @@ TIEXPORT1 int TICALL ticables_cable_open(CableHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_close(CableHandle* handle)
+int TICALL ticables_cable_close(CableHandle* handle)
 {
 	int ret = 0;
 
@@ -139,7 +139,7 @@ TIEXPORT1 int TICALL ticables_cable_close(CableHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_reset(CableHandle* handle)
+int TICALL ticables_cable_reset(CableHandle* handle)
 {
 	int ret = 0;
 
@@ -182,7 +182,7 @@ TIEXPORT1 int TICALL ticables_cable_reset(CableHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_probe(CableHandle* handle, int* result)
+int TICALL ticables_cable_probe(CableHandle* handle, int* result)
 {
 	int opened;
 	int ret = 0;
@@ -258,7 +258,7 @@ TIEXPORT1 int TICALL ticables_cable_probe(CableHandle* handle, int* result)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint32_t len)
+int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint32_t len)
 {
 	int ret = 0;
 	CableEventData event;
@@ -331,7 +331,7 @@ TIEXPORT1 int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uin
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint32_t len)
+int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint32_t len)
 {
 	int ret = 0;
 	CableEventData event;
@@ -396,7 +396,7 @@ TIEXPORT1 int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uin
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_check(CableHandle* handle, CableStatus *status)
+int TICALL ticables_cable_check(CableHandle* handle, CableStatus *status)
 {
 	int ret = 0;
 
@@ -444,7 +444,7 @@ TIEXPORT1 int TICALL ticables_cable_check(CableHandle* handle, CableStatus *stat
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
+int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
 {
 	int ret = 0;
 
@@ -485,7 +485,7 @@ TIEXPORT1 int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
+int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
 {
 	int ret = 0;
 
@@ -525,7 +525,7 @@ TIEXPORT1 int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
  *
  * Return value: 0 or 1.
  **/
-TIEXPORT1 int TICALL ticables_cable_get_d0(CableHandle* handle)
+int TICALL ticables_cable_get_d0(CableHandle* handle)
 {
 	int ret = 0;
 
@@ -563,7 +563,7 @@ TIEXPORT1 int TICALL ticables_cable_get_d0(CableHandle* handle)
  *
  * Return value: 0 or 1.
  **/
-TIEXPORT1 int TICALL ticables_cable_get_d1(CableHandle* handle)
+int TICALL ticables_cable_get_d1(CableHandle* handle)
 {
 	int ret = 0;
 
@@ -605,7 +605,7 @@ TIEXPORT1 int TICALL ticables_cable_get_d1(CableHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_set_raw(CableHandle* handle, int state)
+int TICALL ticables_cable_set_raw(CableHandle* handle, int state)
 {
 	int ret = 0;
 
@@ -652,7 +652,7 @@ TIEXPORT1 int TICALL ticables_cable_set_raw(CableHandle* handle, int state)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle* handle, int *state)
+int TICALL ticables_cable_get_raw(CableHandle* handle, int *state)
 {
 	int ret = 0;
 
@@ -698,7 +698,7 @@ TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle* handle, int *state)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_set_device(CableHandle* handle, const char * device)
+int TICALL ticables_cable_set_device(CableHandle* handle, const char * device)
 {
 	int ret = 0;
 
@@ -739,7 +739,7 @@ TIEXPORT1 int TICALL ticables_cable_set_device(CableHandle* handle, const char *
  * Get the type of device on the other end of the cable, if this can
  * be determined.
  */
-TIEXPORT1 int TICALL ticables_cable_get_device_info(CableHandle *handle, CableDeviceInfo *info)
+int TICALL ticables_cable_get_device_info(CableHandle *handle, CableDeviceInfo *info)
 {
 	int ret = 0;
 
@@ -785,7 +785,7 @@ TIEXPORT1 int TICALL ticables_cable_get_device_info(CableHandle *handle, CableDe
  *
  * Return value: always 0.
  **/
-TIEXPORT1 int TICALL ticables_progress_reset(CableHandle* handle)
+int TICALL ticables_progress_reset(CableHandle* handle)
 {
 	VALIDATE_HANDLE(handle);
 
@@ -806,7 +806,7 @@ TIEXPORT1 int TICALL ticables_progress_reset(CableHandle* handle)
  *
  * Return value: always 0.
  **/
-TIEXPORT1 int TICALL ticables_progress_get(CableHandle* handle, int* count, int* msec, float* rate)
+int TICALL ticables_progress_get(CableHandle* handle, int* count, int* msec, float* rate)
 {
 	VALIDATE_HANDLE(handle);
 
@@ -848,7 +848,7 @@ TIEXPORT1 int TICALL ticables_progress_get(CableHandle* handle, int* count, int*
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
+int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
 {
 	return ticables_cable_send(handle, &data, 1);
 }
@@ -863,7 +863,7 @@ TIEXPORT1 int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT1 int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
+int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
 {
 	return ticables_cable_recv(handle, data, 1);
 }
@@ -875,7 +875,7 @@ TIEXPORT1 int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
  *
  * Return value: a function pointer.
  */
-TIEXPORT1 ticables_pre_send_hook_type TICALL ticables_cable_get_pre_send_hook(CableHandle *handle)
+ticables_pre_send_hook_type TICALL ticables_cable_get_pre_send_hook(CableHandle *handle)
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
@@ -890,7 +890,7 @@ TIEXPORT1 ticables_pre_send_hook_type TICALL ticables_cable_get_pre_send_hook(Ca
  *
  * Return value: the previous pre send hook, so that the caller can use it to chain hooks.
  */
-TIEXPORT1 ticables_pre_send_hook_type TICALL ticables_cable_set_pre_send_hook(CableHandle *handle, ticables_pre_send_hook_type hook)
+ticables_pre_send_hook_type TICALL ticables_cable_set_pre_send_hook(CableHandle *handle, ticables_pre_send_hook_type hook)
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
@@ -904,7 +904,7 @@ TIEXPORT1 ticables_pre_send_hook_type TICALL ticables_cable_set_pre_send_hook(Ca
  *
  * Return value: a function pointer.
  */
-TIEXPORT1 ticables_post_send_hook_type TICALL ticables_cable_get_post_send_hook(CableHandle *handle)
+ticables_post_send_hook_type TICALL ticables_cable_get_post_send_hook(CableHandle *handle)
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
@@ -919,7 +919,7 @@ TIEXPORT1 ticables_post_send_hook_type TICALL ticables_cable_get_post_send_hook(
  *
  * Return value: the previous post send hook, so that the caller can use it to chain hooks.
  */
-TIEXPORT1 ticables_post_send_hook_type TICALL ticables_cable_set_post_send_hook(CableHandle *handle, ticables_post_send_hook_type hook)
+ticables_post_send_hook_type TICALL ticables_cable_set_post_send_hook(CableHandle *handle, ticables_post_send_hook_type hook)
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
@@ -933,7 +933,7 @@ TIEXPORT1 ticables_post_send_hook_type TICALL ticables_cable_set_post_send_hook(
  *
  * Return value: a function pointer.
  */
-TIEXPORT1 ticables_pre_recv_hook_type TICALL ticables_cable_get_pre_recv_hook(CableHandle *handle)
+ticables_pre_recv_hook_type TICALL ticables_cable_get_pre_recv_hook(CableHandle *handle)
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
@@ -948,7 +948,7 @@ TIEXPORT1 ticables_pre_recv_hook_type TICALL ticables_cable_get_pre_recv_hook(Ca
  *
  * Return value: the previous pre recv hook, so that the caller can use it to chain hooks.
  */
-TIEXPORT1 ticables_pre_recv_hook_type TICALL ticables_cable_set_pre_recv_hook(CableHandle *handle, ticables_pre_recv_hook_type hook)
+ticables_pre_recv_hook_type TICALL ticables_cable_set_pre_recv_hook(CableHandle *handle, ticables_pre_recv_hook_type hook)
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
@@ -962,7 +962,7 @@ TIEXPORT1 ticables_pre_recv_hook_type TICALL ticables_cable_set_pre_recv_hook(Ca
  *
  * Return value: a function pointer.
  */
-TIEXPORT1 ticables_post_recv_hook_type TICALL ticables_cable_get_post_recv_hook(CableHandle *handle)
+ticables_post_recv_hook_type TICALL ticables_cable_get_post_recv_hook(CableHandle *handle)
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
@@ -977,7 +977,7 @@ TIEXPORT1 ticables_post_recv_hook_type TICALL ticables_cable_get_post_recv_hook(
  *
  * Return value: the previous post recv hook, so that the caller can use it to chain hooks.
  */
-TIEXPORT1 ticables_post_recv_hook_type TICALL ticables_cable_set_post_recv_hook(CableHandle *handle, ticables_post_recv_hook_type hook)
+ticables_post_recv_hook_type TICALL ticables_cable_set_post_recv_hook(CableHandle *handle, ticables_post_recv_hook_type hook)
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
@@ -991,7 +991,7 @@ TIEXPORT1 ticables_post_recv_hook_type TICALL ticables_cable_set_post_recv_hook(
  *
  * Return value: a function pointer.
  */
-TIEXPORT1 ticables_event_hook_type TICALL ticables_cable_get_event_hook(CableHandle *handle)
+ticables_event_hook_type TICALL ticables_cable_get_event_hook(CableHandle *handle)
 {
 	if (!ticables_validate_handle(handle))
 	{
@@ -1010,7 +1010,7 @@ TIEXPORT1 ticables_event_hook_type TICALL ticables_cable_get_event_hook(CableHan
  *
  * Return value: the previous post recv hook, so that the caller can use it to chain hooks.
  */
-TIEXPORT1 ticables_event_hook_type TICALL ticables_cable_set_event_hook(CableHandle *handle, ticables_event_hook_type hook)
+ticables_event_hook_type TICALL ticables_cable_set_event_hook(CableHandle *handle, ticables_event_hook_type hook)
 {
 	ticables_event_hook_type old_hook;
 
@@ -1033,7 +1033,7 @@ TIEXPORT1 ticables_event_hook_type TICALL ticables_cable_set_event_hook(CableHan
  *
  * Return value: the previous post recv hook, so that the caller can use it to chain hooks.
  */
-TIEXPORT1 void * ticables_cable_get_event_user_pointer(CableHandle *handle)
+void * ticables_cable_get_event_user_pointer(CableHandle *handle)
 {
 	if (!ticables_validate_handle(handle))
 	{
@@ -1052,7 +1052,7 @@ TIEXPORT1 void * ticables_cable_get_event_user_pointer(CableHandle *handle)
  *
  * Return value: the previous post recv hook, so that the caller can use it to chain hooks.
  */
-TIEXPORT1 void * ticables_cable_set_event_user_pointer(CableHandle *handle, void * user_pointer)
+void * ticables_cable_set_event_user_pointer(CableHandle *handle, void * user_pointer)
 {
 	void * old_pointer;
 
@@ -1075,7 +1075,7 @@ TIEXPORT1 void * ticables_cable_set_event_user_pointer(CableHandle *handle, void
  *
  * Return value: an unsigned integer.
  */
-TIEXPORT1 uint32_t TICALL ticables_cable_get_event_count(CableHandle *handle)
+uint32_t TICALL ticables_cable_get_event_count(CableHandle *handle)
 {
 	if (!ticables_validate_handle(handle))
 	{
@@ -1097,7 +1097,7 @@ TIEXPORT1 uint32_t TICALL ticables_cable_get_event_count(CableHandle *handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  */
-TIEXPORT1 int TICALL ticables_cable_fire_user_event(CableHandle *handle, CableEventType type, int retval, void * user_data, uint32_t user_len)
+int TICALL ticables_cable_fire_user_event(CableHandle *handle, CableEventType type, int retval, void * user_data, uint32_t user_len)
 {
 	int ret = 0;
 

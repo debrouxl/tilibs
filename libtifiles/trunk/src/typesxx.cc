@@ -43,7 +43,7 @@
  *
  * Return value: a string like "REAL".
  **/
-TIEXPORT2 const char *TICALL tifiles_vartype2string(CalcModel model, uint8_t data)
+const char *TICALL tifiles_vartype2string(CalcModel model, uint8_t data)
 {
   switch (model) 
   {
@@ -105,7 +105,7 @@ TIEXPORT2 const char *TICALL tifiles_vartype2string(CalcModel model, uint8_t dat
  *
  * Return value: a type ID.
  **/
-TIEXPORT2 uint8_t TICALL tifiles_string2vartype(CalcModel model, const char *s)
+uint8_t TICALL tifiles_string2vartype(CalcModel model, const char *s)
 {
   if (s == NULL)
   {
@@ -173,7 +173,7 @@ TIEXPORT2 uint8_t TICALL tifiles_string2vartype(CalcModel model, const char *s)
  *
  * Return value: a string like "REAL".
  **/
-TIEXPORT2 const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
+const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
 {
   switch (model) 
   {
@@ -235,7 +235,7 @@ TIEXPORT2 const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
  *
  * Return value: a string like "PRGM".
  **/
-TIEXPORT2 uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
+uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
 {
   if (s == NULL)
   {
@@ -304,7 +304,7 @@ TIEXPORT2 uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
  *
  * Return value: a string like "Assembly Program".
  **/
-TIEXPORT2 const char *TICALL tifiles_vartype2type(CalcModel model, uint8_t vartype)
+const char *TICALL tifiles_vartype2type(CalcModel model, uint8_t vartype)
 {
   switch (model)
   {
@@ -367,7 +367,7 @@ TIEXPORT2 const char *TICALL tifiles_vartype2type(CalcModel model, uint8_t varty
  *
  * Return value: a string like "Assembly Program".
  **/
-TIEXPORT2 const char *TICALL tifiles_vartype2icon(CalcModel model, uint8_t vartype)
+const char *TICALL tifiles_vartype2icon(CalcModel model, uint8_t vartype)
 {
   switch (model) 
   {
@@ -432,7 +432,7 @@ TIEXPORT2 const char *TICALL tifiles_vartype2icon(CalcModel model, uint8_t varty
  *
  * Return value: a type ID.
  **/
-TIEXPORT2 uint8_t TICALL tifiles_folder_type(CalcModel model)
+uint8_t TICALL tifiles_folder_type(CalcModel model)
 {
   switch (model) 
   {
@@ -488,7 +488,7 @@ TIEXPORT2 uint8_t TICALL tifiles_folder_type(CalcModel model)
  *
  * Return value: a type ID.
  **/
-TIEXPORT2 uint8_t TICALL tifiles_flash_type(CalcModel model)
+uint8_t TICALL tifiles_flash_type(CalcModel model)
 {
   switch (model) 
   {
@@ -545,7 +545,7 @@ TIEXPORT2 uint8_t TICALL tifiles_flash_type(CalcModel model)
  *
  * Return value: a type ID.
  **/
-TIEXPORT2 uint8_t TICALL tifiles_idlist_type(CalcModel model)
+uint8_t TICALL tifiles_idlist_type(CalcModel model)
 {
   switch (model) 
   {
@@ -606,7 +606,7 @@ TIEXPORT2 uint8_t TICALL tifiles_idlist_type(CalcModel model)
  *
  * Return value: a string like "**TI89**".
  **/
-TIEXPORT2 const char *TICALL tifiles_calctype2signature(CalcModel model)
+const char *TICALL tifiles_calctype2signature(CalcModel model)
 {
   switch (model) 
   {
@@ -660,7 +660,7 @@ TIEXPORT2 const char *TICALL tifiles_calctype2signature(CalcModel model)
  *
  * Return value: a calculator model.
  **/
-TIEXPORT2 CalcModel TICALL tifiles_signature2calctype(const char *s)
+CalcModel TICALL tifiles_signature2calctype(const char *s)
 {
   if (s != NULL)
   {

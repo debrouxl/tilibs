@@ -38,7 +38,7 @@
 #pragma warning( disable : 4761 4244)
 #endif
 
-TIEXPORT3 uint8_t TICALL ti68k_handle_to_dbus_mid(CalcHandle * handle)
+uint8_t TICALL ti68k_handle_to_dbus_mid(CalcHandle * handle)
 {
 	if (ticalcs_validate_handle(handle))
 	{
@@ -89,7 +89,7 @@ static int err_code(uint8_t *data)
 	return 0;
 }
 
-TIEXPORT3 int TICALL ti68k_send_VAR(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname, uint8_t target)
+int TICALL ti68k_send_VAR(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname, uint8_t target)
 {
 	uint8_t buffer[32];
 	char trans[127];
@@ -121,12 +121,12 @@ TIEXPORT3 int TICALL ti68k_send_VAR(CalcHandle* handle, uint32_t varsize, uint8_
 	return dbus_send(handle, target, DBUS_CMD_VAR, 6 + len + extra, buffer);
 }
 
-TIEXPORT3 int TICALL ti68k_send_CTS(CalcHandle* handle, uint8_t target)
+int TICALL ti68k_send_CTS(CalcHandle* handle, uint8_t target)
 {
 	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_CTS, "CTS", 2, NULL);
 }
 
-TIEXPORT3 int TICALL ti68k_send_XDP(CalcHandle* handle, uint32_t length, uint8_t * data, uint8_t target)
+int TICALL ti68k_send_XDP(CalcHandle* handle, uint32_t length, uint8_t * data, uint8_t target)
 {
 	VALIDATE_HANDLE(handle);
 
@@ -134,7 +134,7 @@ TIEXPORT3 int TICALL ti68k_send_XDP(CalcHandle* handle, uint32_t length, uint8_t
 	return dbus_send(handle, target, DBUS_CMD_XDP, length, data);
 }
 
-TIEXPORT3 int TICALL ti89_send_SKP(CalcHandle* handle, uint8_t rej_code)
+int TICALL ti89_send_SKP(CalcHandle* handle, uint8_t rej_code)
 {
 	uint8_t buffer[4] = { rej_code, 0, 0, 0 };
 
@@ -144,7 +144,7 @@ TIEXPORT3 int TICALL ti89_send_SKP(CalcHandle* handle, uint8_t rej_code)
 	return dbus_send(handle, ti68k_handle_to_dbus_mid(handle), DBUS_CMD_SKP, 3, buffer);
 }
 
-TIEXPORT3 int TICALL ti92_send_SKP(CalcHandle* handle, uint8_t rej_code)
+int TICALL ti92_send_SKP(CalcHandle* handle, uint8_t rej_code)
 {
 	VALIDATE_HANDLE(handle);
 
@@ -152,32 +152,32 @@ TIEXPORT3 int TICALL ti92_send_SKP(CalcHandle* handle, uint8_t rej_code)
 	return dbus_send(handle, DBUS_MID_PC_TI92, DBUS_CMD_SKP, 1, &rej_code);
 }
 
-TIEXPORT3 int TICALL ti68k_send_ACK(CalcHandle* handle, uint8_t target)
+int TICALL ti68k_send_ACK(CalcHandle* handle, uint8_t target)
 {
 	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_ACK, "ACK", 2, NULL);
 }
 
-TIEXPORT3 int TICALL ti68k_send_ERR(CalcHandle* handle, uint8_t target)
+int TICALL ti68k_send_ERR(CalcHandle* handle, uint8_t target)
 {
 	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_ERR, "ERR", 2, NULL);
 }
 
-TIEXPORT3 int TICALL ti68k_send_RDY(CalcHandle* handle, uint8_t target)
+int TICALL ti68k_send_RDY(CalcHandle* handle, uint8_t target)
 {
 	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_RDY, "RDY", 2, NULL);
 }
 
-TIEXPORT3 int TICALL ti68k_send_SCR(CalcHandle* handle, uint8_t target)
+int TICALL ti68k_send_SCR(CalcHandle* handle, uint8_t target)
 {
 	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_SCR, "SCR", 2, NULL);
 }
 
-TIEXPORT3 int TICALL ti68k_send_CNT(CalcHandle* handle, uint8_t target)
+int TICALL ti68k_send_CNT(CalcHandle* handle, uint8_t target)
 {
 	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_CNT, "CNT", 2, NULL);
 }
 
-TIEXPORT3 int TICALL ti68k_send_KEY(CalcHandle* handle, uint16_t scancode, uint8_t target)
+int TICALL ti68k_send_KEY(CalcHandle* handle, uint16_t scancode, uint8_t target)
 {
 	int ret;
 	uint8_t buf[4] = { target, DBUS_CMD_KEY, LSB(scancode), MSB(scancode) };
@@ -207,12 +207,12 @@ TIEXPORT3 int TICALL ti68k_send_KEY(CalcHandle* handle, uint16_t scancode, uint8
 	return ret;
 }
 
-TIEXPORT3 int TICALL ti68k_send_EOT(CalcHandle* handle, uint8_t target)
+int TICALL ti68k_send_EOT(CalcHandle* handle, uint8_t target)
 {
 	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_EOT, "EOT", 2, NULL);
 }
 
-TIEXPORT3 int TICALL ti89_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
+int TICALL ti89_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
 	uint8_t buffer[32];
 	uint16_t len;
@@ -244,7 +244,7 @@ TIEXPORT3 int TICALL ti89_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t
 	return dbus_send(handle, ti68k_handle_to_dbus_mid(handle), DBUS_CMD_REQ, len, buffer);
 }
 
-TIEXPORT3 int TICALL ti92_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
+int TICALL ti92_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
 	uint8_t buffer[32];
 	uint16_t len;
@@ -270,7 +270,7 @@ TIEXPORT3 int TICALL ti92_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t
 	return dbus_send(handle, DBUS_MID_PC_TI92, DBUS_CMD_REQ, 6 + len, buffer);
 }
 
-TIEXPORT3 int TICALL ti89_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
+int TICALL ti89_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
 	uint8_t buffer[32];
 	uint16_t len;
@@ -301,7 +301,7 @@ TIEXPORT3 int TICALL ti89_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t
 	return dbus_send(handle, ti68k_handle_to_dbus_mid(handle), DBUS_CMD_RTS, len, buffer);
 }
 
-TIEXPORT3 int TICALL ti92_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
+int TICALL ti92_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
 	uint8_t buffer[32];
 	uint16_t len;
@@ -327,7 +327,7 @@ TIEXPORT3 int TICALL ti92_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t
 	return dbus_send(handle, DBUS_MID_PC_TI92, DBUS_CMD_RTS, 6 + len, buffer);
 }
 
-TIEXPORT3 int TICALL ti89_send_RTS2(CalcHandle* handle, uint32_t varsize, uint8_t vartype, uint8_t hw_id)
+int TICALL ti89_send_RTS2(CalcHandle* handle, uint32_t varsize, uint8_t vartype, uint8_t hw_id)
 {
 	uint8_t buffer[9];
 
@@ -347,12 +347,12 @@ TIEXPORT3 int TICALL ti89_send_RTS2(CalcHandle* handle, uint32_t varsize, uint8_
 	return dbus_send(handle, ti68k_handle_to_dbus_mid(handle), DBUS_CMD_RTS, 9, buffer);
 }
 
-TIEXPORT3 int TICALL ti89_send_VER(CalcHandle* handle)
+int TICALL ti89_send_VER(CalcHandle* handle)
 {
 	return ti68k_send_simple_cmd(handle, ti68k_handle_to_dbus_mid(handle), DBUS_CMD_VER, "VER", 2, NULL);
 }
 
-TIEXPORT3 int TICALL ti89_send_DEL(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
+int TICALL ti89_send_DEL(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
 	uint8_t buffer[32];
 	uint16_t len;
@@ -378,7 +378,7 @@ TIEXPORT3 int TICALL ti89_send_DEL(CalcHandle* handle, uint32_t varsize, uint8_t
 	return dbus_send(handle, ti68k_handle_to_dbus_mid(handle), DBUS_CMD_DEL, 6 + len, buffer);
 }
 
-TIEXPORT3 int TICALL ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
+int TICALL ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
 	uint8_t host = 0, cmd = 0;
 	uint8_t *buffer;
@@ -438,7 +438,7 @@ TIEXPORT3 int TICALL ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8
 	return 0;
 }
 
-TIEXPORT3 int TICALL ti92_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
+int TICALL ti92_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
 	uint8_t host = 0, cmd = 0;
 	uint8_t *buffer;
@@ -522,17 +522,17 @@ static int ti68k_recv_CTS(CalcHandle* handle, uint8_t is_92)
 	return 0;
 }
 
-TIEXPORT3 int TICALL ti89_recv_CTS(CalcHandle* handle)
+int TICALL ti89_recv_CTS(CalcHandle* handle)
 {
 	return ti68k_recv_CTS(handle, 0);
 }
 
-TIEXPORT3 int TICALL ti92_recv_CTS(CalcHandle* handle)
+int TICALL ti92_recv_CTS(CalcHandle* handle)
 {
 	return ti68k_recv_CTS(handle, 1);
 }
 
-TIEXPORT3 int TICALL ti68k_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
+int TICALL ti68k_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 {
 	uint8_t host = 0, cmd = 0;
 	uint16_t length = 0;
@@ -572,7 +572,7 @@ TIEXPORT3 int TICALL ti68k_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 	return retval;
 }
 
-TIEXPORT3 int TICALL ti68k_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data)
+int TICALL ti68k_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data)
 {
 	uint8_t host = 0, cmd = 0;
 	uint16_t len = 0;
@@ -642,17 +642,17 @@ static int ti68k_recv_ACK(CalcHandle* handle, uint16_t * status, uint8_t is_92)
 	return 0;
 }
 
-TIEXPORT3 int TICALL ti89_recv_ACK(CalcHandle* handle, uint16_t * status)
+int TICALL ti89_recv_ACK(CalcHandle* handle, uint16_t * status)
 {
 	return ti68k_recv_ACK(handle, status, 0);
 }
 
-TIEXPORT3 int TICALL ti92_recv_ACK(CalcHandle* handle, uint16_t * status)
+int TICALL ti92_recv_ACK(CalcHandle* handle, uint16_t * status)
 {
 	return ti68k_recv_ACK(handle, status, 1);
 }
 
-TIEXPORT3 int TICALL ti68k_recv_CNT(CalcHandle* handle)
+int TICALL ti68k_recv_CNT(CalcHandle* handle)
 {
 	uint8_t host = 0, cmd = 0;
 	uint16_t sts = 0;
@@ -681,7 +681,7 @@ TIEXPORT3 int TICALL ti68k_recv_CNT(CalcHandle* handle)
 	return 0;
 }
 
-TIEXPORT3 int TICALL ti68k_recv_EOT(CalcHandle* handle)
+int TICALL ti68k_recv_EOT(CalcHandle* handle)
 {
 	uint8_t host = 0, cmd = 0;
 	uint16_t length = 0;
@@ -754,12 +754,12 @@ static int ti68k_recv_RTS(CalcHandle* handle, uint32_t * varsize, uint8_t * vart
 	return 0;
 }
 
-TIEXPORT3 int TICALL ti89_recv_RTS(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
+int TICALL ti89_recv_RTS(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
 	return ti68k_recv_RTS(handle, varsize, vartype, varname, 0);
 }
 
-TIEXPORT3 int TICALL ti92_recv_RTS(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
+int TICALL ti92_recv_RTS(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
 	return ti68k_recv_RTS(handle, varsize, vartype, varname, 1);
 }

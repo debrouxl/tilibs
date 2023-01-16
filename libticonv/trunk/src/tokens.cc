@@ -491,7 +491,7 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
  *
  * Return value: a newly allocated string. Must be freed using ticonv_varname_free() when no longer used.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigned char type)
+char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigned char type)
 {
 	char *dst;
 
@@ -559,7 +559,7 @@ static int shift(int v)
  *
  * Return value: a newly allocated string. Must be freed using ticonv_varname_free() when no longer used.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_, unsigned char type)
+char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_, unsigned char type)
 {
 	const unsigned char *src = (const unsigned char *)src_;
 
@@ -727,7 +727,7 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
  *
  * This function frees a varname previously allocated by ticonv_varname_detokenize() or ticonv_varname_tokenize().
  **/
-TIEXPORT4 void TICALL ticonv_varname_free(char * varname)
+void TICALL ticonv_varname_free(char * varname)
 {
 	g_free(varname);
 }

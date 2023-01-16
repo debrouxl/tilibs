@@ -46,12 +46,12 @@
 
 // Creation/Destruction/Garbage Collecting of packets
 
-TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new(CalcHandle * handle)
+NSPVirtualPacket* TICALL nsp_vtl_pkt_new(CalcHandle * handle)
 {
 	return nsp_vtl_pkt_new_ex(handle, 0, 0, 0, 0, 0, 0, NULL);
 }
 
-TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data)
+NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data)
 {
 	NSPVirtualPacket* vtl = NULL;
 
@@ -77,7 +77,7 @@ TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint3
 	return vtl;
 }
 
-TIEXPORT3 void TICALL nsp_vtl_pkt_fill(NSPVirtualPacket* vtl, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data)
+void TICALL nsp_vtl_pkt_fill(NSPVirtualPacket* vtl, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data)
 {
 	if (vtl != NULL)
 	{
@@ -95,7 +95,7 @@ TIEXPORT3 void TICALL nsp_vtl_pkt_fill(NSPVirtualPacket* vtl, uint32_t size, uin
 	}
 }
 
-TIEXPORT3 void TICALL nsp_vtl_pkt_del(CalcHandle *handle, NSPVirtualPacket* vtl)
+void TICALL nsp_vtl_pkt_del(CalcHandle *handle, NSPVirtualPacket* vtl)
 {
 	//GList *vtl_pkt_list;
 
@@ -118,12 +118,12 @@ TIEXPORT3 void TICALL nsp_vtl_pkt_del(CalcHandle *handle, NSPVirtualPacket* vtl)
 	g_free(vtl);
 }
 
-TIEXPORT3 void * TICALL nsp_vtl_pkt_alloc_data(size_t size)
+void * TICALL nsp_vtl_pkt_alloc_data(size_t size)
 {
 	return g_malloc0(size + 1);
 }
 
-TIEXPORT3 NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(NSPVirtualPacket* vtl, size_t size)
+NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(NSPVirtualPacket* vtl, size_t size)
 {
 	if (vtl != NULL)
 	{
@@ -154,14 +154,14 @@ TIEXPORT3 NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(NSPVirtualPacket* v
 	return vtl;
 }
 
-TIEXPORT3 void TICALL nsp_vtl_pkt_free_data(void * data)
+void TICALL nsp_vtl_pkt_free_data(void * data)
 {
 	return g_free(data);
 }
 
 // Session Management
 
-TIEXPORT3 int TICALL nsp_session_open(CalcHandle *handle, uint16_t port)
+int TICALL nsp_session_open(CalcHandle *handle, uint16_t port)
 {
 	VALIDATE_HANDLE(handle);
 
@@ -173,7 +173,7 @@ TIEXPORT3 int TICALL nsp_session_open(CalcHandle *handle, uint16_t port)
 	return 0;
 }
 
-TIEXPORT3 int TICALL nsp_session_close(CalcHandle *handle)
+int TICALL nsp_session_close(CalcHandle *handle)
 {
 	int ret;
 
@@ -200,7 +200,7 @@ TIEXPORT3 int TICALL nsp_session_close(CalcHandle *handle)
 
 // Address Request/Assignment
 
-TIEXPORT3 int TICALL nsp_addr_request(CalcHandle *handle)
+int TICALL nsp_addr_request(CalcHandle *handle)
 {
 	NSPRawPacket pkt;
 	int ret;
@@ -233,7 +233,7 @@ TIEXPORT3 int TICALL nsp_addr_request(CalcHandle *handle)
 	return ret;
 }
 
-TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *handle, uint16_t addr)
+int TICALL nsp_addr_assign(CalcHandle *handle, uint16_t addr)
 {
 	NSPRawPacket pkt;
 
@@ -259,7 +259,7 @@ TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *handle, uint16_t addr)
 
 // Acknowledgement
 
-TIEXPORT3 int TICALL nsp_send_ack(CalcHandle* handle)
+int TICALL nsp_send_ack(CalcHandle* handle)
 {
 	NSPRawPacket pkt;
 
@@ -281,7 +281,7 @@ TIEXPORT3 int TICALL nsp_send_ack(CalcHandle* handle)
 	return nsp_send(handle, &pkt);
 }
 
-TIEXPORT3 int TICALL nsp_send_nack(CalcHandle* handle)
+int TICALL nsp_send_nack(CalcHandle* handle)
 {
 	VALIDATE_HANDLE(handle);
 
@@ -290,7 +290,7 @@ TIEXPORT3 int TICALL nsp_send_nack(CalcHandle* handle)
 	return nsp_send_nack_ex(handle, handle->priv.nsp_dst_port);
 }
 
-TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle* handle, uint16_t port)
+int TICALL nsp_send_nack_ex(CalcHandle* handle, uint16_t port)
 {
 	NSPRawPacket pkt;
 
@@ -312,7 +312,7 @@ TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle* handle, uint16_t port)
 	return nsp_send(handle, &pkt);
 }
 
-TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *handle)
+int TICALL nsp_recv_ack(CalcHandle *handle)
 {
 	NSPRawPacket pkt;
 	uint16_t addr;
@@ -367,7 +367,7 @@ TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *handle)
 
 // Service Disconnection
 
-TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *handle)
+int TICALL nsp_send_disconnect(CalcHandle *handle)
 {
 	NSPRawPacket pkt;
 
@@ -389,7 +389,7 @@ TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *handle)
 	return nsp_send(handle, &pkt);
 }
 
-TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *handle)
+int TICALL nsp_recv_disconnect(CalcHandle *handle)
 {
 	NSPRawPacket pkt;
 	uint16_t addr;
@@ -442,7 +442,7 @@ TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *handle)
 
 // Fragmenting of packets
 
-TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
+int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 {
 	NSPRawPacket raw;
 	int i, r, q;
@@ -535,7 +535,7 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 }
 
 // Note: data field may be re-allocated.
-TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
+int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 {
 	NSPRawPacket raw;
 	long offset = 0;

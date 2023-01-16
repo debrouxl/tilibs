@@ -47,7 +47,7 @@
  *
  * Return value: the array or NULL if failed.
  **/
-TIEXPORT2 FileContent** TICALL tifiles_content_create_group(unsigned int n_entries)
+FileContent** TICALL tifiles_content_create_group(unsigned int n_entries)
 {
 	return (FileContent **)g_malloc0((n_entries + 1) * sizeof(FileContent *));
 }
@@ -60,7 +60,7 @@ TIEXPORT2 FileContent** TICALL tifiles_content_create_group(unsigned int n_entri
  *
  * Return value: always 0.
  **/
-TIEXPORT2 int TICALL tifiles_content_delete_group(FileContent **array)
+int TICALL tifiles_content_delete_group(FileContent **array)
 {
 	int i, n;
 
@@ -100,7 +100,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_group(FileContent **array)
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT2 int TICALL tifiles_group_contents(FileContent **src_contents, FileContent **dst_content)
+int TICALL tifiles_group_contents(FileContent **src_contents, FileContent **dst_content)
 {
 	FileContent *dst;
 	unsigned int i, j, n;
@@ -162,7 +162,7 @@ TIEXPORT2 int TICALL tifiles_group_contents(FileContent **src_contents, FileCont
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT2 int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***dest)
+int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***dest)
 {
 	unsigned int i;
 	FileContent **dst;
@@ -225,7 +225,7 @@ TIEXPORT2 int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***de
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT2 int TICALL tifiles_group_files(char **src_filenames, const char *dst_filename)
+int TICALL tifiles_group_files(char **src_filenames, const char *dst_filename)
 {
 	int i, n;
 	FileContent **src = NULL;
@@ -314,7 +314,7 @@ tgf2:
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT2 int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames)
+int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames)
 {
 	FileContent *src = NULL;
 	FileContent **ptr, **dst = NULL;
@@ -406,7 +406,7 @@ tuf3:
  *
  * Return value: the number of entries.
  **/
-TIEXPORT2 int TICALL tifiles_content_add_entry(FileContent *content, VarEntry *ve)
+int TICALL tifiles_content_add_entry(FileContent *content, VarEntry *ve)
 {
 	if (content != NULL)
 	{
@@ -437,7 +437,7 @@ TIEXPORT2 int TICALL tifiles_content_add_entry(FileContent *content, VarEntry *v
  *
  * Return value: the number of entries or -1 if not found.
  **/
-TIEXPORT2 int TICALL tifiles_content_del_entry(FileContent *content, VarEntry *ve)
+int TICALL tifiles_content_del_entry(FileContent *content, VarEntry *ve)
 {
 	unsigned int i, j;
 
@@ -498,7 +498,7 @@ TIEXPORT2 int TICALL tifiles_content_del_entry(FileContent *content, VarEntry *v
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT2 int TICALL tifiles_group_add_file(const char *src_filename, const char *dst_filename)
+int TICALL tifiles_group_add_file(const char *src_filename, const char *dst_filename)
 {
 	CalcModel src_model;
 	CalcModel dst_model;
@@ -560,7 +560,7 @@ TIEXPORT2 int TICALL tifiles_group_add_file(const char *src_filename, const char
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT2 int TICALL tifiles_group_del_file(VarEntry *entry, const char *dst_filename)
+int TICALL tifiles_group_del_file(VarEntry *entry, const char *dst_filename)
 {
 	CalcModel dst_model;
 	FileContent* dst_content = NULL;

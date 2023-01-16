@@ -75,7 +75,7 @@ static const DUSBVtlPktInfo vpkt_types[] =
 	{ 0xFFFF, NULL}
 };
 
-TIEXPORT3 const char* TICALL dusb_vpkt_type2name(uint16_t id)
+const char* TICALL dusb_vpkt_type2name(uint16_t id)
 {
 	const DUSBVtlPktInfo *p;
 
@@ -92,7 +92,7 @@ TIEXPORT3 const char* TICALL dusb_vpkt_type2name(uint16_t id)
 
 // Creation/Destruction/Garbage Collecting of packets
 
-TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uint32_t size, uint16_t type, uint8_t * data)
+DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uint32_t size, uint16_t type, uint8_t * data)
 {
 	DUSBVirtualPacket* vtl = NULL;
 
@@ -120,12 +120,12 @@ TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uin
 	return vtl;
 }
 
-TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new(CalcHandle * handle)
+DUSBVirtualPacket* TICALL dusb_vtl_pkt_new(CalcHandle * handle)
 {
 	return dusb_vtl_pkt_new_ex(handle, 0, 0, NULL);
 }
 
-TIEXPORT3 void TICALL dusb_vtl_pkt_fill(DUSBVirtualPacket* vtl, uint32_t size, uint16_t type, uint8_t * data)
+void TICALL dusb_vtl_pkt_fill(DUSBVirtualPacket* vtl, uint32_t size, uint16_t type, uint8_t * data)
 {
 	if (vtl != NULL)
 	{
@@ -139,7 +139,7 @@ TIEXPORT3 void TICALL dusb_vtl_pkt_fill(DUSBVirtualPacket* vtl, uint32_t size, u
 	}
 }
 
-TIEXPORT3 void TICALL dusb_vtl_pkt_del(CalcHandle * handle, DUSBVirtualPacket* vtl)
+void TICALL dusb_vtl_pkt_del(CalcHandle * handle, DUSBVirtualPacket* vtl)
 {
 	//GList *vtl_pkt_list;
 
@@ -162,12 +162,12 @@ TIEXPORT3 void TICALL dusb_vtl_pkt_del(CalcHandle * handle, DUSBVirtualPacket* v
 	g_free(vtl);
 }
 
-TIEXPORT3 void * TICALL dusb_vtl_pkt_alloc_data(size_t size)
+void * TICALL dusb_vtl_pkt_alloc_data(size_t size)
 {
 	return g_malloc0(size + DUSB_DH_SIZE);
 }
 
-TIEXPORT3 DUSBVirtualPacket * TICALL dusb_vtl_pkt_realloc_data(DUSBVirtualPacket* vtl, size_t size)
+DUSBVirtualPacket * TICALL dusb_vtl_pkt_realloc_data(DUSBVirtualPacket* vtl, size_t size)
 {
 	if (vtl != NULL)
 	{
@@ -191,14 +191,14 @@ TIEXPORT3 DUSBVirtualPacket * TICALL dusb_vtl_pkt_realloc_data(DUSBVirtualPacket
 	return vtl;
 }
 
-TIEXPORT3 void TICALL dusb_vtl_pkt_free_data(void * data)
+void TICALL dusb_vtl_pkt_free_data(void * data)
 {
 	return g_free(data);
 }
 
 // Raw packets
 
-TIEXPORT3 int TICALL dusb_send_buf_size_request(CalcHandle* handle, uint32_t size)
+int TICALL dusb_send_buf_size_request(CalcHandle* handle, uint32_t size)
 {
 	DUSBRawPacket raw;
 	int ret;
@@ -230,7 +230,7 @@ TIEXPORT3 int TICALL dusb_send_buf_size_request(CalcHandle* handle, uint32_t siz
 	return ret;
 }
 
-TIEXPORT3 int TICALL dusb_recv_buf_size_alloc(CalcHandle* handle, uint32_t *size)
+int TICALL dusb_recv_buf_size_alloc(CalcHandle* handle, uint32_t *size)
 {
 	DUSBRawPacket raw;
 	uint32_t tmp;
@@ -281,7 +281,7 @@ TIEXPORT3 int TICALL dusb_recv_buf_size_alloc(CalcHandle* handle, uint32_t *size
 	return ret;
 }
 
-TIEXPORT3 int TICALL dusb_recv_buf_size_request(CalcHandle* handle, uint32_t *size)
+int TICALL dusb_recv_buf_size_request(CalcHandle* handle, uint32_t *size)
 {
 	DUSBRawPacket raw;
 	uint32_t tmp;
@@ -317,7 +317,7 @@ TIEXPORT3 int TICALL dusb_recv_buf_size_request(CalcHandle* handle, uint32_t *si
 	return ret;
 }
 
-TIEXPORT3 int TICALL dusb_send_buf_size_alloc(CalcHandle* handle, uint32_t size)
+int TICALL dusb_send_buf_size_alloc(CalcHandle* handle, uint32_t size)
 {
 	DUSBRawPacket raw;
 	int ret;
@@ -351,7 +351,7 @@ TIEXPORT3 int TICALL dusb_send_buf_size_alloc(CalcHandle* handle, uint32_t size)
 	return ret;
 }
 
-TIEXPORT3 int TICALL dusb_get_buf_size(CalcHandle* handle, uint32_t *size)
+int TICALL dusb_get_buf_size(CalcHandle* handle, uint32_t *size)
 {
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(size);
@@ -361,7 +361,7 @@ TIEXPORT3 int TICALL dusb_get_buf_size(CalcHandle* handle, uint32_t *size)
 	return 0;
 }
 
-TIEXPORT3 int TICALL dusb_set_buf_size(CalcHandle* handle, uint32_t size)
+int TICALL dusb_set_buf_size(CalcHandle* handle, uint32_t size)
 {
 	VALIDATE_HANDLE(handle);
 
@@ -376,7 +376,7 @@ TIEXPORT3 int TICALL dusb_set_buf_size(CalcHandle* handle, uint32_t size)
 	return 0;
 }
 
-TIEXPORT3 int TICALL dusb_send_acknowledge(CalcHandle* handle)
+int TICALL dusb_send_acknowledge(CalcHandle* handle)
 {
 	DUSBRawPacket raw;
 	int ret;
@@ -402,7 +402,7 @@ TIEXPORT3 int TICALL dusb_send_acknowledge(CalcHandle* handle)
 	return ret;
 }
 
-TIEXPORT3 int TICALL dusb_recv_acknowledge(CalcHandle *handle)
+int TICALL dusb_recv_acknowledge(CalcHandle *handle)
 {
 	DUSBRawPacket raw;
 	int ret = 0;
@@ -516,7 +516,7 @@ static void workaround_send(CalcHandle *handle, DUSBRawPacket *raw, DUSBVirtualP
 
 // Fragmentation of packets
 
-TIEXPORT3 int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
+int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 {
 	DUSBRawPacket raw;
 	int i, r, q;
@@ -713,7 +713,7 @@ static void workaround_recv(CalcHandle *handle, DUSBRawPacket * raw, DUSBVirtual
 }
 
 // beware: data field may be re-allocated in size !
-TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacket* vtl, uint32_t* declared_size, uint32_t est_size)
+int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacket* vtl, uint32_t* declared_size, uint32_t est_size)
 {
 	DUSBRawPacket raw;
 	int i = 0;
@@ -855,7 +855,7 @@ TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacke
 	return ret;
 }
 
-TIEXPORT3 int TICALL dusb_recv_data(CalcHandle* handle, DUSBVirtualPacket* vtl)
+int TICALL dusb_recv_data(CalcHandle* handle, DUSBVirtualPacket* vtl)
 {
 	uint32_t declared_size;
 	int ret;

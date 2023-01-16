@@ -71,7 +71,7 @@ static const char BACKUP_FILE_EXT[CALC_MAX + 1][4] =
  *
  * Return value: a file extension as string (like "83g").
  **/
-TIEXPORT2 const char * TICALL tifiles_fext_of_group (CalcModel model)
+const char * TICALL tifiles_fext_of_group (CalcModel model)
 {
 	switch (model)
 	{
@@ -127,7 +127,7 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_group (CalcModel model)
  *
  * Return value: a file extension as string (like "83b").
  **/
-TIEXPORT2 const char * TICALL tifiles_fext_of_backup (CalcModel model)
+const char * TICALL tifiles_fext_of_backup (CalcModel model)
 {
 	switch (model)
 	{
@@ -185,7 +185,7 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_backup (CalcModel model)
  *
  * Return value: a file extension as string (like "89k").
  **/
-TIEXPORT2 const char * TICALL tifiles_fext_of_flash_app (CalcModel model)
+const char * TICALL tifiles_fext_of_flash_app (CalcModel model)
 {
 	switch (model)
 	{
@@ -245,7 +245,7 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_flash_app (CalcModel model)
  *
  * Return value: a file extension as string (like "89u").
  **/
-TIEXPORT2 const char * TICALL tifiles_fext_of_flash_os(CalcModel model)
+const char * TICALL tifiles_fext_of_flash_os(CalcModel model)
 {
 	switch (model)
 	{
@@ -306,7 +306,7 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_flash_os(CalcModel model)
  *
  * Return value: a file extension as string (like "89q").
  **/
-TIEXPORT2 const char * TICALL tifiles_fext_of_certif(CalcModel model)
+const char * TICALL tifiles_fext_of_certif(CalcModel model)
 {
 	switch (model)
 	{
@@ -366,7 +366,7 @@ TIEXPORT2 const char * TICALL tifiles_fext_of_certif(CalcModel model)
  *
  * Return value: a file extension without dot as string (like "89g").
  **/
-TIEXPORT2 char * TICALL tifiles_fext_get(const char *filename)
+char * TICALL tifiles_fext_get(const char *filename)
 {
 	if (filename != NULL)
 	{
@@ -393,7 +393,7 @@ TIEXPORT2 char * TICALL tifiles_fext_get(const char *filename)
  * Return value: a file extension without dot as string (like "89g").
  * Needs to be freed with tifiles_fext_free() when no longer needed.
  **/
-TIEXPORT2 char * TICALL tifiles_fext_dup(const char *filename)
+char * TICALL tifiles_fext_dup(const char *filename)
 {
 	return g_strdup(tifiles_fext_get(filename));
 }
@@ -404,7 +404,7 @@ TIEXPORT2 char * TICALL tifiles_fext_dup(const char *filename)
  *
  * Frees a file extension part previously allocated with tifiles_fext_dup().
  **/
-TIEXPORT2 void TICALL tifiles_fext_free(char *filename)
+void TICALL tifiles_fext_free(char *filename)
 {
 	g_free(filename);
 }
@@ -421,7 +421,7 @@ TIEXPORT2 void TICALL tifiles_fext_free(char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_has_ti_header(const char *filename)
+int TICALL tifiles_file_has_ti_header(const char *filename)
 {
 	FILE *f;
 	char buf[9];
@@ -469,7 +469,7 @@ TIEXPORT2 int TICALL tifiles_file_has_ti_header(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_has_tib_header(const char *filename)
+int TICALL tifiles_file_has_tib_header(const char *filename)
 {
 	FILE *f;
 	char str[64];
@@ -516,7 +516,7 @@ TIEXPORT2 int TICALL tifiles_file_has_tib_header(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_has_tig_header(const char *filename)
+int TICALL tifiles_file_has_tig_header(const char *filename)
 {
 	FILE *f;
 	char str[5];
@@ -561,7 +561,7 @@ TIEXPORT2 int TICALL tifiles_file_has_tig_header(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_has_tifl_header(const char *filename, uint8_t *dev_type, uint8_t *data_type)
+int TICALL tifiles_file_has_tifl_header(const char *filename, uint8_t *dev_type, uint8_t *data_type)
 {
 	FILE *f;
 	uint8_t buf[78];
@@ -625,7 +625,7 @@ TIEXPORT2 int TICALL tifiles_file_has_tifl_header(const char *filename, uint8_t 
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
+int TICALL tifiles_file_has_tno_header(const char *filename)
 {
 	FILE *f;
 	char str[128];
@@ -681,7 +681,7 @@ TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
  *
  * Return value: FlashApp DeviceType if that calculator model supports FlashApps, -1 otherwise.
  **/
-TIEXPORT2 int TICALL tifiles_model_to_dev_type(CalcModel model)
+int TICALL tifiles_model_to_dev_type(CalcModel model)
 {
 	switch (model) {
 	case CALC_TI73:
@@ -754,7 +754,7 @@ static int is_regfile(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_is_ti(const char *filename)
+int TICALL tifiles_file_is_ti(const char *filename)
 {
 	char *e;
 
@@ -805,7 +805,7 @@ TIEXPORT2 int TICALL tifiles_file_is_ti(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_is_single(const char *filename)
+int TICALL tifiles_file_is_single(const char *filename)
 {
 	if (!tifiles_file_is_ti(filename))
 	{
@@ -831,7 +831,7 @@ TIEXPORT2 int TICALL tifiles_file_is_single(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_is_group(const char *filename)
+int TICALL tifiles_file_is_group(const char *filename)
 {
 	int i;
 	char *e = tifiles_fext_get(filename);
@@ -866,7 +866,7 @@ TIEXPORT2 int TICALL tifiles_file_is_group(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_is_regular(const char *filename)
+int TICALL tifiles_file_is_regular(const char *filename)
 {
 	if (!tifiles_file_is_ti(filename))
 	{
@@ -884,7 +884,7 @@ TIEXPORT2 int TICALL tifiles_file_is_regular(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_is_backup(const char *filename)
+int TICALL tifiles_file_is_backup(const char *filename)
 {
 	int i;
 	char *e = tifiles_fext_get(filename);
@@ -919,7 +919,7 @@ TIEXPORT2 int TICALL tifiles_file_is_backup(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_is_os(const char *filename)
+int TICALL tifiles_file_is_os(const char *filename)
 {
 	uint8_t type;
 
@@ -946,7 +946,7 @@ TIEXPORT2 int TICALL tifiles_file_is_os(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_is_app(const char *filename)
+int TICALL tifiles_file_is_app(const char *filename)
 {
 	uint8_t type;
 
@@ -971,7 +971,7 @@ TIEXPORT2 int TICALL tifiles_file_is_app(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_is_flash(const char *filename)
+int TICALL tifiles_file_is_flash(const char *filename)
 {
 	return (tifiles_file_is_tib(filename) ||
 	        tifiles_file_is_tno(filename) ||
@@ -986,7 +986,7 @@ TIEXPORT2 int TICALL tifiles_file_is_flash(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_is_tib(const char *filename)
+int TICALL tifiles_file_is_tib(const char *filename)
 {
 	return tifiles_file_has_tib_header(filename);
 }
@@ -999,7 +999,7 @@ TIEXPORT2 int TICALL tifiles_file_is_tib(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_is_tigroup(const char *filename)
+int TICALL tifiles_file_is_tigroup(const char *filename)
 {
 	return tifiles_file_has_tig_header(filename);
 }
@@ -1012,7 +1012,7 @@ TIEXPORT2 int TICALL tifiles_file_is_tigroup(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_is_tno(const char *filename)
+int TICALL tifiles_file_is_tno(const char *filename)
 {
 	return tifiles_file_has_tno_header(filename);
 }
@@ -1032,7 +1032,7 @@ TIEXPORT2 int TICALL tifiles_file_is_tno(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target)
+int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target)
 {
 	char *e = tifiles_fext_get(filename);
 	uint8_t ctype, dtype;
@@ -1246,7 +1246,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
  *
  * Return value: a model taken in #CalcModel.
  **/
-TIEXPORT2 CalcModel TICALL tifiles_fext_to_model(const char *ext)
+CalcModel TICALL tifiles_fext_to_model(const char *ext)
 {
 	CalcModel type = CALC_NONE;
 
@@ -1358,7 +1358,7 @@ TIEXPORT2 CalcModel TICALL tifiles_fext_to_model(const char *ext)
  *
  * Return value: a model taken in #CalcModel.
  **/
-TIEXPORT2 CalcModel TICALL tifiles_file_get_model(const char *filename)
+CalcModel TICALL tifiles_file_get_model(const char *filename)
 {
 	char *e = tifiles_fext_get(filename);
 	return tifiles_fext_to_model(e);
@@ -1372,7 +1372,7 @@ TIEXPORT2 CalcModel TICALL tifiles_file_get_model(const char *filename)
  *
  * Return value: a value in #FileClass.
  **/
-TIEXPORT2 FileClass TICALL tifiles_file_get_class(const char *filename)
+FileClass TICALL tifiles_file_get_class(const char *filename)
 {
 	if (tifiles_file_is_single(filename))
 	{
@@ -1408,7 +1408,7 @@ TIEXPORT2 FileClass TICALL tifiles_file_get_class(const char *filename)
  *
  * Return value: a string like "Assembly Program" (localized).
  **/
-TIEXPORT2 const char *TICALL tifiles_file_get_type(const char *filename)
+const char *TICALL tifiles_file_get_type(const char *filename)
 {
 	char *e = tifiles_fext_get(filename);
 #ifdef CHECK_FILE_EXTENSIONS
@@ -1512,7 +1512,7 @@ TIEXPORT2 const char *TICALL tifiles_file_get_type(const char *filename)
  *
  * Return value: a string like "Assembly Program" (non localized).
  **/
-TIEXPORT2 const char *TICALL tifiles_file_get_icon(const char *filename)
+const char *TICALL tifiles_file_get_icon(const char *filename)
 {
 	char *e = tifiles_fext_get(filename);
 #ifdef CHECK_FILE_EXTENSIONS

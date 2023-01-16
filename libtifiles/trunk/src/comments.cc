@@ -63,7 +63,7 @@ static inline char * tifiles_comment_set_sn(const char * prefix, char * comment,
  *
  * Return value: a static string.
  **/
-TIEXPORT2 const char* TICALL tifiles_comment_set_single(void)
+const char* TICALL tifiles_comment_set_single(void)
 {
 	static char comment[64];
 	return tifiles_comment_set_single_sn(comment, 41);
@@ -78,7 +78,7 @@ TIEXPORT2 const char* TICALL tifiles_comment_set_single(void)
  *
  * Return value: the given comment buffer.
  **/
-TIEXPORT2 char* TICALL tifiles_comment_set_single_sn(char * comment, uint32_t maxlen)
+char* TICALL tifiles_comment_set_single_sn(char * comment, uint32_t maxlen)
 {
 	return tifiles_comment_set_sn("Single file dated ", comment, maxlen);
 }
@@ -90,7 +90,7 @@ TIEXPORT2 char* TICALL tifiles_comment_set_single_sn(char * comment, uint32_t ma
  *
  * Return value: a static string.
  **/
-TIEXPORT2 const char* TICALL tifiles_comment_set_group(void)
+const char* TICALL tifiles_comment_set_group(void)
 {
 	static char comment[64];
 	return tifiles_comment_set_group_sn(comment, 41);
@@ -103,7 +103,7 @@ TIEXPORT2 const char* TICALL tifiles_comment_set_group(void)
  *
  * Return value: the given comment buffer.
  **/
-TIEXPORT2 char* TICALL tifiles_comment_set_group_sn(char * comment, uint32_t maxlen)
+char* TICALL tifiles_comment_set_group_sn(char * comment, uint32_t maxlen)
 {
 	return tifiles_comment_set_sn("Group file dated ", comment, maxlen);
 }
@@ -115,7 +115,7 @@ TIEXPORT2 char* TICALL tifiles_comment_set_group_sn(char * comment, uint32_t max
  *
  * Return value: a static string.
  **/
-TIEXPORT2 const char* TICALL tifiles_comment_set_backup(void)
+const char* TICALL tifiles_comment_set_backup(void)
 {
 	static char comment[64];
 	return tifiles_comment_set_backup_sn(comment, 41);
@@ -128,7 +128,7 @@ TIEXPORT2 const char* TICALL tifiles_comment_set_backup(void)
  *
  * Return value: the given comment buffer.
  **/
-TIEXPORT2 char* TICALL tifiles_comment_set_backup_sn(char * comment, uint32_t maxlen)
+char* TICALL tifiles_comment_set_backup_sn(char * comment, uint32_t maxlen)
 {
 	return tifiles_comment_set_sn("Backup file dated ", comment, maxlen);
 }
@@ -140,7 +140,7 @@ TIEXPORT2 char* TICALL tifiles_comment_set_backup_sn(char * comment, uint32_t ma
  *
  * Return value: a static string.
  **/
-TIEXPORT2 const char* TICALL tifiles_comment_set_tigroup(void)
+const char* TICALL tifiles_comment_set_tigroup(void)
 {
 	static char comment[64];
 	return tifiles_comment_set_tigroup_sn(comment, 41);
@@ -153,7 +153,7 @@ TIEXPORT2 const char* TICALL tifiles_comment_set_tigroup(void)
  *
  * Return value: the given comment buffer.
  **/
-TIEXPORT2 char* TICALL tifiles_comment_set_tigroup_sn(char * comment, uint32_t maxlen)
+char* TICALL tifiles_comment_set_tigroup_sn(char * comment, uint32_t maxlen)
 {
 	return tifiles_comment_set_sn("TiGroup file dated ", comment, maxlen);
 }

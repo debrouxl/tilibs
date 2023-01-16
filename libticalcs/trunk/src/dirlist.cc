@@ -78,7 +78,7 @@ static gboolean free_varentry(GNode* node, gpointer data)
  *
  * Return value: none.
  **/
-TIEXPORT3 void TICALL ticalcs_dirlist_destroy(GNode** tree)
+void TICALL ticalcs_dirlist_destroy(GNode** tree)
 {
 	if (tree != NULL && *tree != NULL)
 	{
@@ -172,7 +172,7 @@ static void display_tree(TreeInfo * info, GNode * vars)
  *
  * Return value: none.
  **/
-TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode* tree)
+void TICALL ticalcs_dirlist_display(GNode* tree)
 {
 	GNode *vars = tree;
 	TreeInfo *info;
@@ -221,7 +221,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode* tree)
  *
  * Return value: a pointer on the #VarEntry found or NULL if not found.
  **/
-TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *s)
+VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *s)
 {
 	int i, j;
 	GNode *vars = tree;
@@ -281,7 +281,7 @@ TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *s)
  *
  * Return value: the number of entries.
  **/
-TIEXPORT3 unsigned int TICALL ticalcs_dirlist_ve_count(GNode* tree)
+unsigned int TICALL ticalcs_dirlist_ve_count(GNode* tree)
 {
 	unsigned int i, j;
 	GNode *vars = tree;
@@ -326,7 +326,7 @@ TIEXPORT3 unsigned int TICALL ticalcs_dirlist_ve_count(GNode* tree)
  *
  * Return value: size of all variables in bytes.
  **/
-TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(GNode* tree)
+int TICALL ticalcs_dirlist_ram_used(GNode* tree)
 {
 	int i, j;
 	GNode *vars = tree;
@@ -377,7 +377,7 @@ TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(GNode* tree)
  *
  * Return value: size of all FLASH in bytes.
  **/
-TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(GNode* vars, GNode* apps)
+int TICALL ticalcs_dirlist_flash_used(GNode* vars, GNode* apps)
 {
 	int i, j;
 	uint32_t mem = 0;
@@ -444,7 +444,7 @@ TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(GNode* vars, GNode* apps)
  *
  * Return value: none.
  **/
-TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
+void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 {
 	TreeInfo *info;
 	int i, j;
@@ -572,7 +572,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
  *
  * Return value: none.
  **/
-TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry)
+void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry)
 {
 	TreeInfo *info;
 	int i, j;

@@ -36,7 +36,7 @@
  *
  * Return value: whether retrieving / parsing the cert field succeeded.
  **/
-TIEXPORT2 int TICALL tifiles_cert_field_get(const uint8_t *data, uint32_t length, uint16_t *field_type, const uint8_t **contents, uint32_t *field_size)
+int TICALL tifiles_cert_field_get(const uint8_t *data, uint32_t length, uint16_t *field_type, const uint8_t **contents, uint32_t *field_size)
 {
 	uint16_t field_id;
 	uint32_t field_len;
@@ -126,7 +126,7 @@ TIEXPORT2 int TICALL tifiles_cert_field_get(const uint8_t *data, uint32_t length
 	return 0;
 }
 
-TIEXPORT2 int TICALL tifiles_cert_field_next(const uint8_t **data, uint32_t *length)
+int TICALL tifiles_cert_field_next(const uint8_t **data, uint32_t *length)
 {
 	int ret;
 	const uint8_t * contents;
@@ -154,7 +154,7 @@ TIEXPORT2 int TICALL tifiles_cert_field_next(const uint8_t **data, uint32_t *len
 	return ret;
 }
 
-TIEXPORT2 int TICALL tifiles_cert_field_find(const uint8_t *data, uint32_t length, uint16_t field_type, const uint8_t **contents, uint32_t *field_size)
+int TICALL tifiles_cert_field_find(const uint8_t *data, uint32_t length, uint16_t field_type, const uint8_t **contents, uint32_t *field_size)
 {
 	int ret = 0;
 	uint16_t ft;
@@ -188,7 +188,7 @@ TIEXPORT2 int TICALL tifiles_cert_field_find(const uint8_t *data, uint32_t lengt
 	return ret;
 }
 
-TIEXPORT2 int TICALL tifiles_cert_field_find_path(const uint8_t *data, uint32_t length, const uint16_t *field_path, uint16_t field_path_len, const uint8_t **contents, uint32_t *field_size)
+int TICALL tifiles_cert_field_find_path(const uint8_t *data, uint32_t length, const uint16_t *field_path, uint16_t field_path_len, const uint8_t **contents, uint32_t *field_size)
 {
 	int ret = 0;
 

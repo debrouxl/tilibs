@@ -319,7 +319,7 @@ static int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 
 // --- Dumping Layer
 
-TIEXPORT3 int TICALL rd_read_dump(CalcHandle* handle, const char *filename)
+int TICALL rd_read_dump(CalcHandle* handle, const char *filename)
 {
 	FILE *f;
 	int ret = 0;
@@ -462,7 +462,7 @@ exit:
 	return ret;
 }
 
-TIEXPORT3 int TICALL rd_is_ready(CalcHandle* handle)
+int TICALL rd_is_ready(CalcHandle* handle)
 {
 	int ret;
 
@@ -481,7 +481,7 @@ TIEXPORT3 int TICALL rd_is_ready(CalcHandle* handle)
 	return ret;
 }
 
-TIEXPORT3 int TICALL rd_send_dumper(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *data)
+int TICALL rd_send_dumper(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *data)
 {
 	char *templatename, *tempfname;
 	int fd, ret;
@@ -530,7 +530,7 @@ end:
 	return ret;
 }
 
-TIEXPORT3 int TICALL rd_send_dumper2(CalcHandle *handle, const char *filename)
+int TICALL rd_send_dumper2(CalcHandle *handle, const char *filename)
 {
 	int ret;
 

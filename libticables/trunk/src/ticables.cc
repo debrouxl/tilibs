@@ -140,7 +140,7 @@ int libusb_working = -1;
  *
  * Return value: the instance count.
  **/
-TIEXPORT1 int TICALL ticables_library_init(void)
+int TICALL ticables_library_init(void)
 {
 	char locale_dir[65536];
 
@@ -212,7 +212,7 @@ TIEXPORT1 int TICALL ticables_library_init(void)
  *
  * Return value: the instance count.
  **/
-TIEXPORT1 int TICALL ticables_library_exit(void)
+int TICALL ticables_library_exit(void)
 {
 #if defined(HAVE_LIBUSB)
 	// No exit function for libusb 0.1.x.
@@ -236,7 +236,7 @@ TIEXPORT1 int TICALL ticables_library_exit(void)
  *
  * Return value: a string.
  **/
-TIEXPORT1 const char *TICALL ticables_version_get(void)
+const char *TICALL ticables_version_get(void)
 {
 	return libticables2_VERSION;
 }
@@ -249,7 +249,7 @@ TIEXPORT1 const char *TICALL ticables_version_get(void)
  * Return value: an integer containing a binary OR of (1 << CABLE_*) values,
  * where CABLE_* values are defined in enum CableModel.
  **/
-TIEXPORT1 uint32_t TICALL ticables_supported_cables(void)
+uint32_t TICALL ticables_supported_cables(void)
 {
 	return supported_cables;
 }
@@ -261,7 +261,7 @@ TIEXPORT1 uint32_t TICALL ticables_supported_cables(void)
  *
  * Return value: the PORT_MAX value against which the library was built.
  **/
-TIEXPORT1 uint32_t TICALL ticables_max_ports(void)
+uint32_t TICALL ticables_max_ports(void)
 {
 	return PORT_MAX;
 }
@@ -305,7 +305,7 @@ static int default_event_hook(CableHandle * handle, uint32_t event_count, const 
  *
  * Return value: NULL if error, an handle otherwise.
  **/
-TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort port)
+CableHandle* TICALL ticables_handle_new(CableModel model, CablePort port)
 {
 	CableHandle *handle = (CableHandle *)calloc(1, sizeof(CableHandle));
 	int i;
@@ -348,7 +348,7 @@ TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort po
  *
  * Return value: always 0.
  **/
-TIEXPORT1 int TICALL ticables_handle_del(CableHandle* handle)
+int TICALL ticables_handle_del(CableHandle* handle)
 {
 	VALIDATE_HANDLE(handle);
 
@@ -373,7 +373,7 @@ TIEXPORT1 int TICALL ticables_handle_del(CableHandle* handle)
  *
  * Return value: the previous timeout.
  **/
-TIEXPORT1 unsigned int TICALL ticables_options_set_timeout(CableHandle* handle, unsigned int timeout)
+unsigned int TICALL ticables_options_set_timeout(CableHandle* handle, unsigned int timeout)
 {
 	if (handle != NULL)
 	{
@@ -417,7 +417,7 @@ TIEXPORT1 unsigned int TICALL ticables_options_set_timeout(CableHandle* handle, 
  *
  * Return value: the previous delay.
  **/
-TIEXPORT1 unsigned int TICALL ticables_options_set_delay(CableHandle* handle, unsigned int delay)
+unsigned int TICALL ticables_options_set_delay(CableHandle* handle, unsigned int delay)
 {
 	if (handle != NULL)
 	{
@@ -440,7 +440,7 @@ TIEXPORT1 unsigned int TICALL ticables_options_set_delay(CableHandle* handle, un
  *
  * Return value: the previous #CableModel value.
  **/
-TIEXPORT1 CableModel TICALL ticables_get_model(CableHandle* handle)
+CableModel TICALL ticables_get_model(CableHandle* handle)
 {
 	if (handle != NULL)
 	{
@@ -461,7 +461,7 @@ TIEXPORT1 CableModel TICALL ticables_get_model(CableHandle* handle)
  *
  * Return value: a #CablePort value.
  **/
-TIEXPORT1 CablePort TICALL ticables_get_port(CableHandle* handle)
+CablePort TICALL ticables_get_port(CableHandle* handle)
 {
 	if (handle != NULL)
 	{
@@ -482,7 +482,7 @@ TIEXPORT1 CablePort TICALL ticables_get_port(CableHandle* handle)
  *
  * Return value: a char pointer.
  **/
-TIEXPORT1 const char * TICALL ticables_get_device(CableHandle* handle)
+const char * TICALL ticables_get_device(CableHandle* handle)
 {
 	if (handle != NULL)
 	{
@@ -503,7 +503,7 @@ TIEXPORT1 const char * TICALL ticables_get_device(CableHandle* handle)
  *
  * Return value: an unsigned integer;
  **/
-TIEXPORT1 unsigned int TICALL ticables_get_timeout(CableHandle *handle)
+unsigned int TICALL ticables_get_timeout(CableHandle *handle)
 {
 	if (handle != NULL)
 	{
@@ -524,7 +524,7 @@ TIEXPORT1 unsigned int TICALL ticables_get_timeout(CableHandle *handle)
  *
  * Return value: an unsigned integer;
  **/
-TIEXPORT1 unsigned int TICALL ticables_get_delay(CableHandle *handle)
+unsigned int TICALL ticables_get_delay(CableHandle *handle)
 {
 	if (handle != NULL)
 	{
@@ -545,7 +545,7 @@ TIEXPORT1 unsigned int TICALL ticables_get_delay(CableHandle *handle)
  *
  * Return value: always 0.
  **/
-TIEXPORT1 int TICALL ticables_handle_show(CableHandle* handle)
+int TICALL ticables_handle_show(CableHandle* handle)
 {
 	if (handle != NULL)
 	{

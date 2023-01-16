@@ -40,7 +40,7 @@
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_calc_is_ti8x(CalcModel model)
+int TICALL tifiles_calc_is_ti8x(CalcModel model)
 {
 	return ticonv_model_is_tiz80(model) || ticonv_model_is_tiez80(model);
 }
@@ -53,7 +53,7 @@ TIEXPORT2 int TICALL tifiles_calc_is_ti8x(CalcModel model)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_calc_is_ti9x(CalcModel model)
+int TICALL tifiles_calc_is_ti9x(CalcModel model)
 {
 	return ticonv_model_is_ti68k(model);
 }
@@ -69,7 +69,7 @@ TIEXPORT2 int TICALL tifiles_calc_is_ti9x(CalcModel model)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_calc_are_compat(CalcModel model, CalcModel ref)
+int TICALL tifiles_calc_are_compat(CalcModel model, CalcModel ref)
 {
 	if (tifiles_calc_is_ti8x(model) && tifiles_calc_is_ti8x(ref))
 	{
@@ -95,7 +95,7 @@ TIEXPORT2 int TICALL tifiles_calc_are_compat(CalcModel model, CalcModel ref)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_has_folder(CalcModel calc_type)
+int TICALL tifiles_has_folder(CalcModel calc_type)
 {
 	return ((calc_type == CALC_TI89) || (calc_type == CALC_TI89T) ||
 	        (calc_type == CALC_TI92) || (calc_type == CALC_TI92P) || 
@@ -111,7 +111,7 @@ TIEXPORT2 int TICALL tifiles_has_folder(CalcModel calc_type)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_is_flash(CalcModel calc_type)
+int TICALL tifiles_is_flash(CalcModel calc_type)
 {
 	return ((calc_type == CALC_TI73) || (calc_type == CALC_TI83P) ||
 	        (calc_type == CALC_TI84P) || (calc_type == CALC_TI84P_USB) ||
@@ -131,7 +131,7 @@ TIEXPORT2 int TICALL tifiles_is_flash(CalcModel calc_type)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_has_backup(CalcModel calc_type)
+int TICALL tifiles_has_backup(CalcModel calc_type)
 {
 	return ((calc_type == CALC_TI73) || (calc_type == CALC_TI82) ||
 	        (calc_type == CALC_TI83) || (calc_type == CALC_TI83P) ||
@@ -151,7 +151,7 @@ TIEXPORT2 int TICALL tifiles_has_backup(CalcModel calc_type)
  *
  * Return value: the ckecksum.
  **/
-TIEXPORT2 uint16_t TICALL tifiles_checksum(const uint8_t * buffer, unsigned int size)
+uint16_t TICALL tifiles_checksum(const uint8_t * buffer, unsigned int size)
 {
 	unsigned int i;
 	uint16_t c = 0;
@@ -177,7 +177,7 @@ TIEXPORT2 uint16_t TICALL tifiles_checksum(const uint8_t * buffer, unsigned int 
  * Dump the content of a buffer into hexadecimal format.
  * Return value: always 0
  **/
-TIEXPORT2 int TICALL tifiles_hexdump(const uint8_t * ptr, unsigned int len)
+int TICALL tifiles_hexdump(const uint8_t * ptr, unsigned int len)
 {
 	char *str;
 	if (ptr != NULL)
@@ -214,7 +214,7 @@ TIEXPORT2 int TICALL tifiles_hexdump(const uint8_t * ptr, unsigned int len)
  *
  * Return value: varname as string. It should not be modified (static).
  **/
-TIEXPORT2 char *TICALL tifiles_get_varname(const char *full_name)
+char *TICALL tifiles_get_varname(const char *full_name)
 {
 	if (full_name != NULL)
 	{
@@ -240,7 +240,7 @@ TIEXPORT2 char *TICALL tifiles_get_varname(const char *full_name)
  *
  * Return value: a static string.
  **/
-TIEXPORT2 char *TICALL tifiles_get_fldname(const char *full_name)
+char *TICALL tifiles_get_fldname(const char *full_name)
 {
 	static char folder[FLDNAME_MAX];
 	return tifiles_get_fldname_s(full_name, folder);
@@ -255,7 +255,7 @@ TIEXPORT2 char *TICALL tifiles_get_fldname(const char *full_name)
  *
  * Return value: the given buffer, dest_fldname.
  **/
-TIEXPORT2 char *TICALL tifiles_get_fldname_s(const char *full_name, char * dest_fldname)
+char *TICALL tifiles_get_fldname_s(const char *full_name, char * dest_fldname)
 {
 	int i;
 
@@ -290,7 +290,7 @@ TIEXPORT2 char *TICALL tifiles_get_fldname_s(const char *full_name, char * dest_
  *
  * Return value: a full path as string like 'fldname\varname'.
  **/
-TIEXPORT2 char* TICALL tifiles_build_fullname(CalcModel model, char *full_name, const char *fldname, const char *varname)
+char* TICALL tifiles_build_fullname(CalcModel model, char *full_name, const char *fldname, const char *varname)
 {
 	if (full_name == NULL || fldname == NULL || varname == NULL)
 	{
@@ -328,7 +328,7 @@ TIEXPORT2 char* TICALL tifiles_build_fullname(CalcModel model, char *full_name, 
  *
  * Return value: a newly allocated string which must be freed with tifiles_filename_free() when no longer used.
  **/
-TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *ve)
+char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *ve)
 {
 	char *filename;
 
@@ -373,7 +373,7 @@ TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *v
  *
  * Free a file name previously allocated by tifiles_build_filename().
  **/
-TIEXPORT2 void TICALL tifiles_filename_free(char * filename)
+void TICALL tifiles_filename_free(char * filename)
 {
 	g_free(filename);
 }
