@@ -118,9 +118,6 @@ elseif(WIN32)
     include_directories(${CMAKE_SOURCE_DIR}/win32_config)
 endif()
 
-# Needed for C++ compat
-add_definitions(-Drestrict=__restrict)
-
 # i18n support checking
 include(FindGettext)
 include(FindIntl)
