@@ -28,8 +28,8 @@
 #include <config.h>
 #endif
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 #include <glib.h>
 #ifdef __WIN32__
 #include <conio.h>

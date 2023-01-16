@@ -27,12 +27,17 @@
 #include <config.h>
 #endif
 
-#include <ctype.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
+#ifdef _MSC_VER
+#include <getopt.h>
+#else
 #include <unistd.h>
+#endif
 
 // Happens for some reason on MinGW 64 32-bit GCC 8 toolchain.
 #ifndef SCNi8

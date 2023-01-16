@@ -12,17 +12,16 @@
 #include <romdump.h>
 #include "../src/error.h"
 
-#define PRINTF(FUNCTION, TYPE, args...) \
-fprintf(stderr, "%d\t" TYPE "\n", __LINE__, FUNCTION(args))
+#define PRINTF(FUNCTION, TYPE, ...) \
+fprintf(stderr, "%d\t" TYPE "\n", __LINE__, FUNCTION(__VA_ARGS__))
 
-#define PRINTFVOID(FUNCTION, args...) \
-FUNCTION(args); fprintf(stderr, "%d\n", __LINE__)
+#define PRINTFVOID(FUNCTION, ...) \
+FUNCTION(__VA_ARGS__); fprintf(stderr, "%d\n", __LINE__)
 
 #define INT "%d"
 #define UINT "%u"
 #define PTR "%p"
 #define STR "\"%s\""
-#define VOID ""
 
 static void torture_ticalcs(void)
 {

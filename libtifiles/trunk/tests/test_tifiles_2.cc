@@ -29,11 +29,13 @@
 #endif
 
 #include <glib.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #ifdef __WIN32__
 #include <direct.h>
+#else
+#include <unistd.h>
 #endif
 
 #include "../src/tifiles.h"
@@ -94,68 +96,13 @@ static int compare_files(const char *src, const char *dst)
 	return 0;
 }
 
-// Rename file
-static int move_file(const char *oldpath, const char *newpath)
-{
-#if defined(__WIN32__) && !defined(__MINGW32__)
-	return 0;
-#else
-	return rename(oldpath, newpath);
-#endif
-}
-
 // Set output directory
 static void change_dir(const char *path)
 {
-#if defined(__WIN32__) && !defined(__MINGW32__)
+#ifdef _MSC_VER
 	_chdir(path);
-#endif
-}
-
-// Build a portable path for Linux/Win32
-static const char* PATH(const char *path)
-{
-#if defined(__WIN32__) && !defined(__MINGW32__)
-	static char str[1024];
-	unsigned int i;
-
-	strcpy(str, "C:\\sources\\roms\\tifiles2\\tests\\");
-	strcat(str, path);
-
-	for(i = 0; i < strlen(str); i++)
-	{
-		if(str[i] == '/')
-		{
-			str[i] = '\\';
-		}
-	}
-
-	return str;
 #else
-	return path;
-#endif
-}
-
-// Build a portable path for Linux/Win32
-static const char* PATH2(const char *path)
-{
-#if defined(__WIN32__) && !defined(__MINGW32__)
-	static char str[1024];
-	unsigned int i;
-
-	strcpy(str, "C:\\sources\\roms\\tifiles2\\tests\\");
-	strcat(str, path);
-
-	for(i = 0; i < strlen(str); i++)
-	{
-		if(str[i] == '/')
-		{
-			str[i] = '\\';
-		}
-
-	return str;
-#else
-	return path;
+	chdir(path);
 #endif
 }
 
@@ -188,18 +135,18 @@ static int test_tixx_backup_support(const char * message,
 	int ret = -1;
 
 	printf("%s", message);
-	tifiles_file_display(PATH(input_file));
+	tifiles_file_display(input_file);
 
 	content = tifiles_content_create_backup(calculator);
 	if (content != NULL)
 	{
-		ret = tifiles_file_read_backup(PATH(input_file), content);
+		ret = tifiles_file_read_backup(input_file, content);
 		if (!ret)
 		{
-			ret = tifiles_file_write_backup(PATH(output_file), content);
+			ret = tifiles_file_write_backup(output_file, content);
 			if (!ret)
 			{
-				ret = compare_files(PATH(input_file), PATH2(output_file));
+				ret = compare_files(input_file, output_file);
 			}
 			tifiles_content_delete_backup(content);
 		}
@@ -218,18 +165,18 @@ static int test_tixx_regular_support_single(const char * message,
 	int ret = -1;
 
 	printf("%s", message);
-	tifiles_file_display(PATH(input_file));
+	tifiles_file_display(input_file);
 
 	content = tifiles_content_create_regular(calculator);
 	if (content != NULL)
 	{
-		ret = tifiles_file_read_regular(PATH(input_file), content);
+		ret = tifiles_file_read_regular(input_file, content);
 		if (!ret)
 		{
-			ret = tifiles_file_write_regular(PATH(output_file), content, &unused);
+			ret = tifiles_file_write_regular(output_file, content, &unused);
 			if (!ret)
 			{
-				ret = compare_files(PATH(input_file), PATH2(output_file));
+				ret = compare_files(input_file, output_file);
 			}
 			tifiles_filename_free(unused);
 			tifiles_content_delete_regular(content);
@@ -249,18 +196,18 @@ static int test_tixx_regular_support_group(const char * message,
 	int ret = -1;
 
 	printf("%s", message);
-	tifiles_file_display(PATH(input_group));
+	tifiles_file_display(input_group);
 
 	content = tifiles_content_create_regular(calculator);
 	if (content != NULL)
 	{
-		ret = tifiles_file_read_regular(PATH(input_group), content);
+		ret = tifiles_file_read_regular(input_group, content);
 		if (!ret)
 		{
-			ret = tifiles_file_write_regular(PATH(output_group), content, &unused);
+			ret = tifiles_file_write_regular(output_group, content, &unused);
 			if (!ret)
 			{
-				compare_files(PATH(input_group), PATH2(output_group));
+				compare_files(input_group, output_group);
 			}
 			tifiles_filename_free(unused);
 			tifiles_content_delete_regular(content);
@@ -280,19 +227,19 @@ static int test_tixx_group_support(const char * message,
 	char *array[3] = { 0 };
 	int ret = -1;
 
-	strncpy(files[0], PATH(input_file_1), 1023);
+	strncpy(files[0], input_file_1, 1023);
 	files[0][1023] = 0;
-	strncpy(files[1], PATH(input_file_2), 1023);
+	strncpy(files[1], input_file_2, 1023);
 	files[1][1023] = 0;
 	array[0] = files[0];
 	array[1] = files[1];
 
 	printf("%s", message);
-	ret = tifiles_group_files(array, PATH(output_group_file));
+	ret = tifiles_group_files(array, output_group_file);
 	if (!ret)
 	{
-		tifiles_file_display(PATH(output_group_file));
-		ret = compare_files(PATH(input_group_file), PATH2(output_group_file));
+		tifiles_file_display(output_group_file);
+		ret = compare_files(input_group_file, output_group_file);
 	}
 
 	return ret;
@@ -309,15 +256,15 @@ static int test_tixx_ungroup_support(const char * message,
 {
 	int ret;
 	printf("%s", message);
-	ret = tifiles_ungroup_file(PATH(input_group), NULL);
+	ret = tifiles_ungroup_file(input_group, NULL);
 	if (!ret)
 	{
-		move_file(input_file_1, dest_file_1);
-		move_file(input_file_2, dest_file_2);
-		ret = compare_files(PATH(dest_file_1), PATH2(input_file_3));
+		rename(input_file_1, dest_file_1);
+		rename(input_file_2, dest_file_2);
+		ret = compare_files(dest_file_1, input_file_3);
 		if (!ret)
 		{
-			ret = compare_files(PATH(dest_file_2), PATH2(input_file_3));
+			ret = compare_files(dest_file_2, input_file_3);
 		}
 	}
 
@@ -333,18 +280,18 @@ static int test_tixx_flash_support(const char * message,
 	int ret = -1;
 
 	printf("%s", message);
-	tifiles_file_display(PATH(input_file));
+	tifiles_file_display(input_file);
 
 	content = tifiles_content_create_flash(calculator);
 	if (content != NULL)
 	{
-		ret = tifiles_file_read_flash(PATH(input_file), content);
+		ret = tifiles_file_read_flash(input_file, content);
 		if (!ret)
 		{
-			ret = tifiles_file_write_flash(PATH(output_file), content);
+			ret = tifiles_file_write_flash(output_file, content);
 			if (!ret)
 			{
-				ret = compare_files(PATH(input_file), PATH2(output_file));
+				ret = compare_files(input_file, output_file);
 			}
 			tifiles_content_delete_flash(content);
 		}
@@ -803,20 +750,20 @@ static int test_ti8x_group_merge()
 	int ret;
 
 	printf("--> Testing add/del from group support (r/w)...\n");
-	ret = tifiles_group_add_file(PATH("misc/group1.8Xg"), PATH2("misc/group2.8Xg"));
+	ret = tifiles_group_add_file("misc/group1.8Xg", "misc/group2.8Xg");
 	if (!ret)
 	{
 		strncpy(ve.name, "A", sizeof(ve.name) - 1);
 		ve.name[sizeof(ve.name) - 1] = 0;
-		ret = tifiles_group_del_file(&ve, PATH("misc/group2.8Xg"));
+		ret = tifiles_group_del_file(&ve, "misc/group2.8Xg");
 		if (!ret)
 		{
 			strncpy(ve.name, "B", sizeof(ve.name) - 1);
 			ve.name[sizeof(ve.name) - 1] = 0;
-			ret = tifiles_group_del_file(&ve, PATH("misc/group2.8Xg"));
+			ret = tifiles_group_del_file(&ve, "misc/group2.8Xg");
 			if (!ret)
 			{
-				ret = compare_files(PATH("misc/group1.8Xg"), PATH2("misc/group2.8Xg"));
+				ret = compare_files("misc/group1.8Xg", "misc/group2.8Xg");
 			}
 		}
 	}
@@ -838,15 +785,15 @@ static int test_tigroup()
 	char files[2][1024];
 
 	printf("--> Testing TiGroup support (r/w)...\n");
-	tifiles_file_display_tigroup(PATH("tig/test.tig"));
+	tifiles_file_display_tigroup("tig/test.tig");
 
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);
 	if (content != NULL)
 	{
-		ret = tifiles_file_read_tigroup(PATH("tig/test2.tig"), content);
+		ret = tifiles_file_read_tigroup("tig/test2.tig", content);
 		if (!ret)
 		{
-			ret = tifiles_file_write_tigroup(PATH("tig/test2_.tig"), content);
+			ret = tifiles_file_write_tigroup("tig/test2_.tig", content);
 		}
 		tifiles_content_delete_tigroup(content);
 	}
@@ -856,13 +803,13 @@ static int test_tigroup()
 		content = tifiles_content_create_tigroup(CALC_NONE, 0);
 		if (content != NULL)
 		{
-			ret = tifiles_file_read_tigroup(PATH("tig/test.tig"), content);
+			ret = tifiles_file_read_tigroup("tig/test.tig", content);
 			if (!ret)
 			{
-				ret = tifiles_file_write_tigroup(PATH("tig/test_.tig"), content);
+				ret = tifiles_file_write_tigroup("tig/test_.tig", content);
 				if (!ret)
 				{
-					ret = compare_files(PATH("tig/test.tig"), PATH2("tig/test_.tig"));
+					ret = compare_files("tig/test.tig", "tig/test_.tig");
 				}
 			}
 			tifiles_content_delete_tigroup(content);
@@ -872,22 +819,22 @@ static int test_tigroup()
 	if (!ret)
 	{
 		printf("--> Testing add/del from TiGroup support (r/w)...\n");
-		ret = tifiles_tigroup_add_file(PATH("tig/C.8Xn"), PATH2("tig/test2.tig"));
+		ret = tifiles_tigroup_add_file("tig/C.8Xn", "tig/test2.tig");
 		if (!ret)
 		{
-			ret = tifiles_tigroup_add_file(PATH("tig/D.8Xn"), PATH2("tig/test2.tig"));
+			ret = tifiles_tigroup_add_file("tig/D.8Xn", "tig/test2.tig");
 			if (!ret)
 			{
 				te.filename = strdup("C.8Xn");
-				ret = tifiles_tigroup_del_file(&te, PATH("tig/test2.tig"));
+				ret = tifiles_tigroup_del_file(&te, "tig/test2.tig");
 				if (!ret)
 				{
 					te.filename = strdup("D.8Xn");
-					ret = tifiles_tigroup_del_file(&te, PATH("tig/test2.tig"));
+					ret = tifiles_tigroup_del_file(&te, "tig/test2.tig");
 					if (!ret)
 					{
-						tifiles_file_display_tigroup(PATH("tig/test2.tig"));
-						ret = compare_files(PATH("tig/test.tig"), PATH2("tig/test2.tig"));
+						tifiles_file_display_tigroup("tig/test2.tig");
+						ret = compare_files("tig/test.tig", "tig/test2.tig");
 					}
 				}
 			}
@@ -898,25 +845,25 @@ static int test_tigroup()
 	{
 		printf("--> Testing TiGroup support (group/ungroup)...\n");
 
-		strncpy(files[0], PATH("tig/str.89s"), 1023);
+		strncpy(files[0], "tig/str.89s", 1023);
 		files[0][1023] = 0;
-		strncpy(files[1], PATH("tig/ticabfra.89k"), 1023);
+		strncpy(files[1], "tig/ticabfra.89k", 1023);
 		files[1][1023] = 0;
 		array[0] = files[0];
 		array[1] = files[1];
-		ret = tifiles_tigroup_files(array, PATH("tig/test_.tig"));
+		ret = tifiles_tigroup_files(array, "tig/test_.tig");
 		if (!ret)
 		{
-			tifiles_file_display(PATH("tig/test_.tig"));
-			ret = tifiles_untigroup_file(PATH("tig/test.tig"), NULL);
+			tifiles_file_display("tig/test_.tig");
+			ret = tifiles_untigroup_file("tig/test.tig", NULL);
 			if (!ret)
 			{
-				move_file("A.8Xn", "tig/AA.8Xn");
-				move_file("B.8Xn", "tig/BB.8Xn");
-				ret = compare_files(PATH("tig/A.8Xn"), PATH2("tig/AA.8Xn"));
+				rename("A.8Xn", "tig/AA.8Xn");
+				rename("B.8Xn", "tig/BB.8Xn");
+				ret = compare_files("tig/A.8Xn", "tig/AA.8Xn");
 				if (!ret)
 				{
-					ret = compare_files(PATH("tig/B.8Xn"), PATH2("tig/BB.8Xn"));
+					ret = compare_files("tig/B.8Xn", "tig/BB.8Xn");
 				}
 			}
 		}
@@ -985,48 +932,48 @@ int main(int argc, char **argv)
 
 	printf("<%s> <%s>\n", "foo.bar", tifiles_fext_get("foo.bar"));
 
-	ret = tifiles_file_is_ti(PATH("misc/str.92s"));
+	ret = tifiles_file_is_ti("misc/str.92s");
 	printf("tifiles_file_is_ti: %i\n", ret);
 
-	ret = tifiles_file_is_single(PATH("misc/str.92s"));
+	ret = tifiles_file_is_single("misc/str.92s");
 	printf("tifiles_file_is_single: %i\n", ret);
 
-	ret = tifiles_file_is_group(PATH("misc/group.92g"));
+	ret = tifiles_file_is_group("misc/group.92g");
         printf("tifiles_file_is_group: %i\n", ret);
 
-	ret = tifiles_file_is_regular(PATH("misc/str.92s"));
+	ret = tifiles_file_is_regular("misc/str.92s");
         printf("tifiles_file_is_regular: %i\n", ret);
 
-	ret = tifiles_file_is_regular(PATH("misc/group.92g"));
+	ret = tifiles_file_is_regular("misc/group.92g");
         printf("tifiles_file_is_regular: %i\n", ret);
 
-	ret = tifiles_file_is_backup(PATH("misc/backup.83b"));
+	ret = tifiles_file_is_backup("misc/backup.83b");
 	printf("tifiles_file_is_backup: %i\n", ret);
 
-	ret = tifiles_file_is_flash(PATH("misc/ticabfra.89k"));
+	ret = tifiles_file_is_flash("misc/ticabfra.89k");
         printf("tifiles_file_is_flash: %i\n", ret);
 
-	ret = tifiles_file_is_flash(PATH("misc/TI73_OS160.73U"));
+	ret = tifiles_file_is_flash("misc/TI73_OS160.73U");
 	printf("tifiles_file_is_flash: %i\n", ret);
 
-	ret = tifiles_file_is_tib(PATH("misc/ams100.tib"));
+	ret = tifiles_file_is_tib("misc/ams100.tib");
 	printf("tifiles_file_is_tib: %i\n", ret);
 
-	ret = tifiles_file_is_tigroup(PATH("misc/test.tig"));
+	ret = tifiles_file_is_tigroup("misc/test.tig");
 	printf("tifiles_file_is_tigroup: %i\n", ret);
 	printf("--\n");
 
 	// test typesxx.c
 	printf("tifiles_file_get_model: %s\n",
-	       tifiles_model_to_string(tifiles_file_get_model(PATH("misc/str.92s"))));
+	       tifiles_model_to_string(tifiles_file_get_model("misc/str.92s")));
 
 	printf("tifiles_file_get_class: %s\n",
-	       tifiles_class_to_string(tifiles_file_get_class(PATH("misc/group.92g"))));
+	       tifiles_class_to_string(tifiles_file_get_class("misc/group.92g")));
 
 	printf("tifiles_file_get_type: %s\n",
-	       tifiles_file_get_type(PATH("misc/TI73_OS160.73U")));
+	       tifiles_file_get_type("misc/TI73_OS160.73U"));
 	printf("tifiles_file_get_icon: %s\n",
-	       tifiles_file_get_icon(PATH("misc/str.92s")));
+	       tifiles_file_get_icon("misc/str.92s"));
 	printf("--\n");
 
 	// test misc.c
@@ -1047,67 +994,67 @@ int main(int argc, char **argv)
 	do
 	{
 		// TI73 support
-		change_dir(PATH("ti73"));
+		change_dir("ti73");
 		ret = test_ti73_backup_support(); if (ret) break;
 		ret = test_ti73_regular_support(); if (ret) break;
 		ret = test_ti73_group_support(); if (ret) break;
 		ret = test_ti73_ungroup_support(); if (ret) break;
 
 		// TI82 support
-		change_dir(PATH("ti82"));
+		change_dir("ti82");
 		ret = test_ti82_backup_support(); if (ret) break;
 		ret = test_ti82_regular_support(); if (ret) break;
 		ret = test_ti82_group_support(); if (ret) break;
 		ret = test_ti82_ungroup_support(); if (ret) break;
 
 		// TI83 support
-		change_dir(PATH("ti83"));
+		change_dir("ti83");
 		ret = test_ti83_backup_support(); if (ret) break;
 		ret = test_ti83_regular_support(); if (ret) break;
 		ret = test_ti83_group_support(); if (ret) break;
 		ret = test_ti83_ungroup_support(); if (ret) break;
 
 		// TI84+ support
-		change_dir(PATH("ti84p"));
+		change_dir("ti84p");
 		ret = test_ti84p_regular_support(); if (ret) break;
 		ret = test_ti84p_group_support(); if (ret) break;
 		ret = test_ti84p_ungroup_support(); if (ret) break;
 		ret = test_ti84p_flash_support(); if (ret) break;
 
 		// TI85 support
-		change_dir(PATH("ti85"));
+		change_dir("ti85");
 		ret = test_ti85_regular_support(); if (ret) break;
 
 		// TI86 support
-		change_dir(PATH("ti86"));
+		change_dir("ti86");
 		ret = test_ti86_backup_support(); if (ret) break;
 		ret = test_ti86_regular_support(); if (ret) break;
 		ret = test_ti86_group_support(); if (ret) break;
 		ret = test_ti86_ungroup_support(); if (ret) break;
 
 		// TI89 support
-		change_dir(PATH("ti89"));
+		change_dir("ti89");
 		ret = test_ti89_regular_support(); if (ret) break;
 		ret = test_ti89_flash_support(); if (ret) break;
 		ret = test_v200_regular_support(); if (ret) break;
 
 		// TI92 support
-		change_dir(PATH("ti92"));
+		change_dir("ti92");
 		ret = test_ti92_backup_support(); if (ret) break;
 		ret = test_ti92_regular_support(); if (ret) break;
 		ret = test_ti92_group_support(); if (ret) break;
 		ret = test_ti92_ungroup_support(); if (ret) break;
 
 		// TIXX certificates
-		change_dir(PATH("certs"));
+		change_dir("certs");
 		ret = test_ti8x_cert_support(); if (ret) break;
 		ret = test_ti9x_cert_support(); if (ret) break;
 
 		// Add/Del files
-		change_dir(PATH("misc"));
+		change_dir("misc");
 		ret = test_ti8x_group_merge(); if (ret) break;
 
-		change_dir(PATH("tig"));
+		change_dir("tig");
 		ret = test_tigroup();
 	} while(0);
 

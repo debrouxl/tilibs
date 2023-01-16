@@ -7,6 +7,11 @@ add_executable(torture_ticalcs torture_ticalcs.c)
 add_executable(test_ticalcs_2 test_ticalcs_2.cc)
 
 pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16 libarchive zlib)
+
+if(WIN32 AND NOT MINGW)
+    find_library(GETOPT_LIB getopt REQUIRED)
+endif()
+
 if(USE_ICONV)
     find_package(Iconv REQUIRED)
     # flags/link for external deps
@@ -17,6 +22,10 @@ foreach(tar torture_ticalcs test_ticalcs_2)
     if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
         target_include_directories(${tar} PRIVATE ${Iconv_INCLUDE_DIRS})
         target_link_libraries(${tar} ${Iconv_LIBRARIES})
+    endif()
+
+    if(GETOPT_LIB)
+        target_link_libraries(${tar} ${GETOPT_LIB})
     endif()
 
     target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})

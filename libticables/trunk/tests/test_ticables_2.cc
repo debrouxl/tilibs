@@ -20,10 +20,10 @@
 #include <config.h>
 #endif
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #ifndef __WIN32__
 #include <unistd.h>
 #else

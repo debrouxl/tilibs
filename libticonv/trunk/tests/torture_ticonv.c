@@ -7,21 +7,16 @@
 #define str(s) #s
 #define xstr(s) str(s)
 
-#define PRINTF(FUNCTION, TYPE, args...) \
-fprintf(stderr, "%d\t" TYPE "\n", __LINE__, FUNCTION(args))
+#define PRINTF(FUNCTION, TYPE, ...) \
+fprintf(stderr, "%d\t" TYPE "\n", __LINE__, FUNCTION(__VA_ARGS__))
 
-#define PRINTFVOID(FUNCTION, args...) \
-FUNCTION(args); fprintf(stderr, "%d\n", __LINE__)
+#define PRINTFVOID(FUNCTION, ...) \
+FUNCTION(__VA_ARGS__); fprintf(stderr, "%d\n", __LINE__)
 
 #define INT "%d"
-#ifndef __WIN32__
 #define SIZE "%zd"
-#else
-#define SIZE "%ld"
-#endif
 #define PTR "%p"
 #define STR "\"%s\""
-#define VOID ""
 
 static const uint16_t utf16_xbar[] = { 0x0078, 0x0305, 0x0000 };
 static const uint16_t utf16_ybar[] = { 0x0079, 0x0305, 0x0000 };
@@ -63,11 +58,7 @@ int main(int argc, char **argv)
     ticonv_iconv_t ticonv_iconv_instance;
 
     // ticonv.h
-    PRINTF(
-#ifdef __WIN32__
-    (unsigned long)
-#endif
-    ticonv_utf16_strlen, SIZE, NULL);
+    PRINTF(ticonv_utf16_strlen, SIZE, NULL);
     PRINTF(ticonv_utf8_to_utf16, PTR, NULL);
     PRINTFVOID(ticonv_utf16_free, NULL);
     PRINTF(ticonv_utf16_to_utf8, PTR, NULL);
@@ -147,11 +138,7 @@ int main(int argc, char **argv)
     PRINTF(ticonv_environment_is_utf8, INT);
     PRINTF(ticonv_environment_has_utf8_filenames, INT);
     ticonv_iconv_instance = ticonv_iconv_open(NULL, NULL);
-    PRINTF(
-#ifdef __WIN32__
-    (unsigned long)
-#endif
-    ticonv_iconv, SIZE, ticonv_iconv_instance, NULL, NULL, NULL, NULL);
+    PRINTF(ticonv_iconv, SIZE, ticonv_iconv_instance, NULL, NULL, NULL, NULL);
     PRINTF(ticonv_iconv_close, INT, ticonv_iconv_instance);
     // charset.h
     PRINTF(ticonv_ti73_to_utf16, PTR, NULL, (void *)0x12345678);
