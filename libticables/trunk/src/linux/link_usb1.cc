@@ -46,7 +46,9 @@
 #endif
 
 #ifdef __WIN32__
+#ifndef _WINSOCKAPI_
 #include <winsock2.h> /* struct timeval */
+#endif
 #else
 #include <unistd.h>
 #include <sys/time.h>

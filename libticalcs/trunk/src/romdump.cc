@@ -24,6 +24,10 @@
 	This unit manages common ROM dumper.
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <glib/gstdio.h>
@@ -33,6 +37,10 @@
 #include "logging.h"
 #include "error.h"
 #include "romdump.h"
+
+#ifdef __WIN32__
+#include <io.h>
+#endif
 
 #define MAX_RETRY	3
 

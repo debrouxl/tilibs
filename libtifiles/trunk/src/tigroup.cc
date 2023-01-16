@@ -45,6 +45,10 @@
 #include "error.h"
 #include "rwfile.h"
 
+#ifdef __WIN32__
+#include <io.h>
+#endif
+
 // Whether to print detailed information about TigEntry, TigContent instances throughout their lifecycle.
 //#define TRACE_CONTENT_INSTANCES
 

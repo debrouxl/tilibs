@@ -22,6 +22,10 @@
 #ifndef __RWP_H__
 #define __RWP_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int rwp_detect(int* result);
 
 int rwp_open(void);
@@ -29,5 +33,9 @@ int rwp_close(void);
 
 int rwp_read_byte(unsigned short address, unsigned char *data);
 int rwp_write_byte(unsigned short address, unsigned char data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

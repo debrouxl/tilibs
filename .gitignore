@@ -4,6 +4,7 @@ Makefile.in
 aclocal.m4
 autom4te.cache/
 config.*
+!win32_config/config.h
 configure
 depcomp
 install-sh

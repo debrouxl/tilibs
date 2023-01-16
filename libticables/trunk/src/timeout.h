@@ -49,6 +49,7 @@ typedef unsigned long tiTIME;
 
 #if defined(__WIN32__) && !defined(__MINGW32__)
 
+# include <sysinfoapi.h>
 # define  TO_START(ref)          { (ref) = GetTickCount(); }
 # define  TO_CURRENT(ref)        ( GetTickCount() - (ref) )
 # define  TO_ELAPSED(ref, max)   ( TO_CURRENT(ref) > (100UL*(max)) )

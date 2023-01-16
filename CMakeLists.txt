@@ -114,6 +114,8 @@ elseif(MINGW)
     add_compile_definitions(__MINGW32__)
 elseif(WIN32)
     add_compile_definitions(__WIN32__)
+    add_compile_definitions(HAVE_CONFIG_H)
+    include_directories(${CMAKE_SOURCE_DIR}/win32_config)
 endif()
 
 # Needed for C++ compat
