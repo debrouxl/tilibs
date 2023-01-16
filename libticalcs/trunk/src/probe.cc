@@ -213,7 +213,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 #if 0
 		/* Test for a TI80 */
-#warning TI-80 DETECTION FAILS
+#pragma message("Warning: TI-80 DETECTION FAILS")
 		ticalcs_info("%s", _("Check for TI80... "));
 		err = dbus_send(handle, DBUS_MID_PC_TI80, DBUS_CMD_SCR, 0, NULL);
 		if (err)

@@ -487,7 +487,7 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_ti80(const unsigned short *utf16, char *t
 				case 0x3c0: *(q++) = 29; *(q++) = 30; break;	// pi
 				case 0x03a3: *(q++) = 99; break;	// capital sigma
 				case 0x03c3: *(q++) = 100; break;	// sigma
-#warning FINISH UTF-16-TO-TI-80 CONVERSION
+#pragma message("Warning: FINISH UTF-16-TO-TI-80 CONVERSION")
 
 				case 0x2080: *(q++) = 28; break;	// subscript 10
 				case 0x2081: *(q++) = 27; break;
