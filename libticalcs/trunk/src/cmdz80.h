@@ -31,6 +31,7 @@ extern "C" {
 #endif
 
 /* Helper functions and macros */
+TIEXPORT3 uint8_t TICALL tiz80_model_to_dbus_mid(CalcModel model);
 TIEXPORT3 uint8_t TICALL tiz80_handle_to_dbus_mid(CalcHandle * handle);
 
 static inline uint8_t tiz80_handle_to_dbus_mid_7383p(CalcHandle * handle)

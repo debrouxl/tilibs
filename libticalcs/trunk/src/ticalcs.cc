@@ -117,74 +117,81 @@ static CalcFncts const *const calcs[] =
 	NULL
 };
 
-static const uint32_t supported_calcs =
-	  (1U << CALC_NONE)
+static const uint64_t supported_calcs =
+	  (UINT64_C(1) << CALC_NONE)
 #ifndef NO_TI73
-	| (1U << CALC_TI73)
+	| (UINT64_C(1) << CALC_TI73)
 #endif
 #ifndef NO_TI82
-	| (1U << CALC_TI82)
+	| (UINT64_C(1) << CALC_TI82)
 #endif
 #ifndef NO_TI83
-	| (1U << CALC_TI83)
+	| (UINT64_C(1) << CALC_TI83)
 #endif
 #ifndef NO_TI83P
-	| (1U << CALC_TI83P)
+	| (UINT64_C(1) << CALC_TI83P)
 #endif
 #ifndef NO_TI84P
-	| (1U << CALC_TI84P)
+	| (UINT64_C(1) << CALC_TI84P)
 #endif
 #ifndef NO_TI85
-	| (1U << CALC_TI85)
+	| (UINT64_C(1) << CALC_TI85)
 #endif
 #ifndef NO_TI86
-	| (1U << CALC_TI86)
+	| (UINT64_C(1) << CALC_TI86)
 #endif
 #ifndef NO_TI89
-	| (1U << CALC_TI89)
+	| (UINT64_C(1) << CALC_TI89)
 #endif
 #ifndef NO_TI89T
-	| (1U << CALC_TI89T)
+	| (UINT64_C(1) << CALC_TI89T)
 #endif
 #ifndef NO_TI92
-	| (1U << CALC_TI92)
+	| (UINT64_C(1) << CALC_TI92)
 #endif
 #ifndef NO_TI92P
-	| (1U << CALC_TI92P)
+	| (UINT64_C(1) << CALC_TI92P)
 #endif
 #ifndef NO_V200
-	| (1U << CALC_V200)
+	| (UINT64_C(1) << CALC_V200)
 #endif
 #ifndef NO_TI84P_USB
-	| (1U << CALC_TI84P_USB)
+	| (UINT64_C(1) << CALC_TI84P_USB)
 #endif
 #ifndef NO_TI89T_USB
-	| (1U << CALC_TI89T_USB)
+	| (UINT64_C(1) << CALC_TI89T_USB)
 #endif
 #ifndef NO_NSPIRE
-	| (1U << CALC_NSPIRE)
+	| (UINT64_C(1) << CALC_NSPIRE)
 #endif
 #ifndef NO_TI80
-	| (1U << CALC_TI80)
+	| (UINT64_C(1) << CALC_TI80)
 #endif
 #ifndef NO_TI84PC
-	| (1U << CALC_TI84PC)
+	| (UINT64_C(1) << CALC_TI84PC)
 #endif
 #ifndef NO_TI84PC_USB
-	| (1U << CALC_TI84PC_USB)
+	| (UINT64_C(1) << CALC_TI84PC_USB)
 #endif
 #ifndef NO_TI83PCE_USB
-	| (1U << CALC_TI83PCE_USB)
+	| (UINT64_C(1) << CALC_TI83PCE_USB)
 #endif
 #ifndef NO_TI84PCE_USB
-	| (1U << CALC_TI84PCE_USB)
+	| (UINT64_C(1) << CALC_TI84PCE_USB)
 #endif
 #ifndef NO_TI82A_USB
-	| (1U << CALC_TI82A_USB)
+	| (UINT64_C(1) << CALC_TI82A_USB)
 #endif
 #ifndef NO_TI84PT_USB
-	| (1U << CALC_TI84PT_USB)
+	| (UINT64_C(1) << CALC_TI84PT_USB)
 #endif
+;
+
+static const uint32_t supported_protocols =
+	  CALC_COMM_PROTO_DBUS
+	| CALC_COMM_PROTO_CARS
+	| CALC_COMM_PROTO_NAVNET
+	| CALC_COMM_PROTO_TICALCS_ROMDUMP
 ;
 
 /****************/
@@ -285,9 +292,34 @@ const char *TICALL ticalcs_version_get(void)
  * Return value: an integer containing a binary OR of (1 << CALC_*) values,
  * where CALC_* values are defined in enum CalcModel.
  **/
-uint32_t TICALL ticalcs_supported_calcs (void)
+uint64_t TICALL ticalcs_supported_calcs (void)
 {
 	return supported_calcs;
+}
+
+/**
+ * ticalcs_supported_protocols:
+ *
+ * This function returns the protocols built into the current binary.
+ *
+ * Return value: an integer containing a binary OR of (1 << CALC_COMM_PROTO_*) values,
+ * where CALC_COMM_PROTO_* values are defined in enum CalcCommunicationProtocols.
+ **/
+uint32_t TICALL ticalcs_supported_protocols (void)
+{
+	return supported_protocols;
+}
+
+/**
+ * ticalcs_max_calc_function_idx:
+ *
+ * This function returns the maximum index of supported calc functions (mostly for internal usage).
+ *
+ * Return value: the CALC_FNCT_LAST value against which the library was built.
+ **/
+uint32_t TICALL ticalcs_max_calc_function_idx(void)
+{
+	return CALC_FNCT_LAST;
 }
 
 static int default_event_hook(CalcHandle * handle, uint32_t event_count, const CalcEventData * event, void * user_pointer)
