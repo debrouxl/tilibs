@@ -90,36 +90,36 @@ static CableFncts const *const cables[] =
 	NULL
 };
 
-static const uint32_t supported_cables =
-	  (1U << CABLE_NUL)
+static const uint64_t supported_cables =
+	  (UINT64_C(1) << CABLE_NUL)
 #ifndef NO_CABLE_GRY
-	| (1U << CABLE_GRY)
+	| (UINT64_C(1) << CABLE_GRY)
 #endif
 #if !defined(NO_CABLE_BLK) && !defined(__MACOSX__)
-	| (1U << CABLE_BLK)
+	| (UINT64_C(1) << CABLE_BLK)
 #endif
 #if !defined(NO_CABLE_PAR) && (defined(HAVE_LINUX_PARPORT_H) || defined(__WIN32__))
-	| (1U << CABLE_PAR)
+	| (UINT64_C(1) << CABLE_PAR)
 #endif
 #if !defined(NO_CABLE_SLV) && (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0) || defined(__WIN32__))
-	| (1U << CABLE_SLV)
+	| (UINT64_C(1) << CABLE_SLV)
 #endif
 #if !defined(NO_CABLE_SLV) && (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0) || defined(__WIN32__))
-	| (1U << CABLE_USB)
+	| (UINT64_C(1) << CABLE_USB)
 #endif
 #ifndef NO_CABLE_VTI
-	| (1U << CABLE_VTI)
+	| (UINT64_C(1) << CABLE_VTI)
 #endif
 #ifndef NO_CABLE_TIE
-	| (1U << CABLE_TIE)
+	| (UINT64_C(1) << CABLE_TIE)
 #endif
-	| (1U << CABLE_ILP)
+	| (UINT64_C(1) << CABLE_ILP)
 	// | (1U << CABLE_DEV) Dead cable
 #if !defined(NO_CABLE_TCPC) && !defined(__WIN32__)
-	| (1U << CABLE_TCPC)
+	| (UINT64_C(1) << CABLE_TCPC)
 #endif
 #if !defined(NO_CABLE_TCPS) && !defined(__WIN32__)
-	| (1U << CABLE_TCPS)
+	| (UINT64_C(1) << CABLE_TCPS)
 #endif
 ;
 
@@ -249,7 +249,7 @@ const char *TICALL ticables_version_get(void)
  * Return value: an integer containing a binary OR of (1 << CABLE_*) values,
  * where CABLE_* values are defined in enum CableModel.
  **/
-uint32_t TICALL ticables_supported_cables(void)
+uint64_t TICALL ticables_supported_cables(void)
 {
 	return supported_cables;
 }
@@ -264,6 +264,18 @@ uint32_t TICALL ticables_supported_cables(void)
 uint32_t TICALL ticables_max_ports(void)
 {
 	return PORT_MAX;
+}
+
+/**
+ * ticables_max_cable_function_idx:
+ *
+ * This function returns the maximum index of supported cable functions (mostly for internal usage).
+ *
+ * Return value: the CABLE_FNCT_LAST value against which the library was built.
+ **/
+uint32_t TICALL ticables_max_cable_function_idx(void)
+{
+	return CABLE_FNCT_LAST;
 }
 
 static int default_event_hook(CableHandle * handle, uint32_t event_count, const CableEventData * event, void * user_pointer)

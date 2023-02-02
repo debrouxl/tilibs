@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2026-08-30 20:23+0200\n"
+"POT-Creation-Date: 2026-08-30 20:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -817,16 +817,16 @@ msgstr ""
 msgid "Unknown pixel format %d\n"
 msgstr ""
 
-#: src/ticalcs.cc:238
+#: src/ticalcs.cc:245
 #, c-format
 msgid "ticalcs library version %s"
 msgstr ""
 
-#: src/ticalcs.cc:542
+#: src/ticalcs.cc:574
 msgid "Link calc handle details:"
 msgstr ""
 
-#: src/ticalcs.cc:543
+#: src/ticalcs.cc:575
 #, c-format
 msgid "  model   : %s"
 msgstr ""

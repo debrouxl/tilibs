@@ -227,6 +227,25 @@ typedef enum
 } CalcFeatures;
 
 /**
+ * CalcCommunicationProtocols:
+ *
+ * An enumeration which contains the different supported communication protocols:
+ **/
+typedef enum
+{
+	CALC_COMM_PROTO_NONE = 0,
+
+	CALC_COMM_PROTO_DBUS            = (1 << 0),
+	CALC_COMM_PROTO_CARS            = (1 << 1),             ///< Official name
+	CALC_COMM_PROTO_DUSB            = CALC_COMM_PROTO_CARS,
+	CALC_COMM_PROTO_NAVNET          = (1 << 2),             ///< Official name
+	CALC_COMM_PROTO_NSP             = CALC_COMM_PROTO_NAVNET,
+
+	CALC_COMM_PROTO_TICALCS_ROMDUMP = (1 << 30)
+	// CALC_COMM_PROTO_MORE_PROTOS  = (1 << 31)
+} CalcCommunicationProtocols;
+
+/**
  * CalcAction:
  *
  * An enumeration which contains the action taken on a variable
@@ -936,7 +955,9 @@ typedef struct
 
 	// ticalcs.c
 	TIEXPORT3 const char* TICALL ticalcs_version_get(void);
-	TIEXPORT3 uint32_t    TICALL ticalcs_supported_calcs(void);
+	TIEXPORT3 uint64_t    TICALL ticalcs_supported_calcs(void);
+	TIEXPORT3 uint32_t    TICALL ticalcs_supported_protocols(void);
+	TIEXPORT3 uint32_t    TICALL ticalcs_max_calc_function_idx(void);
 
 	TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model);
 	TIEXPORT3 int         TICALL ticalcs_handle_del(CalcHandle *handle);

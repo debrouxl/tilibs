@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.3.6\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-09-13 22:35+0200\n"
+"POT-Creation-Date: 2026-08-30 20:30+0200\n"
 "PO-Revision-Date: 2019-10-29 13:55+0100\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
 "Language-Team: <debian-l10n-german@lists.debian.org>\n"
@@ -184,9 +184,9 @@ msgid ""
 "current user doesn't have the necessary permissions. How to grant permission "
 "to devices to the user depends on the distribution; it may involve adding "
 "udev and/or pam_console configuration files, and you may in addition have to "
-"add your user to a group such as 'usb' or set-up libusb mounting parameters."
-"If packages of TiLP and its libraries for your distribution exist, it is "
-"recommended to use those, as everything which can be configured "
+"add your user to a group such as 'usb' or set-up libusb mounting "
+"parameters.If packages of TiLP and its libraries for your distribution "
+"exist, it is recommended to use those, as everything which can be configured "
 "automatically will be set up for you. Otherwise, manual setup steps, if any, "
 "are explained in the CONFIG file shipped with the ticables2 library. "
 msgstr ""
@@ -451,9 +451,9 @@ msgid ""
 "with some USB/RS232 adapters, though most do not work at all for the "
 "purposes of TI's protocol"
 msgstr ""
-"BEACHTE: Führe Programm weiter aus und versuche libticables mit "
-"manchen USB/RS232-Adaptern lauffähig zu machen, auch wenn die meisten nicht "
-"mit dem durch TI verwendeten Protokoll funktionieren"
+"BEACHTE: Führe Programm weiter aus und versuche libticables mit manchen USB/"
+"RS232-Adaptern lauffähig zu machen, auch wenn die meisten nicht mit dem "
+"durch TI verwendeten Protokoll funktionieren"
 
 #: src/linux/detect.cc:342
 #, c-format
@@ -616,28 +616,28 @@ msgstr "TiEmu"
 msgid "Virtual link for TiEmu"
 msgstr "Virtueller Link für TiEmu"
 
-#: src/linux/link_usb1.cc:213
+#: src/linux/link_usb1.cc:215
 #, c-format
 msgid " found %s on #%i, version <%x.%02x>\n"
 msgstr " %s on #%i, version <%x.%02x> gefunden\n"
 
-#: src/linux/link_usb1.cc:240 src/linux/link_usb.cc:380
+#: src/linux/link_usb1.cc:242 src/linux/link_usb.cc:380
 msgid "no devices found!\n"
 msgstr "kein Gerät gefunden!\n"
 
-#: src/linux/link_usb1.cc:878 src/linux/link_usb.cc:1148
+#: src/linux/link_usb1.cc:880 src/linux/link_usb.cc:1148
 msgid "SilverLink"
 msgstr "SilverLink"
 
-#: src/linux/link_usb1.cc:879 src/linux/link_usb.cc:1149
+#: src/linux/link_usb1.cc:881 src/linux/link_usb.cc:1149
 msgid "SilverLink (TI-GRAPH LINK USB) cable"
 msgstr "SilverLink (TI-GRAPH LINK USB) Kabel"
 
-#: src/linux/link_usb1.cc:895 src/linux/link_usb.cc:1165
+#: src/linux/link_usb1.cc:897 src/linux/link_usb.cc:1165
 msgid "DirectLink"
 msgstr "DirectLink"
 
-#: src/linux/link_usb1.cc:896 src/linux/link_usb.cc:1166
+#: src/linux/link_usb1.cc:898 src/linux/link_usb.cc:1166
 msgid "DirectLink (DIRECT USB) cable"
 msgstr "DirectLink- (DIRECT USB) Kabel"
 
@@ -668,36 +668,36 @@ msgstr "Link-Kabel-Verbindungsaufbau:"
 msgid "ticables library version %s"
 msgstr "ticables-Bibliothek Version %s"
 
-#: src/ticables.cc:552
+#: src/ticables.cc:564
 msgid "Link cable handle details:"
 msgstr "Verbindungskabel-Handle-Details:"
 
-#: src/ticables.cc:553
+#: src/ticables.cc:565
 #, c-format
 msgid "  model   : %s"
 msgstr "  Modell   : %s"
 
-#: src/ticables.cc:554
+#: src/ticables.cc:566
 #, c-format
 msgid "  port    : %s"
 msgstr "  Port    : %s"
 
-#: src/ticables.cc:555
+#: src/ticables.cc:567
 #, c-format
 msgid "  timeout : %2.1fs"
 msgstr "  Zeitüberschreitung : %2.1fs"
 
-#: src/ticables.cc:556
+#: src/ticables.cc:568
 #, c-format
 msgid "  delay   : %i us"
 msgstr "  Verzögerung   : %i us"
 
-#: src/ticables.cc:559
+#: src/ticables.cc:571
 #, c-format
 msgid "  device  : %s"
 msgstr "  Gerät  : %s"
 
-#: src/ticables.cc:560
+#: src/ticables.cc:572
 #, c-format
 msgid "  address : 0x%03x"
 msgstr "  Adresse : 0x%03x"

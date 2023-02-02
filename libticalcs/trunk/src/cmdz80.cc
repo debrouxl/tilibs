@@ -47,29 +47,37 @@
 #define TI8283_BKUP ((handle->model == CALC_TI82) ? TI82_BKUP : TI83_BKUP)
 #define TI8586_BKUP ((handle->model == CALC_TI85) ? TI85_BKUP : TI86_BKUP)
 
+uint8_t TICALL tiz80_model_to_dbus_mid(CalcModel model)
+{
+	uint8_t retval;
+	switch (model)
+	{
+	case CALC_TI73:
+		retval = DBUS_MID_PC_TI73; break;
+	case CALC_TI82:
+		retval = DBUS_MID_PC_TI82; break;
+	case CALC_TI83:
+		retval = DBUS_MID_PC_TI83; break;
+	case CALC_TI83P:
+	case CALC_TI84P:
+	case CALC_TI84PC:
+		retval = DBUS_MID_PC_TI83p; break;
+	case CALC_TI85:
+		retval = DBUS_MID_PC_TI85; break;
+	case CALC_TI86:
+		retval = DBUS_MID_PC_TI86; break;
+	default:
+		retval = DBUS_MID_PC_TIXX; break;
+	}
+	ticalcs_info("tiz80_model_to_dbus_mid returning %02X", retval);
+	return retval;
+}
+
 uint8_t TICALL tiz80_handle_to_dbus_mid(CalcHandle * handle)
 {
 	if (ticalcs_validate_handle(handle))
 	{
-		switch (handle->model)
-		{
-		case CALC_TI73:
-			return DBUS_MID_PC_TI73;
-		case CALC_TI82:
-			return DBUS_MID_PC_TI82;
-		case CALC_TI83:
-			return DBUS_MID_PC_TI83;
-		case CALC_TI83P:
-		case CALC_TI84P:
-		case CALC_TI84PC:
-			return DBUS_MID_PC_TI83p;
-		case CALC_TI85:
-			return DBUS_MID_PC_TI85;
-		case CALC_TI86:
-			return DBUS_MID_PC_TI86;
-		default:
-			return DBUS_MID_PC_TIXX;
-		}
+		return tiz80_model_to_dbus_mid(handle->model);
 	}
 	return 0;
 }

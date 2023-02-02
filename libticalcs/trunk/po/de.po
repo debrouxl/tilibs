@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2026-08-30 20:23+0200\n"
+"POT-Creation-Date: 2026-08-30 20:30+0200\n"
 "PO-Revision-Date: 2016-11-18 19:30+0300\n"
 "Last-Translator: Andreas B. Mundt <andi@debian.org>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
@@ -854,16 +854,16 @@ msgstr "Rechner Typ: %s"
 msgid "Unknown pixel format %d\n"
 msgstr "Unbekanntes Pixel Format %d\n"
 
-#: src/ticalcs.cc:238
+#: src/ticalcs.cc:245
 #, c-format
 msgid "ticalcs library version %s"
 msgstr "ticalcs Library Version %s"
 
-#: src/ticalcs.cc:542
+#: src/ticalcs.cc:574
 msgid "Link calc handle details:"
 msgstr "Verbindungs-Details:"
 
-#: src/ticalcs.cc:543
+#: src/ticalcs.cc:575
 #, c-format
 msgid "  model   : %s"
 msgstr "  Modell  : %s"
