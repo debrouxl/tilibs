@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.10\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-01-29 23:26+0100\n"
+"POT-Creation-Date: 2023-02-02 19:18+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -822,11 +822,11 @@ msgstr ""
 msgid "ticalcs library version %s"
 msgstr ""
 
-#: src/ticalcs.cc:542
+#: src/ticalcs.cc:554
 msgid "Link calc handle details:"
 msgstr ""
 
-#: src/ticalcs.cc:543
+#: src/ticalcs.cc:555
 #, c-format
 msgid "  model   : %s"
 msgstr ""

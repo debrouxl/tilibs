@@ -34,24 +34,32 @@
 #include "logging.h"
 #include "cmd68k.h"
 
+uint8_t TICALL ti68k_model_to_dbus_mid(CalcModel model)
+{
+	uint8_t retval;
+	switch (model)
+	{
+	case CALC_TI89:
+	case CALC_TI89T:
+		retval = DBUS_MID_PC_TI89; break;
+	case CALC_TI92:
+		retval = DBUS_MID_PC_TI92; break;
+	case CALC_TI92P:
+		retval = DBUS_MID_PC_TI92p; break;
+	case CALC_V200:
+		retval = DBUS_MID_PC_V200; break;
+	default:
+		retval = DBUS_MID_PC_TIXX; break;
+	}
+	ticalcs_info("ti68k_model_to_dbus_mid returning %02X", retval);
+	return retval;
+}
+
 uint8_t TICALL ti68k_handle_to_dbus_mid(CalcHandle * handle)
 {
 	if (ticalcs_validate_handle(handle))
 	{
-		switch (handle->model)
-		{
-		case CALC_TI89:
-		case CALC_TI89T:
-			return DBUS_MID_PC_TI89;
-		case CALC_TI92:
-			return DBUS_MID_PC_TI92;
-		case CALC_TI92P:
-			return DBUS_MID_PC_TI92p;
-		case CALC_V200:
-			return DBUS_MID_PC_V200;
-		default:
-			return DBUS_MID_PC_TIXX;
-		}
+		return ti68k_model_to_dbus_mid(handle->model);
 	}
 	return 0;
 }
