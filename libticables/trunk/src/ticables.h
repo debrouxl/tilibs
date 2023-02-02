@@ -430,8 +430,9 @@ typedef struct
 
 	// ticables.c
 	TIEXPORT1 const char * TICALL ticables_version_get(void);
-	TIEXPORT1 uint32_t TICALL ticables_supported_cables(void);
+	TIEXPORT1 uint64_t TICALL ticables_supported_cables(void);
 	TIEXPORT1 uint32_t TICALL ticables_max_ports(void);
+	TIEXPORT1 uint32_t TICALL ticables_max_cable_function_idx(void);
 
 	TIEXPORT1 CableHandle * TICALL ticables_handle_new(CableModel model, CablePort port);
 	TIEXPORT1 int           TICALL ticables_handle_del(CableHandle *handle);

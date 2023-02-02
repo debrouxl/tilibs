@@ -668,36 +668,36 @@ msgstr "Link-Kabel-Verbindungsaufbau:"
 msgid "ticables library version %s"
 msgstr "ticables-Bibliothek Version %s"
 
-#: src/ticables.cc:552
+#: src/ticables.cc:564
 msgid "Link cable handle details:"
 msgstr "Verbindungskabel-Handle-Details:"
 
-#: src/ticables.cc:553
+#: src/ticables.cc:565
 #, c-format
 msgid "  model   : %s"
 msgstr "  Modell   : %s"
 
-#: src/ticables.cc:554
+#: src/ticables.cc:566
 #, c-format
 msgid "  port    : %s"
 msgstr "  Port    : %s"
 
-#: src/ticables.cc:555
+#: src/ticables.cc:567
 #, c-format
 msgid "  timeout : %2.1fs"
 msgstr "  Zeitüberschreitung : %2.1fs"
 
-#: src/ticables.cc:556
+#: src/ticables.cc:568
 #, c-format
 msgid "  delay   : %i us"
 msgstr "  Verzögerung   : %i us"
 
-#: src/ticables.cc:559
+#: src/ticables.cc:571
 #, c-format
 msgid "  device  : %s"
 msgstr "  Gerät  : %s"
 
-#: src/ticables.cc:560
+#: src/ticables.cc:572
 #, c-format
 msgid "  address : 0x%03x"
 msgstr "  Adresse : 0x%03x"
