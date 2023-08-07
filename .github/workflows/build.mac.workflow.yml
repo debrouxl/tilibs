@@ -2,9 +2,9 @@ name: Build macOS
 
 on:
   push:
-    branches: [ master, feature/github-actions ]
+    branches: [ master, experimental, experimental2 ]
   pull_request:
-    branches: [ master, feature/github-actions ]
+    branches: [ master, experimental, experimental2 ]
   release:
     types: [published]
 
@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macOS-latest]
+        os: [macos-11, macos-12]
         try_static_deps: ['OFF','ON']
         include:
           - try_static_deps: 'OFF'
@@ -61,10 +61,10 @@ jobs:
         cmake --build . --target install
 
     - name: Prepare install folder for upload
-      run: mv prefix tilibs_mac_${{ matrix.deps_type }}Deps_${{ github.sha }}
+      run: mv prefix tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps_${{ github.sha }}
 
     - name: Upload install folder
       uses: actions/upload-artifact@v3
       with:
-        name: tilibs_mac_${{ matrix.deps_type }}Deps_${{ github.sha }}
-        path: tilibs_mac_${{ matrix.deps_type }}Deps_${{ github.sha }}/
+        name: tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps_${{ github.sha }}
+        path: tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps_${{ github.sha }}/
