@@ -53,7 +53,7 @@ function(create_targets_both_lib_types basename)
     # Link-related properties, flags...
     target_link_directories(${lib_shared} PRIVATE ${DEPS_LIBRARY_DIRS})
     if(TRY_STATIC_LIBS)
-        target_link_libraries(${lib_shared} ${TRY_STATIC_DEPS_LIBRARIES})
+        target_link_libraries(${lib_shared} ${TRY_STATIC_DEPS_LDFLAGS})
     else()
         target_link_libraries(${lib_shared} ${DEPS_LIBRARIES})
     endif()
