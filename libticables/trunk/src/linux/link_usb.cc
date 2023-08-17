@@ -399,7 +399,7 @@ static int tigl_open(int id, usb_dev_handle **udh)
 		return ERR_LIBUSB_OPEN;
 	}
 
-	*udh = usb_open((usb_device *)(tigl_devices[id].dev));
+	*udh = usb_open((struct usb_device *)(tigl_devices[id].dev));
 	if (*udh != NULL) 
 	{
 		/* only one configuration: #1 */
@@ -510,7 +510,7 @@ static int slv_open(CableHandle *h)
 		return ret;
 	}
 	cable_info = tigl_devices[h->address];
-	uDev = (usb_device *)(tigl_devices[h->address].dev);
+	uDev = (struct usb_device *)(tigl_devices[h->address].dev);
 	uInEnd  = 0x81;
 	uOutEnd = 0x02;
 
