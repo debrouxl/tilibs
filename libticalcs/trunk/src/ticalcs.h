@@ -352,6 +352,8 @@ typedef struct
 
 //! Size of the header of a \a DUSBRawPacket
 #define DUSB_HEADER_SIZE (4+1)
+//! Size of the data contained in \a DUSBRawPacket
+#define DUSB_DATA_SIZE   (1023)
 
 /**
  * DUSBRawPacket:
@@ -360,10 +362,10 @@ typedef struct
  **/
 typedef struct
 {
-	uint32_t size;       ///< raw packet size
-	uint8_t  type;       ///< raw packet type
+	uint32_t size;                 ///< raw packet size
+	uint8_t  type;                 ///< raw packet type
 
-	uint8_t  data[1023]; ///< raw packet data
+	uint8_t  data[DUSB_DATA_SIZE]; ///< raw packet data
 } DUSBRawPacket;
 
 /**

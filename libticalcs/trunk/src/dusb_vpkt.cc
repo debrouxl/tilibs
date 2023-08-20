@@ -365,10 +365,10 @@ TIEXPORT3 int TICALL dusb_set_buf_size(CalcHandle* handle, uint32_t size)
 {
 	VALIDATE_HANDLE(handle);
 
-	if (size > sizeof(DUSBRawPacket::data) + 1)
+	if (size > DUSB_DATA_SIZE + 1)
 	{
 		ticalcs_warning("Clamping dubious large DUSB buffer size");
-		size = sizeof(DUSBRawPacket::data) + 1;
+		size = DUSB_DATA_SIZE + 1;
 	}
 
 	handle->priv.dusb_rpkt_maxlen = size;
