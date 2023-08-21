@@ -611,8 +611,14 @@ TIEXPORT3 int TICALL dbus_dissect(CalcModel model, FILE * f, const uint8_t * dat
 	else
 	{
 read_length:
-		// If we come here, we know we can read 2 bytes for length.
-		length = ((uint16_t)(data[3])) << 8 | data[2];
+		if (len >= 4)
+		{
+			length = ((uint16_t)(data[3])) << 8 | data[2];
+		}
+		else
+		{
+			length = 0;
+		}
 		expected_length = ((length == 0) ? 4 : 6 + length); // Always 4-byte header, 2-byte checksum if data.
 	}
 
