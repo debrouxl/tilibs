@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.3.6\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2023-01-29 14:29+0100\n"
+"POT-Creation-Date: 2023-09-13 22:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -564,19 +564,19 @@ msgstr ""
 msgid "no devices found!\n"
 msgstr ""
 
-#: src/linux/link_usb1.cc:855 src/linux/link_usb.cc:1125
+#: src/linux/link_usb1.cc:878 src/linux/link_usb.cc:1148
 msgid "SilverLink"
 msgstr ""
 
-#: src/linux/link_usb1.cc:856 src/linux/link_usb.cc:1126
+#: src/linux/link_usb1.cc:879 src/linux/link_usb.cc:1149
 msgid "SilverLink (TI-GRAPH LINK USB) cable"
 msgstr ""
 
-#: src/linux/link_usb1.cc:872 src/linux/link_usb.cc:1142
+#: src/linux/link_usb1.cc:895 src/linux/link_usb.cc:1165
 msgid "DirectLink"
 msgstr ""
 
-#: src/linux/link_usb1.cc:873 src/linux/link_usb.cc:1143
+#: src/linux/link_usb1.cc:896 src/linux/link_usb.cc:1166
 msgid "DirectLink (DIRECT USB) cable"
 msgstr ""
 

@@ -302,6 +302,7 @@ static int tigl_close(libusb_device_handle **udh)
 		libusb_free_transfer(transfer);
 	}
 
+	// NOTE: slv_close() has already checked for *udh != NULL .
 	libusb_release_interface(*udh, 0);
 	libusb_close(*udh);
 	*udh = NULL;
@@ -311,23 +312,28 @@ static int tigl_close(libusb_device_handle **udh)
 
 static int tigl_reset(CableHandle *h)
 {
-	int ret;
-
 	// Reset out pipe
-	ret = libusb_clear_halt(uHdl, uOutEnd);
-	if (ret)
+	if (NULL != uHdl)
 	{
-		ticables_warning("libusb_clear_halt (%s).\n", libusb_strerror((libusb_error)ret));
-	}
+		int ret = libusb_clear_halt(uHdl, uOutEnd);
+		if (ret)
+		{
+			ticables_warning("libusb_clear_halt (%s).\n", libusb_strerror((libusb_error)ret));
+		}
 
-	// Reset in pipe
-	ret = libusb_clear_halt(uHdl, uInEnd);
-	if (ret)
+		// Reset in pipe
+		ret = libusb_clear_halt(uHdl, uInEnd);
+		if (ret)
+		{
+			ticables_warning("libusb_clear_halt (%s).\n", libusb_strerror((libusb_error)ret));
+		}
+
+		return 0;
+	}
+	else
 	{
-		ticables_warning("libusb_clear_halt (%s).\n", libusb_strerror((libusb_error)ret));
+		return ERR_LIBUSB_RESET;
 	}
-
-	return 0;
 }
 
 /* API */
@@ -451,6 +457,7 @@ static int slv_reset(CableHandle *h)
 	if (!ret)
 	{
 		/* Reset USB port (send an IOCTL_INTERNAL_USB_RESET_PORT) */
+		/* NOTE: tigl_reset() has already checked for uHdl != NULL */
 		ret = libusb_reset_device(uHdl);
 		if (ret != 0)
 		{
@@ -489,6 +496,11 @@ static int slv_reset(CableHandle *h)
 static int send_block(CableHandle *h, uint8_t *data, int length)
 {
 	int ret, tmp;
+
+	if (NULL == uHdl)
+	{
+		return ERR_WRITE_ERROR;
+	}
 
 	ret = libusb_bulk_transfer(uHdl, uOutEnd, (unsigned char*)data, length, &tmp, to);
 
@@ -630,6 +642,7 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 		TO_START(clk);
 		do
 		{
+			// NOTE: slv_get() has already checked for uHdl != NULL .
 			ret = slv_bulk_read(uHdl, uInEnd, (unsigned char*)rBuf, max_ps, &len, to);
 		}
 		while(!len && !ret);
@@ -671,6 +684,11 @@ static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
 	int i=0;
 	int ret = 0;
 	int tmp;
+
+	if (NULL == uHdl)
+	{
+		return ERR_READ_ERROR;
+	}
 
 	/* we can't do that in any other way because slv_get_ can returns
 	 * 1, 2, ..., len bytes.
@@ -778,6 +796,11 @@ static int slv_check(CableHandle *h, int *status)
 	{
 		*status = TRUE;
 		return 0;
+	}
+
+	if (NULL == uHdl)
+	{
+		return ERR_READ_ERROR;
 	}
 
 	if (!io_pending)

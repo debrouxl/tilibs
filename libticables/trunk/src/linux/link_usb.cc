@@ -429,6 +429,7 @@ static int tigl_open(int id, usb_dev_handle **udh)
 
 static int tigl_close(usb_dev_handle **udh)
 {
+	// NOTE: slv_close() has already checked for *udh != NULL .
 	usb_release_interface(*udh, 0);
 	usb_close(*udh);
 	*udh = NULL;
@@ -438,23 +439,28 @@ static int tigl_close(usb_dev_handle **udh)
 
 static int tigl_reset(CableHandle *h)
 {
-	int ret;
-
 	// Reset out pipe
-	ret = usb_clear_halt(uHdl, uOutEnd);
-	if (ret < 0) 
+	if (NULL != uHdl)
 	{
-		ticables_warning("usb_clear_halt of out pipe (%s).\n", usb_strerror());
-	}
-	
-	// Reset in pipe
-	ret = usb_clear_halt(uHdl, uInEnd);
-	if (ret < 0) 
-	{
-		ticables_warning("usb_clear_halt of in pipe (%s).\n", usb_strerror());
-	}
+		int ret = usb_clear_halt(uHdl, uOutEnd);
+		if (ret < 0)
+		{
+			ticables_warning("usb_clear_halt of out pipe (%s).\n", usb_strerror());
+		}
 
-	return 0;
+		// Reset in pipe
+		ret = usb_clear_halt(uHdl, uInEnd);
+		if (ret < 0)
+		{
+			ticables_warning("usb_clear_halt of in pipe (%s).\n", usb_strerror());
+		}
+
+		return 0;
+	}
+	else
+	{
+		return ERR_LIBUSB_RESET;
+	}
 }
 
 /* API */
@@ -574,6 +580,7 @@ static int slv_reset(CableHandle *h)
 	ret = tigl_reset(h);
 	if (!ret)
 	{
+		/* NOTE: tigl_reset() has already checked for uHdl != NULL */
 #ifdef __WIN32__
 		/* Reset USB port (send an IOCTL_INTERNAL_USB_RESET_PORT) */
 		ret = usb_reset_ex(uHdl, USB_RESET_TYPE_RESET_PORT);
@@ -619,6 +626,11 @@ static int slv_reset(CableHandle *h)
 static int send_block(CableHandle *h, uint8_t *data, int length)
 {
 	int ret;
+
+	if (NULL == uHdl)
+	{
+		return ERR_WRITE_ERROR;
+	}
 
 	ret = usb_bulk_write(uHdl, uOutEnd, (char*)data, length, to);
 
@@ -858,6 +870,7 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 		TO_START(clk);
 		do
 		{
+			// NOTE: slv_get() has already checked for uHdl != NULL .
 #if defined(__LINUX__) || defined(__WIN32__)
 			ret = slv_bulk_read2(uHdl, uInEnd, (char*)rBuf, max_ps, to);
 #else
@@ -919,6 +932,11 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
 {
 	int i, ret;
+
+	if (NULL == uHdl)
+	{
+		return ERR_READ_ERROR;
+	}
 
 	// we can't do that in any other way because slv_get_ can returns
 	// 1, 2, ..., len bytes.
@@ -1015,6 +1033,11 @@ static int slv_check(CableHandle *h, int *status)
 	{
 		*status = !0;
 		return 0;
+	}
+
+	if (NULL == uHdl)
+	{
+		return ERR_READ_ERROR;
 	}
 
 	if (!io_pending)
