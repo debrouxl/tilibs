@@ -36,6 +36,7 @@
 
 #include "ticonv.h"
 #include "charset.h"
+#include "logging.h"
 
 /* Allocate descriptor for code conversion from codeset FROMCODE to
    codeset TOCODE.  */
@@ -44,8 +45,11 @@ TIEXPORT4 ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const cha
   ticonv_iconv_t cd;
   cd.src_calc=ticonv_string_to_model(fromcode);
   cd.dest_calc=ticonv_string_to_model(tocode);
-#if 1
+#if USE_ICONV
   cd.iconv_desc=iconv_open(cd.src_calc || fromcode == NULL ? "UTF-16" : fromcode, cd.dest_calc || tocode == NULL ? "UTF-16" : tocode);
+#else
+  ticonv_critical("ticonv_iconv_open called but iconv was not linked when building. Setting iconv_desc to -1.");
+  cd.iconv_desc = (iconv_t)-1;
 #endif
   cd.lossy_count=0;
   cd.lookahead_result=0;
@@ -62,7 +66,7 @@ TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
                                       char ** restrict outbuf,
                                       size_t * restrict outbytesleft)
 {
-#if 1
+#if USE_ICONV
   size_t result;
   if (!inbytesleft || !outbytesleft) {
     return 0;
@@ -243,6 +247,7 @@ TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
     return result;
   }
 #else
+  ticonv_critical("ticonv_iconv called but iconv was not linked when building. Returning 0.");
   return 0;
 #endif
 }
@@ -250,9 +255,10 @@ TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char ** restrict inbuf,
 /* Free resources allocated for descriptor CD for code conversion.  */
 TIEXPORT4 int TICALL ticonv_iconv_close (ticonv_iconv_t cd)
 {
-#if 1
+#if USE_ICONV
   return iconv_close(cd.iconv_desc);
 #else
+  ticonv_critical("ticonv_iconv_close called but iconv was not linked when building. Returning 0.");
   return 0;
 #endif
 }

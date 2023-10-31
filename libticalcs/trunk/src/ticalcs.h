@@ -244,32 +244,36 @@ typedef enum
  **/
 typedef enum
 {
-	INFOS_PRODUCT_NUMBER = (1 << 0), /* obsolete (never used) */
-	INFOS_PRODUCT_NAME   = (1 << 1),
-	INFOS_MAIN_CALC_ID   = (1 << 2), /* obsolete, replaced by INFOS_PRODUCT_ID */
-	INFOS_HW_VERSION     = (1 << 3),
-	INFOS_LANG_ID        = (1 << 4),
-	INFOS_SUB_LANG_ID    = (1 << 5),
-	INFOS_DEVICE_TYPE    = (1 << 6),
-	INFOS_BOOT_VERSION   = (1 << 7),
-	INFOS_OS_VERSION     = (1 << 8),
-	INFOS_RAM_PHYS       = (1 << 9),
-	INFOS_RAM_USER       = (1 << 10),
-	INFOS_RAM_FREE       = (1 << 11),
-	INFOS_FLASH_PHYS     = (1 << 12),
-	INFOS_FLASH_USER     = (1 << 13),
-	INFOS_FLASH_FREE     = (1 << 14),
-	INFOS_LCD_WIDTH      = (1 << 15),
-	INFOS_LCD_HEIGHT     = (1 << 16),
-	INFOS_BATTERY        = (1 << 17),
-	INFOS_BOOT2_VERSION  = (1 << 18),
-	INFOS_RUN_LEVEL      = (1 << 19),
-	INFOS_BPP            = (1 << 20),
-	INFOS_CLOCK_SPEED    = (1 << 21),
-	INFOS_PRODUCT_ID     = (1 << 22),
-	INFOS_EXACT_MATH     = (1 << 23),
-	INFOS_CLOCK_SUPPORT  = (1 << 24),
-	INFOS_COLOR_SCREEN   = (1 << 25),
+	INFOS_PRODUCT_NUMBER    = (1 << 0), /* obsolete (never used) */
+	INFOS_PRODUCT_NAME      = (1 << 1),
+	INFOS_MAIN_CALC_ID      = (1 << 2), /* obsolete, replaced by INFOS_PRODUCT_ID */
+	INFOS_HW_VERSION        = (1 << 3),
+	INFOS_LANG_ID           = (1 << 4),
+	INFOS_SUB_LANG_ID       = (1 << 5),
+	INFOS_DEVICE_TYPE       = (1 << 6),
+	INFOS_BOOT_VERSION      = (1 << 7),
+	INFOS_OS_VERSION        = (1 << 8),
+	INFOS_RAM_PHYS          = (1 << 9),
+	INFOS_RAM_USER          = (1 << 10),
+	INFOS_RAM_FREE          = (1 << 11),
+	INFOS_FLASH_PHYS        = (1 << 12),
+	INFOS_FLASH_USER        = (1 << 13),
+	INFOS_FLASH_FREE        = (1 << 14),
+	INFOS_LCD_WIDTH         = (1 << 15),
+	INFOS_LCD_HEIGHT        = (1 << 16),
+	INFOS_BATTERY_ENOUGH    = (1 << 17),
+	INFOS_BATTERY           = INFOS_BATTERY_ENOUGH, /* For compatibility */
+	INFOS_BOOT2_VERSION     = (1 << 18),
+	INFOS_RUN_LEVEL         = (1 << 19),
+	INFOS_BPP               = (1 << 20),
+	INFOS_CLOCK_SPEED       = (1 << 21),
+	INFOS_PRODUCT_ID        = (1 << 22),
+	INFOS_MATH_CAPABILITIES = (1 << 23),
+	INFOS_EXACT_MATH        = INFOS_MATH_CAPABILITIES, /* For compatibility */
+	INFOS_CLOCK_SUPPORT     = (1 << 24),
+	INFOS_COLOR_SCREEN      = (1 << 25),
+	INFOS_PYTHON_ON_BOARD   = (1 << 26),
+	INFOS_USER_DEFINED_ID   = (1 << 27),
 
 	// INFOS_MORE_INFOS     = (1 << 30), /* Some day ? Reserved value for signaling more bits are available elsewhere */
 	INFOS_CALC_MODEL     = 0x80000000
@@ -348,6 +352,8 @@ typedef struct
 
 //! Size of the header of a \a DUSBRawPacket
 #define DUSB_HEADER_SIZE (4+1)
+//! Size of the data contained in \a DUSBRawPacket
+#define DUSB_DATA_SIZE   (1023)
 
 /**
  * DUSBRawPacket:
@@ -356,10 +362,10 @@ typedef struct
  **/
 typedef struct
 {
-	uint32_t size;       ///< raw packet size
-	uint8_t  type;       ///< raw packet type
+	uint32_t size;                 ///< raw packet size
+	uint8_t  type;                 ///< raw packet type
 
-	uint8_t  data[1023]; ///< raw packet data
+	uint8_t  data[DUSB_DATA_SIZE]; ///< raw packet data
 } DUSBRawPacket;
 
 /**
@@ -627,9 +633,11 @@ typedef struct
 	uint8_t		run_level;			// 1 = boot, 2 = OS
 	uint16_t	bits_per_pixel;		// 1, 4 or 16
 	uint16_t	clock_speed;
-	uint8_t		exact_math;
+	uint8_t		exact_math; // should be named math_capabilities
 	uint8_t		clock_support;
 	uint8_t		color_screen;
+	uint8_t		python_on_board;
+	char		user_defined_id[32];
 } CalcInfos;
 
 /**

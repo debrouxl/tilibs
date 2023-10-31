@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.12)
 
 project(libticables2
         VERSION     1.3.6
@@ -38,18 +38,45 @@ set(PUBLIC_HEADERS
         src/export1.h
         src/timeout.h)
 
+if(WIN32)
+    list(APPEND HEADER_FILES "src/win64/rwp.h")
+    list(APPEND SRC_FILES "src/win64/rwp.c")
+endif()
+
 # external deps lookup
 pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16)
 
-# auto-creation of all targets with flags etc., alongside with internal deps
+try_static_libs_if_needed()
+
+# Needed for the .pc files configured in the function below.
+set(TICABLES_LIBUSB_REQUIRES_PRIVATE "libusb-1.0")
+
+# auto-creation of all targets with flags etc.
 create_targets_both_lib_types(ticables2)
 
+set_target_properties(ticables2_shared PROPERTIES VERSION 8.0.0 SOVERSION 8)
+
 # Takes care of the i18n po/pot/gmo/mo files
-i18n_mo_from_po_pot()
-add_dependencies(ticables2_objlib potfiles_2)
+if(ENABLE_NLS)
+    i18n_mo_from_po_pot()
+    add_dependencies(ticables2_objlib potfiles_2)
+endif()
 
 # additional internal defines
 target_compile_definitions(ticables2_objlib PUBLIC HAVE_LIBUSB_1_0=1 HAVE_LIBUSB10_STRERROR=1 HAVE_TERMIOS_H=1)
+
+# check includes for parallel and serial support
+if(LINUX)
+    include(CheckIncludeFile)
+    CHECK_INCLUDE_FILE(linux/parport.h HAVE_LINUX_PARPORT_H)
+    CHECK_INCLUDE_FILE(linux/serial.h HAVE_LINUX_SERIAL_H)
+    if (HAVE_LINUX_PARPORT_H)
+        target_compile_definitions(ticables2_objlib PUBLIC HAVE_LINUX_PARPORT_H=1)
+    endif()
+    if (HAVE_LINUX_SERIAL_H)
+        target_compile_definitions(ticables2_objlib PUBLIC HAVE_LINUX_SERIAL_H=1)
+    endif()
+endif()
 
 # public export define
 target_compile_definitions(ticables2_objlib PUBLIC TICABLES_EXPORTS)

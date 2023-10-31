@@ -98,16 +98,19 @@ TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uin
 
 	if (ticalcs_validate_handle(handle))
 	{
-		//GList * vtl_pkt_list;
+		vtl = (DUSBVirtualPacket *)g_malloc0(sizeof(DUSBVirtualPacket));
 
-		vtl = (DUSBVirtualPacket *)g_malloc0(sizeof(DUSBVirtualPacket)); // aborts the program if it fails.
+		if (NULL != vtl)
+		{
+			//GList * vtl_pkt_list;
 
-		vtl->size = size;
-		vtl->type = type;
-		vtl->data = data;
+			vtl->size = size;
+			vtl->type = type;
+			vtl->data = data;
 
-		//vtl_pkt_list = g_list_append((GList *)(handle->priv.dusb_vtl_pkt_list), vtl);
-		//handle->priv.dusb_vtl_pkt_list = (void *)vtl_pkt_list;
+			//vtl_pkt_list = g_list_append((GList *)(handle->priv.dusb_vtl_pkt_list), vtl);
+			//handle->priv.dusb_vtl_pkt_list = (void *)vtl_pkt_list;
+		}
 	}
 	else
 	{
@@ -202,6 +205,8 @@ TIEXPORT3 int TICALL dusb_send_buf_size_request(CalcHandle* handle, uint32_t siz
 
 	VALIDATE_HANDLE(handle);
 
+	// Single call to dusb_send(), no need to take handle->busy.
+
 	if (size > sizeof(raw.data) + 1)
 	{
 		ticalcs_warning("Clamping dubious large DUSB buffer size request");
@@ -232,6 +237,8 @@ TIEXPORT3 int TICALL dusb_recv_buf_size_alloc(CalcHandle* handle, uint32_t *size
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
+
+	// Single call to dusb_recv(), no need to take handle->busy.
 
 	memset(&raw, 0, sizeof(raw));
 
@@ -282,6 +289,8 @@ TIEXPORT3 int TICALL dusb_recv_buf_size_request(CalcHandle* handle, uint32_t *si
 
 	VALIDATE_HANDLE(handle);
 
+	// Single call to dusb_recv(), no need to take handle->busy.
+
 	memset(&raw, 0, sizeof(raw));
 
 	do
@@ -314,6 +323,8 @@ TIEXPORT3 int TICALL dusb_send_buf_size_alloc(CalcHandle* handle, uint32_t size)
 	int ret;
 
 	VALIDATE_HANDLE(handle);
+
+	// Single call to dusb_send(), no need to take handle->busy.
 
 	if (size > sizeof(raw.data) + 1)
 	{
@@ -354,6 +365,12 @@ TIEXPORT3 int TICALL dusb_set_buf_size(CalcHandle* handle, uint32_t size)
 {
 	VALIDATE_HANDLE(handle);
 
+	if (size > DUSB_DATA_SIZE + 1)
+	{
+		ticalcs_warning("Clamping dubious large DUSB buffer size");
+		size = DUSB_DATA_SIZE + 1;
+	}
+
 	handle->priv.dusb_rpkt_maxlen = size;
 
 	return 0;
@@ -365,6 +382,8 @@ TIEXPORT3 int TICALL dusb_send_acknowledge(CalcHandle* handle)
 	int ret;
 
 	VALIDATE_HANDLE(handle);
+
+	// Single call to dusb_send(), no need to take handle->busy.
 
 	memset(&raw, 0, sizeof(raw));
 	raw.size = 2;
@@ -391,6 +410,8 @@ TIEXPORT3 int TICALL dusb_recv_acknowledge(CalcHandle *handle)
 	VALIDATE_HANDLE(handle);
 
 	memset(&raw, 0, sizeof(raw));
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	do
 	{
@@ -447,6 +468,8 @@ TIEXPORT3 int TICALL dusb_recv_acknowledge(CalcHandle *handle)
 			break;
 		}
 	} while(0);
+
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	return ret;
 }
@@ -509,6 +532,8 @@ TIEXPORT3 int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 	}
 
 	memset(&raw, 0, sizeof(raw));
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_DUSB_VPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_dusb_vpkt(&event, /* size */ vtl->size, /* type */ vtl->type, /* data */ vtl->data);
@@ -648,6 +673,8 @@ end:
 	ticalcs_event_fill_dusb_vpkt(&event, /* size */ vtl->size, /* type */ vtl->type, /* data */ vtl->data);
 	ret = ticalcs_event_send(handle, &event);
 
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	return ret;
 }
 
@@ -699,6 +726,8 @@ TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacke
 	VALIDATE_NONNULL(declared_size);
 
 	memset(&raw, 0, sizeof(raw));
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_DUSB_VPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_dusb_vpkt(&event, /* size */ 0, /* type */ 0, /* data */ NULL);
@@ -821,6 +850,8 @@ TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacke
 	ticalcs_event_fill_dusb_vpkt(&event, /* size */ vtl->size, /* type */ vtl->type, /* data */ vtl->data);
 	ret = ticalcs_event_send(handle, &event);
 
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	return ret;
 }
 
@@ -831,6 +862,8 @@ TIEXPORT3 int TICALL dusb_recv_data(CalcHandle* handle, DUSBVirtualPacket* vtl)
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(vtl);
+
+	// dusb_recv_data_varsize() takes care of handle->busy.
 
 	ret = dusb_recv_data_varsize(handle, vtl, &declared_size, 0);
 	// TODO MAYBE reimplement the following block as a temporary event hook ?

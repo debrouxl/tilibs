@@ -1287,15 +1287,15 @@ static int		dump_rom_1	(CalcHandle* handle)
 		PAUSE(100);
 		if (infos.model == CALC_TI84P_USB)
 		{
-			ret = rd_send(handle, "romdump.8Xp", romDumpSize84p, romDump84p);
+			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize84p, romDump84p);
 		}
 		else if (infos.model == CALC_TI84PC_USB)
 		{
-			ret = rd_send(handle, "romdump.8Xp", romDumpSize84pcu, romDump84pcu);
+			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize84pcu, romDump84pcu);
 		}
 		else if (infos.model == CALC_TI84PCE_USB || infos.model == CALC_TI83PCE_USB)
 		{
-			ret = rd_send(handle, "romdump.8Xp", romDumpSize834pceu, romDump834pceu);
+			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize834pceu, romDump834pceu);
 		}
 		else
 		{
@@ -1353,7 +1353,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 			PAUSE(3000);
 
 			// Get dump
-			ret = rd_dump(handle, filename);
+			ret = rd_read_dump(handle, filename);
 		}
 	}
 
@@ -1391,7 +1391,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 				time_t r, c, now;
 				uint8_t data[4];
 
-				ticalcs_info(_("Will set classic clock"));
+				ticalcs_info("%s", _("Will set classic clock"));
 
 				time(&now);
 #ifdef HAVE_LOCALTIME_R
@@ -1450,7 +1450,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 			{
 				uint8_t data[4];
 
-				ticalcs_info(_("Will set new clock"));
+				ticalcs_info("%s", _("Will set new clock"));
 
 				ticalcs_strlcpy(handle->updat->text, _("Setting clock..."), sizeof(handle->updat->text));
 				ticalcs_update_label(handle);
@@ -1546,7 +1546,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 					uint8_t * data = params[3]->data;
 					uint32_t calc_time = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (data[3] << 0);
 
-					ticalcs_info(_("Found valid classic clock"));
+					ticalcs_info("%s", _("Found valid classic clock"));
 
 					time(&now);	// retrieve current DST setting
 #ifdef HAVE_LOCALTIME_R
@@ -1603,7 +1603,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 				{
 					uint8_t * data = params[11]->data;
 
-					ticalcs_info(_("Found valid new clock"));
+					ticalcs_info("%s", _("Found valid new clock"));
 
 					_clock->year = (((uint16_t)data[0]) << 8) | (data[1] << 0);
 					_clock->month = params[10]->data[0];
@@ -1713,7 +1713,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		DUSB_PID_PHYS_RAM, DUSB_PID_USER_RAM, DUSB_PID_FREE_RAM,
 		DUSB_PID_PHYS_FLASH, DUSB_PID_USER_FLASH, DUSB_PID_FREE_FLASH,
 		DUSB_PID_LCD_WIDTH, DUSB_PID_LCD_HEIGHT, DUSB_PID_BITS_PER_PIXEL, DUSB_PID_COLOR_AVAILABLE,
-		DUSB_PID_BATTERY, DUSB_PID_EXACT_MATH, DUSB_PID_CLASSIC_CLK_SUPPORT
+		DUSB_PID_BATTERY_ENOUGH, DUSB_PID_MATH_CAPABILITIES, DUSB_PID_PYTHON_ON_BOARD, DUSB_PID_CLASSIC_CLK_SUPPORT
 	};
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	DUSBCalcParam **params;
@@ -1762,7 +1762,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 			if (params[i]->ok)
 			{
-				ticalcs_strlcpy(infos->product_name, (char *)params[i]->data, sizeof(infos->product_name));
+				const uint32_t maxsize = params[i]->size < sizeof(infos->product_name) ? params[i]->size + 1 : sizeof(infos->product_name);
+				ticalcs_strlcpy(infos->product_name, (char *)params[i]->data, maxsize);
 				infos_mask |= INFOS_PRODUCT_NAME;
 			}
 			i++;
@@ -1771,7 +1772,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			{
 				if ((infos_mask & INFOS_PRODUCT_ID) && product_id != params[i]->data[0])
 				{
-					ticalcs_warning(_("That's odd, product ID and calc ID do not match ?"));
+					ticalcs_warning("%s", _("That's odd, product ID and calc ID do not match ?"));
 					// Nevertheless, we'll trust the product ID information (which tends to be hard-coded)
 					// instead of the calc ID information (which is normally extracted from the cert memory).
 				}
@@ -1964,14 +1965,21 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			if (params[i]->ok && params[i]->size == 1)
 			{
 				infos->battery = params[i]->data[0];
-				infos_mask |= INFOS_BATTERY;
+				infos_mask |= INFOS_BATTERY_ENOUGH;
 			}
 			i++;
 
 			if (params[i]->ok && params[i]->size == 1)
 			{
 				infos->exact_math = params[i]->data[0];
-				infos_mask |= INFOS_EXACT_MATH;
+				infos_mask |= INFOS_MATH_CAPABILITIES;
+			}
+			i++;
+
+			if (params[i]->ok && params[i]->size == 1)
+			{
+				infos->python_on_board = params[i]->data[0];
+				infos_mask |= INFOS_PYTHON_ON_BOARD;
 			}
 			i++;
 

@@ -220,6 +220,11 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				ve->folder[0] = 0;
 
 				folder = dirlist_create_append_node(ve, vars);
+				if (!folder)
+				{
+					ret = ERR_MALLOC;
+					break;
+				}
 			}
 			else
 			{
@@ -244,12 +249,15 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				ve->attr,
 				ve->size);
 	*/
-			u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name, -1);
-			u2 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-			ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Parsing %s/%s"), u1, u2);
-			ticonv_utf8_free(u2);
-			ticonv_utf8_free(u1);
-			ticalcs_update_label(handle);
+			if (NULL != folder)
+			{
+				u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name, -1);
+				u2 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+				ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Parsing %s/%s"), u1, u2);
+				ticonv_utf8_free(u2);
+				ticonv_utf8_free(u1);
+				ticalcs_update_label(handle);
+			}
 		}
 	}
 
@@ -782,7 +790,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 		if (!ret)
 		{
 			// Send dumping program
-			ret = rd_send(handle, "romdump.89z", romDumpSize89t, romDump89t);
+			ret = rd_send_dumper(handle, "romdump.89z", romDumpSize89t, romDump89t);
 			PAUSE(1000);
 		}
 	}
@@ -801,7 +809,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 		if (!ret)
 		{
 			// Get dump
-			ret = rd_dump(handle, filename);
+			ret = rd_read_dump(handle, filename);
 		}
 	}
 
@@ -908,7 +916,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 						uint8_t * data = params[2]->data;
 						uint32_t calc_time = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (data[3] <<  0);
 
-						ticalcs_info(_("Found valid classic clock"));
+						ticalcs_info("%s", _("Found valid classic clock"));
 
 						time(&now);	// retrieve current DST setting
 #ifdef HAVE_LOCALTIME_R
@@ -1149,7 +1157,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		DUSB_PID_LCD_WIDTH, DUSB_PID_LCD_HEIGHT,
 	};
 	static const uint16_t pids2[] = {
-		DUSB_PID_BITS_PER_PIXEL, DUSB_PID_BATTERY, DUSB_PID_OS_MODE, DUSB_PID_CLASSIC_CLK_SUPPORT
+		DUSB_PID_BITS_PER_PIXEL, DUSB_PID_BATTERY_ENOUGH, DUSB_PID_OS_MODE, DUSB_PID_CLASSIC_CLK_SUPPORT
 	};	// Titanium can't manage more than 16 parameters at a time
 	const int size1 = sizeof(pids1) / sizeof(uint16_t);
 	const int size2 = sizeof(pids2) / sizeof(uint16_t);
@@ -1189,7 +1197,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 		if (params1[i]->ok)
 		{
-			ticalcs_strlcpy(infos->product_name, (char *)params1[i]->data, sizeof(infos->product_name));
+			const uint32_t maxsize = params1[i]->size < sizeof(infos->product_name) ? params1[i]->size + 1 : sizeof(infos->product_name);
+			ticalcs_strlcpy(infos->product_name, (char *)params1[i]->data, maxsize);
 			infos_mask |= INFOS_PRODUCT_NAME;
 		}
 		i++;
@@ -1354,7 +1363,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		if (params2[i]->ok && params2[i]->size == 1)
 		{
 			infos->battery = params2[i]->data[0];
-			infos_mask |= INFOS_BATTERY;
+			infos_mask |= INFOS_BATTERY_ENOUGH;
 		}
 		i++;
 

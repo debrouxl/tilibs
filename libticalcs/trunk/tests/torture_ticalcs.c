@@ -9,6 +9,7 @@
 #include <dusb_cmd.h>
 #include <cmdz80.h>
 #include <cmd68k.h>
+#include <romdump.h>
 #include "../src/error.h"
 
 #define PRINTF(FUNCTION, TYPE, args...) \
@@ -744,6 +745,20 @@ static void torture_cmd68k(void)
     PRINTF(ti92_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
 }
 
+static void torture_romdump(void)
+{
+// romdump.c
+    PRINTF(rd_send_dumper, INT, NULL, (void *)0x12345678, 0, (void *)0x12345678);
+    PRINTF(rd_send_dumper, INT, (void *)0x12345678, NULL, 0, (void *)0x12345678);
+    PRINTF(rd_send_dumper, INT, (void *)0x12345678, (void *)0x12345678, 0, NULL);
+    PRINTF(rd_send_dumper, INT, (void *)0x12345678, (void *)0x12345678, 0, (void *)0x12345678);
+    PRINTF(rd_send_dumper2, INT, NULL, (void *)0x12345678);
+    PRINTF(rd_send_dumper2, INT, (void *)0x12345678, NULL);
+    PRINTF(rd_is_ready, INT, NULL);
+    PRINTF(rd_read_dump, INT, NULL, (void *)0x12345678);
+    PRINTF(rd_read_dump, INT, (void *)0x12345678, NULL);
+}
+
 static const uint8_t dbus_bad_req_ver_80[] = { 0x00, 0x2D };
 static const uint8_t dbus_good_req_scr_80[] = { 0x00, 0x6D };
 static const uint8_t dbus_good_rep_ack_80[] = { 0x80, 0x56 };
@@ -866,6 +881,8 @@ static void dissect_functions_unit_test_2(void)
 
     assert(ERR_INVALID_PACKET == dusb_dissect(CALC_NONE, stderr, (void *)0x12345678, 4, 0, (void *)0x12345678));
     assert(ERR_INVALID_PACKET == dusb_dissect(CALC_NONE, stderr, (void *)0x12345678, 1024, 0, (void *)0x12345678));
+    assert(dusb_bad_raw_type_1[4] < 1);
+    assert(dusb_bad_raw_type_2[4] > 5);
     assert(ERR_INVALID_PACKET == dusb_dissect(CALC_NONE, stderr, dusb_bad_raw_type_1, 5, 0, (void *)0x12345678));
     assert(ERR_INVALID_PACKET == dusb_dissect(CALC_NONE, stderr, dusb_bad_raw_type_2, 5, 0, (void *)0x12345678));
     assert(ERR_INVALID_PACKET == dusb_dissect(CALC_NONE, stderr, dusb_good_buf_size_req, 6, 0, (void *)0x12345678));
@@ -924,6 +941,7 @@ int main(int argc, char **argv)
     torture_dbus();
     torture_cmdz80();
     torture_cmd68k();
+    torture_romdump();
 
     dissect_functions_unit_test_1();
     dissect_functions_unit_test_2();

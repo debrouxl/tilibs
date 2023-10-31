@@ -57,14 +57,17 @@ TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint3
 
 	if (ticalcs_validate_handle(handle))
 	{
-		//GList * vtl_pkt_list;
+		vtl = (NSPVirtualPacket *)g_malloc0(sizeof(NSPVirtualPacket));
 
-		vtl = (NSPVirtualPacket *)g_malloc0(sizeof(NSPVirtualPacket)); // aborts the program if it fails.
+		if (NULL != vtl)
+		{
+			//GList * vtl_pkt_list;
 
-		nsp_vtl_pkt_fill(vtl, size, src_addr, src_port, dst_addr, dst_port, cmd, data); // aborts the program if it fails.
+			nsp_vtl_pkt_fill(vtl, size, src_addr, src_port, dst_addr, dst_port, cmd, data);
 
-		//vtl_pkt_list = g_list_append((GList *)(handle->priv.nsp_vtl_pkt_list), vtl);
-		//handle->priv.nsp_vtl_pkt_list = (void *)vtl_pkt_list;
+			//vtl_pkt_list = g_list_append((GList *)(handle->priv.nsp_vtl_pkt_list), vtl);
+			//handle->priv.nsp_vtl_pkt_list = (void *)vtl_pkt_list;
+		}
 	}
 	else
 	{
@@ -127,13 +130,20 @@ TIEXPORT3 NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(NSPVirtualPacket* v
 		if (size + 1 > size)
 		{
 			uint8_t * data = (uint8_t *)g_realloc(vtl->data, size + 1);
-			if (size > vtl->size)
+			if (NULL != data)
 			{
-				// The previous time, vtl->size + 1 bytes were allocated and initialized.
-				// This time, we've allocated size + 1 bytes, so we need to initialize size - vtl->size extra bytes.
-				memset(data + vtl->size + 1, 0x00, size - vtl->size);
+				if (size > vtl->size)
+				{
+					// The previous time, vtl->size + 1 bytes were allocated and initialized.
+					// This time, we've allocated size + 1 bytes, so we need to initialize size - vtl->size extra bytes.
+					memset(data + vtl->size + 1, 0x00, size - vtl->size);
+				}
+				vtl->data = data;
 			}
-			vtl->data = data;
+			else
+			{
+				return NULL;
+			}
 		}
 		else
 		{
@@ -171,6 +181,8 @@ TIEXPORT3 int TICALL nsp_session_close(CalcHandle *handle)
 
 	ticalcs_info("  closed session from port #%04x to port #%04x:", handle->priv.nsp_src_port, handle->priv.nsp_dst_port);
 
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	ret = nsp_send_disconnect(handle);
 	if (!ret)
 	{
@@ -180,6 +192,8 @@ TIEXPORT3 int TICALL nsp_session_close(CalcHandle *handle)
 			handle->priv.nsp_dst_port = NSP_PORT_ADDR_REQUEST;
 		}
 	}
+
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	return ret;
 }
@@ -192,6 +206,8 @@ TIEXPORT3 int TICALL nsp_addr_request(CalcHandle *handle)
 	int ret;
 
 	VALIDATE_HANDLE(handle);
+
+	// Single call to nsp_recv(), no need to take handle->busy.
 
 	memset(&pkt, 0, sizeof(pkt));
 
@@ -223,6 +239,8 @@ TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *handle, uint16_t addr)
 
 	VALIDATE_HANDLE(handle);
 
+	// Tail call to nsp_send(), no need to take handle->busy.
+
 	ticalcs_info("  assigning address %04x:", addr);
 
 	memset(&pkt, 0, sizeof(pkt));
@@ -247,6 +265,8 @@ TIEXPORT3 int TICALL nsp_send_ack(CalcHandle* handle)
 
 	VALIDATE_HANDLE(handle);
 
+	// Tail call to nsp_send(), no need to take handle->busy.
+
 	ticalcs_info("  sending ack:");
 
 	memset(&pkt, 0, sizeof(pkt));
@@ -265,6 +285,8 @@ TIEXPORT3 int TICALL nsp_send_nack(CalcHandle* handle)
 {
 	VALIDATE_HANDLE(handle);
 
+	// Tail call to a function which takes handle->busy through nsp_send().
+
 	return nsp_send_nack_ex(handle, handle->priv.nsp_dst_port);
 }
 
@@ -273,6 +295,8 @@ TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle* handle, uint16_t port)
 	NSPRawPacket pkt;
 
 	VALIDATE_HANDLE(handle);
+
+	// Tail call to nsp_send(), no need to take handle->busy.
 
 	ticalcs_info("  sending nAck:");
 
@@ -295,6 +319,8 @@ TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *handle)
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
+
+	// Single call to nsp_recv(), no need to take handle->busy.
 
 	ticalcs_info("  receiving ack:");
 
@@ -347,6 +373,8 @@ TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *handle)
 
 	VALIDATE_HANDLE(handle);
 
+	// Tail call to nsp_send(), no need to take handle->busy.
+
 	ticalcs_info("  disconnecting from service #%04x:", handle->priv.nsp_dst_port);
 
 	memset(&pkt, 0, sizeof(pkt));
@@ -372,6 +400,8 @@ TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *handle)
 	ticalcs_info("  receiving disconnect:");
 
 	memset(&pkt, 0, sizeof(pkt));
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ret = nsp_recv(handle, &pkt);
 	if (!ret)
@@ -405,6 +435,8 @@ TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *handle)
 		}
 	}
 
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	return ret;
 }
 
@@ -424,6 +456,8 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 	{
 		return ERR_INVALID_PARAMETER;
 	}
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_NSP_VPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_nsp_vpkt(&event, vtl->src_addr, vtl->src_port, vtl->dst_addr, vtl->dst_port, vtl->cmd, vtl->size, vtl->data);
@@ -495,6 +529,8 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 	ticalcs_event_fill_nsp_vpkt(&event, vtl->src_addr, vtl->src_port, vtl->dst_addr, vtl->dst_port, vtl->cmd, vtl->size, vtl->data);
 	ret = ticalcs_event_send(handle, &event);
 
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
+
 	return ret;
 }
 
@@ -509,6 +545,8 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(vtl);
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_NSP_VPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_nsp_vpkt(&event, /* src_addr */ 0, /* src_port */ 0, /* dst_addr */ 0, /* dst_port */ 0, /* cmd */ 0, /* size */ 0, /* data */ NULL);
@@ -582,6 +620,8 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_RECV_NSP_VPKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_nsp_vpkt(&event, vtl->src_addr, vtl->src_port, vtl->dst_addr, vtl->dst_port, vtl->cmd, vtl->size, vtl->data);
 	ret = ticalcs_event_send(handle, &event);
+
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	return ret;
 }

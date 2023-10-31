@@ -1163,19 +1163,19 @@ static int		dump_rom_1	(CalcHandle* handle)
 	// Send dumping program
 	if (handle->model == CALC_TI82)
 	{
-		return rd_send(handle, "romdump.82p", romDumpSize82, romDump82);
+		return rd_send_dumper(handle, "romdump.82p", romDumpSize82, romDump82);
 	}
 	else if (handle->model == CALC_TI83)
 	{
-		return rd_send(handle, "romdump.83p", romDumpSize83, romDump83);
+		return rd_send_dumper(handle, "romdump.83p", romDumpSize83, romDump83);
 	}
 	else if (handle->model == CALC_TI85)
 	{
-		return rd_send(handle, "romdump.85s", romDumpSize85, romDump85);
+		return rd_send_dumper(handle, "romdump.85s", romDumpSize85, romDump85);
 	}
 	else
 	{
-		return rd_send(handle, "romdump.86p", romDumpSize86, romDump86);
+		return rd_send_dumper(handle, "romdump.86p", romDumpSize86, romDump86);
 	}
 }
 
@@ -1231,7 +1231,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	if (!ret)
 	{
 		// Get dump
-		ret = rd_dump(handle, filename);
+		ret = rd_read_dump(handle, filename);
 
 		// TI-86: normally there would be another ACK after the program exits, but the ROM dumper disables that behaviour.
 	}

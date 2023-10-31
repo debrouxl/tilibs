@@ -169,10 +169,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	int ret;
-	uint8_t *buffer = (uint8_t *)handle->buffer2;
-	uint8_t *data = NULL;
-
-	data = (uint8_t *)ticalcs_alloc_screen(65537U);
+	uint8_t *data = (uint8_t *)ticalcs_alloc_screen(65542U);
 	if (data == NULL)
 	{
 		return ERR_MALLOC;
@@ -214,7 +211,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 						while (1)
 						{
-							ret = RECV_XDP(handle, &pktsize, buffer);
+							ret = RECV_XDP(handle, &pktsize, (uint8_t *)handle->buffer2);
 							if (ret == ERR_EOT)
 							{
 								ret = SEND_ACK(handle);
@@ -225,7 +222,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 							if (*bitmap != NULL)
 							{
 								data = *bitmap;
-								memcpy(data + size, buffer, pktsize);
+								memcpy(data + size, handle->buffer2, pktsize);
 								size += pktsize;
 
 								ret = SEND_ACK(handle);
@@ -259,7 +256,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 	if (ret)
 	{
-		ticalcs_free_screen(*bitmap);
+		ticalcs_free_screen(data);
 		*bitmap = NULL;
 	}
 
@@ -805,7 +802,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos);
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
-	int ret;
+	int ret = 0;
 	FlashContent *ptr;
 	unsigned int i, j;
 	uint16_t size;
@@ -851,7 +848,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 		if (!infos.battery)
 		{
-			ticalcs_info(_("Battery low, stopping flash app transfer"));
+			ticalcs_info("%s", _("Battery low, stopping flash app transfer"));
 			return -1;
 		}
 	}
@@ -1146,7 +1143,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 	// Send dumping program
 	if (handle->model == CALC_TI73)
 	{
-		return rd_send(handle, "romdump.73p", romDumpSize73, romDump73);
+		return rd_send_dumper(handle, "romdump.73p", romDumpSize73, romDump73);
 	}
 	else
 	{
@@ -1157,11 +1154,11 @@ static int		dump_rom_1	(CalcHandle* handle)
 		{
 			if (infos.hw_version < 5)
 			{
-				ret = rd_send(handle, "romdump.8Xp", romDumpSize8Xp, romDump8Xp);
+				ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize8Xp, romDump8Xp);
 			}
 			else
 			{
-				ret = rd_send(handle, "romdump.8Xp", romDumpSize84pc, romDump84pc);
+				ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize84pc, romDump84pc);
 			}
 		}
 
@@ -1221,7 +1218,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 				// Get dump
 				// (Normally there would be another ACK after the program exits,
 				// but the ROM dumper disables that behavior)
-				ret = rd_dump(handle, filename);
+				ret = rd_read_dump(handle, filename);
 			}
 		}
 	}
@@ -1430,7 +1427,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
 	int ret;
 	uint16_t length;
-	uint8_t buf[32];
+	uint8_t * buffer = (uint8_t *)handle->buffer2;
 
 	ret = SEND_VER(handle);
 	if (!ret)
@@ -1444,7 +1441,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				ret = RECV_ACK(handle, NULL);
 				if (!ret)
 				{
-					ret = RECV_XDP(handle, &length, buf);
+					ret = RECV_XDP(handle, &length, buffer);
 					if (!ret)
 					{
 						ret = SEND_ACK(handle);
@@ -1459,17 +1456,17 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		memset(infos, 0, sizeof(CalcInfos));
 		if (handle->model == CALC_TI73)
 		{
-			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1x.%02x", buf[0], buf[1]);
-			ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1x.%02x", buf[2], buf[3]);
+			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1x.%02x", buffer[0], buffer[1]);
+			ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1x.%02x", buffer[2], buffer[3]);
 		}
 		else
 		{
-			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1i.%02i", buf[0], buf[1]);
-			ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%02i", buf[2], buf[3]);
+			ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1i.%02i", buffer[0], buffer[1]);
+			ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%02i", buffer[2], buffer[3]);
 		}
-		infos->battery = (buf[4] & 1) ? 0 : 1;
-		infos->hw_version = buf[5];
-		switch(buf[5])
+		infos->battery = (buffer[4] & 1) ? 0 : 1;
+		infos->hw_version = buffer[5];
+		switch(buffer[5])
 		{
 		case 0: infos->model = CALC_TI83P; break;
 		case 1: infos->model = CALC_TI83P; break;
@@ -1478,11 +1475,11 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		case 5: infos->model = CALC_TI84PC; break;
 		default: infos->model = CALC_TI84PC; break; // If new models ever arise, they'll probably be 84+CSE or newer anyway.
 		}
-		infos->language_id = buf[6];
-		infos->sub_lang_id = buf[7];
-		infos->mask = (InfosMask)(INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID);
+		infos->language_id = buffer[6];
+		infos->sub_lang_id = buffer[7];
+		infos->mask = (InfosMask)(INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY_ENOUGH | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID);
 
-		tifiles_hexdump(buf, length);
+		tifiles_hexdump(buffer, length);
 		ticalcs_info(_("  OS: %s"), infos->os_version);
 		ticalcs_info(_("  BIOS: %s"), infos->boot_version);
 		ticalcs_info(_("  HW: %i"), infos->hw_version);
@@ -1558,7 +1555,7 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 		if (!ret)
 		{
 			ret = SEND_EOT(handle);
-			ticalcs_info(_("Header sent completely."));
+			ticalcs_info("%s", _("Header sent completely."));
 		}
 	}
 
@@ -1587,6 +1584,7 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 		ret = RECV_ACK(handle, NULL);
 		if (!ret)
 		{
+			// No need to take busy around this libticables call, it's already been taken by ticalcs_calc_recv_cert() before this is reached.
 			ret = ticables_cable_recv(handle->cable, buf, 4);	//VAR w/ no header
 			if (!ret)
 			{

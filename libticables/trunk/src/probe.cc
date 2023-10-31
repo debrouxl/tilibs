@@ -111,7 +111,7 @@ TIEXPORT1 int TICALL ticables_probing_do(int ***result, unsigned int timeout, Pr
 	}
 	*result = NULL;
 
-	ticables_info(_("Link cable probing:"));
+	ticables_info("%s", _("Link cable probing:"));
 
 	array = (int **)calloc(CABLE_MAX + 1, sizeof(int *));
 	if (array == NULL)
@@ -162,7 +162,7 @@ TIEXPORT1 int TICALL ticables_probing_do(int ***result, unsigned int timeout, Pr
 	if ((method & PROBE_FIRST) && found)
 	{
 		*result = array;
-		return found ? 0 : ERR_NO_CABLE;
+		return 0;
 	}
 
 	// look for DBUS devices (slower)
@@ -371,6 +371,10 @@ void translate_usb_device_info(CableDeviceInfo *info, const USBCableInfo *usbinf
 		else if (usbinfo->version == 0x0220)
 		{
 			info->variant = CABLE_VARIANT_TI84PCE;
+		}
+		else if (usbinfo->version == 0x0260)
+		{
+			info->variant = CABLE_VARIANT_TI83PCE;
 		}
 		else
 		{

@@ -18,14 +18,18 @@ libticonv_la_SOURCES = \
 	ticonv.cc charset.cc tokens.cc filename.cc type2str.cc iconv.c
 
 if OS_WIN32
+if USE_ICONV
   libticonv_la_LIBADD += -liconv
+endif
   libticonv_la_DEPENDENCIES = ../build/mingw/ticonv-rc.o
   libticonv_la_LDFLAGS += -Wl,../build/mingw/ticonv-rc.o -Wl,--output-def,libticonv.def
   EXTRA_DIST = libticonv.def
 endif
 
+if USE_ICONV
 if OS_MAC
   libticonv_la_CPPFLAGS += -I/usr/local/opt/libiconv/include/
   libticonv_la_LDFLAGS += -L/usr/local/opt/libiconv/lib/
   libticonv_la_LIBADD += -liconv
+endif
 endif

@@ -905,8 +905,8 @@ TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, unsigned i
 			{		// add new folder entry
 				folder_list[num_folders] = (char *) g_malloc0(257);
 				//printf("%i: adding '%s'\n", num_folders, entry->folder);
-				strncpy(folder_list[num_folders], entry->folder, sizeof(folder_list[num_folders]) - 1);
-				folder_list[num_folders][sizeof(folder_list[num_folders]) - 1] = 0;
+				strncpy(folder_list[num_folders], entry->folder, 257 - 1);
+				folder_list[num_folders][257 - 1] = 0;
 				folder_list[num_folders + 1] = NULL;
 				num_folders++;
 			}

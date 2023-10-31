@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.12)
 
 project(libticables2-tests
         LANGUAGES   C CXX)
@@ -6,19 +6,19 @@ project(libticables2-tests
 add_executable(torture_ticables torture_ticables.c)
 add_executable(test_ticables_2 test_ticables_2.cc)
 
-pkg_check_modules(DEPS REQUIRED glib-2.0)
-
-set(internal_libdir "-L${CMAKE_BINARY_DIR}/libticables/trunk")
+pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16)
 
 foreach(tar torture_ticables test_ticables_2)
-    add_dependencies(${tar} ticables2_shared)
-
     target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
 
     target_include_directories(${tar} PRIVATE
         ${CMAKE_SOURCE_DIR}/libticables/trunk/src)
 
-    target_link_libraries(${tar} "${internal_libdir}" ticables2 "${DEPS_LDFLAGS}" ${DEPS_LIBRARIES})
+    target_link_directories(${tar} PRIVATE
+        ${DEPS_LIBRARY_DIRS}
+        ${CMAKE_BINARY_DIR}/libticables/trunk)
+
+    target_link_libraries(${tar} ${DEPS_LIBRARIES} ticables2_shared)
 endforeach()
 
 set(builddirlibpaths "${CMAKE_BINARY_DIR}/libticables/trunk")

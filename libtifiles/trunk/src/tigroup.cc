@@ -1211,7 +1211,7 @@ static int zip_write(struct archive *arc, CalcModel model, const char *origfname
 		return ERR_FILE_ZIP;
 	}
 
-	if (g_stat(tempfname, &st))
+	if (g_stat(tempfname, (GStatBuf*)&st))
 	{
 		tifiles_critical("zip_write: cannot stat temporary file");
 		archive_entry_free(entry);

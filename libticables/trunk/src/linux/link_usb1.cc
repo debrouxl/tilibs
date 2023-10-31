@@ -39,7 +39,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
-#ifdef __BSD__
+#if defined(__BSD__) || defined(__MACOSX__)
 #include <libusb.h>
 #else
 #include <libusb-1.0/libusb.h>
@@ -237,7 +237,7 @@ static int tigl_enum(void)
 	ret = tigl_find();
 	if (ret == 0)
 	{
-		ticables_warning(_(" no devices found!\n"));
+		ticables_warning("%s", _("no devices found!\n"));
 		return ERR_LIBUSB_OPEN;
 	}
 
@@ -528,7 +528,7 @@ static int slv_put(CableHandle* h, uint8_t *data, uint32_t len)
 	return send_block(h, data, len);
 }
 
-static void bulk_transfer_cb(struct libusb_transfer *transfer2)
+static void LIBUSB_CALL bulk_transfer_cb(struct libusb_transfer *transfer2)
 {
 	// This comes from libusb.
 	int *completed2 = (int *)(transfer2->user_data);

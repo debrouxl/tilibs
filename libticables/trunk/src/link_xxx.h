@@ -32,7 +32,7 @@ extern const CableFncts cable_par;
 extern const CableFncts cable_vti;
 extern const CableFncts cable_tie;
 extern const CableFncts cable_raw;
-extern const CableFncts cable_ilp;
+extern CableFncts cable_ilp;
 extern const CableFncts cable_tcpc;
 extern const CableFncts cable_tcps;
 

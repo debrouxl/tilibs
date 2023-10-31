@@ -167,6 +167,14 @@ case $host_os in
 	;;
 esac
 
+#implementation of the iconv emulation interface
+AC_ARG_WITH([iconv],
+  AC_HELP_STRING([--without-iconv], [disable support for iconv but keep the API]),
+  [conv_cv_with_iconv=no], [conv_cv_with_iconv=yes])
+AC_CACHE_CHECK([whether to make the iconv interface use a dummy implementation],
+  [conv_cv_with_iconv], [conv_cv_with_iconv=yes])
+AM_CONDITIONAL(USE_ICONV, test x$conv_cv_with_iconv = xyes)
+
 # Output.
 AC_OUTPUT
 

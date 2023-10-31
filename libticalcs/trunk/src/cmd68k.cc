@@ -179,12 +179,32 @@ TIEXPORT3 int TICALL ti68k_send_CNT(CalcHandle* handle, uint8_t target)
 
 TIEXPORT3 int TICALL ti68k_send_KEY(CalcHandle* handle, uint16_t scancode, uint8_t target)
 {
+	int ret;
 	uint8_t buf[4] = { target, DBUS_CMD_KEY, LSB(scancode), MSB(scancode) };
+	CalcEventData event;
 
 	VALIDATE_HANDLE(handle);
 
 	ticalcs_info(" PC->TI: KEY");
-	return ticables_cable_send(handle->cable, buf, 4);
+
+	SET_HANDLE_BUSY_IF_NECESSARY(handle);
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_DBUS_PKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ scancode, /* id */ target, /* cmd */ DBUS_CMD_KEY, /* data */ NULL);
+	ret = ticalcs_event_send(handle, &event);
+
+	if (!ret)
+	{
+		ret = ticables_cable_send(handle->cable, buf, 4);
+	}
+
+	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_SEND_DBUS_PKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ scancode, /* id */ target, /* cmd */ DBUS_CMD_KEY, /* data */ NULL);
+	ret = ticalcs_event_send(handle, &event);
+
+	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
+
+	return ret;
 }
 
 TIEXPORT3 int TICALL ti68k_send_EOT(CalcHandle* handle, uint8_t target)
@@ -360,9 +380,9 @@ TIEXPORT3 int TICALL ti89_send_DEL(CalcHandle* handle, uint32_t varsize, uint8_t
 
 TIEXPORT3 int TICALL ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
-	uint8_t host, cmd;
+	uint8_t host = 0, cmd = 0;
 	uint8_t *buffer;
-	uint16_t length;
+	uint16_t length = 0;
 	uint8_t strl;
 	uint8_t flag;
 	char * varname_nofldname;
@@ -420,9 +440,9 @@ TIEXPORT3 int TICALL ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8
 
 TIEXPORT3 int TICALL ti92_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
-	uint8_t host, cmd;
+	uint8_t host = 0, cmd = 0;
 	uint8_t *buffer;
-	uint16_t length;
+	uint16_t length = 0;
 	uint8_t strl;
 	int ret;
 
@@ -470,8 +490,8 @@ TIEXPORT3 int TICALL ti92_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8
 
 static int ti68k_recv_CTS(CalcHandle* handle, uint8_t is_92)
 {
-	uint8_t host, cmd;
-	uint16_t length;
+	uint8_t host = 0, cmd = 0;
+	uint16_t length = 0;
 	uint8_t *buffer;
 	int ret;
 
@@ -514,8 +534,8 @@ TIEXPORT3 int TICALL ti92_recv_CTS(CalcHandle* handle)
 
 TIEXPORT3 int TICALL ti68k_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 {
-	uint8_t host, cmd;
-	uint16_t length;
+	uint8_t host = 0, cmd = 0;
+	uint16_t length = 0;
 	uint8_t *buffer;
 	int retval;
 
@@ -554,9 +574,9 @@ TIEXPORT3 int TICALL ti68k_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 
 TIEXPORT3 int TICALL ti68k_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data)
 {
-	uint8_t host, cmd;
+	uint8_t host = 0, cmd = 0;
+	uint16_t len = 0;
 	int err;
-	uint16_t len;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(length);
@@ -584,8 +604,8 @@ TIEXPORT3 int TICALL ti68k_recv_XDP(CalcHandle* handle, uint16_t * length, uint8
 */
 static int ti68k_recv_ACK(CalcHandle* handle, uint16_t * status, uint8_t is_92)
 {
-	uint8_t host, cmd;
-	uint16_t length;
+	uint8_t host = 0, cmd = 0;
+	uint16_t length = 0;
 	uint8_t *buffer;
 	int ret;
 
@@ -634,8 +654,8 @@ TIEXPORT3 int TICALL ti92_recv_ACK(CalcHandle* handle, uint16_t * status)
 
 TIEXPORT3 int TICALL ti68k_recv_CNT(CalcHandle* handle)
 {
-	uint8_t host, cmd;
-	uint16_t sts;
+	uint8_t host = 0, cmd = 0;
+	uint16_t sts = 0;
 	int ret;
 
 	VALIDATE_HANDLE(handle);
@@ -663,8 +683,8 @@ TIEXPORT3 int TICALL ti68k_recv_CNT(CalcHandle* handle)
 
 TIEXPORT3 int TICALL ti68k_recv_EOT(CalcHandle* handle)
 {
-	uint8_t host, cmd;
-	uint16_t length;
+	uint8_t host = 0, cmd = 0;
+	uint16_t length = 0;
 	int ret;
 
 	VALIDATE_HANDLE(handle);
@@ -687,9 +707,9 @@ TIEXPORT3 int TICALL ti68k_recv_EOT(CalcHandle* handle)
 
 static int ti68k_recv_RTS(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname, uint8_t is_92)
 {
-	uint8_t host, cmd;
+	uint8_t host = 0, cmd = 0;
 	uint8_t *buffer;
-	uint16_t length;
+	uint16_t length = 0;
 	uint8_t strl;
 	int ret;
 

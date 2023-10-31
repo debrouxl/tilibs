@@ -87,7 +87,9 @@ if [test "x$cab_cv_use_libusb" != xno]; then
   if [test "x$cab_cv_use_libusb10" != xno]; then
     PKG_CHECK_MODULES([LIBUSB10], [ libusb-1.0 >= 1.0.0 ],
       [HAVE_LIBUSB10=yes
-       AC_CHECK_LIB([usb-1.0], [libusb_strerror],
+       LIBS="$LIBUSB10_LIBS"
+       CFLAGS="$LIBUSB10_CFLAGS"
+       AC_TRY_LINK([#include <libusb.h>], [  const char *s = libusb_strerror(0)],
                     [AC_DEFINE([HAVE_LIBUSB10_STRERROR], [1], [libusb 1.0.x has libusb_strerror])],
                     [AC_ERROR([Use a version of libusb which provides libusb_strerror])])
       ])
@@ -111,9 +113,12 @@ fi
 if test "x$HAVE_LIBUSB10" = xyes; then
   AC_DEFINE([HAVE_LIBUSB_1_0], [1],
             [Define to 1 to enable EXPERIMENTAL libusb 1.0.x support.])
+  TICABLES_LIBUSB_REQUIRES_PRIVATE="libusb-1.0"
 elif test "x$HAVE_LIBUSB" = xyes; then
   AC_DEFINE([HAVE_LIBUSB], [1], [Define to 1 to enable libusb 0.1.x support.])
+  TICABLES_LIBUSB_REQUIRES_PRIVATE="libusb"
 fi
+AC_SUBST(TICABLES_LIBUSB_REQUIRES_PRIVATE)
 
 AC_SUBST(LIBUSB_CFLAGS)
 AC_SUBST(LIBUSB_LIBS)
@@ -143,6 +148,7 @@ dnl AC_CANONICAL_HOST
 case "$host" in
   i[[3456]]86-*-*bsd*)   ARCH="-D__BSD__ -D__I386__" ;;
   *-*-*bsd*)             ARCH="-D__BSD__" ;;
+  aarch64-apple-darwin*) ARCH="-D__MACOSX__" ;;
   aarch64-*-linux-*)     ARCH="-D__LINUX__" ;;
   alpha*-*-linux-*)      ARCH="-D__ALPHA__ -D__LINUX__" ;;
   alpha*-*-*-*)          ARCH="-D__ALPHA__ -D__LINUX__" ;;
@@ -158,6 +164,7 @@ case "$host" in
   x86_64-*-linux-*)      ARCH="-D__LINUX__" ;;
   x86_64-apple-darwin*)  ARCH="-D__MACOSX__" ;;
   ia64-*-linux-*)        ARCH="-D__LINUX__" ;;
+  loongarch64-*-linux-*) ARCH="-D__LOONGARCH__ -D__LINUX__" ;;
   m68k-*-linux-*)        ARCH="-D__M68K__ -D__LINUX__" ;;
   mips*-*-linux-*)       ARCH="-D__MIPS__ -D__LINUX__" ;;
   powerpc-*-linux-*)     ARCH="-D__PPC__  -D__LINUX__" ;;
@@ -165,11 +172,16 @@ case "$host" in
   powerpc64le-*-linux-*) ARCH="-D__PPC__  -D__LINUX__" ;;
   powerpc-apple-darwin*) ARCH="-D__PPC__  -D__MACOSX__" ;;
   powerpc64-apple-darwin*) ARCH="-D__PPC__  -D__MACOSX__" ;;
+  riscv64-*-linux-*)     ARCH="-D__RISCV__ -D__LINUX__" ;;
   s390*-*-linux-*)       ARCH="-D__LINUX__" ;;
   sh*-*-linux-*)         ARCH="-D__LINUX__" ;;
   sparc*-*-linux-*)      ARCH="-D__SPARC__ -D__LINUX__" ;;
   sparc*-sun-solaris*)   ARCH="-D__SPARC__ -D__SOL__" ;;
+  *)                     ARCH="ERROR" ;;
 esac
+if test "x$ARCH" = xERROR; then
+   AC_ERROR([Unhandled target triple, please open a bug report mentioning "$host"])
+fi
 CFLAGS="$CFLAGS $ARCH"
 CXXFLAGS="$CXXFLAGS $ARCH"
 

@@ -336,6 +336,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		return ret;
 	}
 
+	// First step: list of folders, and FlashApps on some OS versions.
 	for (j = 4; j < (int)block_size;)
 	{
 		VarEntry *fe = tifiles_ve_create();
@@ -361,13 +362,14 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			node = dirlist_create_append_node(fe, vars);
 			if (!node)
 			{
+				tifiles_ve_delete(fe);
 				break;
 			}
 		}
-		else if (fe->type == TI89_APPL)
+		else /*if (fe->type == TI89_APPL)*/
 		{
-			// AMS<2.08 returns FLASH apps
-			continue;
+			// AMS < 2.08 returns FlashApps; also, get rid of all other types.
+			tifiles_ve_delete(fe);
 		}
 	}
 
@@ -858,6 +860,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	content->model = handle->model;
 	ve = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
+	ve->data = NULL;
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 	ticonv_varname_to_utf8_sn(handle->model, varname, handle->updat->text, sizeof(handle->updat->text), vr->type);
@@ -911,6 +914,11 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 				}
 			}
 		}
+	}
+
+	if (ret)
+	{
+		tifiles_ve_delete(ve);
 	}
 
 	return ret;
@@ -1226,7 +1234,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			if (!ret)
 			{
 				ret = RECV_ACK(handle, NULL);
-				ticalcs_info(_("Header sent completely."));
+				ticalcs_info("%s", _("Header sent completely."));
 			}
 		}
 	}
@@ -1383,11 +1391,11 @@ static int		dump_rom_1	(CalcHandle* handle)
 		// Send dumping program
 		if (handle->model != CALC_TI92)
 		{
-			ret = rd_send(handle, "romdump.89z", romDumpSize89, romDump89);
+			ret = rd_send_dumper(handle, "romdump.89z", romDumpSize89, romDump89);
 		}
 		else
 		{
-			ret = rd_send(handle, "romdump.92p", romDumpSize92, romDump92);
+			ret = rd_send_dumper(handle, "romdump.92p", romDumpSize92, romDump92);
 		}
 		PAUSE(1000);
 	}
@@ -1415,7 +1423,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	// Get dump
 	if (!ret)
 	{
-		ret = rd_dump(handle, filename);
+		ret = rd_read_dump(handle, filename);
 	}
 
 	return ret;
@@ -1663,7 +1671,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
 	int ret;
 	uint16_t length;
-	uint8_t buf[32];
+	uint8_t * buffer = (uint8_t *)handle->buffer2;
 
 	ret = SEND_VER(handle);
 	if (!ret)
@@ -1677,7 +1685,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				ret = RECV_ACK(handle, NULL);
 				if (!ret)
 				{
-					ret = RECV_XDP(handle, &length, buf);
+					ret = RECV_XDP(handle, &length, buffer);
 					if (!ret)
 					{
 						ret = SEND_ACK(handle);
@@ -1689,28 +1697,28 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	if (!ret)
 	{
 		memset(infos, 0, sizeof(CalcInfos));
-		ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1d.%02d", buf[0], buf[1]);
-		ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1d.%02d", buf[2], buf[3]);
-		infos->battery = buf[4] == 1 ? 0 : 1;
-		switch(buf[13])
+		ticalcs_slprintf(infos->os_version, sizeof(infos->os_version), "%1d.%02d", buffer[0], buffer[1]);
+		ticalcs_slprintf(infos->boot_version, sizeof(infos->boot_version), "%1d.%02d", buffer[2], buffer[3]);
+		infos->battery = buffer[4] == 1 ? 0 : 1;
+		switch(buffer[13])
 		{
 		case 1:
-		case 3: infos->hw_version = buf[5] + 1; break;
-		case 8: infos->hw_version = buf[5]; break;
-		case 9: infos->hw_version = buf[5] + 1; break;
+		case 3: infos->hw_version = buffer[5] + 1; break;
+		case 8: infos->hw_version = buffer[5]; break;
+		case 9: infos->hw_version = buffer[5] + 1; break;
 		}
-		switch(buf[13])
+		switch(buffer[13])
 		{
 		case 1: infos->model = CALC_TI92P; break;
 		case 3: infos->model = CALC_TI89; break;
 		case 8: infos->model = CALC_V200; break;
 		case 9: infos->model = CALC_TI89T; break;
 		}
-		infos->language_id = buf[6];
-		infos->sub_lang_id = buf[7];
-		infos->mask = (InfosMask)(INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID);
+		infos->language_id = buffer[6];
+		infos->sub_lang_id = buffer[7];
+		infos->mask = (InfosMask)(INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY_ENOUGH | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID);
 
-		tifiles_hexdump(buf, length);
+		tifiles_hexdump(buffer, length);
 		ticalcs_info(_("  OS: %s"), infos->os_version);
 		ticalcs_info(_("  BIOS: %s"), infos->boot_version);
 		ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "low");

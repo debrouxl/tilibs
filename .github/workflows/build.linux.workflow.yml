@@ -1,0 +1,69 @@
+name: Build Linux
+
+on:
+  push:
+    branches: [ master, experimental, experimental2 ]
+  pull_request:
+    branches: [ master, experimental, experimental2 ]
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: "Build: ${{ matrix.os }} - ${{ matrix.deps_type }} deps"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-20.04]
+        try_static_deps: ['OFF','ON']
+        include:
+          - try_static_deps: 'OFF'
+            deps_type: shared
+          - try_static_deps: 'ON'
+            deps_type: static
+
+    steps:
+    - name: Checkout Git Repo
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+
+    - name: workaround for default apt mirror connectivity issues
+      run: |
+        sudo sed -i 's/azure\.//' /etc/apt/sources.list
+
+    - name: Install dependencies
+      run: |
+        set -e
+        sudo add-apt-repository universe
+        sudo apt update
+        sudo apt install -y cmake ninja-build libarchive-dev libzstd-dev zlib1g-dev libusb-1.0-0-dev libglib2.0-dev gettext nettle-dev libacl1-dev liblzma-dev liblz4-dev libudev-dev libc6-dev
+
+    - name: Build tilibs
+      run: |
+        set -e
+        mkdir prefix
+        prefixpath="$(pwd)/prefix"
+        mkdir build && cd build
+        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DTRY_STATIC_LIBS=${{ matrix.try_static_deps }} -DCMAKE_INSTALL_PREFIX=${prefixpath} ..
+        cmake --build . --target all
+
+    - name: Test tilibs
+      run: |
+        cd build
+        cmake --build . --target check
+
+    - name: Install tilibs
+      run: |
+        cd build
+        cmake --build . --target install
+
+    - name: Prepare install folder for upload
+      run: mv prefix tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps_${{ github.sha }}
+
+    - name: Upload install folder
+      uses: actions/upload-artifact@v3
+      with:
+        name: tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps_${{ github.sha }}
+        path: tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps_${{ github.sha }}/
