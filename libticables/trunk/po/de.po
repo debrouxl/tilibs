@@ -451,11 +451,14 @@ msgid ""
 "with some USB/RS232 adapters, though most do not work at all for the "
 "purposes of TI's protocol"
 msgstr ""
+"BEACHTE: Führe Programm weiter aus und versuche libticables mit "
+"manchen USB/RS232-Adaptern lauffähig zu machen, auch wenn die meisten nicht "
+"mit dem durch TI verwendeten Protokoll funktionieren"
 
 #: src/linux/detect.cc:342
 #, c-format
 msgid "Serial port has unknown type %d"
-msgstr ""
+msgstr "Serieller Port hat unbekannten Typ %d"
 
 #: src/linux/detect.cc:357
 msgid "Check for parport support:"
@@ -506,7 +509,7 @@ msgstr "ioctl auf paralleles Gerät fehlgeschlagen: kein exklusiver Zugriff."
 
 #: src/linux/ioports.cc:72
 msgid "we will do without that."
-msgstr ""
+msgstr "wir werden es ohne das tun"
 
 #: src/linux/ioports.cc:78
 msgid "ioctl failed on parallel device: can't claim parport."
