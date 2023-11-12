@@ -2284,7 +2284,8 @@ extern const CalcFncts calc_84p_usb =
 	 "2P",   /* recv_all_vars_backup */
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2316,7 +2317,8 @@ extern const CalcFncts calc_84p_usb =
 	&tixx_recv_all_vars_backup,
 	&noop_control_lab_equipment,
 	&noop_send_lab_equipment_data,
-	&noop_get_lab_equipment_data
+	&noop_get_lab_equipment_data,
+	&noop_del_folder,
 };
 
 extern const CalcFncts calc_84pcse_usb =
@@ -2361,7 +2363,8 @@ extern const CalcFncts calc_84pcse_usb =
 	 "2P",   /* recv_all_vars_backup */
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2393,7 +2396,8 @@ extern const CalcFncts calc_84pcse_usb =
 	&tixx_recv_all_vars_backup,
 	&noop_control_lab_equipment,
 	&noop_send_lab_equipment_data,
-	&noop_get_lab_equipment_data
+	&noop_get_lab_equipment_data,
+	&noop_del_folder,
 };
 
 extern const CalcFncts calc_83pce_usb =
@@ -2438,7 +2442,8 @@ extern const CalcFncts calc_83pce_usb =
 	 "2P",   /* recv_all_vars_backup */
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2470,7 +2475,8 @@ extern const CalcFncts calc_83pce_usb =
 	&tixx_recv_all_vars_backup,
 	&noop_control_lab_equipment,
 	&noop_send_lab_equipment_data,
-	&noop_get_lab_equipment_data
+	&noop_get_lab_equipment_data,
+	&noop_del_folder,
 };
 
 extern const CalcFncts calc_84pce_usb =
@@ -2515,7 +2521,8 @@ extern const CalcFncts calc_84pce_usb =
 	 "2P",   /* recv_all_vars_backup */
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2547,7 +2554,8 @@ extern const CalcFncts calc_84pce_usb =
 	&tixx_recv_all_vars_backup,
 	&noop_control_lab_equipment,
 	&noop_send_lab_equipment_data,
-	&noop_get_lab_equipment_data
+	&noop_get_lab_equipment_data,
+	&noop_del_folder,
 };
 
 extern const CalcFncts calc_82a_usb =
@@ -2592,7 +2600,8 @@ extern const CalcFncts calc_82a_usb =
 	 "2P",   /* recv_all_vars_backup */
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2624,7 +2633,8 @@ extern const CalcFncts calc_82a_usb =
 	&tixx_recv_all_vars_backup,
 	&noop_control_lab_equipment,
 	&noop_send_lab_equipment_data,
-	&noop_get_lab_equipment_data
+	&noop_get_lab_equipment_data,
+	&noop_del_folder,
 };
 
 extern const CalcFncts calc_84pt_usb =
@@ -2669,7 +2679,8 @@ extern const CalcFncts calc_84pt_usb =
 	 "2P",   /* recv_all_vars_backup */
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2701,7 +2712,8 @@ extern const CalcFncts calc_84pt_usb =
 	&tixx_recv_all_vars_backup,
 	&noop_control_lab_equipment,
 	&noop_send_lab_equipment_data,
-	&noop_get_lab_equipment_data
+	&noop_get_lab_equipment_data,
+	&noop_del_folder,
 };
 
 extern const CalcFncts calc_82aep_usb =
@@ -2746,7 +2758,8 @@ extern const CalcFncts calc_82aep_usb =
 	 "2P",   /* recv_all_vars_backup */
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
-	 "",     /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2778,5 +2791,6 @@ extern const CalcFncts calc_82aep_usb =
 	&tixx_recv_all_vars_backup,
 	&noop_control_lab_equipment,
 	&noop_send_lab_equipment_data,
-	&noop_get_lab_equipment_data
+	&noop_get_lab_equipment_data,
+	&noop_del_folder,
 };
