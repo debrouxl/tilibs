@@ -12,22 +12,22 @@ foreach(tar torture_ticalcs test_ticalcs_2)
     target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
 
     target_include_directories(${tar} PRIVATE
-        ${CMAKE_SOURCE_DIR}/libticonv/trunk/src
-        ${CMAKE_SOURCE_DIR}/libtifiles/trunk/src
-        ${CMAKE_SOURCE_DIR}/libticables/trunk/src
-        ${CMAKE_SOURCE_DIR}/libticalcs/trunk/src)
+        ${PROJECT_SOURCE_DIR}/../../../libticonv/trunk/src
+        ${PROJECT_SOURCE_DIR}/../../../libtifiles/trunk/src
+        ${PROJECT_SOURCE_DIR}/../../../libticables/trunk/src
+        ${PROJECT_SOURCE_DIR}/../src)
 
     target_link_directories(${tar} PRIVATE
         ${DEPS_LIBRARY_DIRS}
-        ${CMAKE_BINARY_DIR}/libticonv/trunk
-        ${CMAKE_BINARY_DIR}/libtifiles/trunk
-        ${CMAKE_BINARY_DIR}/libticables/trunk
-        ${CMAKE_BINARY_DIR}/libticalcs/trunk)
+        ${PROJECT_BINARY_DIR}/../../../libticonv/trunk
+        ${PROJECT_BINARY_DIR}/../../../libtifiles/trunk
+        ${PROJECT_BINARY_DIR}/../../../libticables/trunk
+        ${PROJECT_BINARY_DIR}/..)
 
     target_link_libraries(${tar} ${DEPS_LIBRARIES} ticonv_shared tifiles2_shared ticables2_shared ticalcs2_shared)
 endforeach()
 
-set(builddirlibpaths "${CMAKE_BINARY_DIR}/libticonv/trunk:${CMAKE_BINARY_DIR}/libtifiles/trunk:${CMAKE_BINARY_DIR}/libticables/trunk:${CMAKE_BINARY_DIR}/libticalcs/trunk")
+set(builddirlibpaths "${PROJECT_BINARY_DIR}/../../../libticonv/trunk:${PROJECT_BINARY_DIR}/../../../libtifiles/trunk:${PROJECT_BINARY_DIR}/../../../libticables/trunk:${PROJECT_BINARY_DIR}/..")
 
 add_custom_target(ticalcs2_check
     COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH="${builddirlibpaths}" ${CMAKE_CURRENT_BINARY_DIR}/torture_ticalcs

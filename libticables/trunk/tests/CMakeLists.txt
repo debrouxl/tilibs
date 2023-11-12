@@ -12,16 +12,16 @@ foreach(tar torture_ticables test_ticables_2)
     target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
 
     target_include_directories(${tar} PRIVATE
-        ${CMAKE_SOURCE_DIR}/libticables/trunk/src)
+        ${PROJECT_SOURCE_DIR}/../src)
 
     target_link_directories(${tar} PRIVATE
         ${DEPS_LIBRARY_DIRS}
-        ${CMAKE_BINARY_DIR}/libticables/trunk)
+        ${PROJECT_BINARY_DIR}/..)
 
     target_link_libraries(${tar} ${DEPS_LIBRARIES} ticables2_shared)
 endforeach()
 
-set(builddirlibpaths "${CMAKE_BINARY_DIR}/libticables/trunk")
+set(builddirlibpaths "${PROJECT_BINARY_DIR}")
 
 add_custom_target(ticables2_check
     COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH="${builddirlibpaths}" ${CMAKE_CURRENT_BINARY_DIR}/torture_ticables
