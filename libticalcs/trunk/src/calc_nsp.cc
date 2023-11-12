@@ -1138,6 +1138,36 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	return ret;
 }
 
+static int		del_folder  (CalcHandle* handle, VarRequest* vr)
+{
+	char *utf8;
+	char *path;
+	int ret;
+
+	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
+	if (ret)
+	{
+		return ret;
+	}
+
+	path = g_strconcat("/", vr->folder, NULL);
+	utf8 = ticonv_varname_to_utf8(handle->model, path, -1);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Deleting %s..."), utf8);
+	ticonv_utf8_free(utf8);
+	ticalcs_update_label(handle);
+
+	ret = nsp_cmd_s_del_folder(handle, path);
+	g_free(path);
+	if (!ret)
+	{
+		ret = nsp_cmd_r_del_folder(handle);
+	}
+
+	DO_CLOSE_SESSION(handle);
+
+	return ret;
+}
+
 #define CALC_NSP_COMMON_COUNTERS \
 { \
 	"",     /* is_ready */ \
@@ -1168,7 +1198,8 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	"",     /* rename */ \
 	"",     /* chattr */ \
 	"2P1L", /* send_all_vars_backup */ \
-	"2P1L"  /* recv_all_vars_backup */ \
+	"2P1L", /* recv_all_vars_backup */ \
+	"1L",   /* del_folder */ \
 }
 
 #define CALC_NSP_COMMON_FPTRS \
@@ -1203,7 +1234,8 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	&noop_send_all_vars_backup, \
 	&tixx_recv_all_vars_backup, \
 	&noop_send_lab_equipment_data, \
-	&noop_get_lab_equipment_data \
+	&noop_get_lab_equipment_data, \
+	&del_folder, \
 }
 
 extern const CalcFncts calc_nsp = 

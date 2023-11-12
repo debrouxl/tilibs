@@ -1426,7 +1426,8 @@ extern const CalcFncts calc_80 =
 	 "",     /* send_all_vars_backup */
 	 "",     /* recv_all_vars_backup */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&noop_is_ready,
 	&noop_send_key,
 	&noop_execute,
@@ -1457,7 +1458,8 @@ extern const CalcFncts calc_80 =
 	&noop_send_all_vars_backup,
 	&noop_recv_all_vars_backup,
 	&noop_send_lab_equipment_data,
-	&noop_get_lab_equipment_data
+	&noop_get_lab_equipment_data,
+	&noop_del_folder,
 };
 
 extern const CalcFncts calc_82 =
@@ -1499,7 +1501,8 @@ extern const CalcFncts calc_82 =
 	 "",     /* send_all_vars_backup */
 	 "",     /* recv_all_vars_backup */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&noop_is_ready,
 	&noop_send_key,
 	&noop_execute,
@@ -1530,7 +1533,8 @@ extern const CalcFncts calc_82 =
 	&noop_send_all_vars_backup,
 	&noop_recv_all_vars_backup,
 	&noop_send_lab_equipment_data,
-	&noop_get_lab_equipment_data
+	&noop_get_lab_equipment_data,
+	&noop_del_folder,
 };
 
 extern const CalcFncts calc_83 =
@@ -1573,7 +1577,8 @@ extern const CalcFncts calc_83 =
 	 "",     /* send_all_vars_backup */
 	 "",     /* recv_all_vars_backup */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&noop_is_ready,
 	&send_key,
 	&execute,
@@ -1604,7 +1609,8 @@ extern const CalcFncts calc_83 =
 	&noop_send_all_vars_backup,
 	&noop_recv_all_vars_backup,
 	&noop_send_lab_equipment_data,
-	&noop_get_lab_equipment_data
+	&noop_get_lab_equipment_data,
+	&noop_del_folder,
 };
 
 extern const CalcFncts calc_85 =
@@ -1646,7 +1652,8 @@ extern const CalcFncts calc_85 =
 	 "",     /* send_all_vars_backup */
 	 "",     /* recv_all_vars_backup */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&noop_is_ready,
 	&noop_send_key,
 	&noop_execute,
@@ -1677,7 +1684,8 @@ extern const CalcFncts calc_85 =
 	&noop_send_all_vars_backup,
 	&noop_recv_all_vars_backup,
 	&noop_send_lab_equipment_data,
-	&noop_get_lab_equipment_data
+	&noop_get_lab_equipment_data,
+	&noop_del_folder,
 };
 
 extern const CalcFncts calc_86 =
@@ -1719,7 +1727,8 @@ extern const CalcFncts calc_86 =
 	 "",     /* send_all_vars_backup */
 	 "",     /* recv_all_vars_backup */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&noop_is_ready,
 	&send_key,
 	&noop_execute,
@@ -1750,7 +1759,8 @@ extern const CalcFncts calc_86 =
 	&noop_send_all_vars_backup,
 	&noop_recv_all_vars_backup,
 	&noop_send_lab_equipment_data,
-	&noop_get_lab_equipment_data
+	&noop_get_lab_equipment_data,
+	&noop_del_folder,
 };
 
 extern const CalcFncts calc_cbl =
@@ -1792,7 +1802,8 @@ extern const CalcFncts calc_cbl =
 	 "",     /* send_all_vars_backup */
 	 "",     /* recv_all_vars_backup */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&is_ready,
 	&noop_send_key,
 	&noop_execute,
@@ -1823,7 +1834,8 @@ extern const CalcFncts calc_cbl =
 	&noop_send_all_vars_backup,
 	&noop_recv_all_vars_backup,
 	&tixx_send_lab_equipment_data,
-	&tixx_get_lab_equipment_data
+	&tixx_get_lab_equipment_data,
+	&noop_del_folder,
 };
 
 extern const CalcFncts calc_cbr =
@@ -1865,7 +1877,8 @@ extern const CalcFncts calc_cbr =
 	 "",     /* send_all_vars_backup */
 	 "",     /* recv_all_vars_backup */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&is_ready,
 	&noop_send_key,
 	&noop_execute,
@@ -1896,7 +1909,8 @@ extern const CalcFncts calc_cbr =
 	&noop_send_all_vars_backup,
 	&noop_recv_all_vars_backup,
 	&tixx_send_lab_equipment_data,
-	&tixx_get_lab_equipment_data
+	&tixx_get_lab_equipment_data,
+	&noop_del_folder,
 };
 
 extern const CalcFncts calc_cbr2 =
@@ -1938,7 +1952,8 @@ extern const CalcFncts calc_cbr2 =
 	 "",     /* send_all_vars_backup */
 	 "",     /* recv_all_vars_backup */
 	 "",     /* send_lab_equipment_data */
-	 ""      /* get_lab_equipment_data */ },
+	 "",     /* get_lab_equipment_data */
+	 "",     /* del_folder */ },
 	&is_ready,
 	&noop_send_key,
 	&noop_execute,
@@ -1969,5 +1984,6 @@ extern const CalcFncts calc_cbr2 =
 	&noop_send_all_vars_backup,
 	&noop_recv_all_vars_backup,
 	&tixx_send_lab_equipment_data,
-	&tixx_get_lab_equipment_data
+	&tixx_get_lab_equipment_data,
+	&noop_del_folder,
 };
