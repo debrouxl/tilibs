@@ -462,6 +462,7 @@ int noop_recv_all_vars_backup (CalcHandle* handle, FileContent* content);
 int noop_control_lab_equipment (CalcHandle* handle, CalcModel model, CalcLabEquipmentParameters * params);
 int noop_send_lab_equipment_data (CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
 int noop_get_lab_equipment_data (CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
+int noop_del_folder (CalcHandle* handle, VarRequest* vr);
 
 
 // calc_xx.c
