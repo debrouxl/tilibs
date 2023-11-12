@@ -1566,6 +1566,51 @@ int TICALL ticalcs_calc_get_lab_equipment_data(CalcHandle *handle, CalcModel mod
 	return ret;
 }
 
+/**
+ * ticalcs_calc_del_fld:
+ * @handle: a previously allocated handle
+ * @vr: name of folder to delete (vr->folder)
+ *
+ * Request deletion of a folder. Beware: %vr.name may be modified !
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+int TICALL ticalcs_calc_del_fld(CalcHandle* handle, VarRequest* vr)
+{
+	const CalcFncts *calc;
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_VARREQUEST(vr);
+
+	calc = handle->calc;
+	VALIDATE_CALCFNCTS(calc);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	ticalcs_info(_("Deleting folder '%s':"), vr->folder);
+	handle->busy = 1;
+	if (calc->fncts.del_fld)
+	{
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_DEL_FOLDER);
+		event.data.ptrval = (void *)vr;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->fncts.del_fld(handle, vr);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_DEL_FOLDER);
+		event.data.ptrval = (void *)vr;
+		ret = ticalcs_event_send(handle, &event);
+	}
+	handle->busy = 0;
+
+	return ret;
+}
+
 // ---
 
 /**
