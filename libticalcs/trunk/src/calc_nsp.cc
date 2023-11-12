@@ -46,10 +46,11 @@
 static gchar * build_path(CalcModel model, VarRequest * vr)
 {
 	const char * dot_if_any;
+	const char * fext_if_any;
 	gchar * path;
 
-	// Don't add a dot if this file type is unknown.
-	if (vr->type >= NSP_MAXTYPES)
+	// Don't add a dot if this file type is unknown or a folder.
+	if (vr->type >= NSP_MAXTYPES || vr->type == NSP_DIR)
 	{
 		dot_if_any = "";
 	}
@@ -58,13 +59,23 @@ static gchar * build_path(CalcModel model, VarRequest * vr)
 		dot_if_any = ".";
 	}
 
-	if (!strcmp(vr->folder, ""))
+	// Don't add a file extension if this is a folder.
+	if (vr->type == NSP_DIR)
 	{
-		path = g_strconcat("/", vr->name, dot_if_any, tifiles_vartype2fext(model, vr->type), NULL);
+		fext_if_any = "";
 	}
 	else
 	{
-		path = g_strconcat("/", vr->folder, "/", vr->name, dot_if_any, tifiles_vartype2fext(model, vr->type), NULL);
+		fext_if_any = tifiles_vartype2fext(model, vr->type);
+	}
+
+	if (!strcmp(vr->folder, ""))
+	{
+		path = g_strconcat("/", vr->name, dot_if_any, fext_if_any, NULL);
+	}
+	else
+	{
+		path = g_strconcat("/", vr->folder, "/", vr->name, dot_if_any, fext_if_any, NULL);
 	}
 
 	return path;
