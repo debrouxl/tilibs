@@ -14,11 +14,15 @@ foreach(tar torture_ticables test_ticables_2)
     target_include_directories(${tar} PRIVATE
         ${PROJECT_SOURCE_DIR}/../src)
 
-    target_link_directories(${tar} PRIVATE
-        ${DEPS_LIBRARY_DIRS}
-        ${PROJECT_BINARY_DIR}/..)
-
-    target_link_libraries(${tar} ${DEPS_LIBRARIES} ticables2_shared)
+    if(TRY_STATIC_LIBS)
+        target_compile_options(${tar} PRIVATE ${DEPS_STATIC_CFLAGS})
+        target_link_directories(${tar} PRIVATE ${TRY_STATIC_DEPS_LIBSDIRS})
+        target_link_libraries(${tar} ${TRY_STATIC_DEPS_LDFLAGS} ${TRY_STATIC_DEPS_LIBS} ticables2_objlib)
+    else()
+        target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
+        target_link_directories(${tar} PRIVATE ${DEPS_LIBRARY_DIRS} ${PROJECT_BINARY_DIR}/..)
+        target_link_libraries(${tar} ${DEPS_LIBRARIES} ticables2_objlib)
+    endif()
 endforeach()
 
 set(builddirlibpaths "${PROJECT_BINARY_DIR}")

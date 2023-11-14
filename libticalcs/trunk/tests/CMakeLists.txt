@@ -7,8 +7,18 @@ add_executable(torture_ticalcs torture_ticalcs.c)
 add_executable(test_ticalcs_2 test_ticalcs_2.cc)
 
 pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16 libarchive zlib)
+if(USE_ICONV)
+    find_package(Iconv REQUIRED)
+    # flags/link for external deps
+    add_compile_definitions(USE_ICONV)
+endif()
 
 foreach(tar torture_ticalcs test_ticalcs_2)
+    if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
+        target_include_directories(${tar} PRIVATE ${Iconv_INCLUDE_DIRS})
+        target_link_libraries(${tar} ${Iconv_LIBRARIES})
+    endif()
+
     target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
 
     target_include_directories(${tar} PRIVATE
@@ -17,14 +27,15 @@ foreach(tar torture_ticalcs test_ticalcs_2)
         ${PROJECT_SOURCE_DIR}/../../../libticables/trunk/src
         ${PROJECT_SOURCE_DIR}/../src)
 
-    target_link_directories(${tar} PRIVATE
-        ${DEPS_LIBRARY_DIRS}
-        ${PROJECT_BINARY_DIR}/../../../libticonv/trunk
-        ${PROJECT_BINARY_DIR}/../../../libtifiles/trunk
-        ${PROJECT_BINARY_DIR}/../../../libticables/trunk
-        ${PROJECT_BINARY_DIR}/..)
-
-    target_link_libraries(${tar} ${DEPS_LIBRARIES} ticonv_shared tifiles2_shared ticables2_shared ticalcs2_shared)
+    if(TRY_STATIC_LIBS)
+        target_compile_options(${tar} PRIVATE ${DEPS_STATIC_CFLAGS})
+        target_link_directories(${tar} PRIVATE ${TRY_STATIC_DEPS_LIBSDIRS})
+        target_link_libraries(${tar} ${TRY_STATIC_DEPS_LDFLAGS} ${TRY_STATIC_DEPS_LIBS} ticonv_objlib tifiles2_objlib ticables2_objlib ticalcs2_objlib)
+    else()
+        target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
+        target_link_directories(${tar} PRIVATE ${DEPS_LIBRARY_DIRS} ${PROJECT_BINARY_DIR}/..)
+        target_link_libraries(${tar} ${DEPS_LIBRARIES} ticonv_objlib tifiles2_objlib ticables2_objlib ticalcs2_objlib)
+    endif()
 endforeach()
 
 set(builddirlibpaths "${PROJECT_BINARY_DIR}/../../../libticonv/trunk:${PROJECT_BINARY_DIR}/../../../libtifiles/trunk:${PROJECT_BINARY_DIR}/../../../libticables/trunk:${PROJECT_BINARY_DIR}/..")
