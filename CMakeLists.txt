@@ -79,6 +79,8 @@ if(TRY_STATIC_LIBS)
     else()
         set(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
     endif()
+    # When we link statically, we don't want the dllimport stuff, so let's workaround that here
+    add_compile_definitions(TICALCS_EXPORTS TIFILES_EXPORTS TICONV_EXPORTS TICABLES_EXPORTS)
 endif()
 
 include(GNUInstallDirs)

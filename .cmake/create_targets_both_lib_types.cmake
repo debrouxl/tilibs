@@ -47,24 +47,28 @@ function(create_targets_both_lib_types basename)
     target_compile_definitions(${lib_objlib} PRIVATE PACKAGE="${PROJECT_NAME}" VERSION="${PROJECT_VERSION}")
 
     # CFLAGS and include dirs
-    target_compile_options(${lib_objlib} PRIVATE ${DEPS_CFLAGS})
+    if(TRY_STATIC_LIBS)
+        target_compile_options(${lib_objlib} PRIVATE ${DEPS_STATIC_CFLAGS})
+    else()
+        target_compile_options(${lib_objlib} PRIVATE ${DEPS_CFLAGS})
+    endif()
     target_include_directories(${lib_objlib} PRIVATE src)
 
     # Link-related properties, flags...
     if(TRY_STATIC_LIBS)
         target_link_directories(${lib_shared} PRIVATE ${TRY_STATIC_DEPS_LIBSDIRS})
-        target_link_libraries(${lib_shared} ${TRY_STATIC_DEPS_LDFLAGS} ${TRY_STATIC_DEPS_LIBS})
+        target_link_libraries(${lib_shared} ${TRY_STATIC_DEPS_LDFLAGS_OTHER} ${TRY_STATIC_DEPS_LIBS})
     else()
         target_link_directories(${lib_shared} PRIVATE ${DEPS_LIBRARY_DIRS})
-        target_link_libraries(${lib_shared} ${DEPS_LIBRARIES})
+        target_link_libraries(${lib_shared} ${DEPS_LDFLAGS_OTHER} ${DEPS_LIBRARIES})
     endif()
 
     # Stuff to install and developer-related things
     install(TARGETS ${lib_shared} ${lib_static}
-        ARCHIVE         DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY         DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME         DESTINATION ${CMAKE_INSTALL_BINDIR}
-        PUBLIC_HEADER   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/tilp2)
+        ARCHIVE         DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY         DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        RUNTIME         DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        PUBLIC_HEADER   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/tilp2")
 
     configure_and_install_pc_file(${basename} ${PROJECT_VERSION})
 endfunction()
