@@ -34,10 +34,6 @@
 #include "logging.h"
 #include "cmd68k.h"
 
-#ifdef _MSC_VER
-#pragma warning( disable : 4761 4244)
-#endif
-
 uint8_t TICALL ti68k_handle_to_dbus_mid(CalcHandle * handle)
 {
 	if (ticalcs_validate_handle(handle))
