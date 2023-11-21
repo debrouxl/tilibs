@@ -1,0 +1,73 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [ master, experimental, experimental2 ]
+  pull_request:
+    branches: [ master, experimental, experimental2 ]
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: "Build: ${{ matrix.arch }} - ${{ matrix.deps_type }} deps"
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x64]
+        config: [ReleaseDynamic,ReleaseStatic]
+        include:
+          - arch: x64
+            arch_name: 64-bit
+            arch_suffix: "64"
+          - config: ReleaseDynamic
+            deps_type: shared
+          - config: ReleaseStatic
+            deps_type: static
+
+    steps:
+    - name: Checkout Git Repo
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+
+    - name: Install latest CMake
+      uses: lukka/get-cmake@9781783c006d9d607cb391b971a1dcbed768a25a # latest as of 2023-11-12
+
+    - name: Restore artifacts, or setup vcpkg (do not install any package)
+      uses: lukka/run-vcpkg@6fe69898af670ac05f4a8427cc5cff4fb361cee5 # latest as of 2023-11-12
+      with:
+        vcpkgGitCommitId: '61f610845fb206298a69f708104a51d651872877' # latest as of 2023-11-12
+        prependedCacheKey: '${{ matrix.deps_type }}Deps'
+
+    - name: Create prefix folder
+      shell: cmd
+      run: mkdir prefix
+
+    - name: Build tilibs
+      uses: lukka/run-cmake@2ce8982be71b8e9a3c4d5e432135035afd1e76a7 # latest as of 2023-11-12
+      with:
+        cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+        configurePreset: '${{ matrix.arch }}-${{ matrix.config }}'
+        buildPreset: '${{ matrix.arch }}-${{ matrix.config }}'
+      env:
+        VCPKG_FORCE_SYSTEM_BINARIES: 1
+        CMAKE_INSTALL_PREFIX_OVERRIDE: '${{ github.workspace }}/prefix'
+
+    - name: Install tilibs
+      uses: lukka/run-cmake@2ce8982be71b8e9a3c4d5e432135035afd1e76a7 # latest as of 2023-11-12
+      with:
+        cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+        buildPreset: '${{ matrix.arch }}-${{ matrix.config }}'
+        buildPresetAdditionalArgs: "['--target install']"
+
+    - name: Prepare install folder for upload
+      shell: cmd
+      run: rename prefix tilibs_windows_${{ matrix.deps_type }}Deps
+
+    - name: Upload install folder
+      uses: actions/upload-artifact@v3
+      with:
+        name: tilibs_windows_${{ matrix.deps_type }}Deps
+        path: tilibs_windows_${{ matrix.deps_type }}Deps

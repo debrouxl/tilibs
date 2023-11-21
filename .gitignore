@@ -69,6 +69,7 @@ Thumbs.db
 .\#*
 \#*\#
 .idea/
+.vs/
 [._]*.s[a-v][a-z]
 [._]*.sw[a-p]
 [._]s[a-rt-v][a-z]
@@ -84,3 +85,4 @@ Session.vim
 
 # CMake
 cmake-build-*/
+tilibs.build/

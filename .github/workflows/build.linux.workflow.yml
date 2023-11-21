@@ -60,10 +60,10 @@ jobs:
         cmake --build . --target install
 
     - name: Prepare install folder for upload
-      run: mv prefix tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps_${{ github.sha }}
+      run: mv prefix tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps
 
     - name: Upload install folder
       uses: actions/upload-artifact@v3
       with:
-        name: tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps_${{ github.sha }}
-        path: tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps_${{ github.sha }}/
+        name: tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps
+        path: tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps/

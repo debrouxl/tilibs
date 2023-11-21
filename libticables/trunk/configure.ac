@@ -115,8 +115,14 @@ if test "x$HAVE_LIBUSB10" = xyes; then
             [Define to 1 to enable EXPERIMENTAL libusb 1.0.x support.])
   TICABLES_LIBUSB_REQUIRES_PRIVATE="libusb-1.0"
 elif test "x$HAVE_LIBUSB" = xyes; then
-  AC_DEFINE([HAVE_LIBUSB], [1], [Define to 1 to enable libusb 0.1.x support.])
-  TICABLES_LIBUSB_REQUIRES_PRIVATE="libusb"
+  case $host_os in
+  *mingw*|*cygwin*)
+    ;;
+  *)
+    AC_DEFINE([HAVE_LIBUSB], [1], [Define to 1 to enable libusb 0.1.x support.])
+    TICABLES_LIBUSB_REQUIRES_PRIVATE="libusb"
+    ;;
+  esac
 fi
 AC_SUBST(TICABLES_LIBUSB_REQUIRES_PRIVATE)
 

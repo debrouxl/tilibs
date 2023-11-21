@@ -23,19 +23,29 @@ project(tilibs C CXX)
 #   - probably doesn't work very well with ancient toolchains or on uncommon OSes
 #
 # Notes:
-#   - this has been succesfully tested on recent macOS and Linux.
+#   - this has been succesfully tested on recent macOS, Linux, and Windows (with vcpkg).
 #   - The TRY_STATIC_LIBS CMake option will try to build the libs (both shared and static) using as many static
 #     dependent libraries as possible.
 #     Let's note however that there is currently not much advantage in building that way, using shared libs is preferred,
-#     but at least you have the choice to do whatever you want should you ever really need a static build.
+#     but at least you have the choice to do whatever you want should you ever really need a static build (may be useful on Windows)
 #
 # In the future...:
 #   - TODO: add support to build the ROM dumpers (will end up just launching the external tools...)
 #   - WISH: do not hardcode the (auto-generated...) potfiles_* target names
 #   - WISH: better expose each lib's generated install target (NTS: look at cmake's components feature?)
 #   - WISH: provide Find* CMake modules for the libs themselves?
-#   - WISH: add support for Windows (that will probably be annoying)
 #
+
+# In case there was an env-var override...
+if(DEFINED ENV{CMAKE_INSTALL_PREFIX_OVERRIDE})
+    set(CMAKE_INSTALL_PREFIX "$ENV{CMAKE_INSTALL_PREFIX_OVERRIDE}")
+endif()
+# Be sure to have the expected install prefix format
+if(CMAKE_INSTALL_PREFIX)
+    file(TO_CMAKE_PATH "${CMAKE_INSTALL_PREFIX}" CMAKE_INSTALL_PREFIX)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE PATH "CMAKE_INSTALL_PREFIX" FORCE)
+    message("CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
+endif()
 
 # Our modules
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.cmake)
@@ -61,7 +71,7 @@ else()
 endif()
 
 option(TRY_STATIC_LIBS "Build using as many static libs as possible" OFF)
-if (VCPKG_TARGET_TRIPLET MATCHES "-static(-md|-release)?$")
+if (VCPKG_TARGET_TRIPLET MATCHES "-static")
     if(NOT TRY_STATIC_LIBS)
         message(WARNING "Setting TRY_STATIC_LIBS to ON anyway due to static vcpkg target")
         set(TRY_STATIC_LIBS ON)
@@ -72,10 +82,6 @@ if(TRY_STATIC_LIBS)
     message("Will try to build as statically as possible...")
     if(WIN32)
         set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
-        if (NOT VCPKG_TARGET_TRIPLET MATCHES "-static-md$")
-            message("Using static MSVC runtime...")
-            set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-        endif()
     else()
         set(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
     endif()
@@ -115,6 +121,7 @@ elseif(MINGW)
 elseif(WIN32)
     add_compile_definitions(__WIN32__)
     add_compile_definitions(HAVE_CONFIG_H)
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
     include_directories(${CMAKE_SOURCE_DIR}/win32_config)
 endif()
 

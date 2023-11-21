@@ -27,7 +27,7 @@
 
 #ifndef NO_CABLE_SLV
 
-#if defined(__WIN32__) && !defined(__MINGW32__)
+#if defined(__WIN32__)
 # define HAVE_LIBUSB
 #endif
 

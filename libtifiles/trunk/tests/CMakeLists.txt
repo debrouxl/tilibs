@@ -6,7 +6,7 @@ project(libtifiles2-tests
 add_executable(torture_tifiles torture_tifiles.c)
 add_executable(test_tifiles_2 test_tifiles_2.cc)
 
-pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive zlib)
+pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive)
 if(USE_ICONV)
     find_package(Iconv REQUIRED)
     # flags/link for external deps
