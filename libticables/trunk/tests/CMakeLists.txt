@@ -6,7 +6,13 @@ project(libticables2-tests
 add_executable(torture_ticables torture_ticables.c)
 add_executable(test_ticables_2 test_ticables_2.cc)
 
-pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16)
+if(WIN32)
+    pkg_check_modules(DEPS REQUIRED glib-2.0)
+    list(APPEND DEPS_LIBRARIES "libusb0")
+    list(APPEND DEPS_STATIC_LIBRARIES "libusb0")
+else()
+    pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16)
+endif()
 
 foreach(tar torture_ticables test_ticables_2)
     target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})

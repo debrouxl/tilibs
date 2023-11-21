@@ -6,7 +6,15 @@ project(libticalcs2-tests
 add_executable(torture_ticalcs torture_ticalcs.cc)
 add_executable(test_ticalcs_2 test_ticalcs_2.cc)
 
-pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16 libarchive zlib)
+if(WIN32)
+    pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive)
+    list(APPEND DEPS_LIBRARIES "libusb0")
+    list(APPEND DEPS_STATIC_LIBRARIES "libusb0")
+else()
+    pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive libusb-1.0>=1.0.16)
+    # Needed for the .pc files configured in the function below.
+    set(TICABLES_LIBUSB_REQUIRES_PRIVATE "libusb-1.0")
+endif()
 
 if(WIN32 AND NOT MINGW)
     find_library(GETOPT_LIB getopt REQUIRED)

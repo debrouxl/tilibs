@@ -65,9 +65,17 @@ set(PUBLIC_HEADERS
 # external deps lookup
 if(TRY_STATIC_LIBS)
     # from libticables and libtifiles...
-    set(external_deps_if_static "libusb-1.0>=1.0.16" "libarchive")
+    if(WIN32)
+        set(external_deps_if_static "libarchive")
+    else()
+        set(external_deps_if_static "libusb-1.0>=1.0.16" "libarchive")
+    endif()
 endif()
-pkg_check_modules(DEPS REQUIRED glib-2.0 zlib ${external_deps_if_static})
+pkg_check_modules(DEPS REQUIRED glib-2.0 ${external_deps_if_static})
+if(WIN32)
+    list(APPEND DEPS_LIBRARIES "libusb0")
+    list(APPEND DEPS_STATIC_LIBRARIES "libusb0")
+endif()
 
 try_static_libs_if_needed()
 

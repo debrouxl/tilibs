@@ -44,15 +44,25 @@ if(WIN32)
 endif()
 
 # external deps lookup
-pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16)
+if(WIN32)
+    pkg_check_modules(DEPS REQUIRED glib-2.0)
+    list(APPEND DEPS_LIBRARIES "libusb0")
+    list(APPEND DEPS_STATIC_LIBRARIES "libusb0")
+else()
+    pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16)
+    # Needed for the .pc files configured in the function below.
+    set(TICABLES_LIBUSB_REQUIRES_PRIVATE "libusb-1.0")
+endif()
 
 try_static_libs_if_needed()
 
-# Needed for the .pc files configured in the function below.
-set(TICABLES_LIBUSB_REQUIRES_PRIVATE "libusb-1.0")
-
 # auto-creation of all targets with flags etc.
 create_targets_both_lib_types(ticables2)
+
+if(NOT WIN32)
+    # additional internal defines
+    target_compile_definitions(ticables2_objlib PUBLIC HAVE_LIBUSB_1_0=1 HAVE_LIBUSB10_STRERROR=1 HAVE_TERMIOS_H=1)
+endif()
 
 set_target_properties(ticables2_shared PROPERTIES VERSION 8.0.0 SOVERSION 8)
 
@@ -61,9 +71,6 @@ if(ENABLE_NLS)
     i18n_mo_from_po_pot()
     add_dependencies(ticables2_objlib potfiles_2)
 endif()
-
-# additional internal defines
-target_compile_definitions(ticables2_objlib PUBLIC HAVE_LIBUSB_1_0=1 HAVE_LIBUSB10_STRERROR=1 HAVE_TERMIOS_H=1)
 
 # check includes for parallel and serial support
 if(LINUX)

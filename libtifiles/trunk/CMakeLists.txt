@@ -50,7 +50,7 @@ set(PUBLIC_HEADERS
         src/typesxx.h)
 
 # external deps lookup
-pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive zlib)
+pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive)
 try_static_libs_if_needed()
 
 # auto-creation of all targets with flags etc., alongside with internal deps

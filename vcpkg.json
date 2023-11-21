@@ -1,0 +1,19 @@
+{
+  "name": "tilibs",
+  "version-string": "1.0",
+  "homepage": "https://github.com/debrouxl/tilibs",
+  "description": "libs to transfer things from/to TI graphing calculators",
+  "dependencies": [
+    "bzip2",
+    "pkgconf",
+    {
+      "name": "libarchive",
+      "default-features": false
+    },
+    "getopt",
+    "libusb-win32",
+    "glib",
+    "gettext"
+  ],
+  "builtin-baseline": "61f610845fb206298a69f708104a51d651872877"
+}
