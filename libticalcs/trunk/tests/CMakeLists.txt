@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
 
 project(libticalcs2-tests
-        LANGUAGES   C CXX)
+        LANGUAGES   CXX)
 
-add_executable(torture_ticalcs torture_ticalcs.c)
+add_executable(torture_ticalcs torture_ticalcs.cc)
 add_executable(test_ticalcs_2 test_ticalcs_2.cc)
 
 pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16 libarchive zlib)

@@ -70,21 +70,21 @@ TIEXPORT3 int TICALL ti80_send_SCR(CalcHandle *handle);
 
 /* TI-80 (not Z80-based, in fact), receive functions */
 TIEXPORT3 int TICALL ti80_recv_XDP(CalcHandle *handle, uint16_t * length, uint8_t * data);
-#define ti80_recv_ACK(handle, status) tiz80_recv_ACK(handle, status)
+static inline int ti80_recv_ACK(CalcHandle* handle, uint16_t* status) { return tiz80_recv_ACK(handle, status); }
 
 
 /* TI-73 family, send functions */
 TIEXPORT3 int TICALL ti73_send_VAR(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr, uint8_t version);
 TIEXPORT3 int TICALL ti73_send_VAR2(CalcHandle *handle, uint32_t length, uint8_t type, uint8_t flag, uint16_t offset, uint16_t page);
-#define ti73_send_CTS(handle) tiz80_send_CTS(handle, tiz80_handle_to_dbus_mid_7383p(handle))
-#define ti73_send_XDP(handle, length, data) tiz80_send_XDP(handle, length, data, tiz80_handle_to_dbus_mid_7383p(handle))
-#define ti73_send_SKP(handle, rej_code) tiz80_send_SKP(handle, rej_code, tiz80_handle_to_dbus_mid_7383p(handle))
-#define ti73_send_ACK(handle) tiz80_send_ACK(handle, tiz80_handle_to_dbus_mid_7383p(handle))
-#define ti73_send_ERR(handle) tiz80_send_ERR(handle, tiz80_handle_to_dbus_mid_7383p(handle))
+static inline int ti73_send_CTS(CalcHandle* handle) { return tiz80_send_CTS(handle, tiz80_handle_to_dbus_mid_7383p(handle)); }
+static inline int ti73_send_XDP(CalcHandle* handle, uint8_t length, uint8_t* data) { return tiz80_send_XDP(handle, length, data, tiz80_handle_to_dbus_mid_7383p(handle)); }
+static inline int ti73_send_SKP(CalcHandle* handle, uint8_t rej_code) { return tiz80_send_SKP(handle, rej_code, tiz80_handle_to_dbus_mid_7383p(handle)); }
+static inline int ti73_send_ACK(CalcHandle* handle) { return tiz80_send_ACK(handle, tiz80_handle_to_dbus_mid_7383p(handle)); }
+static inline int ti73_send_ERR(CalcHandle* handle) { return tiz80_send_ERR(handle, tiz80_handle_to_dbus_mid_7383p(handle)); }
 TIEXPORT3 int TICALL ti73_send_RDY(CalcHandle *handle);
-#define ti73_send_SCR(handle) tiz80_send_SCR(handle, tiz80_handle_to_dbus_mid_7383p(handle))
-#define ti73_send_KEY(handle, scancode) tiz80_send_KEY(handle, scancode, tiz80_handle_to_dbus_mid_7383p(handle))
-#define ti73_send_EOT(handle) tiz80_send_EOT(handle, tiz80_handle_to_dbus_mid_7383p(handle))
+static inline int ti73_send_SCR(CalcHandle* handle) { return tiz80_send_SCR(handle, tiz80_handle_to_dbus_mid_7383p(handle)); }
+static inline int ti73_send_KEY(CalcHandle* handle, uint8_t scancode) { return tiz80_send_KEY(handle, scancode, tiz80_handle_to_dbus_mid_7383p(handle)); }
+static inline int ti73_send_EOT(CalcHandle* handle) { return tiz80_send_EOT(handle, tiz80_handle_to_dbus_mid_7383p(handle)); }
 TIEXPORT3 int TICALL ti73_send_REQ(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr, uint8_t version);
 TIEXPORT3 int TICALL ti73_send_REQ2(CalcHandle *handle, uint16_t appsize, uint8_t apptype, const char *appname, uint8_t appattr);
 TIEXPORT3 int TICALL ti73_send_RTS(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr, uint8_t version);
@@ -102,56 +102,56 @@ TIEXPORT3 int TICALL ti73_send_SID(CalcHandle *handle, uint8_t * data);
 /* TI-73 family, receive functions */
 TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle *handle, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr, uint8_t * version);
 TIEXPORT3 int TICALL ti73_recv_VAR2(CalcHandle *handle, uint16_t * length, uint8_t * type, char *name, uint16_t * offset, uint16_t * page);
-#define ti73_recv_CTS(handle, length) tiz80_recv_CTS(handle, length)
-#define ti73_recv_SKP(handle, rej_code) tiz80_recv_SKP(handle, rej_code)
+static inline int ti73_recv_CTS(CalcHandle* handle, uint8_t length) { return tiz80_recv_CTS(handle, length); }
+static inline int ti73_recv_SKP(CalcHandle* handle, uint8_t* rej_code) { return tiz80_recv_SKP(handle, rej_code); }
 TIEXPORT3 int TICALL ti73_recv_XDP(CalcHandle *handle, uint16_t * length, uint8_t * data);
 TIEXPORT3 int TICALL ti73_recv_SID(CalcHandle *handle, uint16_t * length, uint8_t * data);
-#define ti73_recv_ACK(handle, status) tiz80_recv_ACK(handle, status)
+static inline int ti73_recv_ACK(CalcHandle* handle, uint16_t* status) { return tiz80_recv_ACK(handle, status); }
 TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle *handle, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr, uint8_t * version);
 
 
 /* TI-82 & TI-83, send functions */
 TIEXPORT3 int TICALL ti82_send_VAR(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname);
-#define ti82_send_CTS(handle) tiz80_send_CTS(handle, tiz80_handle_to_dbus_mid_8283(handle))
-#define ti82_send_XDP(handle, length, data) tiz80_send_XDP(handle, length, data, tiz80_handle_to_dbus_mid_8283(handle))
-#define ti82_send_SKP(handle, rej_code) tiz80_send_SKP(handle, rej_code, tiz80_handle_to_dbus_mid_8283(handle))
-#define ti82_send_ACK(handle) tiz80_send_ACK(handle, tiz80_handle_to_dbus_mid_8283(handle))
-#define ti82_send_ERR(handle) tiz80_send_ERR(handle, tiz80_handle_to_dbus_mid_8283(handle))
-#define ti82_send_SCR(handle) tiz80_send_SCR(handle, tiz80_handle_to_dbus_mid_8283(handle))
-#define ti82_send_KEY(handle, scancode) tiz80_send_KEY(handle, scancode, DBUS_MID_PC_TI83)
-#define ti82_send_EOT(handle) tiz80_send_EOT(handle, tiz80_handle_to_dbus_mid_8283(handle))
+static inline int ti82_send_CTS(CalcHandle* handle) { return tiz80_send_CTS(handle, tiz80_handle_to_dbus_mid_8283(handle)); }
+static inline int ti82_send_XDP(CalcHandle* handle, uint8_t length, uint8_t* data) { return tiz80_send_XDP(handle, length, data, tiz80_handle_to_dbus_mid_8283(handle)); }
+static inline int ti82_send_SKP(CalcHandle* handle, uint8_t rej_code) { return tiz80_send_SKP(handle, rej_code, tiz80_handle_to_dbus_mid_8283(handle)); }
+static inline int ti82_send_ACK(CalcHandle* handle) { return tiz80_send_ACK(handle, tiz80_handle_to_dbus_mid_8283(handle)); }
+static inline int ti82_send_ERR(CalcHandle* handle) { return tiz80_send_ERR(handle, tiz80_handle_to_dbus_mid_8283(handle)); }
+static inline int ti82_send_SCR(CalcHandle* handle) { return tiz80_send_SCR(handle, tiz80_handle_to_dbus_mid_8283(handle)); }
+static inline int ti82_send_KEY(CalcHandle* handle, uint8_t scancode) { return tiz80_send_KEY(handle, scancode, tiz80_handle_to_dbus_mid_8283(handle)); }
+static inline int ti82_send_EOT(CalcHandle* handle) { return tiz80_send_EOT(handle, tiz80_handle_to_dbus_mid_8283(handle)); }
 TIEXPORT3 int TICALL ti82_send_REQ(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname);
 TIEXPORT3 int TICALL ti82_send_RTS(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname);
 
 /* TI-82 & TI-83, receive functions */
 TIEXPORT3 int TICALL ti82_recv_VAR(CalcHandle *handle, uint16_t * varsize, uint8_t * vartype, char *varname);
-#define ti82_recv_CTS(handle) tiz80_recv_CTS(handle, 0)
-#define ti82_recv_SKP(handle, rej_code) tiz80_recv_SKP(handle, rej_code)
+static inline int ti82_recv_CTS(CalcHandle* handle) { return tiz80_recv_CTS(handle, 0); }
+static inline int ti82_recv_SKP(CalcHandle* handle, uint8_t* rej_code) { return tiz80_recv_SKP(handle, rej_code); }
 TIEXPORT3 int TICALL ti82_recv_XDP(CalcHandle *handle, uint16_t * length, uint8_t * data);
-#define ti82_recv_ACK(handle, status) tiz80_recv_ACK(handle, status)
+static inline int ti82_recv_ACK(CalcHandle* handle, uint16_t* status) { return tiz80_recv_ACK(handle, status); }
 TIEXPORT3 int TICALL ti82_recv_ERR(CalcHandle *handle, uint16_t * status);
 TIEXPORT3 int TICALL ti82_recv_RTS(CalcHandle *handle, uint16_t * varsize, uint8_t * vartype, char *varname);
 
 
 /* TI-85 & TI-86, send functions */
 TIEXPORT3 int TICALL ti85_send_VAR(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname);
-#define ti85_send_CTS(handle) tiz80_send_CTS(handle, tiz80_handle_to_dbus_mid_8586(handle))
-#define ti85_send_XDP(handle, length, data) tiz80_send_XDP(handle, length, data, tiz80_handle_to_dbus_mid_8586(handle))
-#define ti85_send_SKP(handle, rej_code) tiz80_send_SKP(handle, rej_code, tiz80_handle_to_dbus_mid_8586(handle))
-#define ti85_send_ACK(handle) tiz80_send_ACK(handle, tiz80_handle_to_dbus_mid_8586(handle))
-#define ti85_send_ERR(handle) tiz80_send_ERR(handle, tiz80_handle_to_dbus_mid_8586(handle))
-#define ti85_send_SCR(handle) tiz80_send_SCR(handle, tiz80_handle_to_dbus_mid_8586(handle))
-#define ti85_send_KEY(handle, scancode) tiz80_send_KEY(handle, scancode, tiz80_handle_to_dbus_mid_8586(handle))
-#define ti85_send_EOT(handle) tiz80_send_EOT(handle, tiz80_handle_to_dbus_mid_8586(handle))
+static inline int ti85_send_CTS(CalcHandle* handle) { return tiz80_send_CTS(handle, tiz80_handle_to_dbus_mid_8586(handle)); }
+static inline int ti85_send_XDP(CalcHandle* handle, uint8_t length, uint8_t* data) { return tiz80_send_XDP(handle, length, data, tiz80_handle_to_dbus_mid_8586(handle)); }
+static inline int ti85_send_SKP(CalcHandle* handle, uint8_t rej_code) { return tiz80_send_SKP(handle, rej_code, tiz80_handle_to_dbus_mid_8586(handle)); }
+static inline int ti85_send_ACK(CalcHandle* handle) { return tiz80_send_ACK(handle, tiz80_handle_to_dbus_mid_8586(handle)); }
+static inline int ti85_send_ERR(CalcHandle* handle) { return tiz80_send_ERR(handle, tiz80_handle_to_dbus_mid_8586(handle)); }
+static inline int ti85_send_SCR(CalcHandle* handle) { return tiz80_send_SCR(handle, tiz80_handle_to_dbus_mid_8586(handle)); }
+static inline int ti85_send_KEY(CalcHandle* handle, uint8_t scancode) { return tiz80_send_KEY(handle, scancode, tiz80_handle_to_dbus_mid_8586(handle)); }
+static inline int ti85_send_EOT(CalcHandle* handle) { return tiz80_send_EOT(handle, tiz80_handle_to_dbus_mid_8586(handle)); }
 TIEXPORT3 int TICALL ti85_send_REQ(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname);
 TIEXPORT3 int TICALL ti85_send_RTS(CalcHandle *handle, uint16_t varsize, uint8_t vartype, const char *varname);
 
 /* TI-85 & TI-86, receive functions */
 TIEXPORT3 int TICALL ti85_recv_VAR(CalcHandle *handle, uint16_t * varsize, uint8_t * vartype, char *varname);
-#define ti85_recv_CTS(handle) tiz80_recv_CTS(handle, 0)
-#define ti85_recv_SKP(handle, rej_code) tiz80_recv_SKP(handle, rej_code)
+static inline int ti85_recv_CTS(CalcHandle* handle) { return tiz80_recv_CTS(handle, 0); }
+static inline int ti85_recv_SKP(CalcHandle* handle, uint8_t* rej_code) { return tiz80_recv_SKP(handle, rej_code); }
 TIEXPORT3 int TICALL ti85_recv_XDP(CalcHandle *handle, uint16_t * length, uint8_t * data);
-#define ti85_recv_ACK(handle, status) tiz80_recv_ACK(handle, status)
+static inline int ti85_recv_ACK(CalcHandle* handle, uint16_t* status) { return tiz80_recv_ACK(handle, status); }
 TIEXPORT3 int TICALL ti85_recv_RTS(CalcHandle *handle, uint16_t * varsize, uint8_t * vartype, char *varname);
 
 #ifdef __cplusplus
