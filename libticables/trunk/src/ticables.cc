@@ -87,6 +87,9 @@ static CableFncts const *const cables[] =
 #if !defined(NO_CABLE_TCPS) && !defined(__WIN32__)
 	&cable_tcps,
 #endif
+#if defined(HAVE_LIBGPIOD)
+	&cable_gpio,
+#endif
 	NULL
 };
 

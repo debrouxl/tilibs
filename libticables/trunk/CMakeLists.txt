@@ -45,8 +45,14 @@ endif()
 
 # external deps lookup
 pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16)
+# 1.5 introduced support for SET_CONFIG
+pkg_check_modules(LIBGPIOD libgpiod>=1.5 IMPORTED_TARGET)
 
 try_static_libs_if_needed()
+
+if(LIBGPIOD_FOUND)
+	set(SRC_FILES ${SRC_FILES} src/link_gpio.cc)
+endif()
 
 # Needed for the .pc files configured in the function below.
 set(TICABLES_LIBUSB_REQUIRES_PRIVATE "libusb-1.0")
@@ -60,6 +66,11 @@ set_target_properties(ticables2_shared PROPERTIES VERSION 8.0.0 SOVERSION 8)
 if(ENABLE_NLS)
     i18n_mo_from_po_pot()
     add_dependencies(ticables2_objlib potfiles_2)
+endif()
+
+if(LIBGPIOD_FOUND)
+	target_compile_definitions(ticables2_objlib PUBLIC HAVE_LIBGPIOD=1)
+	target_link_libraries(ticables2_shared PkgConfig::LIBGPIOD)
 endif()
 
 # additional internal defines
