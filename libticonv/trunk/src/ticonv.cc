@@ -62,7 +62,7 @@ const char *TICALL ticonv_version_get(void)
 size_t TICALL ticonv_utf16_strlen(const unsigned short *str)
 {
 	size_t l = 0;
-	if (str != NULL)
+	if (str != nullptr)
 	{
 		const unsigned short *p = str;
 		while (*(p++))
@@ -87,17 +87,16 @@ size_t TICALL ticonv_utf16_strlen(const unsigned short *str)
  **/
 unsigned short* ticonv_utf8_to_utf16(const char *str)
 {
-	gunichar2* dst;
 	const gchar* src = str;
-	GError *error = NULL;
+	GError *error = nullptr;
 
-	if (str == NULL)
+	if (str == nullptr)
 	{
 		ticonv_critical("%s: str is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
-	dst = g_utf8_to_utf16(src, -1, NULL, NULL, &error);
+	gunichar2* dst = g_utf8_to_utf16(src, -1, nullptr, nullptr, &error);
 	if (error)
 	{
 		ticonv_critical("%s", error->message);
@@ -128,16 +127,15 @@ void TICALL ticonv_utf16_free(unsigned short *str)
 char* ticonv_utf16_to_utf8(const unsigned short *str)
 {
 	const gunichar2* src = str;
-	gchar* dst;
-	GError *error = NULL;
+	GError *error = nullptr;
 
-	if (str == NULL)
+	if (str == nullptr)
 	{
 		ticonv_critical("%s: str is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
-	dst = g_utf16_to_utf8(src, -1, NULL, NULL, &error);
+	gchar* dst = g_utf16_to_utf8(src, -1, nullptr, nullptr, &error);
 	if (error)
 	{
 		ticonv_critical("%s", error->message);
@@ -171,7 +169,7 @@ void TICALL ticonv_utf8_free(char *str)
  **/
 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short *utf16, char *ti)
 {
-	if (utf16 != NULL && ti != NULL)
+	if (utf16 != nullptr && ti != nullptr)
 	{
 		switch (model)
 		{
@@ -235,7 +233,7 @@ char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short 
 	else
 	{
 		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -250,12 +248,12 @@ char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short 
  **/
 char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned short *utf16)
 {
-	char * out = NULL;
-	if (utf16 != NULL)
+	char * out = nullptr;
+	if (utf16 != nullptr)
 	{
 		char * ti = (char *)g_malloc0(4*ticonv_utf16_strlen(utf16) + 1);	// upper bound
 		out = ticonv_charset_utf16_to_ti_s(model, utf16, ti);
-		if (out == NULL)
+		if (out == nullptr)
 		{
 			ticonv_ti_free(ti);
 		}
@@ -293,7 +291,7 @@ void TICALL ticonv_ti_free(char *str)
  **/
 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char *ti, unsigned short *utf16)
 {
-	if (ti != NULL && utf16 != NULL)
+	if (ti != nullptr && utf16 != nullptr)
 	{
 		switch (model)
 		{
@@ -352,7 +350,7 @@ unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char 
 	else
 	{
 		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -367,12 +365,12 @@ unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char 
  **/
 unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti)
 {
-	unsigned short * out = NULL;
-	if (ti != NULL)
+	unsigned short * out = nullptr;
+	if (ti != nullptr)
 	{
 		unsigned short * utf16 = (unsigned short *)g_malloc0(4 * strlen(ti) + 2);	// upper bound
 		out = ticonv_charset_ti_to_utf16_s(model, ti, utf16);
-		if (out == NULL)
+		if (out == nullptr)
 		{
 			ticonv_utf16_free(utf16);
 		}
@@ -401,7 +399,7 @@ unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *t
  **/
 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned char type)
 {
-	if (src != NULL && dst != NULL)
+	if (src != nullptr && dst != nullptr)
 	{
 		char * tmp = ticonv_varname_detokenize(model, src, type);
 		unsigned short * utf16 = ticonv_charset_ti_to_utf16_s(model, tmp, dst);
@@ -411,7 +409,7 @@ unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *sr
 	else
 	{
 		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -431,7 +429,7 @@ unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *sr
  **/
 unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const char *src, unsigned char type)
 {
-	if (src != NULL)
+	if (src != nullptr)
 	{
 		char * tmp = ticonv_varname_detokenize(model, src, type);
 		unsigned short * utf16 = ticonv_charset_ti_to_utf16(model, tmp);
@@ -441,7 +439,7 @@ unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const char *src,
 	else
 	{
 		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -463,10 +461,10 @@ unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const char *src,
  **/
 char* TICALL ticonv_varname_to_utf8_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type)
 {
-	if (src != NULL && dst != NULL && maxlen >= 1)
+	if (src != nullptr && dst != nullptr && maxlen >= 1)
 	{
 		char * tmp = ticonv_varname_to_utf8(model, src, type);
-		if (tmp != NULL)
+		if (tmp != nullptr)
 		{
 			strncpy(dst, tmp, maxlen - 1);
 			dst[maxlen - 1] = 0;
@@ -475,13 +473,13 @@ char* TICALL ticonv_varname_to_utf8_sn(CalcModel model, const char *src, char *d
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 	else
 	{
 		ticonv_critical("%s: an argument is invalid", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -502,10 +500,10 @@ char* TICALL ticonv_varname_to_utf8_sn(CalcModel model, const char *src, char *d
  **/
 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst, unsigned char type)
 {
-	if (src != NULL && dst != NULL)
+	if (src != nullptr && dst != nullptr)
 	{
 		char * tmp = ticonv_varname_to_utf8(model, src, type);
-		if (tmp != NULL)
+		if (tmp != nullptr)
 		{
 			strcpy(dst, tmp);
 			ticonv_utf8_free(tmp);
@@ -513,13 +511,13 @@ char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *ds
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 	else
 	{
 		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -539,7 +537,7 @@ char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *ds
  **/
 char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, unsigned char type)
 {
-	if (src != NULL)
+	if (src != nullptr)
 	{
 		unsigned short * utf16 = ticonv_varname_to_utf16(model, src, type);
 		gchar * utf8 = ticonv_utf16_to_utf8(utf16);
@@ -549,7 +547,7 @@ char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, unsigned c
 	else
 	{
 		ticonv_critical("%s: src is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -574,10 +572,10 @@ char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, unsigned c
  **/
 char* TICALL ticonv_varname_to_filename_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type)
 {
-	if (src != NULL && dst != NULL && maxlen >= 1)
+	if (src != nullptr && dst != nullptr && maxlen >= 1)
 	{
 		char * tmp = ticonv_varname_to_filename(model, src, type);
-		if (tmp != NULL)
+		if (tmp != nullptr)
 		{
 			strncpy(dst, tmp, maxlen - 1);
 			dst[maxlen - 1] = 0;
@@ -586,13 +584,13 @@ char* TICALL ticonv_varname_to_filename_sn(CalcModel model, const char *src, cha
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 	else
 	{
 		ticonv_critical("%s: an argument is invalid", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -616,10 +614,10 @@ char* TICALL ticonv_varname_to_filename_sn(CalcModel model, const char *src, cha
  **/
 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst, unsigned char type)
 {
-	if (src != NULL && dst != NULL)
+	if (src != nullptr && dst != nullptr)
 	{
 		char * tmp = ticonv_varname_to_filename(model, src, type);
-		if (tmp != NULL)
+		if (tmp != nullptr)
 		{
 			strcpy(dst, tmp);
 			ticonv_gfe_free(tmp);
@@ -627,13 +625,13 @@ char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 	else
 	{
 		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -654,7 +652,7 @@ char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char
  **/
 char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src, unsigned char type)
 {
-	if (src != NULL)
+	if (src != nullptr)
 	{
 		unsigned short * utf16 = ticonv_varname_to_utf16(model, src, type);
 		char * gfe = ticonv_utf16_to_gfe(model, utf16);
@@ -664,7 +662,7 @@ char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src, unsign
 	else
 	{
 		ticonv_critical("%s: src is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -686,7 +684,7 @@ char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src, unsign
  **/
 char* TICALL ticonv_varname_to_tifile_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type)
 {
-	if (src != NULL && dst != NULL && maxlen >= 1)
+	if (src != nullptr && dst != nullptr && maxlen >= 1)
 	{
 		char * tmp = ticonv_varname_to_tifile(model, src, type);
 		if (tmp)
@@ -698,13 +696,13 @@ char* TICALL ticonv_varname_to_tifile_sn(CalcModel model, const char *src, char 
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 	else
 	{
 		ticonv_critical("%s: an argument is invalid", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -725,7 +723,7 @@ char* TICALL ticonv_varname_to_tifile_sn(CalcModel model, const char *src, char 
  **/
 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type)
 {
-	if (src != NULL && dst != NULL)
+	if (src != nullptr && dst != nullptr)
 	{
 		char * tmp = ticonv_varname_to_tifile(model, src, type);
 		if (tmp)
@@ -736,13 +734,13 @@ char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 	else
 	{
 		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -764,10 +762,10 @@ char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src, unsigned
 	char *ti;
 	char *dst;
 
-	if (src == NULL)
+	if (src == nullptr)
 	{
 		ticonv_critical("%s: src is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
 	// Do TI-UTF-8 -> UTF-16,UTF-16 -> TI-8x/9x charset
@@ -826,10 +824,10 @@ char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src, unsigned
  **/
 char* TICALL ticonv_varname_from_tifile_sn(CalcModel model, const char *src, char *dst, uint32_t maxlen, unsigned char type)
 {
-	if (src != NULL && dst != NULL && maxlen >= 1)
+	if (src != nullptr && dst != nullptr && maxlen >= 1)
 	{
 		char * tmp = ticonv_varname_from_tifile(model, src, type);
-		if (tmp != NULL)
+		if (tmp != nullptr)
 		{
 			strncpy(dst, tmp, maxlen - 1);
 			dst[maxlen - 1] = 0;
@@ -838,13 +836,13 @@ char* TICALL ticonv_varname_from_tifile_sn(CalcModel model, const char *src, cha
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 	else
 	{
 		ticonv_critical("%s: an argument is invalid", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -865,10 +863,10 @@ char* TICALL ticonv_varname_from_tifile_sn(CalcModel model, const char *src, cha
  **/
 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type)
 {
-	if (src != NULL && dst != NULL)
+	if (src != nullptr && dst != nullptr)
 	{
 		char * tmp = ticonv_varname_from_tifile(model, src, type);
-		if (tmp != NULL)
+		if (tmp != nullptr)
 		{
 			strcpy(dst, tmp);
 			ticonv_ti_free(tmp);
@@ -876,13 +874,13 @@ char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 	else
 	{
 		ticonv_critical("%s: an argument is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -904,10 +902,10 @@ char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *src, unsign
 	char *ti;
 	char *dst;
 
-	if (src == NULL)
+	if (src == nullptr)
 	{
 		ticonv_critical("%s: src is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
 	if (model == CALC_TI84P_USB || model == CALC_TI82A_USB || model == CALC_TI84PT_USB)

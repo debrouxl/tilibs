@@ -83,11 +83,10 @@ static const uint8_t dbus_errors[] = { 0x03, 0x25, 0x1e, 0x21, 0x07, 0x24, 0x08 
 
 static int err_code(uint8_t *data)
 {
-	int i;
-	int code = data[2];
+	const int code = data[2];
 
 	ticalcs_info(" TI->PC: SKP (%02x)", data[0]);
-	for (i = 0; i < (int)(sizeof(dbus_errors) / sizeof(dbus_errors[0])); i++)
+	for (int i = 0; i < (int)(sizeof(dbus_errors) / sizeof(dbus_errors[0])); i++)
 	{
 		if(dbus_errors[i] == code)
 		{
@@ -104,13 +103,12 @@ int TICALL ti68k_send_VAR(CalcHandle* handle, uint32_t varsize, uint8_t vartype,
 {
 	uint8_t buffer[32];
 	char trans[127];
-	uint8_t extra = (target == DBUS_MID_PC_TI92) ? 0 : ((vartype == TI89_BKUP) ? 0 : 1);
-	uint16_t len;
+	const uint8_t extra = (target == DBUS_MID_PC_TI92) ? 0 : ((vartype == TI89_BKUP) ? 0 : 1);
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varname);
 
-	len = (uint16_t)strlen(varname);
+	uint16_t len = (uint16_t)strlen(varname);
 	if (len > 17)
 	{
 		ticalcs_critical("Oversized variable name has length %i, clamping to 17", len);
@@ -153,7 +151,7 @@ int TICALL ti68k_send_VAR_lab_equipment_data(CalcHandle* handle, uint32_t varsiz
 
 int TICALL ti68k_send_CTS(CalcHandle* handle, uint8_t target)
 {
-	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_CTS, "CTS", 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_CTS, "CTS", 2, nullptr);
 }
 
 int TICALL ti68k_send_XDP(CalcHandle* handle, uint32_t length, uint8_t * data, uint8_t target)
@@ -184,32 +182,31 @@ int TICALL ti92_send_SKP(CalcHandle* handle, uint8_t rej_code)
 
 int TICALL ti68k_send_ACK(CalcHandle* handle, uint8_t target)
 {
-	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_ACK, "ACK", 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_ACK, "ACK", 2, nullptr);
 }
 
 int TICALL ti68k_send_ERR(CalcHandle* handle, uint8_t target)
 {
-	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_ERR, "ERR", 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_ERR, "ERR", 2, nullptr);
 }
 
 int TICALL ti68k_send_RDY(CalcHandle* handle, uint8_t target)
 {
-	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_RDY, "RDY", 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_RDY, "RDY", 2, nullptr);
 }
 
 int TICALL ti68k_send_SCR(CalcHandle* handle, uint8_t target)
 {
-	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_SCR, "SCR", 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_SCR, "SCR", 2, nullptr);
 }
 
 int TICALL ti68k_send_CNT(CalcHandle* handle, uint8_t target)
 {
-	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_CNT, "CNT", 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_CNT, "CNT", 2, nullptr);
 }
 
 int TICALL ti68k_send_KEY(CalcHandle* handle, uint16_t scancode, uint8_t target)
 {
-	int ret;
 	uint8_t buf[4] = { target, DBUS_CMD_KEY, LSB(scancode), MSB(scancode) };
 	CalcEventData event;
 
@@ -220,8 +217,8 @@ int TICALL ti68k_send_KEY(CalcHandle* handle, uint16_t scancode, uint8_t target)
 	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_DBUS_PKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
-	ticalcs_event_fill_dbus_pkt(&event, /* length */ scancode, /* id */ target, /* cmd */ DBUS_CMD_KEY, /* data */ NULL);
-	ret = ticalcs_event_send(handle, &event);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ scancode, /* id */ target, /* cmd */ DBUS_CMD_KEY, /* data */ nullptr);
+	int ret = ticalcs_event_send(handle, &event);
 
 	if (!ret)
 	{
@@ -229,7 +226,7 @@ int TICALL ti68k_send_KEY(CalcHandle* handle, uint16_t scancode, uint8_t target)
 	}
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_SEND_DBUS_PKT, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
-	ticalcs_event_fill_dbus_pkt(&event, /* length */ scancode, /* id */ target, /* cmd */ DBUS_CMD_KEY, /* data */ NULL);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ scancode, /* id */ target, /* cmd */ DBUS_CMD_KEY, /* data */ nullptr);
 	ret = ticalcs_event_send(handle, &event);
 
 	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
@@ -239,17 +236,16 @@ int TICALL ti68k_send_KEY(CalcHandle* handle, uint16_t scancode, uint8_t target)
 
 int TICALL ti68k_send_EOT(CalcHandle* handle, uint8_t target)
 {
-	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_EOT, "EOT", 2, NULL);
+	return ti68k_send_simple_cmd(handle, target, DBUS_CMD_EOT, "EOT", 2, nullptr);
 }
 
 int TICALL ti89_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
 	uint8_t buffer[32];
-	uint16_t len;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varname);
-	len = (uint16_t)strlen(varname);
+	uint16_t len = (uint16_t)strlen(varname);
 	if (len > 17)
 	{
 		ticalcs_critical("Oversized variable name has length %i, clamping to 17", len);
@@ -277,11 +273,10 @@ int TICALL ti89_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t vartype, 
 int TICALL ti92_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
 	uint8_t buffer[32];
-	uint16_t len;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varname);
-	len = (uint16_t)strlen(varname);
+	uint16_t len = (uint16_t)strlen(varname);
 	if (len > 17)
 	{
 		ticalcs_critical("Oversized variable name has length %i, clamping to 17", len);
@@ -303,11 +298,10 @@ int TICALL ti92_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t vartype, 
 int TICALL ti89_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
 	uint8_t buffer[32];
-	uint16_t len;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varname);
-	len = (uint16_t)strlen(varname);
+	uint16_t len = (uint16_t)strlen(varname);
 	if (len > 17)
 	{
 		ticalcs_critical("Oversized variable name has length %i, clamping to 17", len);
@@ -334,11 +328,10 @@ int TICALL ti89_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t vartype, 
 int TICALL ti92_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
 	uint8_t buffer[32];
-	uint16_t len;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varname);
-	len = (uint16_t)strlen(varname);
+	uint16_t len = (uint16_t)strlen(varname);
 	if (len > 17)
 	{
 		ticalcs_critical("Oversized variable name has length %i, clamping to 17", len);
@@ -379,17 +372,16 @@ int TICALL ti89_send_RTS2(CalcHandle* handle, uint32_t varsize, uint8_t vartype,
 
 int TICALL ti89_send_VER(CalcHandle* handle)
 {
-	return ti68k_send_simple_cmd(handle, ti68k_handle_to_dbus_mid(handle), DBUS_CMD_VER, "VER", 2, NULL);
+	return ti68k_send_simple_cmd(handle, ti68k_handle_to_dbus_mid(handle), DBUS_CMD_VER, "VER", 2, nullptr);
 }
 
 int TICALL ti89_send_DEL(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
 	uint8_t buffer[32];
-	uint16_t len;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varname);
-	len = (uint16_t)strlen(varname);
+	uint16_t len = (uint16_t)strlen(varname);
 	if (len > 17)
 	{
 		ticalcs_critical("Oversized variable name has length %i, clamping to 17", len);
@@ -411,20 +403,15 @@ int TICALL ti89_send_DEL(CalcHandle* handle, uint32_t varsize, uint8_t vartype, 
 int TICALL ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
 	uint8_t host = 0, cmd = 0;
-	uint8_t *buffer;
 	uint16_t length = 0;
-	uint8_t strl;
-	uint8_t flag;
-	char * varname_nofldname;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varsize);
 	VALIDATE_NONNULL(vartype);
 	VALIDATE_NONNULL(varname);
 
-	buffer = (uint8_t *)handle->buffer;
-	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	uint8_t* buffer = (uint8_t*)handle->buffer;
+	const int ret = dbus_recv(handle, &host, &cmd, &length, buffer);
 	if (ret)
 	{
 		return ret;
@@ -446,10 +433,10 @@ int TICALL ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * varty
 
 	*varsize = buffer[0] | (((uint32_t)buffer[1]) << 8) | (((uint32_t)buffer[2]) << 16) | (((uint32_t)buffer[3]) << 24);
 	*vartype = buffer[4];
-	strl = buffer[5];
+	const uint8_t strl = buffer[5];
 	memcpy(varname, buffer + 6, strl);
 	varname[strl] = '\0';
-	flag = buffer[6 + strl];
+	const uint8_t flag = buffer[6 + strl];
 
 	if ((length != (6 + strlen(varname))) && (length != (7 + strlen(varname))))
 	{
@@ -457,7 +444,7 @@ int TICALL ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * varty
 	}
 
 	ticalcs_info(" TI->PC: VAR (size=0x%08X=%i, id=%02X, name=%s, flag=%i)", *varsize, *varsize, *vartype, varname, flag);
-	varname_nofldname = tifiles_get_varname(varname);
+	const char* varname_nofldname = tifiles_get_varname(varname);
 	if (varname_nofldname != varname)
 	{
 		// This variable name contains a folder name. Erase it.
@@ -471,18 +458,15 @@ int TICALL ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * varty
 int TICALL ti92_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
 	uint8_t host = 0, cmd = 0;
-	uint8_t *buffer;
 	uint16_t length = 0;
-	uint8_t strl;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varsize);
 	VALIDATE_NONNULL(vartype);
 	VALIDATE_NONNULL(varname);
 
-	buffer = (uint8_t *)handle->buffer;
-	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	uint8_t* buffer = (uint8_t*)handle->buffer;
+	const int ret = dbus_recv(handle, &host, &cmd, &length, buffer);
 	if (ret)
 	{
 		return ret;
@@ -504,7 +488,7 @@ int TICALL ti92_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * varty
 
 	*varsize = buffer[0] | (((uint32_t)buffer[1]) << 8) | (((uint32_t)buffer[2]) << 16) | (((uint32_t)buffer[3]) << 24);
 	*vartype = buffer[4];
-	strl = buffer[5];
+	const uint8_t strl = buffer[5];
 	memcpy(varname, buffer + 6, strl);
 	varname[strl] = '\0';
 
@@ -522,13 +506,11 @@ static int ti68k_recv_CTS(CalcHandle* handle, uint8_t is_92)
 {
 	uint8_t host = 0, cmd = 0;
 	uint16_t length = 0;
-	uint8_t *buffer;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 
-	buffer = (uint8_t *)handle->buffer;
-	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	uint8_t* buffer = (uint8_t*)handle->buffer;
+	const int ret = dbus_recv(handle, &host, &cmd, &length, buffer);
 	if (ret)
 	{
 		return ret;
@@ -566,16 +548,14 @@ int TICALL ti68k_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 {
 	uint8_t host = 0, cmd = 0;
 	uint16_t length = 0;
-	uint8_t *buffer;
-	int retval;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(rej_code);
 
-	buffer = (uint8_t *)handle->buffer;
+	uint8_t* buffer = (uint8_t*)handle->buffer;
 	*rej_code = 0;
 
-	retval = dbus_recv(handle, &host, &cmd, &length, buffer);
+	int retval = dbus_recv(handle, &host, &cmd, &length, buffer);
 	if (retval == 0)
 	{
 		if (cmd == DBUS_CMD_CTS)
@@ -591,7 +571,7 @@ int TICALL ti68k_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 			else
 			{
 				ticalcs_info(" TI->PC: SKP (rejection code = %i)", buffer[0]);
-				if (rej_code != NULL)
+				if (rej_code != nullptr)
 				{
 					*rej_code = buffer[0];
 				}
@@ -606,12 +586,11 @@ int TICALL ti68k_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data)
 {
 	uint8_t host = 0, cmd = 0;
 	uint16_t len = 0;
-	int err;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(length);
 
-	err = dbus_recv(handle, &host, &cmd, &len, data);
+	const int err = dbus_recv(handle, &host, &cmd, &len, data);
 	*length = len;
 
 	if (cmd != DBUS_CMD_XDP)
@@ -636,13 +615,11 @@ static int ti68k_recv_ACK(CalcHandle* handle, uint16_t * status, uint8_t is_92)
 {
 	uint8_t host = 0, cmd = 0;
 	uint16_t length = 0;
-	uint8_t *buffer;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 
-	buffer = (uint8_t *)handle->buffer;
-	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	uint8_t* buffer = (uint8_t*)handle->buffer;
+	const int ret = dbus_recv(handle, &host, &cmd, &length, buffer);
 	if (ret)
 	{
 		return ret;
@@ -653,7 +630,7 @@ static int ti68k_recv_ACK(CalcHandle* handle, uint16_t * status, uint8_t is_92)
 		return ERR_CALC_ERROR1 + err_code(buffer);
 	}
 
-	if (status != NULL)
+	if (status != nullptr)
 	{
 		*status = length;
 	}
@@ -686,11 +663,10 @@ int TICALL ti68k_recv_CNT(CalcHandle* handle)
 {
 	uint8_t host = 0, cmd = 0;
 	uint16_t sts = 0;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 
-	ret = dbus_recv(handle, &host, &cmd, &sts, NULL);
+	const int ret = dbus_recv(handle, &host, &cmd, &sts, nullptr);
 	if (ret)
 	{
 		return ret;
@@ -715,11 +691,10 @@ int TICALL ti68k_recv_EOT(CalcHandle* handle)
 {
 	uint8_t host = 0, cmd = 0;
 	uint16_t length = 0;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 
-	ret = dbus_recv(handle, &host, &cmd, &length, NULL);
+	const int ret = dbus_recv(handle, &host, &cmd, &length, nullptr);
 	if (ret)
 	{
 		return ret;
@@ -738,18 +713,15 @@ int TICALL ti68k_recv_EOT(CalcHandle* handle)
 static int ti68k_recv_RTS(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname, uint8_t is_92)
 {
 	uint8_t host = 0, cmd = 0;
-	uint8_t *buffer;
 	uint16_t length = 0;
-	uint8_t strl;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varsize);
 	VALIDATE_NONNULL(vartype);
 	VALIDATE_NONNULL(varname);
 
-	buffer = (uint8_t *)handle->buffer;
-	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	uint8_t* buffer = (uint8_t*)handle->buffer;
+	const int ret = dbus_recv(handle, &host, &cmd, &length, buffer);
 	if (ret)
 	{
 		return ret;
@@ -770,7 +742,7 @@ static int ti68k_recv_RTS(CalcHandle* handle, uint32_t * varsize, uint8_t * vart
 
 	*varsize = buffer[0] | (((uint32_t)buffer[1]) << 8) | (((uint32_t)buffer[2]) << 16) | (((uint32_t)buffer[3]) << 24);
 	*vartype = buffer[4];
-	strl = buffer[5];
+	const uint8_t strl = buffer[5];
 	memcpy(varname, buffer + 6, strl);
 	varname[strl] = '\0';
 

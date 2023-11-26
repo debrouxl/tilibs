@@ -46,9 +46,8 @@ static int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
 {
 	uint8_t host = 0, cmd = 0;
 	uint16_t length = 0;
-	int ret;
 
-	ret = dbus_recv(handle, &host, &cmd, &length, (uint8_t *)handle->buffer2);
+	int ret = dbus_recv(handle, &host, &cmd, &length, (uint8_t*)handle->buffer2);
 	if (!ret)
 	{
 		ticalcs_info(" TI->PC: ACK");
@@ -71,7 +70,7 @@ static int try_ready_command(CalcHandle * handle, uint8_t mid, uint8_t * host, u
 	for (unsigned int i = 0; i < 2; i++)
 	{
 		ticalcs_info(" PC->TI: RDY?");
-		ret = dbus_send(handle, mid, DBUS_CMD_RDY, 2, NULL);
+		ret = dbus_send(handle, mid, DBUS_CMD_RDY, 2, nullptr);
 		//uint8_t buf[4] = { mid, DBUS_CMD_RDY, 0, 0 };
 		//ret = ticables_cable_send(handle->cable, buf, sizeof(buf));
 		if (ret)
@@ -129,7 +128,6 @@ static int try_ready_command(CalcHandle * handle, uint8_t mid, uint8_t * host, u
  **/
 static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 {
-	int err;
 	uint8_t data;
 
 	do
@@ -139,7 +137,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 		/* Test for a TI86 before a TI85 */
 		ticalcs_info("%s", _("Check for TI86... "));
-		err = dbus_send(handle, DBUS_MID_PC_TI86, DBUS_CMD_SCR, 0, NULL);
+		int err = dbus_send(handle, DBUS_MID_PC_TI86, DBUS_CMD_SCR, 0, nullptr);
 		if (err)
 		{
 			break;
@@ -163,7 +161,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 		/* Test for a TI85 */
 		ticalcs_info("%s", _("Check for TI85... "));
-		err = dbus_send(handle, DBUS_MID_PC_TI85, DBUS_CMD_SCR, 0, NULL);
+		err = dbus_send(handle, DBUS_MID_PC_TI85, DBUS_CMD_SCR, 0, nullptr);
 		if (err)
 		{
 			break;
@@ -187,7 +185,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 		/* Test for a TI73 before a TI83 */
 		ticalcs_info("%s", _("Check for TI73... "));
-		err = dbus_send(handle, DBUS_MID_PC_TI73, DBUS_CMD_SCR, 0, NULL);
+		err = dbus_send(handle, DBUS_MID_PC_TI73, DBUS_CMD_SCR, 0, nullptr);
 		if (err)
 		{
 			break;
@@ -211,7 +209,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 		/* Test for a TI83 before a TI82 */
 		ticalcs_info("%s", _("Check for TI83... "));
-		err = dbus_send(handle, DBUS_MID_PC_TI83, DBUS_CMD_SCR, 0, NULL);
+		err = dbus_send(handle, DBUS_MID_PC_TI83, DBUS_CMD_SCR, 0, nullptr);
 		if (err)
 		{
 			break;
@@ -235,7 +233,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 		/* Test for a TI82 */
 		ticalcs_info("%s", _("Check for TI82... "));
-		err = dbus_send(handle, DBUS_MID_PC_TI83, DBUS_CMD_SCR, 0, NULL);
+		err = dbus_send(handle, DBUS_MID_PC_TI83, DBUS_CMD_SCR, 0, nullptr);
 		if (err)
 		{
 			break;
@@ -583,13 +581,12 @@ int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model)
  **/
 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model, int all)
 {
-	CableHandle *handle;
 	int ret = 0;
 
 	VALIDATE_NONNULL(model);
 
 	// get handle
-	handle = ticables_handle_new(c_model, c_port);
+	CableHandle* handle = ticables_handle_new(c_model, c_port);
 	ticables_options_set_timeout(handle, 10);
 
 	do
@@ -655,7 +652,7 @@ CalcModel TICALL ticalcs_device_info_to_model(const CableDeviceInfo *info)
 {
 	CalcModel model = CALC_NONE;
 
-	if (info != NULL)
+	if (info != nullptr)
 	{
 		if (info->family == CABLE_FAMILY_DBUS)
 		{

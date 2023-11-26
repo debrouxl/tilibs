@@ -72,14 +72,12 @@ static const DUSBVtlPktInfo vpkt_types[] =
 	{ DUSB_VPKT_DELAY_ACK, "Delay Acknowledgment" },
 	{ DUSB_VPKT_EOT, "End of Transmission" },
 	{ DUSB_VPKT_ERROR, "Error" },
-	{ 0xFFFF, NULL}
+	{ 0xFFFF, nullptr }
 };
 
 const char* TICALL dusb_vpkt_type2name(uint16_t id)
 {
-	const DUSBVtlPktInfo *p;
-
-	for (p = vpkt_types; p->name != NULL; p++)
+	for (const DUSBVtlPktInfo* p = vpkt_types; p->name != nullptr; p++)
 	{
 		if (p->id == id)
 		{
@@ -94,7 +92,7 @@ const char* TICALL dusb_vpkt_type2name(uint16_t id)
 
 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uint32_t size, uint16_t type, uint8_t * data)
 {
-	DUSBVirtualPacket* vtl = NULL;
+	DUSBVirtualPacket* vtl = nullptr;
 
 	// RFS: it's alright if data is nullptr at this stage.
 
@@ -102,7 +100,7 @@ DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uint32_t size
 	{
 		vtl = (DUSBVirtualPacket *)g_malloc0(sizeof(DUSBVirtualPacket));
 
-		if (NULL != vtl)
+		if (nullptr != vtl)
 		{
 			//GList * vtl_pkt_list;
 
@@ -124,12 +122,12 @@ DUSBVirtualPacket* TICALL dusb_vtl_pkt_new_ex(CalcHandle * handle, uint32_t size
 
 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new(CalcHandle * handle)
 {
-	return dusb_vtl_pkt_new_ex(handle, 0, 0, NULL);
+	return dusb_vtl_pkt_new_ex(handle, 0, 0, nullptr);
 }
 
 void TICALL dusb_vtl_pkt_fill(DUSBVirtualPacket* vtl, uint32_t size, uint16_t type, uint8_t * data)
 {
-	if (vtl != NULL)
+	if (vtl != nullptr)
 	{
 		vtl->size = size;
 		vtl->type = type;
@@ -151,7 +149,7 @@ void TICALL dusb_vtl_pkt_del(CalcHandle * handle, DUSBVirtualPacket* vtl)
 		return;
 	}
 
-	if (vtl == NULL)
+	if (vtl == nullptr)
 	{
 		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
 		return;
@@ -183,7 +181,7 @@ DUSBVirtualPacket * TICALL dusb_vtl_pkt_realloc_data(CalcHandle * handle, DUSBVi
 		return nullptr;
 	}
 
-	if (vtl != NULL)
+	if (vtl != nullptr)
 	{
 		if (size + DUSB_DH_SIZE > size)
 		{
@@ -198,7 +196,7 @@ DUSBVirtualPacket * TICALL dusb_vtl_pkt_realloc_data(CalcHandle * handle, DUSBVi
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -221,7 +219,6 @@ void TICALL dusb_vtl_pkt_free_data(CalcHandle * handle, void * data)
 int TICALL dusb_send_buf_size_request(CalcHandle* handle, uint32_t size)
 {
 	DUSBRawPacket raw;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 
@@ -241,7 +238,7 @@ int TICALL dusb_send_buf_size_request(CalcHandle* handle, uint32_t size)
 	raw.data[2] = (size >>  8) & 0xFF;
 	raw.data[3] = (size      ) & 0xFF;
 
-	ret = dusb_send(handle, &raw);
+	const int ret = dusb_send(handle, &raw);
 	if (!ret)
 	{
 		ticalcs_info("  PC->TI: Buffer Size Request (%i bytes)", size);
@@ -253,7 +250,6 @@ int TICALL dusb_send_buf_size_request(CalcHandle* handle, uint32_t size)
 int TICALL dusb_recv_buf_size_alloc(CalcHandle* handle, uint32_t *size)
 {
 	DUSBRawPacket raw;
-	uint32_t tmp;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
@@ -277,7 +273,8 @@ int TICALL dusb_recv_buf_size_alloc(CalcHandle* handle, uint32_t *size)
 			break;
 		}
 
-		tmp = (((uint32_t)raw.data[0]) << 24) | (((uint32_t)raw.data[1]) << 16) | (((uint32_t)raw.data[2]) << 8) | (((uint32_t)raw.data[3]) << 0);
+		uint32_t tmp = (((uint32_t)raw.data[0]) << 24) | (((uint32_t)raw.data[1]) << 16) | (((uint32_t)raw.data[2]) << 8) | (((uint32_t)raw.data[3])
+			               << 0);
 		if (tmp > sizeof(raw.data))
 		{
 			ticalcs_critical("Clamping overly large buffer size allocation to %u bytes", (unsigned int)sizeof(raw.data));
@@ -304,7 +301,6 @@ int TICALL dusb_recv_buf_size_alloc(CalcHandle* handle, uint32_t *size)
 int TICALL dusb_recv_buf_size_request(CalcHandle* handle, uint32_t *size)
 {
 	DUSBRawPacket raw;
-	uint32_t tmp;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
@@ -326,7 +322,8 @@ int TICALL dusb_recv_buf_size_request(CalcHandle* handle, uint32_t *size)
 			ret = ERR_INVALID_PACKET;
 		}
 
-		tmp = (((uint32_t)raw.data[0]) << 24) | (((uint32_t)raw.data[1]) << 16) | (((uint32_t)raw.data[2]) << 8) | (((uint32_t)raw.data[3]) << 0);
+		const uint32_t tmp = (((uint32_t)raw.data[0]) << 24) | (((uint32_t)raw.data[1]) << 16) | (((uint32_t)raw.data[2]) << 8) | (((uint32_t)raw.data[3])
+		                                                                                                                           << 0);
 		if (size)
 		{
 			*size = tmp;
@@ -340,7 +337,6 @@ int TICALL dusb_recv_buf_size_request(CalcHandle* handle, uint32_t *size)
 int TICALL dusb_send_buf_size_alloc(CalcHandle* handle, uint32_t size)
 {
 	DUSBRawPacket raw;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 
@@ -360,7 +356,7 @@ int TICALL dusb_send_buf_size_alloc(CalcHandle* handle, uint32_t size)
 	raw.data[2] = (size >>  8) & 0xFF;
 	raw.data[3] = (size      ) & 0xFF;
 
-	ret = dusb_send(handle, &raw);
+	const int ret = dusb_send(handle, &raw);
 	if (!ret)
 	{
 		ticalcs_info("  PC->TI: Buffer Size Allocation (%i bytes)", size);
@@ -399,7 +395,6 @@ int TICALL dusb_set_buf_size(CalcHandle* handle, uint32_t size)
 int TICALL dusb_send_acknowledge(CalcHandle* handle)
 {
 	DUSBRawPacket raw;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 
@@ -411,7 +406,7 @@ int TICALL dusb_send_acknowledge(CalcHandle* handle)
 	raw.data[0] = 0xE0;
 	raw.data[1] = 0x00;
 
-	ret = dusb_send(handle, &raw);
+	const int ret = dusb_send(handle, &raw);
 	if (!ret)
 	{
 #if (VPKT_DBG == 2)
@@ -452,15 +447,14 @@ int TICALL dusb_recv_acknowledge(CalcHandle *handle)
 
 		if (raw.type == DUSB_RPKT_BUF_SIZE_REQ)
 		{
-			uint32_t size;
-
 			if (raw.size != 4)
 			{
 				ret = ERR_INVALID_PACKET;
 				break;
 			}
 
-			size = (((uint32_t)raw.data[0]) << 24) | (((uint32_t)raw.data[1]) << 16) | (((uint32_t)raw.data[2]) << 8) | (((uint32_t)raw.data[3]) << 0);
+			const uint32_t size = (((uint32_t)raw.data[0]) << 24) | (((uint32_t)raw.data[1]) << 16) | (((uint32_t)raw.data[2]) << 8) | (((uint32_t)raw.data[3])
+			                                                                                                                            << 0);
 			ticalcs_info("  TI->PC: Buffer Size Request (%i bytes)", size);
 
 			ret = dusb_send_buf_size_alloc(handle, size);
@@ -539,8 +533,7 @@ static void workaround_send(CalcHandle *handle, DUSBRawPacket *raw, DUSBVirtualP
 int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 {
 	DUSBRawPacket raw;
-	int i, r, q;
-	long offset;
+	int r, q;
 	int ret = 0;
 	CalcEventData event;
 
@@ -610,7 +603,7 @@ int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 				raw.data[4] = MSB(vtl->type);
 				raw.data[5] = LSB(vtl->type);
 				memcpy(&raw.data[DUSB_DH_SIZE], vtl->data, handle->priv.dusb_rpkt_maxlen - DUSB_DH_SIZE);
-				offset = handle->priv.dusb_rpkt_maxlen - DUSB_DH_SIZE;
+				long offset = handle->priv.dusb_rpkt_maxlen - DUSB_DH_SIZE;
 
 				ret = dusb_send(handle, &raw);
 				if (ret)
@@ -633,7 +626,7 @@ int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 				r = (vtl->size - offset) % handle->priv.dusb_rpkt_maxlen;
 
 				// send full chunks (no header)
-				for (i = 1; i <= q; i++)
+				for (int i = 1; i <= q; i++)
 				{
 					raw.size = handle->priv.dusb_rpkt_maxlen;
 					raw.type = (i != q || r != 0) ? DUSB_RPKT_VIRT_DATA : DUSB_RPKT_VIRT_DATA_LAST;
@@ -757,7 +750,7 @@ int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacket* vtl, ui
 	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_DUSB_VPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
-	ticalcs_event_fill_dusb_vpkt(&event, /* size */ 0, /* type */ 0, /* data */ NULL);
+	ticalcs_event_fill_dusb_vpkt(&event, /* size */ 0, /* type */ 0, /* data */ nullptr);
 	ret = ticalcs_event_send(handle, &event);
 
 	if (!ret)
@@ -804,7 +797,7 @@ int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacket* vtl, ui
 
 				vtl->type = (((uint16_t)raw.data[4]) << 8) | (raw.data[5] << 0);
 				vtl->data = (uint8_t *)g_realloc(vtl->data, alloc_size);
-				if (vtl->data != NULL)
+				if (vtl->data != nullptr)
 				{
 					memcpy(vtl->data, &raw.data[DUSB_DH_SIZE], raw.size - DUSB_DH_SIZE);
 				}
@@ -816,7 +809,7 @@ int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacket* vtl, ui
 #elif (VPKT_DBG == 1)
 				ticalcs_info("  TI->PC: %s", dusb_vpkt_type2name(vtl->type));
 #endif
-				if (vtl->data != NULL && vtl->type == 0xEE00)
+				if (vtl->data != nullptr && vtl->type == 0xEE00)
 				{
 					ticalcs_info("    Error Code : %04x\n", (((int)vtl->data[0]) << 8) | vtl->data[1]);
 				}
@@ -885,14 +878,13 @@ int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacket* vtl, ui
 int TICALL dusb_recv_data(CalcHandle* handle, DUSBVirtualPacket* vtl)
 {
 	uint32_t declared_size;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(vtl);
 
 	// dusb_recv_data_varsize() takes care of handle->busy.
 
-	ret = dusb_recv_data_varsize(handle, vtl, &declared_size, 0);
+	int ret = dusb_recv_data_varsize(handle, vtl, &declared_size, 0);
 	// TODO MAYBE reimplement the following block as a temporary event hook ?
 	if (!ret)
 	{

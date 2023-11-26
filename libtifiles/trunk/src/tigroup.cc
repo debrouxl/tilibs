@@ -66,12 +66,12 @@
  **/
 TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type, CalcModel model)
 {
-	TigEntry *entry = NULL;
+	TigEntry *entry = nullptr;
 
-	if (filename != NULL && strcmp(filename, ""))
+	if (filename != nullptr && strcmp(filename, ""))
 	{
 		entry = (TigEntry *)g_malloc0(sizeof(TigEntry));
-		if (entry != NULL)
+		if (entry != nullptr)
 		{
 			entry->filename = g_path_get_basename(filename);
 			entry->type = type;
@@ -114,7 +114,7 @@ int TICALL tifiles_te_delete(TigEntry* entry)
 	tifiles_te_display(entry);
 #endif
 
-	if (entry != NULL)
+	if (entry != nullptr)
 	{
 		g_free(entry->filename);
 
@@ -147,7 +147,7 @@ int TICALL tifiles_te_delete(TigEntry* entry)
  **/
 int TICALL tifiles_te_display(TigEntry* entry)
 {
-	if (entry == NULL)
+	if (entry == nullptr)
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -199,9 +199,9 @@ TigEntry**	TICALL tifiles_te_create_array(unsigned int nelts)
 TigEntry**	TICALL tifiles_te_resize_array(TigEntry** array, unsigned int nelts)
 {
 	TigEntry ** ptr = (TigEntry **)g_realloc(array, (nelts + 1) * sizeof(TigEntry *));
-	if (ptr != NULL)
+	if (ptr != nullptr)
 	{
-		ptr[nelts] = NULL;
+		ptr[nelts] = nullptr;
 	}
 	return ptr;
 }
@@ -216,15 +216,13 @@ TigEntry**	TICALL tifiles_te_resize_array(TigEntry** array, unsigned int nelts)
  **/
 void			TICALL tifiles_te_delete_array(TigEntry** array)
 {
-	TigEntry** ptr;
-
 #ifdef TRACE_CONTENT_INSTANCES
 	tifiles_info("tifiles_te_delete_array: %p", array);
 #endif
 
-	if (array != NULL)
+	if (array != nullptr)
 	{
-		for (ptr = array; *ptr; ptr++)
+		for (TigEntry** ptr = array; *ptr; ptr++)
 		{
 			tifiles_te_delete(*ptr);
 		}
@@ -249,11 +247,10 @@ void			TICALL tifiles_te_delete_array(TigEntry** array)
 int TICALL tifiles_te_sizeof_array(TigEntry** array)
 {
 	int i = 0;
-	TigEntry **p;
 
-	if (array != NULL)
+	if (array != nullptr)
 	{
-		for (p = array; *p; p++, i++);
+		for (TigEntry** p = array; *p; p++, i++);
 	}
 	else
 	{
@@ -277,7 +274,7 @@ int TICALL tifiles_te_sizeof_array(TigEntry** array)
  **/
 int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
 {
-	if (content == NULL || te == NULL)
+	if (content == nullptr || te == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return 0;
@@ -290,7 +287,7 @@ int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
 		content->app_entries = tifiles_te_resize_array(content->app_entries, n + 1);
 
 		content->app_entries[n++] = te;
-		content->app_entries[n] = NULL;
+		content->app_entries[n] = nullptr;
 		content->n_apps = n;
 
 		return n;
@@ -302,7 +299,7 @@ int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
 		content->var_entries = tifiles_te_resize_array(content->var_entries, n + 1);
 
 		content->var_entries[n++] = te;
-		content->var_entries[n] = NULL;
+		content->var_entries[n] = nullptr;
 		content->n_vars = n;
 
 		return n;
@@ -324,7 +321,7 @@ int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 {
 	unsigned int i, j, k;
 
-	if (content == NULL || te == NULL)
+	if (content == nullptr || te == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return -1;
@@ -339,7 +336,7 @@ int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 	// Search for entry
 	for (i = 0; i < content->n_vars && (te->type & TIFILE_REGULAR); i++)
 	{
-		TigEntry *s = content->var_entries[i];
+		const TigEntry *s = content->var_entries[i];
 
 		if (!strcmp(s->filename, te->filename))
 		{
@@ -349,7 +346,7 @@ int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 
 	for (j = 0; j < content->n_apps && (te->type & TIFILE_FLASH); j++)
 	{
-		TigEntry *s = content->app_entries[i];
+		const TigEntry *s = content->app_entries[i];
 
 		if (!strcmp(s->filename, te->filename))
 		{
@@ -374,7 +371,7 @@ int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 		{
 			content->var_entries[k] = content->var_entries[k+1];
 		}
-		content->var_entries[k] = NULL;
+		content->var_entries[k] = nullptr;
 
 		// And resize
 		content->var_entries = tifiles_te_resize_array(content->var_entries, content->n_vars - 1);
@@ -393,7 +390,7 @@ int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 		{
 			content->app_entries[k] = content->app_entries[k+1];
 		}
-		content->app_entries[k] = NULL;
+		content->app_entries[k] = nullptr;
 
 		// And resize
 		content->app_entries = tifiles_te_resize_array(content->app_entries, content->n_apps - 1);
@@ -420,13 +417,10 @@ int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
  **/
 int TICALL tifiles_tigroup_add_file(const char *src_filename, const char *dst_filename)
 {
-	CalcModel model;
-	FileClass type;
-	TigEntry *te;
-	TigContent *content = NULL;
+	TigContent *content = nullptr;
 	int ret = 0;
 
-	if (src_filename == NULL || dst_filename == NULL)
+	if (src_filename == nullptr || dst_filename == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return -1;
@@ -440,7 +434,7 @@ int TICALL tifiles_tigroup_add_file(const char *src_filename, const char *dst_fi
 			content = tifiles_content_create_tigroup(CALC_NONE, 0);
 			tifiles_file_write_tigroup(dst_filename, content);
 			tifiles_content_delete_tigroup(content);
-			content = NULL;
+			content = nullptr;
 		}
 	}
 
@@ -452,11 +446,11 @@ int TICALL tifiles_tigroup_add_file(const char *src_filename, const char *dst_fi
 	}
 
 	// load src file
-	model = tifiles_file_get_model(src_filename);
-	type = tifiles_file_get_class(src_filename);
+	const CalcModel model = tifiles_file_get_model(src_filename);
+	const FileClass type = tifiles_file_get_class(src_filename);
 
-	te = tifiles_te_create(src_filename, type, model);
-	if (te == NULL)
+	TigEntry* te = tifiles_te_create(src_filename, type, model);
+	if (te == nullptr)
 	{
 		ret = ERR_BAD_FILE;
 		goto ttaf;
@@ -514,10 +508,10 @@ ttaf:	// release on exit
  **/
 int TICALL tifiles_tigroup_del_file(TigEntry *entry, const char *filename)
 {
-	TigContent* content = NULL;
+	TigContent* content = nullptr;
 	int ret = 0;
 
-	if (entry == NULL || filename == NULL)
+	if (entry == nullptr || filename == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return -1;
@@ -555,16 +549,15 @@ int TICALL tifiles_tigroup_del_file(TigEntry *entry, const char *filename)
  **/
 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **src_contents2, TigContent **dst_content)
 {
-	TigContent *content;
 	int i, m=0, n=0;
 	CalcModel model = CALC_NONE;
 
-	if (src_contents1 == NULL && src_contents2 == NULL)
+	if (src_contents1 == nullptr && src_contents2 == nullptr)
 	{
 		return -1;
 	}
 
-	if (dst_content == NULL)
+	if (dst_content == nullptr)
 	{
 		tifiles_critical("%s: dst_content is NULL", __FUNCTION__);
 		return -1;
@@ -572,11 +565,11 @@ int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **
 
 	if (src_contents1)
 	{
-		for (m = 0; src_contents1[m] != NULL; m++);
+		for (m = 0; src_contents1[m] != nullptr; m++);
 	}
 	if (src_contents2)
 	{
-		for (n = 0; src_contents2[n] != NULL; n++);
+		for (n = 0; src_contents2[n] != nullptr; n++);
 	}
 
 	if (src_contents2)
@@ -594,7 +587,7 @@ int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **
 		}
 	}
 
-	content = tifiles_content_create_tigroup(model, m+n);
+	TigContent* content = tifiles_content_create_tigroup(model, m + n);
 
 	if (src_contents1)
 	{
@@ -613,7 +606,6 @@ int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **
 	{
 		for (i = 0; i < n; i++)
 		{
-			TigEntry *te;
 			VarEntry ve;
 			FlashContent *ptr;
 
@@ -624,13 +616,13 @@ int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **
 					break;
 				}
 			}
-			if (ptr == NULL)
+			if (ptr == nullptr)
 			{
 				tifiles_critical("%s: ptr is NULL, skipping", __FUNCTION__);
 				continue;
 			}
 
-			te = (TigEntry *)g_malloc0(sizeof(TigEntry));
+			TigEntry* te = (TigEntry*)g_malloc0(sizeof(TigEntry));
 			ve.folder[0] = 0;
 			strncpy(ve.name, ptr->name, sizeof(ve.name) - 1);
 			ve.name[sizeof(ve.name) - 1] = 0;
@@ -666,12 +658,11 @@ int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **
  **/
 int TICALL tifiles_untigroup_content(TigContent *src_content, FileContent ***dst_contents1, FlashContent ***dst_contents2)
 {
-	TigContent *src = src_content;
-	FileContent **dst1 = NULL;
-	FlashContent **dst2 = NULL;
-	unsigned int i, j;
+	const TigContent *src = src_content;
+	FileContent **dst1 = nullptr;
+	FlashContent **dst2 = nullptr;
 
-	if (src_content == NULL || dst_contents1 == NULL || dst_contents2 == NULL)
+	if (src_content == nullptr || dst_contents1 == nullptr || dst_contents2 == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return -1;
@@ -684,28 +675,28 @@ int TICALL tifiles_untigroup_content(TigContent *src_content, FileContent ***dst
 
 	// allocate an array of FileContent/FlashContent structures (NULL terminated)
 	dst1 = (FileContent **)g_malloc0((src->n_vars+1) * sizeof(FileContent *));
-	if (dst1 == NULL)
+	if (dst1 == nullptr)
 	{
 		return ERR_MALLOC;
 	}
 	dst2 = (FlashContent **)g_malloc0((src->n_apps+1) * sizeof(FlashContent *));
-	if (dst2 == NULL)
+	if (dst2 == nullptr)
 	{
 		g_free(dst1);
 		return ERR_MALLOC;
 	}
 
 	// parse each entry and duplicate it into a single content
-	for (i = 0; i < src->n_vars; i++)
+	for (unsigned int i = 0; i < src->n_vars; i++)
 	{
-		TigEntry *te = src->var_entries[i];
+		const TigEntry *te = src->var_entries[i];
 
 		dst1[i] = tifiles_content_dup_regular(te->content.regular);
 	}
 
-	for (j = 0; j < src->n_apps; j++)
+	for (unsigned int j = 0; j < src->n_apps; j++)
 	{
-		TigEntry *te = src->app_entries[j];
+		const TigEntry *te = src->app_entries[j];
 
 		dst2[j] = tifiles_content_dup_flash(te->content.flash);
 	}
@@ -727,14 +718,13 @@ int TICALL tifiles_untigroup_content(TigContent *src_content, FileContent ***dst
  **/
 int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst_filename)
 {
-	FileContent **src1 = NULL;
-	FlashContent **src2 = NULL;
-	TigContent *dst = NULL;
-	CalcModel model;
+	FileContent **src1 = nullptr;
+	FlashContent **src2 = nullptr;
+	TigContent *dst = nullptr;
 	int i, j, k, m, n;
 	int ret = 0;
 
-	if (src_filenames == NULL || dst_filename == NULL)
+	if (src_filenames == nullptr || dst_filename == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL !", __FUNCTION__);
 		return -1;
@@ -752,17 +742,17 @@ int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst_filename)
 			n++;
 		}
 	}
-	model = tifiles_file_get_model(src_filenames[0]);
+	const CalcModel model = tifiles_file_get_model(src_filenames[0]);
 
 	// allocate space for that
 	src1 = (FileContent **)g_malloc0((m + 1) * sizeof(FileContent *));
-	if (src1 == NULL)
+	if (src1 == nullptr)
 	{
 		return ERR_MALLOC;
 	}
 
 	src2 = (FlashContent **)g_malloc0((n + 1) * sizeof(FlashContent *));
-	if (src2 == NULL)
+	if (src2 == nullptr)
 	{
 		g_free(src1);
 		return ERR_MALLOC;
@@ -832,14 +822,14 @@ tgf:
  **/
 int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst_filenames)
 {
-	TigContent *src = NULL;
-	FileContent **ptr1, **dst1 = NULL;
-	FlashContent **ptr2, **dst2 = NULL;
+	TigContent *src = nullptr;
+	FileContent **ptr1, **dst1 = nullptr;
+	FlashContent **ptr2, **dst2 = nullptr;
 	char *real_name;
 	unsigned int i, j;
 	int ret = 0;
 
-	if (src_filename == NULL)
+	if (src_filename == nullptr)
 	{
 		tifiles_critical("%s: src_filename is NULL !", __FUNCTION__);
 		return -1;
@@ -861,21 +851,21 @@ int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst_filename
 	}
 
 	// count number of structures and allocates array of strings
-	if (dst_filenames != NULL)
+	if (dst_filenames != nullptr)
 	{
 		*dst_filenames = (char **)g_malloc((src->n_vars + src->n_apps + 1) * sizeof(char *));
 	}
 
 	// store each structure content to file
-	for (ptr1 = dst1, i = 0; *ptr1 != NULL || i < src->n_vars; ptr1++, i++)
+	for (ptr1 = dst1, i = 0; *ptr1 != nullptr || i < src->n_vars; ptr1++, i++)
 	{
-		ret = tifiles_file_write_regular(NULL, *ptr1, &real_name);
+		ret = tifiles_file_write_regular(nullptr, *ptr1, &real_name);
 		if (ret)
 		{
 			goto tuf;
 		}
 
-		if (dst_filenames != NULL)
+		if (dst_filenames != nullptr)
 		{
 			*dst_filenames[i] = real_name;
 		}
@@ -885,15 +875,15 @@ int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst_filename
 		}
 	}
 
-	for (ptr2 = dst2, j = 0; *ptr2 != NULL || j < src->n_apps; ptr2++, j++)
+	for (ptr2 = dst2, j = 0; *ptr2 != nullptr || j < src->n_apps; ptr2++, j++)
 	{
-		ret = tifiles_file_write_flash2(NULL, *ptr2, &real_name);
+		ret = tifiles_file_write_flash2(nullptr, *ptr2, &real_name);
 		if (ret)
 		{
 			goto tuf;
 		}
 
-		if (dst_filenames != NULL)
+		if (dst_filenames != nullptr)
 		{
 			*dst_filenames[i+j] = real_name;
 		}
@@ -939,7 +929,7 @@ tuf:
 TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, unsigned int n)
 {
 	TigContent* content = (TigContent *)g_malloc0(sizeof(*content));
-	if (content != NULL)
+	if (content != nullptr)
 	{
 		char comment[43];
 		content->model = content->model_dst = model;
@@ -974,9 +964,9 @@ int TICALL tifiles_content_delete_tigroup(TigContent *content)
 	tifiles_file_display_tigcontent(content);
 #endif
 
-	if (content != NULL)
+	if (content != nullptr)
 	{
-		if (content->var_entries != NULL)
+		if (content->var_entries != nullptr)
 		{
 			for (i = 0; i < content->n_vars; i++)
 			{
@@ -986,7 +976,7 @@ int TICALL tifiles_content_delete_tigroup(TigContent *content)
 			g_free(content->var_entries);
 		}
 
-		if (content->app_entries != NULL)
+		if (content->app_entries != nullptr)
 		{
 			for (i = 0; i < content->n_apps; i++)
 			{
@@ -1011,24 +1001,20 @@ int TICALL tifiles_content_delete_tigroup(TigContent *content)
 /* Open a temporary file */
 static int open_temp_file(const char *orig_name, char **temp_name)
 {
-	const char *suffix;
-	char *templ;
-	int fd;
-
-	*temp_name = NULL;
-	suffix = strrchr(orig_name, '.');
+	*temp_name = nullptr;
+	const char* suffix = strrchr(orig_name, '.');
 	if (suffix && (strchr(suffix, '/') || strchr(suffix, '\\')))
 	{
-		suffix = NULL;
+		suffix = nullptr;
 	}
-	templ = g_strconcat("tigXXXXXX", suffix, NULL);
+	char* templ = g_strconcat("tigXXXXXX", suffix, NULL);
 
-	fd = g_file_open_tmp(templ, temp_name, NULL);
+	const int fd = g_file_open_tmp(templ, temp_name, nullptr);
 
 	g_free(templ);
 	if (fd == -1) {
 		g_free(*temp_name);
-		*temp_name = NULL;
+		*temp_name = nullptr;
 	}
 
 	return fd;
@@ -1048,21 +1034,19 @@ static int open_temp_file(const char *orig_name, char **temp_name)
  **/
 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content)
 {
-	FILE *tigf;
 	struct archive *arc;
 	struct archive_entry *entry;
-	const char *filename_inzip;
 	int ret = 0;
 
-	if (filename == NULL || content == NULL)
+	if (filename == nullptr || content == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return -1;
 	}
 
 	// Open ZIP archive
-	tigf = g_fopen(filename, "rb");
-	if (tigf == NULL)
+	FILE* tigf = g_fopen(filename, "rb");
+	if (tigf == nullptr)
 	{
 		return ERR_FILE_OPEN;
 	}
@@ -1096,9 +1080,8 @@ int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content)
 	while (archive_read_next_header(arc, &entry) == ARCHIVE_OK)
 	{
 		gchar *fname;
-		int fd;
 
-		filename_inzip = archive_entry_pathname(entry);
+		const char* filename_inzip = archive_entry_pathname(entry);
 		if (!filename_inzip)
 		{
 			tifiles_warning("archive contains a file with no name");
@@ -1107,7 +1090,7 @@ int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content)
 		}
 
 		// create a temporary file
-		fd = open_temp_file(filename_inzip, &fname);
+		const int fd = open_temp_file(filename_inzip, &fname);
 		if (fd == -1)
 		{
 			ret = ERR_FILE_IO;
@@ -1127,7 +1110,7 @@ int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content)
 
 		// add to TigContent
 		{
-			CalcModel model = tifiles_file_get_model(fname);
+			const CalcModel model = tifiles_file_get_model(fname);
 
 			if (content->model == CALC_NONE)
 			{
@@ -1138,7 +1121,7 @@ int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content)
 			{
 				TigEntry *tigentry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), content->model);
 
-				if (tigentry != NULL)
+				if (tigentry != nullptr)
 				{
 					ret = tifiles_file_read_regular(fname, tigentry->content.regular);
 					if (ret)
@@ -1156,7 +1139,7 @@ int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content)
 			{
 				TigEntry *tigentry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), content->model);
 
-				if (tigentry != NULL)
+				if (tigentry != nullptr)
 				{
 					ret = tifiles_file_read_flash(fname, tigentry->content.flash);
 					if (ret)
@@ -1193,23 +1176,21 @@ tfrt_exit:
 
 static int zip_write(struct archive *arc, CalcModel model, const char *origfname, const char *tempfname)
 {
-	char *filenameinzip;
-	struct archive_entry *entry;
 	struct stat st;
 	int err = 0;
-	FILE *f = NULL;
+	FILE *f = nullptr;
 	int size_read;
-	void* buf=NULL;
+	void* buf= nullptr;
 
-	if (arc == NULL)
+	if (arc == nullptr)
 	{
 		tifiles_critical("zip_write: arc is NULL !");
 		return ERR_FILE_ZIP;
 	}
 
 	// Set metadata
-	entry = archive_entry_new();
-	if (entry == NULL)
+	struct archive_entry* entry = archive_entry_new();
+	if (entry == nullptr)
 	{
 		tifiles_critical("zip_write: cannot allocate archive entry");
 		return ERR_FILE_ZIP;
@@ -1224,13 +1205,13 @@ static int zip_write(struct archive *arc, CalcModel model, const char *origfname
 	archive_entry_copy_stat(entry, &st);
 
 	// ZIP archives don't like greek chars
-	filenameinzip = ticonv_gfe_to_zfe(model, origfname);
+	char* filenameinzip = ticonv_gfe_to_zfe(model, origfname);
 	archive_entry_set_pathname(entry, filenameinzip);
 	g_free(filenameinzip);
 
 	// missing tmp file !
 	f = g_fopen(tempfname, "rb");
-	if (f == NULL)
+	if (f == nullptr)
 	{
 		tifiles_critical("zip_write: cannot read temporary file");
 		archive_entry_free(entry);
@@ -1298,7 +1279,7 @@ int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content)
 	int err = 0;
 	TigEntry **ptr;
 
-	if (filename == NULL || content == NULL)
+	if (filename == nullptr || content == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return -1;
@@ -1311,7 +1292,7 @@ int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content)
 
 	// Open ZIP archive
 	tigf = g_fopen(filename, "wb");
-	if (tigf == NULL)
+	if (tigf == nullptr)
 	{
 		return ERR_FILE_OPEN;
 	}
@@ -1348,12 +1329,11 @@ int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content)
 	// Parse entries and store
 	for (ptr = content->var_entries; *ptr && !err; ptr++)
 	{
-		TigEntry* entry = *ptr;
-		char *fname = NULL;
-		int fd;
+		const TigEntry* entry = *ptr;
+		char *fname = nullptr;
 
 		// write TI file into tmp folder
-		fd = open_temp_file(entry->filename, &fname);
+		const int fd = open_temp_file(entry->filename, &fname);
 		if (fd == -1)
 		{
 			g_free(fname);
@@ -1362,7 +1342,7 @@ int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content)
 		}
 		close(fd);
 
-		err = tifiles_file_write_regular(fname, entry->content.regular, NULL);
+		err = tifiles_file_write_regular(fname, entry->content.regular, nullptr);
 		if (!err)
 		{
 			err = zip_write(arc, content->model, entry->filename, fname);
@@ -1374,12 +1354,11 @@ int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content)
 
 	for (ptr = content->app_entries; *ptr && !err; ptr++)
 	{
-		TigEntry* entry = *ptr;
-		char *fname = NULL;
-		int fd;
+		const TigEntry* entry = *ptr;
+		char *fname = nullptr;
 
 		// write TI file into tmp folder
-		fd = open_temp_file(entry->filename, &fname);
+		const int fd = open_temp_file(entry->filename, &fname);
 		if (fd == -1)
 		{
 			g_free(fname);
@@ -1418,18 +1397,17 @@ int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content)
  **/
 int TICALL tifiles_file_display_tigroup(const char *filename)
 {
-	FILE *tigf;
 	struct archive *arc;
 	struct archive_entry *entry;
 
-	if (filename == NULL)
+	if (filename == nullptr)
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 		return -1;
 	}
 
-	tigf = g_fopen(filename, "rb");
-	if (tigf == NULL)
+	FILE* tigf = g_fopen(filename, "rb");
+	if (tigf == nullptr)
 	{
 		return ERR_FILE_OPEN;
 	}
@@ -1454,7 +1432,7 @@ int TICALL tifiles_file_display_tigroup(const char *filename)
 	{
 		const char *name = archive_entry_pathname(entry);
 		char *dispname = g_filename_display_name(name);
-		unsigned long size = (unsigned long) archive_entry_size(entry);
+		const unsigned long size = (unsigned long) archive_entry_size(entry);
 		tifiles_info(" %-7lu %s", size, dispname);
 		archive_read_data_skip(arc);
 		g_free(dispname);
@@ -1477,7 +1455,7 @@ int TICALL tifiles_file_display_tigcontent(TigContent *content)
 {
 	unsigned int i;
 
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -1492,7 +1470,7 @@ int TICALL tifiles_file_display_tigcontent(TigContent *content)
 	tifiles_info("Number of vars:    %u", content->n_vars);
 	tifiles_info("Var entries:       %p", content->var_entries);
 
-	if (content->var_entries != NULL)
+	if (content->var_entries != nullptr)
 	{
 		for (i = 0; i < content->n_vars; i++)
 		{
@@ -1503,7 +1481,7 @@ int TICALL tifiles_file_display_tigcontent(TigContent *content)
 	tifiles_info("Number of apps:    %u", content->n_apps);
 	tifiles_info("Apps entries:      %p", content->app_entries);
 
-	if (content->app_entries != NULL)
+	if (content->app_entries != nullptr)
 	{
 		for (i = 0; i < content->n_apps; i++)
 		{

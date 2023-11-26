@@ -88,12 +88,12 @@ const char * TICALL tifiles_fext_of_group (CalcModel model)
 	switch (model)
 	{
 		case CALC_NONE:
-			return NULL;
+			return nullptr;
 #ifndef DISABLE_TI8X
 		case CALC_TI73:
 			return "73g";
 		case CALC_TI80:
-			return NULL;
+			return nullptr;
 		case CALC_TI82:
 			return "82g";
 		case CALC_TI83:
@@ -146,13 +146,13 @@ const char * TICALL tifiles_fext_of_group (CalcModel model)
 		case CALC_CBR2:
 		case CALC_LABPRO:
 		case CALC_TIPRESENTER:
-			return NULL;
+			return nullptr;
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -173,7 +173,7 @@ const char * TICALL tifiles_fext_of_backup (CalcModel model)
 		case CALC_TI73:
 			return "73b";
 		case CALC_TI80:
-			return NULL;
+			return nullptr;
 		case CALC_TI82:
 			return "82b";
 		case CALC_TI83:
@@ -190,7 +190,7 @@ const char * TICALL tifiles_fext_of_backup (CalcModel model)
 			return "8Cb";
 		case CALC_TI83PCE_USB:
 		case CALC_TI84PCE_USB:
-			return NULL;
+			return nullptr;
 		case CALC_TI85:
 			return "85b";
 		case CALC_TI86:
@@ -228,13 +228,13 @@ const char * TICALL tifiles_fext_of_backup (CalcModel model)
 		case CALC_CBR2:
 		case CALC_LABPRO:
 		case CALC_TIPRESENTER:
-			return NULL;
+			return nullptr;
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -255,11 +255,11 @@ const char * TICALL tifiles_fext_of_flash_app (CalcModel model)
 		case CALC_TI73:
 			return "73k";
 		case CALC_TI80:
-			return NULL;
+			return nullptr;
 		case CALC_TI82:
-			return NULL;
+			return nullptr;
 		case CALC_TI83:
-			return NULL;
+			return nullptr;
 		case CALC_TI83P:
 		case CALC_TI84P:
 		case CALC_TI84P_USB:
@@ -274,11 +274,11 @@ const char * TICALL tifiles_fext_of_flash_app (CalcModel model)
 		case CALC_TI82A_USB:
 		case CALC_TI84PT_USB:
 		case CALC_TI82AEP_USB:
-			return NULL;
+			return nullptr;
 		case CALC_TI85:
-			return NULL;
+			return nullptr;
 		case CALC_TI86:
-			return NULL;
+			return nullptr;
 #endif
 #ifndef DISABLE_TI8X
 		case CALC_TI89:
@@ -286,7 +286,7 @@ const char * TICALL tifiles_fext_of_flash_app (CalcModel model)
 		case CALC_TI89T_USB:
 			return "89k";
 		case CALC_TI92:
-			return NULL;
+			return nullptr;
 		case CALC_TI92P:
 			return "9Xk";
 		case CALC_V200:
@@ -312,13 +312,13 @@ const char * TICALL tifiles_fext_of_flash_app (CalcModel model)
 		case CALC_CBR2:
 		case CALC_LABPRO:
 		case CALC_TIPRESENTER:
-			return NULL;
+			return nullptr;
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -334,16 +334,16 @@ const char * TICALL tifiles_fext_of_flash_os(CalcModel model)
 	switch (model)
 	{
 		case CALC_NONE:
-			return NULL;
+			return nullptr;
 #ifndef DISABLE_TI8X
 		case CALC_TI73:
 			return "73u";
 		case CALC_TI80:
-			return NULL;
+			return nullptr;
 		case CALC_TI82:
-			return NULL;
+			return nullptr;
 		case CALC_TI83:
-			return NULL;
+			return nullptr;
 		case CALC_TI83P:
 		case CALC_TI84P:
 		case CALC_TI84P_USB:
@@ -361,9 +361,9 @@ const char * TICALL tifiles_fext_of_flash_os(CalcModel model)
 		case CALC_TI82AEP_USB:
 			return "8Yu";
 		case CALC_TI85:
-			return NULL;
+			return nullptr;
 		case CALC_TI86:
-			return NULL;
+			return nullptr;
 #endif
 #ifndef DISABLE_TI9X
 		case CALC_TI89:
@@ -371,7 +371,7 @@ const char * TICALL tifiles_fext_of_flash_os(CalcModel model)
 		case CALC_TI89T_USB:
 			return "89u";
 		case CALC_TI92:
-			return NULL;
+			return nullptr;
 		case CALC_TI92P:
 			return "9Xu";
 		case CALC_V200:
@@ -408,7 +408,7 @@ const char * TICALL tifiles_fext_of_flash_os(CalcModel model)
 		case CALC_CBL:
 		case CALC_CBR:
 		case CALC_CBR2:
-			return NULL;
+			return nullptr;
 		case CALC_CBL2:
 		case CALC_LABPRO:
 			return "c2u"; // .hex is also seen in some OS upgraders.
@@ -419,7 +419,7 @@ const char * TICALL tifiles_fext_of_flash_os(CalcModel model)
 			break;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -440,11 +440,11 @@ const char * TICALL tifiles_fext_of_certif(CalcModel model)
 		case CALC_TI73:
 			return "73q";
 		case CALC_TI80:
-			return NULL;
+			return nullptr;
 		case CALC_TI82:
-			return NULL;
+			return nullptr;
 		case CALC_TI83:
-			return NULL;
+			return nullptr;
 		case CALC_TI83P:
 		case CALC_TI84P:
 		case CALC_TI84P_USB:
@@ -459,11 +459,11 @@ const char * TICALL tifiles_fext_of_certif(CalcModel model)
 		case CALC_TI82A_USB:
 		case CALC_TI84PT_USB:
 		case CALC_TI82AEP_USB:
-			return NULL;
+			return nullptr;
 		case CALC_TI85:
-			return NULL;
+			return nullptr;
 		case CALC_TI86:
-			return NULL;
+			return nullptr;
 #endif
 #ifndef DISABLE_TI9X
 		case CALC_TI89:
@@ -471,7 +471,7 @@ const char * TICALL tifiles_fext_of_certif(CalcModel model)
 		case CALC_TI89T_USB:
 			return "89q";
 		case CALC_TI92:
-			return NULL;
+			return nullptr;
 		case CALC_TI92P:
 			return "9Xq";
 		case CALC_V200:
@@ -497,13 +497,13 @@ const char * TICALL tifiles_fext_of_certif(CalcModel model)
 		case CALC_CBR2:
 		case CALC_LABPRO:
 		case CALC_TIPRESENTER:
-			return NULL;
+			return nullptr;
 		default:
 			tifiles_critical("%s: invalid calc_type argument", __FUNCTION__);
 			break;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -516,10 +516,10 @@ const char * TICALL tifiles_fext_of_certif(CalcModel model)
  **/
 char * TICALL tifiles_fext_get(const char *filename)
 {
-	if (filename != NULL)
+	if (filename != nullptr)
 	{
 		char * d = (char *)strrchr(filename, '.');
-		if (d != NULL)
+		if (d != nullptr)
 		{
 			return (++d);
 		}
@@ -571,20 +571,18 @@ void TICALL tifiles_fext_free(char *filename)
  **/
 int TICALL tifiles_file_has_ti_header(const char *filename)
 {
-	FILE *f;
 	char buf[9];
-	char *p;
 	int ret = 0;
 
-	if (filename != NULL)
+	if (filename != nullptr)
 	{
-		f = g_fopen(filename, "rb");
-		if (f != NULL)
+		FILE* f = g_fopen(filename, "rb");
+		if (f != nullptr)
 		{
 			memset(buf, 0, sizeof(buf));
 			if (fread_8_chars(f, buf) == 0)
 			{
-				for (p = buf; *p != '\0'; p++)
+				for (char* p = buf; *p != '\0'; p++)
 				{
 					*p = toupper(*p);
 				}
@@ -623,10 +621,10 @@ int TICALL tifiles_file_has_tib_header(const char *filename)
 	char str[64];
 	int ret = 0;
 
-	if (filename != NULL)
+	if (filename != nullptr)
 	{
 #ifdef CHECK_FILE_EXTENSIONS
-		char *e = tifiles_fext_get(filename);
+		const char *e = tifiles_fext_get(filename);
 
 		if (   e[0] == 0
 		    || g_ascii_strcasecmp(e, "tib"))
@@ -636,7 +634,7 @@ int TICALL tifiles_file_has_tib_header(const char *filename)
 #endif
 
 		f = g_fopen(filename, "rb");
-		if (f != NULL)
+		if (f != nullptr)
 		{
 			if (fread_n_chars(f, 22 + sizeof(TIB_SIGNATURE) + 1, str) == 0)
 			{
@@ -670,10 +668,10 @@ int TICALL tifiles_file_has_tig_header(const char *filename)
 	char str[5];
 	int ret = 0;
 
-	if (filename != NULL)
+	if (filename != nullptr)
 	{
 #ifdef CHECK_FILE_EXTENSIONS
-		char *e = tifiles_fext_get(filename);
+		const char *e = tifiles_fext_get(filename);
 
 		if (   e[0] == 0
 		    || g_ascii_strcasecmp(e, "tig"))
@@ -683,7 +681,7 @@ int TICALL tifiles_file_has_tig_header(const char *filename)
 #endif
 
 		f = g_fopen(filename, "rb");
-		if (f != NULL)
+		if (f != nullptr)
 		{
 			if (fread_n_chars(f, strlen(TIG_SIGNATURE), str) == 0)
 			{
@@ -711,15 +709,13 @@ int TICALL tifiles_file_has_tig_header(const char *filename)
  **/
 int TICALL tifiles_file_has_tifl_header(const char *filename, uint8_t *dev_type, uint8_t *data_type)
 {
-	FILE *f;
 	uint8_t buf[78];
-	uint32_t len;
 	int ret = 0;
 
-	if (filename != NULL)
+	if (filename != nullptr)
 	{
-		f = g_fopen(filename, "rb");
-		if (f != NULL)
+		FILE* f = g_fopen(filename, "rb");
+		if (f != nullptr)
 		{
 			while (fread(buf, 1, 78, f) == 78)
 			{
@@ -733,16 +729,16 @@ int TICALL tifiles_file_has_tifl_header(const char *filename, uint8_t *dev_type,
 				/* if there are multiple entries (old OS files with license
 				   agreement, old app files with certificate), return the type
 				   of the last entry */
-				if (dev_type != NULL)
+				if (dev_type != nullptr)
 				{
 					*dev_type = buf[48];
 				}
-				if (data_type != NULL)
+				if (data_type != nullptr)
 				{
 					*data_type = buf[49];
 				}
 
-				len = buf[74] | (((uint32_t)buf[75]) << 8) | (((uint32_t)buf[76]) << 16) | (((uint32_t)buf[77]) << 24);
+				const uint32_t len = buf[74] | (((uint32_t)buf[75]) << 8) | (((uint32_t)buf[76]) << 16) | (((uint32_t)buf[77]) << 24);
 				if (fseek(f, len, SEEK_CUR))
 				{
 					break;
@@ -784,10 +780,10 @@ int TICALL tifiles_file_has_tno_header(const char *filename)
 	char str[1025];
 	int ret = 0;
 
-	if (filename != NULL)
+	if (filename != nullptr)
 	{
 #ifdef CHECK_FILE_EXTENSIONS
-		char *e = tifiles_fext_get(filename);
+		const char *e = tifiles_fext_get(filename);
 
 		if (   e[0] == 0
 		    || (   g_ascii_strcasecmp(e, "tno")  && g_ascii_strcasecmp(e, "tnc")
@@ -803,7 +799,7 @@ int TICALL tifiles_file_has_tno_header(const char *filename)
 #endif
 
 		f = g_fopen(filename, "rb");
-		if (f != NULL)
+		if (f != nullptr)
 		{
 			if (fread_n_chars(f, sizeof(str) - 1, str) == 0)
 			{
@@ -828,8 +824,8 @@ int TICALL tifiles_file_has_tno_header(const char *filename)
 					// Sadly, memmem() is not portable.
 					unsigned int remaining = sizeof(str) - 1 - sizeof(TCO2_SIGNATURE) - 1;
 					char * ptr1 = (char *)memchr(str, 'T', remaining);
-					char * ptr2 = str;
-					while (NULL != ptr1)
+					const char * ptr2 = str;
+					while (nullptr != ptr1)
 					{
 						remaining -= (ptr1 - ptr2 + 1);
 						if (   ptr1[ 1] == 'I' && ptr1[ 2] == '-' && ptr1[ 3] == 'N' && ptr1[ 4] == 's'
@@ -944,9 +940,7 @@ static int is_regfile(const char *filename)
  **/
 int TICALL tifiles_file_is_ti(const char *filename)
 {
-	char *e;
-
-	if (filename != NULL)
+	if (filename != nullptr)
 	{
 		// bug: check that file is not a FIFO
 		if (!is_regfile(filename))
@@ -957,13 +951,13 @@ int TICALL tifiles_file_is_ti(const char *filename)
 		if (   tifiles_file_has_ti_header(filename)
 		    || tifiles_file_has_tib_header(filename)
 		    || tifiles_file_has_tig_header(filename)
-		    || tifiles_file_has_tifl_header(filename, NULL, NULL)
+		    || tifiles_file_has_tifl_header(filename, nullptr, nullptr)
 		    || tifiles_file_has_tno_header(filename))
 		{
 			return !0;
 		}
 
-		e = tifiles_fext_get(filename);
+		const char* e = tifiles_fext_get(filename);
 
 #ifdef CHECK_FILE_EXTENSIONS
 		if (e[0] == 0)
@@ -1021,8 +1015,7 @@ int TICALL tifiles_file_is_single(const char *filename)
  **/
 int TICALL tifiles_file_is_group(const char *filename)
 {
-	int i;
-	char *e = tifiles_fext_get(filename);
+	const char *e = tifiles_fext_get(filename);
 
 #ifdef CHECK_FILE_EXTENSIONS
 	if (e[0] == 0)
@@ -1035,7 +1028,7 @@ int TICALL tifiles_file_is_group(const char *filename)
 		return 0;
 	}
 
-	for (i = 1; i < CALC_MAX; i++)
+	for (int i = 1; i < CALC_MAX; i++)
 	{
 		if (GROUP_FILE_EXT[i][0] != 0 && !g_ascii_strcasecmp(e, GROUP_FILE_EXT[i]))
 		{
@@ -1074,8 +1067,7 @@ int TICALL tifiles_file_is_regular(const char *filename)
  **/
 int TICALL tifiles_file_is_backup(const char *filename)
 {
-	int i;
-	char *e = tifiles_fext_get(filename);
+	const char *e = tifiles_fext_get(filename);
 
 #ifdef CHECK_FILE_EXTENSIONS
 	if (e[0] == 0)
@@ -1088,7 +1080,7 @@ int TICALL tifiles_file_is_backup(const char *filename)
 		return 0;
 	}
 
-	for (i = 1; i < CALC_MAX; i++)
+	for (int i = 1; i < CALC_MAX; i++)
 	{
 		if (BACKUP_FILE_EXT[i][0] != 0 && !g_ascii_strcasecmp(e, BACKUP_FILE_EXT[i]))
 		{
@@ -1118,7 +1110,7 @@ int TICALL tifiles_file_is_os(const char *filename)
 
 	if (   tifiles_file_is_tib(filename)
 	    || tifiles_file_is_tno(filename)
-	    || (tifiles_file_has_tifl_header(filename, NULL, &type) && type == TI83p_AMS))
+	    || (tifiles_file_has_tifl_header(filename, nullptr, &type) && type == TI83p_AMS))
 	{
 		return !0;
 	}
@@ -1143,7 +1135,7 @@ int TICALL tifiles_file_is_app(const char *filename)
 		return 0;
 	}
 
-	if (tifiles_file_has_tifl_header(filename, NULL, &type) && type == TI83p_APPL)
+	if (tifiles_file_has_tifl_header(filename, nullptr, &type) && type == TI83p_APPL)
 	{
 		return !0;
 	}
@@ -1163,7 +1155,7 @@ int TICALL tifiles_file_is_flash(const char *filename)
 {
 	return (tifiles_file_is_tib(filename) ||
 	        tifiles_file_is_tno(filename) ||
-	        tifiles_file_has_tifl_header(filename, NULL, NULL));
+	        tifiles_file_has_tifl_header(filename, nullptr, nullptr));
 }
 
 /**
@@ -1222,7 +1214,7 @@ int TICALL tifiles_file_is_tno(const char *filename)
  **/
 int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target)
 {
-	char *e = tifiles_fext_get(filename);
+	const char *e = tifiles_fext_get(filename);
 	uint8_t ctype, dtype;
 
 #ifdef CHECK_FILE_EXTENSIONS
@@ -1292,11 +1284,10 @@ int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel tar
 		}
 		else if (target && tifiles_file_is_tib(filename))
 		{
-			FILE *f;
 			uint8_t data[16];
 
-			f = g_fopen(filename, "rb");
-			if (f == NULL)
+			FILE* f = g_fopen(filename, "rb");
+			if (f == nullptr)
 			{
 				return 0;
 			}
@@ -1373,8 +1364,7 @@ int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel tar
 		{
 			// No easy/light way for this part: we have to load the whole file
 			// and to parse the TigEntry structures.
-			TigContent *content;
-			int ret, ok=0;
+			int ok=0;
 			unsigned int k;
 
 			if (!tifiles_file_has_tig_header(filename))
@@ -1382,8 +1372,8 @@ int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel tar
 				return 0;
 			}
 
-			content = tifiles_content_create_tigroup(CALC_NONE, 0);
-			ret = tifiles_file_read_tigroup(filename, content);
+			TigContent* content = tifiles_content_create_tigroup(CALC_NONE, 0);
+			const int ret = tifiles_file_read_tigroup(filename, content);
 			if (ret)
 			{
 				tifiles_content_delete_tigroup(content);
@@ -1392,7 +1382,7 @@ int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel tar
 
 			for (k = 0; k < content->n_apps; k++)
 			{
-				TigEntry *te = content->app_entries[k];
+				const TigEntry *te = content->app_entries[k];
 
 				if(tifiles_calc_are_compat(te->content.regular->model, target))
 				{
@@ -1402,7 +1392,7 @@ int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel tar
 
 			for (k = 0; k < content->n_vars; k++)
 			{
-				TigEntry *te = content->var_entries[k];
+				const TigEntry *te = content->var_entries[k];
 
 				if(tifiles_calc_are_compat(te->content.regular->model, target))
 				{
@@ -1438,7 +1428,7 @@ CalcModel TICALL tifiles_fext_to_model(const char *ext)
 {
 	CalcModel type = CALC_NONE;
 
-	if (ext == NULL)
+	if (ext == nullptr)
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 		return CALC_NONE;
@@ -1446,9 +1436,9 @@ CalcModel TICALL tifiles_fext_to_model(const char *ext)
 
 	if (ext[0] != 0 && ext[1] != 0 && ext[2] != 0)
 	{
-		char c1 = g_ascii_tolower(ext[0]);
-		char c2 = g_ascii_tolower(ext[1]);
-		char c3 = g_ascii_tolower(ext[2]);
+		const char c1 = g_ascii_tolower(ext[0]);
+		const char c2 = g_ascii_tolower(ext[1]);
+		const char c3 = g_ascii_tolower(ext[2]);
 
 #ifndef DISABLE_TI8X
 		if (c1 == '7' && c2 == '3')
@@ -1549,7 +1539,7 @@ CalcModel TICALL tifiles_fext_to_model(const char *ext)
 			}
 			else if (c2 == 'c' && c3 == 'c')
 			{
-				char c4 = ext[3];
+				const char c4 = ext[3];
 				if (c4 == 0)
 				{
 					type = CALC_NSPIRE_CX_CAS;
@@ -1562,7 +1552,7 @@ CalcModel TICALL tifiles_fext_to_model(const char *ext)
 			}
 			else if (c2 == 'c' && c3 == 'o')
 			{
-				char c4 = ext[3];
+				const char c4 = ext[3];
 				if (c4 == 0)
 				{
 					type = CALC_NSPIRE_CX;
@@ -1575,7 +1565,7 @@ CalcModel TICALL tifiles_fext_to_model(const char *ext)
 			}
 			else if (c2 == 'c' && c3 == 't')
 			{
-				char c4 = ext[3];
+				const char c4 = ext[3];
 				if (c4 == '2')
 				{
 					type = CALC_NSPIRE_CXIIT;
@@ -1624,7 +1614,7 @@ CalcModel TICALL tifiles_fext_to_model(const char *ext)
  **/
 CalcModel TICALL tifiles_file_get_model(const char *filename)
 {
-	char *e = tifiles_fext_get(filename);
+	const char *e = tifiles_fext_get(filename);
 	return tifiles_fext_to_model(e);
 }
 
@@ -1674,7 +1664,7 @@ FileClass TICALL tifiles_file_get_class(const char *filename)
  **/
 const char *TICALL tifiles_file_get_type(const char *filename)
 {
-	char *e = tifiles_fext_get(filename);
+	const char *e = tifiles_fext_get(filename);
 #ifdef CHECK_FILE_EXTENSIONS
 	if (e[0] == 0)
 	{
@@ -1798,7 +1788,7 @@ const char *TICALL tifiles_file_get_type(const char *filename)
  **/
 const char *TICALL tifiles_file_get_icon(const char *filename)
 {
-	char *e = tifiles_fext_get(filename);
+	const char *e = tifiles_fext_get(filename);
 #ifdef CHECK_FILE_EXTENSIONS
 	if (e[0] == 0)
 	{

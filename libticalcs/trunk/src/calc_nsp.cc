@@ -125,7 +125,6 @@ static int		is_ready	(CalcHandle* handle)
 	do
 	{
 		static const char echostr[] = "ready";
-		int old;
 		uint32_t size;
 		uint8_t *data;
 
@@ -147,7 +146,7 @@ static int		is_ready	(CalcHandle* handle)
 		// requests in quick succession often triggers memory corruption (hangs, reboots,
 		// a variable amount of black pixels on the screen) on (at least) Nspire (CAS) OS 1.7...
 		ticalcs_info("  waiting for LOGIN request (OS >= 1.2 check)...");
-		old = ticables_options_set_timeout(handle->cable, 40);	// 3s mini
+		const int old = ticables_options_set_timeout(handle->cable, 40);	// 3s mini
 
 		ret = nsp_cmd_r_login(handle);	// no call to nsp_send_nack(handle) because nack is managed in nsp_recv_data()
 
@@ -209,9 +208,7 @@ static int		is_ready	(CalcHandle* handle)
 
 static int		send_key	(CalcHandle* handle, uint32_t key)
 {
-	int ret;
-
-	ret = nsp_cmd_s_key(handle, key);
+	const int ret = nsp_cmd_s_key(handle, key);
 
 	return ret;
 }
@@ -221,11 +218,10 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos);
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	int ret;
 	CalcInfos infos;
 
 	// First of all, we have to identify the Nspire model.
-	ret = get_version(handle, &infos);
+	int ret = get_version(handle, &infos);
 	if (!ret)
 	{
 		if (infos.bits_per_pixel == 4)
@@ -285,9 +281,9 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 						ret = nsp_cmd_r_screen_rle(handle, &cmd, &size, &data);
 						if (!ret)
 						{
-							uint32_t len = sc->width * sc->height * infos.bits_per_pixel / 8;
+							const uint32_t len = sc->width * sc->height * infos.bits_per_pixel / 8;
 							uint8_t * dst = (uint8_t *)ticalcs_alloc_screen(len);
-							if (dst != NULL)
+							if (dst != nullptr)
 							{
 								ret = ticalcs_screen_nspire_rle_uncompress(sc->pixel_format, data, size, dst, len);
 								if (!ret)
@@ -340,8 +336,6 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 
 		for (;;)
 		{
-			VarEntry *fe;
-			GNode *node;
 			uint32_t varsize;
 			uint8_t vartype;
 
@@ -362,7 +356,7 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 				break;
 			}
 
-			fe = tifiles_ve_create();
+			VarEntry* fe = tifiles_ve_create();
 
 			ticalcs_strlcpy(fe->folder, folder_name + 1, sizeof(fe->folder)); // Skip leading /
 			fe->size = varsize;
@@ -389,7 +383,7 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 			// else don't remove the extension.
 			ticalcs_strlcpy(fe->name, varname, sizeof(fe->name));
 
-			node = dirlist_create_append_node(fe, vars);
+			const GNode* node = dirlist_create_append_node(fe, vars);
 			if (!node)
 			{
 				ret = ERR_MALLOC;
@@ -405,8 +399,6 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 
 		while (!ret)
 		{
-			int i;
-
 			ret = nsp_cmd_s_dir_enum_done(handle);
 			if (ret)
 			{
@@ -419,12 +411,12 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 			}
 
 			// Enumerate elements of root folder.
-			for (i = 0; i < (int)g_node_n_children(*vars); i++) 
+			for (int i = 0; i < (int)g_node_n_children(*vars); i++) 
 			{
 				char new_folder_name[FLDNAME_MAX + 4];
 				const char * separator_if_any;
 				GNode * folder = g_node_nth_child(*vars, i);
-				uint8_t vartype = ((VarEntry *)(folder->data))->type;
+				const uint8_t vartype = ((VarEntry *)(folder->data))->type;
 
 				// Don't recurse into regular files (type 0, TNS or e.g. themes.csv on OS 3.0+).
 				if (vartype == NSP_TNS)
@@ -463,16 +455,13 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 
 static int get_dirlist (CalcHandle* handle, GNode** vars, GNode** apps)
 {
-	GNode *root;
-	int ret;
-
-	ret = dirlist_init_trees(handle, vars, apps);
+	int ret = dirlist_init_trees(handle, vars, apps);
 	if (ret)
 	{
 		return ret;
 	}
 
-	root = g_node_new(NULL);
+	GNode* root = g_node_new(nullptr);
 	if (!root)
 	{
 		return ERR_MALLOC;
@@ -485,7 +474,7 @@ static int get_dirlist (CalcHandle* handle, GNode** vars, GNode** apps)
 		ret = nsp_cmd_s_dir_attributes(handle, "/");
 		if (!ret)
 		{
-			ret = nsp_cmd_r_dir_attributes(handle, NULL, NULL, NULL);
+			ret = nsp_cmd_r_dir_attributes(handle, nullptr, nullptr, nullptr);
 			if (!ret)
 			{
 				ret = nsp_session_close(handle);
@@ -510,9 +499,7 @@ static int get_dirlist (CalcHandle* handle, GNode** vars, GNode** apps)
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
-	int ret;
-
-	ret = nsp_session_open(handle, NSP_SID_DEV_INFOS);
+	int ret = nsp_session_open(handle, NSP_SID_DEV_INFOS);
 	if (!ret)
 	{
 		ret = nsp_cmd_s_dev_infos(handle, NSP_CMD_DI_VERSION);
@@ -556,15 +543,12 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	uint8_t status;
-	gchar *path;
-	int ret;
-	VarEntry * entry;
 
 	handle->updat->cnt2 = 0;
 	handle->updat->max2 = 1;
 	ticalcs_update_pbar(handle);
 
-	entry = content->entries[0];
+	VarEntry* entry = content->entries[0];
 
 	if (!ticalcs_validate_varentry(entry))
 	{
@@ -582,13 +566,13 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	//	return ERR_ABORT;
 	//}
 
-	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
+	int ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (ret)
 	{
 		return ret;
 	}
 
-	path = build_path(handle->model, entry);
+	gchar* path = build_path(handle->model, entry);
 
 	ticonv_varname_to_utf8_sn(handle->model, path, handle->updat->text, sizeof(handle->updat->text), entry->type);
 	ticalcs_update_label(handle);
@@ -615,16 +599,13 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
-	char *path;
-	int ret;
-
-	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
+	int ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (ret)
 	{
 		return ret;
 	}
 
-	path = build_path(handle->model, vr);
+	char* path = build_path(handle->model, vr);
 	ticonv_varname_to_utf8_sn(handle->model, path, handle->updat->text, sizeof(handle->updat->text), vr->type);
 	ticalcs_update_label(handle);
 
@@ -638,7 +619,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 			ret = nsp_cmd_s_file_ok(handle);
 			if (!ret)
 			{
-				uint8_t *data = NULL;
+				uint8_t *data = nullptr;
 
 				if (vr->size)
 				{
@@ -649,14 +630,12 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 					ret = nsp_cmd_s_status(handle, NSP_ERR_OK);
 					if (!ret)
 					{
-						VarEntry *ve;
-
 						content->model = handle->model;
 						tifiles_comment_set_single_sn(content->comment, sizeof(content->comment));
 						content->num_entries = 1;
 
 						content->entries = tifiles_ve_create_array(1);
-						ve = content->entries[0] = tifiles_ve_create();
+						VarEntry* ve = content->entries[0] = tifiles_ve_create();
 						memcpy(ve, vr, sizeof(VarEntry));
 
 						ve->data = (uint8_t *)tifiles_ve_alloc_data(ve->size);
@@ -687,7 +666,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 {
 	int ret;
 
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		return -1;
 	}
@@ -752,9 +731,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 {
-	int ret;
-
-	ret = nsp_session_open(handle, NSP_SID_DEV_INFOS);
+	int ret = nsp_session_open(handle, NSP_SID_DEV_INFOS);
 	if (!ret)
 	{
 		ret = nsp_cmd_s_dev_infos(handle, NSP_CMD_DI_VERSION);
@@ -794,18 +771,15 @@ static int		dump_rom_1	(CalcHandle* handle)
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	int ret;
-	FILE *f;
-
 	ticalcs_info("FIXME: make ROM dumping work above OS 1.x, using the Fron method");
 
-	f = fopen(filename, "wb");
-	if (f == NULL)
+	FILE* f = fopen(filename, "wb");
+	if (f == nullptr)
 	{
 		return ERR_OPEN_FILE;
 	}
 
-	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
+	int ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (!ret)
 	{
 		ret = nsp_cmd_s_get_file(handle, "../phoenix/install/TI-Nspire.tnc");
@@ -848,18 +822,14 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
-	char *utf8;
-	char *path;
-	int ret;
-
-	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
+	int ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (ret)
 	{
 		return ret;
 	}
 
-	path = build_path(handle->model, vr);
-	utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
+	char* path = build_path(handle->model, vr);
+	char* utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
 	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
 	ticalcs_update_label(handle);
@@ -878,18 +848,14 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
-	char *utf8;
-	char *path;
-	int ret;
-
-	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
+	int ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (ret)
 	{
 		return ret;
 	}
 
-	path = g_strconcat("/", vr->folder, NULL);
-	utf8 = ticonv_varname_to_utf8(handle->model, path, -1);
+	char* path = g_strconcat("/", vr->folder, NULL);
+	char* utf8 = ticonv_varname_to_utf8(handle->model, path, -1);
 	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Creating %s..."), utf8);
 	ticonv_utf8_free(utf8);
 	ticalcs_update_label(handle);
@@ -908,9 +874,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
-	int ret;
-
-	ret = nsp_session_open(handle, NSP_SID_DEV_INFOS);
+	int ret = nsp_session_open(handle, NSP_SID_DEV_INFOS);
 	if (ret)
 	{
 		return ret;
@@ -1106,20 +1070,16 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
 {
-	char *utf81, *utf82;
-	char *path1, *path2;
-	int ret;
-
-	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
+	int ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (ret)
 	{
 		return ret;
 	}
 
-	path1 = build_path(handle->model, oldname);
-	path2 = build_path(handle->model, newname);
-	utf81 = ticonv_varname_to_utf8(handle->model, path1, oldname->type);
-	utf82 = ticonv_varname_to_utf8(handle->model, path2, newname->type);
+	char* path1 = build_path(handle->model, oldname);
+	char* path2 = build_path(handle->model, newname);
+	char* utf81 = ticonv_varname_to_utf8(handle->model, path1, oldname->type);
+	char* utf82 = ticonv_varname_to_utf8(handle->model, path2, newname->type);
 	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Renaming %s to %s..."), utf81, utf82);
 	ticonv_utf8_free(utf82);
 	ticonv_utf8_free(utf81);
@@ -1140,18 +1100,14 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 
 static int		del_folder  (CalcHandle* handle, VarRequest* vr)
 {
-	char *utf8;
-	char *path;
-	int ret;
-
-	ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
+	int ret = nsp_session_open(handle, NSP_SID_FILE_MGMT);
 	if (ret)
 	{
 		return ret;
 	}
 
-	path = g_strconcat("/", vr->folder, NULL);
-	utf8 = ticonv_varname_to_utf8(handle->model, path, -1);
+	char* path = g_strconcat("/", vr->folder, NULL);
+	char* utf8 = ticonv_varname_to_utf8(handle->model, path, -1);
 	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
 	ticalcs_update_label(handle);

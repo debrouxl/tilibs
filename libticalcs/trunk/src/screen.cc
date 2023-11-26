@@ -42,22 +42,18 @@
  **/
 int TICALL ticalcs_screen_convert_bw_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
 {
-	unsigned int i;
-
 	VALIDATE_NONNULL(src);
 	VALIDATE_SCREENWIDTH(width);
 	VALIDATE_SCREENHEIGHT(height);
 	VALIDATE_NONNULL(dst);
 
-	for (i = 0; i < height; i++)
+	for (unsigned int i = 0; i < height; i++)
 	{
-		unsigned int j;
-		for (j = 0; j < (width >> 3); j++)
+		for (unsigned int j = 0; j < (width >> 3); j++)
 		{
-			uint8_t data = *src++;
+			const uint8_t data = *src++;
 			uint8_t mask = 0x80;
-			unsigned int bit;
-			for (bit = 0; bit < 8; bit++)
+			for (unsigned int bit = 0; bit < 8; bit++)
 			{
 				if (data & mask)
 				{
@@ -92,22 +88,18 @@ int TICALL ticalcs_screen_convert_bw_to_rgb888(const uint8_t * src, unsigned int
  **/
 int TICALL ticalcs_screen_convert_bw_to_blurry_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
 {
-	unsigned int i;
-
 	VALIDATE_NONNULL(src);
 	VALIDATE_SCREENWIDTH(width);
 	VALIDATE_SCREENHEIGHT(height);
 	VALIDATE_NONNULL(dst);
 
-	for (i = 0; i < height; i++)
+	for (unsigned int i = 0; i < height; i++)
 	{
-		unsigned int j;
-		for (j = 0; j < (width >> 3); j++)
+		for (unsigned int j = 0; j < (width >> 3); j++)
 		{
-			uint8_t data = *src++;
+			const uint8_t data = *src++;
 			uint8_t mask = 0x80;
-			unsigned int bit;
-			for (bit = 0; bit < 8; bit++)
+			for (unsigned int bit = 0; bit < 8; bit++)
 			{
 				if (data & mask)
 				{
@@ -142,21 +134,18 @@ int TICALL ticalcs_screen_convert_bw_to_blurry_rgb888(const uint8_t * src, unsig
  **/
 int TICALL ticalcs_screen_convert_gs4_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
 {
-	unsigned int i;
-
 	VALIDATE_NONNULL(src);
 	VALIDATE_SCREENWIDTH(width);
 	VALIDATE_SCREENHEIGHT(height);
 	VALIDATE_NONNULL(dst);
 
-	for (i = 0; i < height; i++)
+	for (unsigned int i = 0; i < height; i++)
 	{
-		unsigned int j;
-		for (j = 0; j < width / 2; j++)
+		for (unsigned int j = 0; j < width / 2; j++)
 		{
-			uint8_t data = *src++;
-			uint8_t hi = data >> 4;
-			uint8_t lo = data & 0x0f;
+			const uint8_t data = *src++;
+			const uint8_t hi = data >> 4;
+			const uint8_t lo = data & 0x0f;
 
 			*dst++ = hi << 4;
 			*dst++ = hi << 4;
@@ -184,19 +173,16 @@ int TICALL ticalcs_screen_convert_gs4_to_rgb888(const uint8_t * src, unsigned in
  **/
 int TICALL ticalcs_screen_convert_rgb565le_to_rgb888(const uint8_t * src, unsigned int width, unsigned int height, uint8_t * dst)
 {
-	unsigned int i;
-
 	VALIDATE_NONNULL(src);
 	VALIDATE_SCREENWIDTH(width);
 	VALIDATE_SCREENHEIGHT(height);
 	VALIDATE_NONNULL(dst);
 
-	for (i = 0; i < height; i++)
+	for (unsigned int i = 0; i < height; i++)
 	{
-		unsigned int j;
-		for (j = 0; j < width; j++)
+		for (unsigned int j = 0; j < width; j++)
 		{
-			uint16_t data = (((uint16_t)(src[1])) << 8) | ((uint16_t)(src[0]));
+			const uint16_t data = (((uint16_t)(src[1])) << 8) | ((uint16_t)(src[0]));
 
 			src += 2;
 			*dst++ = ((data & 0xF800) >> 11) << 3;
@@ -286,13 +272,13 @@ int TICALL ticalcs_screen_nspire_rle_uncompress(CalcPixelFormat format, const ui
 
 			for (i = 0, j = 0, q = dst; i < input_size;)
 			{
-				int8_t rec = src[i++];
+				const int8_t rec = src[i++];
 
 				if (rec >= 0)
 				{
 					// Positive count: "repeat 8-bit value" block.
-					uint8_t cnt = ((uint8_t)rec) + 1;
-					uint8_t val = src[i++];
+					const uint8_t cnt = ((uint8_t)rec) + 1;
+					const uint8_t val = src[i++];
 
 					if (j + cnt > max_output_size)
 					{
@@ -306,7 +292,7 @@ int TICALL ticalcs_screen_nspire_rle_uncompress(CalcPixelFormat format, const ui
 				else
 				{
 					// Negative count: "verbatim" block of 8-bit values.
-					uint8_t cnt = ((uint8_t)-rec) + 1;
+					const uint8_t cnt = ((uint8_t)-rec) + 1;
 
 					if (j + cnt > max_output_size)
 					{
@@ -329,14 +315,13 @@ int TICALL ticalcs_screen_nspire_rle_uncompress(CalcPixelFormat format, const ui
 
 			for (i = 0, j = 0, q = dst; i < input_size;)
 			{
-				int8_t rec = src[i++];
+				const int8_t rec = src[i++];
 
 				if (rec >= 0)
 				{
 					// Positive count: "repeat 32-bit value" block.
-					uint8_t cnt = ((uint8_t)rec) + 1;
+					const uint8_t cnt = ((uint8_t)rec) + 1;
 					uint32_t val;
-					uint8_t k;
 
 					if (j + cnt * 4 > max_output_size)
 					{
@@ -344,7 +329,7 @@ int TICALL ticalcs_screen_nspire_rle_uncompress(CalcPixelFormat format, const ui
 						break;
 					}
 					memcpy(&val, src + i, sizeof(uint32_t));
-					for (k = 0; k < cnt; k++)
+					for (uint8_t k = 0; k < cnt; k++)
 					{
 						memcpy(q, &val, 4);
 						q += 4;
@@ -355,7 +340,7 @@ int TICALL ticalcs_screen_nspire_rle_uncompress(CalcPixelFormat format, const ui
 				else
 				{
 					// Negative count: "verbatim" block of 32-bit values.
-					uint8_t cnt = ((uint8_t)-rec) + 1;
+					const uint8_t cnt = ((uint8_t)-rec) + 1;
 
 					if (j + cnt * 4 > max_output_size)
 					{
@@ -394,8 +379,7 @@ int TICALL ticalcs_screen_nspire_rle_uncompress(CalcPixelFormat format, const ui
  */
 int TICALL ticalcs_screen_84pcse_rle_uncompress(const uint8_t *src, uint32_t src_length, uint8_t *dst, uint32_t dst_length)
 {
-	const uint8_t *palette;
-	unsigned int palette_size, i, c, n;
+	unsigned int i, c, n;
 
 	VALIDATE_NONNULL(src);
 	VALIDATE_NONNULL(dst);
@@ -407,14 +391,14 @@ int TICALL ticalcs_screen_84pcse_rle_uncompress(const uint8_t *src, uint32_t src
 	src++;
 	src_length--;
 
-	palette_size = src[src_length - 1];
+	const unsigned int palette_size = src[src_length - 1];
 	if (src_length <= palette_size * 2 + 1)
 	{
 		return ERR_INVALID_SCREENSHOT;
 	}
 
 	src_length -= palette_size * 2 + 1;
-	palette = src + src_length - 2;
+	const uint8_t* palette = src + src_length - 2;
 
 	while (src_length > 0)
 	{

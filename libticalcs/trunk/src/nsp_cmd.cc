@@ -43,9 +43,7 @@ static const uint8_t usb_errors[] = {
 
 static int err_code(uint8_t code)
 {
-	int i;
-
-	for (i = 0; i < (int)(sizeof(usb_errors) / sizeof(usb_errors[0])); i++)
+	for (int i = 0; i < (int)(sizeof(usb_errors) / sizeof(usb_errors[0])); i++)
 	{
 		if (usb_errors[i] == code)
 		{
@@ -63,7 +61,7 @@ static int err_code(uint8_t code)
 static int put_str(uint8_t *dst, const char *src)
 {
 	size_t i, j;
-	size_t len = strlen(src);
+	const size_t len = strlen(src);
 
 	for (i = 0; i < len; i++)
 	{
@@ -90,12 +88,11 @@ static int put_str(uint8_t *dst, const char *src)
 
 int TICALL nsp_cmd_r_login(CalcHandle *handle)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new(handle);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving login:");
 
@@ -110,12 +107,12 @@ int TICALL nsp_cmd_r_login(CalcHandle *handle)
 
 int TICALL nsp_cmd_s_status(CalcHandle *handle, uint8_t status)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, 1, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, handle->priv.nsp_dst_port, NSP_CMD_STATUS, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 1));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 1, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, handle->priv.nsp_dst_port,
+	                                           NSP_CMD_STATUS, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 1));
 
 	ticalcs_info("  sending status (%04x):", status);
 
@@ -129,20 +126,18 @@ int TICALL nsp_cmd_s_status(CalcHandle *handle, uint8_t status)
 
 int TICALL nsp_cmd_r_status(CalcHandle *handle, uint8_t *status)
 {
-	NSPVirtualPacket* pkt;
-	uint8_t value;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new(handle);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving status:");
 
 	retval = nsp_recv_data(handle, pkt);
 	if (!retval)
 	{
-		value = pkt->data[0];
+		const uint8_t value = pkt->data[0];
 
 		if (pkt->cmd != NSP_CMD_STATUS)
 		{
@@ -171,14 +166,14 @@ end:
 
 int TICALL nsp_cmd_s_dev_infos(CalcHandle *handle, uint8_t cmd)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  requesting device information (cmd = %02x):", cmd);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_DEV_INFOS, cmd, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 0));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_DEV_INFOS, cmd,
+	                                           (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 0));
 
 	retval = nsp_send_data(handle, pkt);
 
@@ -189,7 +184,6 @@ int TICALL nsp_cmd_s_dev_infos(CalcHandle *handle, uint8_t cmd)
 
 int TICALL nsp_cmd_r_dev_infos(CalcHandle *handle, uint8_t *cmd, uint32_t *size, uint8_t **data)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
@@ -197,7 +191,7 @@ int TICALL nsp_cmd_r_dev_infos(CalcHandle *handle, uint8_t *cmd, uint32_t *size,
 	VALIDATE_NONNULL(size);
 	VALIDATE_NONNULL(data);
 
-	pkt = nsp_vtl_pkt_new(handle);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving device information:");
 
@@ -207,7 +201,7 @@ int TICALL nsp_cmd_r_dev_infos(CalcHandle *handle, uint8_t *cmd, uint32_t *size,
 		*cmd = pkt->cmd;
 		*data = (uint8_t *)g_malloc0(pkt->size);
 		*size = pkt->size;
-		if (NULL != *data)
+		if (nullptr != *data)
 		{
 			memcpy(*data, pkt->data, pkt->size);
 		}
@@ -226,12 +220,12 @@ int TICALL nsp_cmd_r_dev_infos(CalcHandle *handle, uint8_t *cmd, uint32_t *size,
 
 int TICALL nsp_cmd_s_screen_rle(CalcHandle *handle, uint8_t cmd)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_SCREEN_RLE, cmd, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 0));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_SCREEN_RLE, cmd,
+	                                           (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 0));
 
 	ticalcs_info("  requesting RLE screenshot (cmd = %02x):", cmd);
 
@@ -244,7 +238,6 @@ int TICALL nsp_cmd_s_screen_rle(CalcHandle *handle, uint8_t cmd)
 
 int TICALL nsp_cmd_r_screen_rle(CalcHandle *handle, uint8_t *cmd, uint32_t *size, uint8_t **data)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
@@ -252,7 +245,7 @@ int TICALL nsp_cmd_r_screen_rle(CalcHandle *handle, uint8_t *cmd, uint32_t *size
 	VALIDATE_NONNULL(size);
 	VALIDATE_NONNULL(data);
 
-	pkt = nsp_vtl_pkt_new(handle);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving RLE screenshot:");
 
@@ -263,7 +256,7 @@ int TICALL nsp_cmd_r_screen_rle(CalcHandle *handle, uint8_t *cmd, uint32_t *size
 		*cmd = pkt->cmd;
 		*size = pkt->size;
 		*data = (uint8_t *)g_malloc0(pkt->size);
-		if (NULL != *data)
+		if (nullptr != *data)
 		{
 			memcpy(*data, pkt->data, pkt->size);
 		}
@@ -282,15 +275,14 @@ int TICALL nsp_cmd_r_screen_rle(CalcHandle *handle, uint8_t *cmd, uint32_t *size
 
 int TICALL nsp_cmd_s_dir_attributes(CalcHandle *handle, const char *name)
 {
-	NSPVirtualPacket* pkt;
-	size_t len;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(name);
 
-	len = strlen(name) < 8 ? 8 : strlen(name);
-	pkt = nsp_vtl_pkt_new_ex(handle, 1 + len + 1, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_ATTRIBUTES, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 1 + len + 1));
+	const size_t len = strlen(name) < 8 ? 8 : strlen(name);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 1 + len + 1, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_ATTRIBUTES, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 1 + len + 1));
 
 	ticalcs_info("  unknown directory list command in <%s>:", name);
 
@@ -306,12 +298,11 @@ int TICALL nsp_cmd_s_dir_attributes(CalcHandle *handle, const char *name)
 
 int TICALL nsp_cmd_r_dir_attributes(CalcHandle *handle, uint32_t *size, uint8_t *type, uint32_t *date)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new(handle);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  unknown directory list command reply received:");
 
@@ -352,16 +343,15 @@ end:
 
 int TICALL nsp_cmd_s_dir_enum_init(CalcHandle *handle, const char *name)
 {
-	NSPVirtualPacket* pkt;
-	size_t len;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(name);
 
-	len = strlen(name) < 8 ? 8 : strlen(name);
+	const size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, len + 1, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_DIRLIST_INIT, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, len + 1));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, len + 1, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_DIRLIST_INIT, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, len + 1));
 
 	ticalcs_info("  initiating directory listing in <%s>:", name);
 
@@ -376,18 +366,18 @@ int TICALL nsp_cmd_s_dir_enum_init(CalcHandle *handle, const char *name)
 
 int TICALL nsp_cmd_r_dir_enum_init(CalcHandle *handle)
 {
-	return nsp_cmd_r_status(handle, NULL);
+	return nsp_cmd_r_status(handle, nullptr);
 }
 
 int TICALL nsp_cmd_s_dir_enum_next(CalcHandle *handle)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_DIRLIST_NEXT, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 0));
-	if (pkt != NULL)
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_DIRLIST_NEXT, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 0));
+	if (pkt != nullptr)
 	{
 		ticalcs_info("  requesting next directory entry:");
 
@@ -405,16 +395,13 @@ int TICALL nsp_cmd_s_dir_enum_next(CalcHandle *handle)
 
 int TICALL nsp_cmd_r_dir_enum_next(CalcHandle *handle, char* name, uint32_t *size, uint8_t *type)
 {
-	NSPVirtualPacket* pkt;
-	uint8_t data_size;
 	//uint32_t date;
-	int o;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(name);
 
-	pkt = nsp_vtl_pkt_new(handle);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  next directory entry:");
 
@@ -435,9 +422,9 @@ int TICALL nsp_cmd_r_dir_enum_next(CalcHandle *handle, char* name, uint32_t *siz
 			}
 		}
 
-		data_size = pkt->data[1] + 2;
+		const uint8_t data_size = pkt->data[1] + 2;
 		ticalcs_strlcpy(name, (char *)pkt->data + 2, data_size + 1);
-		o = data_size - 10;
+		const int o = data_size - 10;
 
 		if (size)
 		{
@@ -460,12 +447,12 @@ end:
 
 int TICALL nsp_cmd_s_dir_enum_done(CalcHandle *handle)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_DIRLIST_DONE, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 0));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_DIRLIST_DONE, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 0));
 
 	ticalcs_info("  closing directory listing:");
 
@@ -478,28 +465,26 @@ int TICALL nsp_cmd_s_dir_enum_done(CalcHandle *handle)
 
 int TICALL nsp_cmd_r_dir_enum_done(CalcHandle *handle)
 {
-	return nsp_cmd_r_status(handle, NULL);
+	return nsp_cmd_r_status(handle, nullptr);
 }
 
 /////////////----------------
 
 int TICALL nsp_cmd_s_put_file(CalcHandle *handle, const char *name, uint32_t size)
 {
-	NSPVirtualPacket* pkt;
-	int o;
-	size_t len;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(name);
 
-	len = strlen(name) < 8 ? 8 : strlen(name);
-	pkt = nsp_vtl_pkt_new_ex(handle, 6 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_PUT_FILE, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 6 + len));
+	const size_t len = strlen(name) < 8 ? 8 : strlen(name);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 6 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_PUT_FILE, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 6 + len));
 
 	ticalcs_info("  sending variable:");
 
 	pkt->data[0] = 0x01;
-	o = put_str(pkt->data + 1, name);
+	int o = put_str(pkt->data + 1, name);
 	o++;
 
 	pkt->data[o+0] = MSB(MSW(size));
@@ -521,12 +506,12 @@ int TICALL nsp_cmd_r_put_file(CalcHandle *handle)
 
 int TICALL nsp_cmd_s_put_file_eot(CalcHandle *handle)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, 2, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_PUT_FILE_EOT, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 2));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 2, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_PUT_FILE_EOT, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 2));
 
 	ticalcs_info("  sending EOT:");
 
@@ -543,18 +528,17 @@ int TICALL nsp_cmd_s_put_file_eot(CalcHandle *handle)
 
 int TICALL nsp_cmd_s_get_file(CalcHandle *handle, const char *name)
 {
-	NSPVirtualPacket* pkt;
-	size_t len;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(name);
 
-	len = strlen(name) < 8 ? 8 : strlen(name);
+	const size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
 	ticalcs_info("  requesting variable:");
 
-	pkt = nsp_vtl_pkt_new_ex(handle, 2 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_GET_FILE, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 2 + len));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 2 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_GET_FILE, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 2 + len));
 	pkt->data[0] = 0x01;
 	put_str(pkt->data + 1, name);
 
@@ -567,12 +551,11 @@ int TICALL nsp_cmd_s_get_file(CalcHandle *handle, const char *name)
 
 int TICALL nsp_cmd_r_get_file(CalcHandle *handle, uint32_t *size)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new(handle);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  file size:");
 
@@ -604,15 +587,14 @@ end:
 
 int TICALL nsp_cmd_s_del_file(CalcHandle *handle, const char *name)
 {
-	NSPVirtualPacket* pkt;
-	size_t len;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(name);
 
-	len = strlen(name) < 8 ? 8 : strlen(name);
-	pkt = nsp_vtl_pkt_new_ex(handle, 2 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_DEL_FILE, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 2 + len));
+	const size_t len = strlen(name) < 8 ? 8 : strlen(name);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 2 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_DEL_FILE, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 2 + len));
 
 	ticalcs_info("  deleting variable:");
 
@@ -628,21 +610,20 @@ int TICALL nsp_cmd_s_del_file(CalcHandle *handle, const char *name)
 
 int TICALL nsp_cmd_r_del_file(CalcHandle *handle)
 {
-	return nsp_cmd_r_status(handle, NULL);
+	return nsp_cmd_r_status(handle, nullptr);
 }
 
 int TICALL nsp_cmd_s_new_folder(CalcHandle *handle, const char *name)
 {
-	NSPVirtualPacket* pkt;
-	size_t len;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(name);
 
-	len = strlen(name) < 8 ? 8 : strlen(name);
+	const size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, 2 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_NEW_FOLDER, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 2 + len));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 2 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_NEW_FOLDER, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 2 + len));
 
 	ticalcs_info("  creating folder:");
 
@@ -658,21 +639,20 @@ int TICALL nsp_cmd_s_new_folder(CalcHandle *handle, const char *name)
 
 int TICALL nsp_cmd_r_new_folder(CalcHandle *handle)
 {
-	return nsp_cmd_r_status(handle, NULL);
+	return nsp_cmd_r_status(handle, nullptr);
 }
 
 int TICALL nsp_cmd_s_del_folder(CalcHandle *handle, const char *name)
 {
-	NSPVirtualPacket* pkt;
-	size_t len;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(name);
 
-	len = strlen(name) < 8 ? 8 : strlen(name);
+	const size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, 2 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_DEL_FOLDER, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 2 + len));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 2 + len, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_DEL_FOLDER, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 2 + len));
 
 	ticalcs_info("  deleting folder:");
 
@@ -688,24 +668,22 @@ int TICALL nsp_cmd_s_del_folder(CalcHandle *handle, const char *name)
 
 int TICALL nsp_cmd_r_del_folder(CalcHandle *handle)
 {
-	return nsp_cmd_r_status(handle, NULL);
+	return nsp_cmd_r_status(handle, nullptr);
 }
 
 int TICALL nsp_cmd_s_copy_file(CalcHandle *handle, const char *name, const char *name2)
 {
-	NSPVirtualPacket* pkt;
-	size_t len;
-	size_t len2;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(name);
 	VALIDATE_NONNULL(name2);
 
-	len = strlen(name) < 8 ? 8 : strlen(name);
-	len2 = strlen(name2) < 8 ? 8 : strlen(name2);
+	const size_t len = strlen(name) < 8 ? 8 : strlen(name);
+	const size_t len2 = strlen(name2) < 8 ? 8 : strlen(name2);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, 3 + len + len2, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_COPY_FILE, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 3 + len + len2));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 3 + len + len2, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_COPY_FILE, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 3 + len + len2));
 
 	ticalcs_info("  copying file:");
 
@@ -722,26 +700,24 @@ int TICALL nsp_cmd_s_copy_file(CalcHandle *handle, const char *name, const char 
 
 int TICALL nsp_cmd_r_copy_file(CalcHandle *handle)
 {
-	return nsp_cmd_r_status(handle, NULL);
+	return nsp_cmd_r_status(handle, nullptr);
 }
 
 int TICALL nsp_cmd_s_rename_file(CalcHandle *handle, const char *name, const char *name2)
 {
-	NSPVirtualPacket* pkt;
-	size_t len;
-	size_t len2;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(name);
 	VALIDATE_NONNULL(name2);
 
-	len = strlen(name) < 8 ? 8 : strlen(name);
-	len2 = strlen(name2) < 8 ? 8 : strlen(name2);
+	const size_t len = strlen(name) < 8 ? 8 : strlen(name);
+	const size_t len2 = strlen(name2) < 8 ? 8 : strlen(name2);
 
 	ticalcs_info("  renaming file:");
 
-	pkt = nsp_vtl_pkt_new_ex(handle, 3 + len + len2, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_RENAME_FILE, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 3 + len + len2));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 3 + len + len2, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_RENAME_FILE, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 3 + len + len2));
 	pkt->data[0] = 0x01;
 	put_str(pkt->data + 1, name);
 	put_str(pkt->data + 2 + len, name2);
@@ -755,17 +731,17 @@ int TICALL nsp_cmd_s_rename_file(CalcHandle *handle, const char *name, const cha
 
 int TICALL nsp_cmd_r_rename_file(CalcHandle *handle)
 {
-	return nsp_cmd_r_status(handle, NULL);
+	return nsp_cmd_r_status(handle, nullptr);
 }
 
 int TICALL nsp_cmd_s_file_ok(CalcHandle *handle)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_OK, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 0));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 0, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_OK, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 0));
 
 	ticalcs_info("  sending file contents:");
 
@@ -778,12 +754,11 @@ int TICALL nsp_cmd_s_file_ok(CalcHandle *handle)
 
 int TICALL nsp_cmd_r_file_ok(CalcHandle *handle)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new(handle);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  file status:");
 
@@ -814,13 +789,13 @@ int TICALL nsp_cmd_r_file_ok(CalcHandle *handle)
 
 int TICALL nsp_cmd_s_file_contents(CalcHandle *handle, uint32_t size, uint8_t *data)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, size, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT, NSP_CMD_FM_CONTENTS, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, size));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, size, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT,
+	                                           NSP_CMD_FM_CONTENTS, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, size));
 
 	ticalcs_info("  sending file contents:");
 
@@ -834,14 +809,13 @@ int TICALL nsp_cmd_s_file_contents(CalcHandle *handle, uint32_t size, uint8_t *d
 
 int TICALL nsp_cmd_r_file_contents(CalcHandle *handle, uint32_t *size, uint8_t **data)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(size);
 	VALIDATE_NONNULL(data);
 
-	pkt = nsp_vtl_pkt_new(handle);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving file contents:");
 
@@ -864,12 +838,12 @@ int TICALL nsp_cmd_r_file_contents(CalcHandle *handle, uint32_t *size, uint8_t *
 
 int TICALL nsp_cmd_s_os_install(CalcHandle *handle, uint32_t size)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, 4, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_OS_INSTALL, NSP_CMD_OS_INSTALL, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 4));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, 4, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_OS_INSTALL,
+	                                           NSP_CMD_OS_INSTALL, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 4));
 
 	ticalcs_info("  installing OS:");
 
@@ -886,12 +860,11 @@ int TICALL nsp_cmd_s_os_install(CalcHandle *handle, uint32_t size)
 
 int TICALL nsp_cmd_r_os_install(CalcHandle *handle)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new(handle);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving OS installation:");
 
@@ -912,13 +885,13 @@ int TICALL nsp_cmd_r_os_install(CalcHandle *handle)
 
 int TICALL nsp_cmd_s_os_contents(CalcHandle *handle, uint32_t size, uint8_t *data)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, size, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_OS_INSTALL, NSP_CMD_OS_CONTENTS, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, size));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, size, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_OS_INSTALL,
+	                                           NSP_CMD_OS_CONTENTS, (uint8_t*)nsp_vtl_pkt_alloc_data(handle, size));
 
 	ticalcs_info("  sending OS contents:");
 
@@ -932,13 +905,12 @@ int TICALL nsp_cmd_s_os_contents(CalcHandle *handle, uint32_t size, uint8_t *dat
 
 int TICALL nsp_cmd_r_progress(CalcHandle *handle, uint8_t *value)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(value);
 
-	pkt = nsp_vtl_pkt_new(handle);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  OS installation status:");
 
@@ -970,14 +942,14 @@ int TICALL nsp_cmd_r_progress(CalcHandle *handle, uint8_t *value)
 
 int TICALL nsp_cmd_s_generic_data(CalcHandle *handle, uint32_t size, uint8_t *data, uint16_t sid, uint8_t cmd)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  sending generic data of size %lu (%lX) with command %02X:", (unsigned long)size, (unsigned long)size, cmd);
 
-	pkt = nsp_vtl_pkt_new_ex(handle, size, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, sid, cmd, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, size));
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new_ex(handle, size, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, sid, cmd,
+	                                           (uint8_t*)nsp_vtl_pkt_alloc_data(handle, size));
 
 	if (data)
 	{
@@ -992,12 +964,11 @@ int TICALL nsp_cmd_s_generic_data(CalcHandle *handle, uint32_t size, uint8_t *da
 
 int TICALL nsp_cmd_r_generic_data(CalcHandle *handle, uint32_t *size, uint8_t **data)
 {
-	NSPVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = nsp_vtl_pkt_new(handle);
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new(handle);
 
 	ticalcs_info("  receiving generic data:");
 
@@ -1043,7 +1014,6 @@ int TICALL nsp_cmd_r_echo(CalcHandle *handle, uint32_t *size, uint8_t **data)
 
 int TICALL nsp_cmd_s_key(CalcHandle *handle, uint32_t code)
 {
-	NSPVirtualPacket * pkt1, * pkt2;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
@@ -1053,14 +1023,16 @@ int TICALL nsp_cmd_s_key(CalcHandle *handle, uint32_t code)
 	retval = nsp_session_open(handle, NSP_SID_KEYPRESSES);
 	if (!retval)
 	{
-		pkt1 = nsp_vtl_pkt_new_ex(handle, 3, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_KEYPRESSES, 0x01, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 3));
+		NSPVirtualPacket* pkt1 = nsp_vtl_pkt_new_ex(handle, 3, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_KEYPRESSES, 0x01,
+		                                            (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 3));
 
 		pkt1->data[2] = 0x80;
 		retval = nsp_send_data(handle, pkt1);
 
 		if (!retval)
 		{
-			pkt2 = nsp_vtl_pkt_new_ex(handle, 25, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_KEYPRESSES, 0, (uint8_t *)nsp_vtl_pkt_alloc_data(handle, 25));
+			NSPVirtualPacket* pkt2 = nsp_vtl_pkt_new_ex(handle, 25, NSP_SRC_ADDR, handle->priv.nsp_src_port, NSP_DEV_ADDR, NSP_PORT_KEYPRESSES, 0,
+			                                            (uint8_t*)nsp_vtl_pkt_alloc_data(handle, 25));
 
 			pkt2->data[3] = 0x08;
 			pkt2->data[4] = 0x02;
@@ -1086,12 +1058,10 @@ int TICALL nsp_cmd_s_key(CalcHandle *handle, uint32_t code)
 
 int TICALL nsp_cmd_s_keypress_event(CalcHandle *handle, const uint8_t keycode[3])
 {
-	uint32_t key;
-
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(keycode);
 
-	key = ((uint32_t)(keycode[0]) << 16) | ((uint32_t)(keycode[1]) << 8) | (uint32_t)(keycode[2]);
+	const uint32_t key = ((uint32_t)(keycode[0]) << 16) | ((uint32_t)(keycode[1]) << 8) | (uint32_t)(keycode[2]);
 	return nsp_cmd_s_key(handle, key);
 }
 

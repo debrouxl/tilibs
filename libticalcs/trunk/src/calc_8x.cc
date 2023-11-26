@@ -90,10 +90,9 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	int ret;
 	uint16_t status;
 
-	ret = SEND_RDY(handle);
+	int ret = SEND_RDY(handle);
 	if (!ret)
 	{
 		ret = RECV_ACK(handle, &status);
@@ -108,10 +107,9 @@ static int		is_ready	(CalcHandle* handle)
 
 static int		send_key	(CalcHandle* handle, uint32_t key)
 {
-	int ret;
 	uint16_t status;
 
-	ret = SEND_KEY(handle, (uint16_t)key);
+	int ret = SEND_KEY(handle, (uint16_t)key);
 	if (!ret)
 	{
 		ret = RECV_ACK(handle, &status);
@@ -126,11 +124,9 @@ static int		send_key	(CalcHandle* handle, uint32_t key)
 
 static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 {
-	int ret;
-
 	// Go back to homescreen
 	PAUSE(200);
-	ret = send_key(handle, KEY83_Quit);
+	int ret = send_key(handle, KEY83_Quit);
 	if (!ret)
 	{
 		ret = send_key(handle, KEY83_Clear);
@@ -156,8 +152,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 			ret = send_key(handle, KEY83_Exec);
 			if (!ret)
 			{
-				unsigned int i;
-				for (i = 0; !ret && i < strlen(ve->name); i++)
+				for (unsigned int i = 0; !ret && i < strlen(ve->name); i++)
 				{
 					const CalcKey *ck = ticalcs_keys_83((ve->name)[i]);
 					ret = send_key(handle, (uint32_t)(ck->normal.value));
@@ -178,11 +173,8 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 
 static int		recv_screen_80	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	int ret;
-	uint8_t * buffer;
-
 	*bitmap = (uint8_t *)ticalcs_alloc_screen(TI80_COLS * TI80_ROWS / 8);
-	if (*bitmap == NULL)
+	if (*bitmap == nullptr)
 	{
 		return ERR_MALLOC;
 	}
@@ -193,21 +185,21 @@ static int		recv_screen_80	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** b
 	sc->clipped_height = TI80_ROWS;
 	sc->pixel_format = CALC_PIXFMT_MONO;
 
-	ret = ti80_send_SCR(handle);
+	int ret = ti80_send_SCR(handle);
 	if (!ret)
 	{
-		ret = ti80_recv_ACK(handle, NULL);
+		ret = ti80_recv_ACK(handle, nullptr);
 		if (!ret)
 		{
 			uint16_t max_cnt;
 			ret = ti80_recv_XDP(handle, &max_cnt, (uint8_t *)handle->buffer);
 			if (!ret)
 			{
-				int stripe, row, i = 0;
-				buffer = (uint8_t *)(handle->buffer);
-				for (stripe = 7; stripe >= 0; stripe--)
+				int i = 0;
+				const uint8_t* buffer = (uint8_t*)(handle->buffer);
+				for (int stripe = 7; stripe >= 0; stripe--)
 				{
-					for (row = 0; row < TI80_ROWS; row++)
+					for (int row = 0; row < TI80_ROWS; row++)
 					{
 						(*bitmap)[row * TI80_COLS / 8 + stripe] = buffer[i++];
 					}
@@ -219,7 +211,7 @@ static int		recv_screen_80	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** b
 	if (ret)
 	{
 		ticalcs_free_screen(*bitmap);
-		*bitmap = NULL;
+		*bitmap = nullptr;
 	}
 
 	return ret;
@@ -227,10 +219,8 @@ static int		recv_screen_80	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** b
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	int ret;
-
 	*bitmap = (uint8_t *)ticalcs_alloc_screen(65537U);
-	if (*bitmap == NULL)
+	if (*bitmap == nullptr)
 	{
 		return ERR_MALLOC;
 	}
@@ -265,7 +255,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	}
 	sc->pixel_format = CALC_PIXFMT_MONO;
 
-	ret = SEND_SCR(handle);
+	int ret = SEND_SCR(handle);
 	if (!ret)
 	{
 		ret = RECV_ACK(handle, NULL);
@@ -284,7 +274,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	if (ret)
 	{
 		ticalcs_free_screen(*bitmap);
-		*bitmap = NULL;
+		*bitmap = nullptr;
 	}
 
 	return ret;
@@ -292,18 +282,15 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
-	int ret;
 	uint16_t unused;
-	TreeInfo *ti;
 	GNode *folder, *node;
-	char *utf8;
 
-	ret = dirlist_init_trees(handle, vars, apps);
+	int ret = dirlist_init_trees(handle, vars, apps);
 	if (ret)
 	{
 		return ret;
 	}
-	ti = (TreeInfo *)((*vars)->data);
+	TreeInfo* ti = (TreeInfo*)((*vars)->data);
 
 	ret = SEND_REQ(handle, 0x0000, (handle->model == CALC_TI83) ? TI83_DIR : TI86_DIR, "\0\0\0\0\0\0\0");
 	if (!ret)
@@ -322,9 +309,9 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	if (!ret)
 	{
 		VarEntry *ve;
-		uint8_t * mem = (uint8_t *)handle->buffer2;
+		const uint8_t * mem = (uint8_t *)handle->buffer2;
 
-		folder = dirlist_create_append_node(NULL, vars);
+		folder = dirlist_create_append_node(nullptr, vars);
 
 		if (handle->model == CALC_TI83)
 		{
@@ -334,12 +321,12 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			ve = tifiles_ve_create();
 			ve->type = TI83_WINDW;
 			node = dirlist_create_append_node(ve, &folder);
-			if (node != NULL)
+			if (node != nullptr)
 			{
 				ve = tifiles_ve_create();
 				ve->type = TI83_ZSTO;
 				node = dirlist_create_append_node(ve, &folder);
-				if (node != NULL)
+				if (node != nullptr)
 				{
 					ve = tifiles_ve_create();
 					ve->type = TI83_TABLE;
@@ -355,22 +342,22 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			ve = tifiles_ve_create();
 			ve->type = TI86_FUNC;
 			node = dirlist_create_append_node(ve, &folder);
-			if (node != NULL)
+			if (node != nullptr)
 			{
 				ve = tifiles_ve_create();
 				ve->type = TI86_POL;
 				node = dirlist_create_append_node(ve, &folder);
-				if (node != NULL)
+				if (node != nullptr)
 				{
 					ve = tifiles_ve_create();
 					ve->type = TI86_PARAM;
 					node = dirlist_create_append_node(ve, &folder);
-					if (node != NULL)
+					if (node != nullptr)
 					{
 						ve = tifiles_ve_create();
 						ve->type = TI86_DIFEQ;
 						node = dirlist_create_append_node(ve, &folder);
-						if (node != NULL)
+						if (node != nullptr)
 						{
 							ve = tifiles_ve_create();
 							ve->type = TI86_ZRCL;
@@ -390,12 +377,11 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			for (;;)
 			{
 				uint16_t ve_size;
-				int ret2;
 
 				ve = tifiles_ve_create();
 				ret = RECV_VAR(handle, &ve_size, &ve->type, ve->name);
 				ve->size = ve_size;
-				ret2 = SEND_ACK(handle);
+				const int ret2 = SEND_ACK(handle);
 				if (ret)
 				{
 					if (ret == ERR_EOT)	// end of transmission
@@ -418,7 +404,7 @@ error:
 					return ERR_MALLOC;
 				}
 
-				utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+				char* utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 				ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Parsing %s"), utf8);
 				ticonv_utf8_free(utf8);
 				ticalcs_update_label(handle);
@@ -431,13 +417,12 @@ error:
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
-	int ret;
 	uint16_t unused;
 
 	*ram = -1;
 	*flash = -1;
 
-	ret = SEND_REQ(handle, 0x0000, (handle->model == CALC_TI83) ? TI83_DIR : TI86_DIR, "\0\0\0\0\0\0\0");
+	int ret = SEND_REQ(handle, 0x0000, (handle->model == CALC_TI83) ? TI83_DIR : TI86_DIR, "\0\0\0\0\0\0\0");
 	if (!ret)
 	{
 		ret = RECV_ACK(handle, &unused);
@@ -449,7 +434,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 				ret = SEND_EOT(handle);
 				if (!ret)
 				{
-					uint8_t * mem = (uint8_t *)handle->buffer2;
+					const uint8_t * mem = (uint8_t *)handle->buffer2;
 					if (handle->model == CALC_TI83)
 					{
 						*ram = (((uint32_t)(mem[1])) << 8) | mem[0]; // Clamp mem_free to a 16-bit value.
@@ -469,12 +454,11 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
 	int ret;
-	uint16_t length;
 	char varname[9];
 	uint8_t rej_code;
 	uint16_t status;
 
-	length = content->data_length1;
+	uint16_t length = content->data_length1;
 	varname[0] = LSB(content->data_length2);
 	varname[1] = MSB(content->data_length2);
 	varname[2] = LSB(content->data_length3);
@@ -738,14 +722,14 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		}
 		else
 		{
-			content->data_part3 = NULL;
+			content->data_part3 = nullptr;
 		}
 		handle->updat->cnt2++;
 		ticalcs_update_pbar(handle);
 
 		if (handle->model != CALC_TI86)
 		{
-			content->data_part4 = NULL;
+			content->data_part4 = nullptr;
 		}
 		else
 		{
@@ -769,7 +753,6 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	unsigned int i;
 	int ret = 0;
 	uint8_t rej_code;
 	uint16_t status;
@@ -783,7 +766,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	handle->updat->cnt2 = 0;
 	handle->updat->max2 = content->num_entries;
 
-	for (i = 0; i < content->num_entries; i++) 
+	for (unsigned int i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = content->entries[i];
 		uint16_t size;
@@ -925,14 +908,13 @@ static int		send_var_8285	(CalcHandle* handle, CalcMode mode, FileContent* conte
 static int		send_var_8386	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	int ret = 0;
-	unsigned int i;
 	uint8_t rej_code;
 	uint16_t status;
 
 	handle->updat->cnt2 = 0;
 	handle->updat->max2 = content->num_entries;
 
-	for (i = 0; !ret && i < content->num_entries; i++)
+	for (unsigned int i = 0; !ret && i < content->num_entries; i++)
 	{
 		VarEntry *entry = content->entries[i];
 		uint16_t size;
@@ -1028,14 +1010,13 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 {
 	int ret;
 	uint16_t unused;
-	VarEntry *ve;
 	uint16_t ve_size;
 
 	content->model = handle->model;
 	tifiles_comment_set_single_sn(content->comment, sizeof(content->comment));
 	content->num_entries = 1;
 	content->entries = tifiles_ve_create_array(1);
-	ve = content->entries[0] = tifiles_ve_create();
+	VarEntry* ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
 	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
@@ -1172,7 +1153,7 @@ error:
 	else
 	{
 		tifiles_comment_set_group_sn(content->comment, sizeof(content->comment));
-		*vr = NULL;
+		*vr = nullptr;
 	}
 
 	return ret;
@@ -1268,9 +1249,8 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 		0x04, 0x04, 0x05		/* Down, Down, Enter */
 	};
 	unsigned int i;
-	char *utf8;
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
+	char* utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
 	ticalcs_update_label(handle);
@@ -1283,7 +1263,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	for (i = 0; !ret && i < strlen(vr->name); i++)
 	{
-		char c = toupper(vr->name[i]);
+		const char c = toupper(vr->name[i]);
 
 		if (isdigit(c))
 		{
@@ -1305,12 +1285,11 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
-	int ret;
 	static CalcLabEquipmentData lab_equipment_data_1 = { CALC_LAB_EQUIPMENT_DATA_TYPE_STRING, 4, 1, (const uint8_t *)"{7}", 0, 0, 4 }; // Request status command.
 	CalcLabEquipmentData lab_equipment_data_2;
 
 	// Use the TI-68k format because it's easier to deal with.
-	ret = tixx_send_lab_equipment_data(handle, CALC_TI89, &lab_equipment_data_1);
+	int ret = tixx_send_lab_equipment_data(handle, CALC_TI89, &lab_equipment_data_1);
 	if (!ret)
 	{
 		ret = tixx_get_lab_equipment_data(handle, CALC_TI89, &lab_equipment_data_2);
@@ -1329,7 +1308,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 					if (item_count >= 3)
 					{
 						unsigned int infos_mask = 0;
-						unsigned long device_code = (unsigned long)raw_values[0];
+						const unsigned long device_code = (unsigned long)raw_values[0];
 
 						switch (device_code)
 						{

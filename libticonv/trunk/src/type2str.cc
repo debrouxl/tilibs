@@ -86,7 +86,7 @@ const char * TICALL ticonv_model_to_string(CalcModel model)
 
 CalcModel TICALL ticonv_string_to_model(const char *str)
 {
-	if (str != NULL)
+	if (str != nullptr)
 	{
 		if (   !g_ascii_strcasecmp(str, "TI-73")
 		    || !g_ascii_strcasecmp(str, "TI73")

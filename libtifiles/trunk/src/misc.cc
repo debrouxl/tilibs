@@ -144,15 +144,14 @@ int TICALL tifiles_has_backup(CalcModel calc_type)
  **/
 uint16_t TICALL tifiles_checksum(const uint8_t * buffer, unsigned int size)
 {
-	unsigned int i;
 	uint16_t c = 0;
 
-	if (buffer == NULL)
+	if (buffer == nullptr)
 	{
 		return 0;
 	}
 
-	for (i = 0; i < size; i++)
+	for (unsigned int i = 0; i < size; i++)
 	{
 		c += buffer[i];
 	}
@@ -171,13 +170,12 @@ uint16_t TICALL tifiles_checksum(const uint8_t * buffer, unsigned int size)
 int TICALL tifiles_hexdump(const uint8_t * ptr, unsigned int len)
 {
 	char *str;
-	if (ptr != NULL)
+	if (ptr != nullptr)
 	{
-		unsigned int i;
-		unsigned int alloc_len = (len < 1024) ? len : 1024;
+		const unsigned int alloc_len = (len < 1024) ? len : 1024;
 
 		str = (char *)g_malloc(3 * alloc_len + 14);
-		for (i = 0; i < alloc_len; i++)
+		for (unsigned int i = 0; i < alloc_len; i++)
 		{
 			sprintf(&str[3 * i], "%02X ", ptr[i]);
 		}
@@ -207,11 +205,11 @@ int TICALL tifiles_hexdump(const uint8_t * ptr, unsigned int len)
  **/
 char *TICALL tifiles_get_varname(const char *full_name)
 {
-	if (full_name != NULL)
+	if (full_name != nullptr)
 	{
 		char *bs = (char *)strchr(full_name, '\\');
 
-		if (bs == NULL)
+		if (bs == nullptr)
 		{
 			return (char *) full_name;
 		}
@@ -221,7 +219,7 @@ char *TICALL tifiles_get_varname(const char *full_name)
 		}
 	}
 	tifiles_critical("%s(NULL)", __FUNCTION__);
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -248,25 +246,23 @@ char *TICALL tifiles_get_fldname(const char *full_name)
  **/
 char *TICALL tifiles_get_fldname_s(const char *full_name, char * dest_fldname)
 {
-	int i;
-
-	if (full_name != NULL && dest_fldname != NULL)
+	if (full_name != nullptr && dest_fldname != nullptr)
 	{
-		char *bs = (char *)strchr(full_name, '\\');
-		if (bs == NULL)
+		const char *bs = (char *)strchr(full_name, '\\');
+		if (bs == nullptr)
 		{
 			dest_fldname[0] = 0;
 		}
 		else
 		{
-			i = strlen(full_name) - strlen(bs);
+			const int i = strlen(full_name) - strlen(bs);
 			strncpy(dest_fldname, full_name, i);
 			dest_fldname[i] = '\0';
 		}
 		return dest_fldname;
 	}
 	tifiles_critical("%s(NULL)", __FUNCTION__);
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -283,10 +279,10 @@ char *TICALL tifiles_get_fldname_s(const char *full_name, char * dest_fldname)
  **/
 char* TICALL tifiles_build_fullname(CalcModel model, char *full_name, const char *fldname, const char *varname)
 {
-	if (full_name == NULL || fldname == NULL || varname == NULL)
+	if (full_name == nullptr || fldname == nullptr || varname == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
 	if (tifiles_has_folder(model)) 
@@ -323,32 +319,25 @@ char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *ve)
 {
 	char *filename;
 
-	if (ve == NULL)
+	if (ve == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
 	if (tifiles_calc_is_ti8x(model) || !strcmp(ve->folder, "") || (ve->type == tifiles_flash_type(model)))
 	{
-		char *part2;
-		const char *part3;
-
-		part2 = ticonv_varname_to_filename(model, ve->name, ve->type);
-		part3 = tifiles_vartype2fext(model, ve->type);
+		char* part2 = ticonv_varname_to_filename(model, ve->name, ve->type);
+		const char* part3 = tifiles_vartype2fext(model, ve->type);
 
 		filename = g_strconcat(part2, ".", part3, NULL);
 		g_free(part2);
 	}
 	else
 	{
-		char *part1;
-		char *part2;
-		const char *part3;
-
-		part1 = ticonv_varname_to_filename(model, ve->folder, -1);
-		part2 = ticonv_varname_to_filename(model, ve->name, ve->type);
-		part3 = tifiles_vartype2fext(model, ve->type);
+		char* part1 = ticonv_varname_to_filename(model, ve->folder, -1);
+		char* part2 = ticonv_varname_to_filename(model, ve->name, ve->type);
+		const char* part3 = tifiles_vartype2fext(model, ve->type);
 
 		filename = g_strconcat(part1, ".", part2, ".", part3, NULL);
 		g_free(part1);

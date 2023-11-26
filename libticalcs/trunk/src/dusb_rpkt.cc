@@ -52,9 +52,7 @@ static const DUSBRawPacketInfo dusbrawpackets[] =
 
 const char* TICALL dusb_rpkt_type2name(uint8_t id)
 {
-	unsigned int i;
-
-	for (i = 0; i < sizeof(dusbrawpackets) / sizeof(dusbrawpackets[0]); i++)
+	for (unsigned int i = 0; i < sizeof(dusbrawpackets) / sizeof(dusbrawpackets[0]); i++)
 	{
 		if (id == dusbrawpackets[i].id)
 		{
@@ -68,8 +66,6 @@ const char* TICALL dusb_rpkt_type2name(uint8_t id)
 int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 {
 	uint8_t buf[sizeof(pkt->data) + 5];
-	uint32_t size;
-	int ret;
 	CalcEventData event;
 
 	VALIDATE_HANDLE(handle);
@@ -79,12 +75,12 @@ int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_DUSB_RPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_dusb_rpkt(&event, /* size */ pkt->size, /* type */ pkt->type, /* data */ pkt->data);
-	ret = ticalcs_event_send(handle, &event);
+	int ret = ticalcs_event_send(handle, &event);
 
 	if (!ret)
 	{
 		memset(buf, 0, sizeof(buf));
-		size = pkt->size;
+		uint32_t size = pkt->size;
 
 		if (size > sizeof(pkt->data))
 		{
@@ -105,7 +101,7 @@ int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 		{
 			if (size >= 128)
 			{
-				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+				ticables_progress_get(handle->cable, nullptr, nullptr, &handle->updat->rate);
 			}
 
 			if (handle->updat->cancel)
@@ -127,7 +123,6 @@ int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 {
 	uint8_t buf[5];
-	int ret;
 	CalcEventData event;
 
 	VALIDATE_HANDLE(handle);
@@ -137,7 +132,7 @@ int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_DUSB_RPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_dusb_rpkt(&event, /* size */ 0, /* type */ 0, /* data */ pkt->data);
-	ret = ticalcs_event_send(handle, &event);
+	int ret = ticalcs_event_send(handle, &event);
 
 	if (!ret)
 	{
@@ -180,7 +175,7 @@ int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 			{
 				if (pkt->size >= 128)
 				{
-					ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+					ticables_progress_get(handle->cable, nullptr, nullptr, &handle->updat->rate);
 				}
 
 				if (handle->updat->cancel)
@@ -220,25 +215,23 @@ static const char* ep_way(uint8_t ep)
 int TICALL dusb_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len, uint8_t ep, uint8_t * first)
 {
 	int ret = 0;
-	uint32_t raw_size;
-	uint8_t raw_type;
 
 	VALIDATE_NONNULL(f);
 	VALIDATE_NONNULL(data);
 	VALIDATE_NONNULL(first);
 
-	if (len < 5 || len > sizeof(((DUSBRawPacket *)0)->data))
+	if (len < 5 || len > sizeof(((DUSBRawPacket *)nullptr)->data))
 	{
 		ticalcs_critical("Length %lu (%lX) is too small or too large for a valid DUSB raw packet", (unsigned long)len, (unsigned long)len);
 		return ERR_INVALID_PACKET;
 	}
 
-	raw_size = (((uint32_t)(data[0])) << 24) | (((uint32_t)(data[1])) << 16) | (((uint32_t)(data[2])) << 8) | ((uint32_t)(data[3]));
-	raw_type = data[4];
+	uint32_t raw_size = (((uint32_t)(data[0])) << 24) | (((uint32_t)(data[1])) << 16) | (((uint32_t)(data[2])) << 8) | ((uint32_t)(data[3]));
+	const uint8_t raw_type = data[4];
 
 	fprintf(f, "%08lX (%02X)\t\t\t\t\t\t\t| %s: %s\n", (unsigned long)raw_size, (unsigned int)raw_type, ep_way(ep), dusb_rpkt_type2name(raw_type));
 
-	if (raw_size > sizeof(((DUSBRawPacket *)0)->data) - 5)
+	if (raw_size > sizeof(((DUSBRawPacket *)nullptr)->data) - 5)
 	{
 		ticalcs_critical("Raw size %lu (%lX) is too large for a valid DUSB raw packet", (unsigned long)raw_size, (unsigned long)raw_size);
 		return ERR_INVALID_PACKET;
@@ -261,7 +254,7 @@ int TICALL dusb_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_
 		case DUSB_RPKT_BUF_SIZE_REQ:
 		case DUSB_RPKT_BUF_SIZE_ALLOC:
 		{
-			uint32_t tmp = (((uint32_t)(data[5])) << 24) | (((uint32_t)(data[6])) << 16) | (((uint32_t)(data[7])) << 8) | ((uint32_t)(data[8]));
+			const uint32_t tmp = (((uint32_t)(data[5])) << 24) | (((uint32_t)(data[6])) << 16) | (((uint32_t)(data[7])) << 8) | ((uint32_t)(data[8]));
 			fprintf(f, "\t[%08lX]\n", (unsigned long)tmp);
 			if (len != 5U + 4)
 			{
@@ -275,8 +268,8 @@ int TICALL dusb_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_
 		{
 			if (*first)
 			{
-				uint32_t vtl_size = (((uint32_t)(data[5])) << 24) | (((uint32_t)(data[6])) << 16) | (((uint32_t)(data[7])) << 8) | ((uint32_t)(data[8]));
-				uint16_t vtl_type = (((uint16_t)(data[9])) << 8) | ((uint16_t)(data[10]));
+				const uint32_t vtl_size = (((uint32_t)(data[5])) << 24) | (((uint32_t)(data[6])) << 16) | (((uint32_t)(data[7])) << 8) | ((uint32_t)(data[8]));
+				const uint16_t vtl_type = (((uint16_t)(data[9])) << 8) | ((uint16_t)(data[10]));
 				fprintf(f, "\t%08lX {%04X}\t\t\t\t\t\t| CMD: %s\n", (unsigned long)vtl_size, vtl_type, dusb_vpkt_type2name(vtl_type));
 
 				if (vtl_size != raw_size - 6)
@@ -290,7 +283,6 @@ int TICALL dusb_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_
 				}
 				else
 				{
-					uint32_t i;
 					data += 11;
 					len -= 11;
 					if (len < vtl_size)
@@ -302,7 +294,7 @@ int TICALL dusb_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_
 						fputs("(given length larger than length in packet)\n", f);
 					}
 					fprintf(f, "\t\t");
-					for (i = 0; i < len;)
+					for (uint32_t i = 0; i < len;)
 					{
 						fprintf(f, "%02X ", *data++);
 						if (!(++i & 15))
@@ -321,7 +313,6 @@ int TICALL dusb_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_
 			}
 			else
 			{
-				uint32_t i;
 				fprintf(f, "\t%02X %02X %02X ", data[5], data[6], data[7]);
 				data += 8;
 				len -= 8;
@@ -334,7 +325,7 @@ int TICALL dusb_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_
 				{
 					fputs("(given length larger than length in packet)\n", f);
 				}
-				for (i = 0; i < len;)
+				for (uint32_t i = 0; i < len;)
 				{
 					fprintf(f, "%02X ", *data++);
 					if (!(++i & 15))
@@ -351,7 +342,7 @@ int TICALL dusb_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_
 
 		case DUSB_RPKT_VIRT_DATA_ACK:
 		{
-			uint16_t tmp = (((uint16_t)(data[5])) << 8) | ((uint16_t)(data[6]));
+			const uint16_t tmp = (((uint16_t)(data[5])) << 8) | ((uint16_t)(data[6]));
 			fprintf(f, "\t[%04X]\n", tmp);
 			if (len != 5 + 2)
 			{

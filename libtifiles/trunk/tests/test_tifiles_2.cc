@@ -43,19 +43,18 @@
 // Compare 2 files bytes per bytes and show differences
 static int compare_files(const char *src, const char *dst)
 {
-	FILE *fs, *fd;
 	int i;
 	int s, d;
 
-	fs = fopen(src, "rb");
-	if (fs == NULL)
+	FILE* fs = fopen(src, "rb");
+	if (fs == nullptr)
 	{
 		printf("Unable to open file <%s>\n", src);
 		return -1;
 	}
 
-	fd = fopen(dst, "rb");
-	if (fd == NULL)
+	FILE* fd = fopen(dst, "rb");
+	if (fd == nullptr)
 	{
 		printf("Unable to open file: <%s>\n", dst);
 		fclose(fs);
@@ -131,14 +130,13 @@ static int test_tixx_backup_support(const char * message,
                                     const char * input_file,
                                     const char * output_file)
 {
-	BackupContent *content;
 	int ret = -1;
 
 	printf("%s", message);
 	tifiles_file_display(input_file);
 
-	content = tifiles_content_create_backup(calculator);
-	if (content != NULL)
+	BackupContent* content = tifiles_content_create_backup(calculator);
+	if (content != nullptr)
 	{
 		ret = tifiles_file_read_backup(input_file, content);
 		if (!ret)
@@ -160,15 +158,14 @@ static int test_tixx_regular_support_single(const char * message,
                                             const char * input_file,
                                             const char * output_file)
 {
-	FileContent *content;
-	char *unused = NULL;
+	char *unused = nullptr;
 	int ret = -1;
 
 	printf("%s", message);
 	tifiles_file_display(input_file);
 
-	content = tifiles_content_create_regular(calculator);
-	if (content != NULL)
+	FileContent* content = tifiles_content_create_regular(calculator);
+	if (content != nullptr)
 	{
 		ret = tifiles_file_read_regular(input_file, content);
 		if (!ret)
@@ -191,15 +188,14 @@ static int test_tixx_regular_support_group(const char * message,
                                             const char * input_group,
                                             const char * output_group)
 {
-	FileContent *content;
-	char *unused = NULL;
+	char *unused = nullptr;
 	int ret = -1;
 
 	printf("%s", message);
 	tifiles_file_display(input_group);
 
-	content = tifiles_content_create_regular(calculator);
-	if (content != NULL)
+	FileContent* content = tifiles_content_create_regular(calculator);
+	if (content != nullptr)
 	{
 		ret = tifiles_file_read_regular(input_group, content);
 		if (!ret)
@@ -224,7 +220,7 @@ static int test_tixx_group_support(const char * message,
                                    const char * output_group_file)
 {
 	char files[2][1024];
-	char *array[3] = { 0 };
+	char *array[3] = { nullptr };
 	int ret = -1;
 
 	strncpy(files[0], input_file_1, 1023);
@@ -254,9 +250,8 @@ static int test_tixx_ungroup_support(const char * message,
                                      const char * input_file_3,
                                      const char * input_file_4)
 {
-	int ret;
 	printf("%s", message);
-	ret = tifiles_ungroup_file(input_group, NULL);
+	int ret = tifiles_ungroup_file(input_group, nullptr);
 	if (!ret)
 	{
 		rename(input_file_1, dest_file_1);
@@ -276,14 +271,13 @@ static int test_tixx_flash_support(const char * message,
                                    const char * input_file,
                                    const char * output_file)
 {
-	FlashContent *content;
 	int ret = -1;
 
 	printf("%s", message);
 	tifiles_file_display(input_file);
 
-	content = tifiles_content_create_flash(calculator);
-	if (content != NULL)
+	FlashContent* content = tifiles_content_create_flash(calculator);
+	if (content != nullptr)
 	{
 		ret = tifiles_file_read_flash(input_file, content);
 		if (!ret)
@@ -314,12 +308,10 @@ static int test_ti73_backup_support()
 
 static int test_ti73_regular_support()
 {
-	int ret;
-
-	ret = test_tixx_regular_support_single("--> Testing TI73 regular support (single)...\n",
-	                                       CALC_TI73,
-	                                       "ti73/romdump.73p",
-	                                       "ti73/romdump.73p_");
+	int ret = test_tixx_regular_support_single("--> Testing TI73 regular support (single)...\n",
+	                                           CALC_TI73,
+	                                           "ti73/romdump.73p",
+	                                           "ti73/romdump.73p_");
 
 	if (!ret)
 	{
@@ -368,12 +360,10 @@ static int test_ti82_backup_support()
 
 static int test_ti82_regular_support()
 {
-	int ret;
-
-	ret = test_tixx_regular_support_single("--> Testing TI82 regular support (single)...\n",
-	                                       CALC_TI82,
-	                                       "ti82/math.82p",
-	                                       "ti82/math.82p_");
+	int ret = test_tixx_regular_support_single("--> Testing TI82 regular support (single)...\n",
+	                                           CALC_TI82,
+	                                           "ti82/math.82p",
+	                                           "ti82/math.82p_");
 
 	if (!ret)
 	{
@@ -422,12 +412,10 @@ static int test_ti83_backup_support()
 
 static int test_ti83_regular_support()
 {
-	int ret;
-
-	ret = test_tixx_regular_support_single("--> Testing ti83 regular support (single)...\n",
-	                                       CALC_TI83,
-	                                       "ti83/romdump.83p",
-	                                       "ti83/romdump.83p_");
+	int ret = test_tixx_regular_support_single("--> Testing ti83 regular support (single)...\n",
+	                                           CALC_TI83,
+	                                           "ti83/romdump.83p",
+	                                           "ti83/romdump.83p_");
 
 	if (!ret)
 	{
@@ -468,12 +456,10 @@ static int test_ti83_ungroup_support()
 
 static int test_ti84p_regular_support()
 {
-	int ret;
-
-	ret = test_tixx_regular_support_single("--> Testing TI84+ regular support (single)...\n",
-	                                       CALC_TI84P,
-	                                       "ti84p/romdump.8Xp",
-	                                       "ti84p/romdump.8Xp_");
+	int ret = test_tixx_regular_support_single("--> Testing TI84+ regular support (single)...\n",
+	                                           CALC_TI84P,
+	                                           "ti84p/romdump.8Xp",
+	                                           "ti84p/romdump.8Xp_");
 
 	if (!ret)
 	{
@@ -509,12 +495,10 @@ static int test_ti84p_ungroup_support()
 
 static int test_ti84p_flash_support()
 {
-	int ret;
-
-	ret = test_tixx_flash_support("--> Testing TI84+ flashapp support...\n",
-	                              CALC_TI84P,
-	                              "ti84p/LogIn_1.8Xk",
-	                              "ti84p/LogIn_1.8Xk_");
+	int ret = test_tixx_flash_support("--> Testing TI84+ flashapp support...\n",
+	                                  CALC_TI84P,
+	                                  "ti84p/LogIn_1.8Xk",
+	                                  "ti84p/LogIn_1.8Xk_");
 
 	if (!ret)
 	{
@@ -542,12 +526,10 @@ static int test_ti84p_flash_support()
 
 static int test_ti85_regular_support()
 {
-	int ret;
-
-	ret = test_tixx_regular_support_single("--> Testing TI85 regular support (single)...\n",
-	                                       CALC_TI85,
-	                                       "ti85/AA.85n",
-	                                       "ti85/AA.85n_");
+	int ret = test_tixx_regular_support_single("--> Testing TI85 regular support (single)...\n",
+	                                           CALC_TI85,
+	                                           "ti85/AA.85n",
+	                                           "ti85/AA.85n_");
 
 	if (!ret)
 	{
@@ -575,12 +557,10 @@ static int test_ti86_backup_support()
 
 static int test_ti86_regular_support()
 {
-	int ret;
-
-	ret = test_tixx_regular_support_single("--> Testing TI86 regular support (single)...\n",
-	                                       CALC_TI86,
-	                                       "ti86/prgm.86p",
-	                                       "ti86/prgm.86p_");
+	int ret = test_tixx_regular_support_single("--> Testing TI86 regular support (single)...\n",
+	                                           CALC_TI86,
+	                                           "ti86/prgm.86p",
+	                                           "ti86/prgm.86p_");
 
 	if (!ret)
 	{
@@ -636,12 +616,10 @@ static int test_ti92_backup_support()
 
 static int test_ti92_regular_support()
 {
-	int ret;
-
-	ret = test_tixx_regular_support_single("--> Testing TI92 regular support (single)...\n",
-	                                       CALC_TI92,
-	                                       "ti92/str.92s",
-	                                       "ti92/str.92s_");
+	int ret = test_tixx_regular_support_single("--> Testing TI92 regular support (single)...\n",
+	                                           CALC_TI92,
+	                                           "ti92/str.92s",
+	                                           "ti92/str.92s_");
 
 	if (!ret)
 	{
@@ -681,24 +659,20 @@ static int test_ti92_ungroup_support()
 
 static int test_ti89_regular_support()
 {
-	int ret;
-
-	ret = test_tixx_regular_support_group("--> Testing TI89 regular support (group)...\n",
-	                                      CALC_TI89,
-	                                      "ti89/group.89g",
-	                                      "ti89/group.89g_");
+	const int ret = test_tixx_regular_support_group("--> Testing TI89 regular support (group)...\n",
+	                                                CALC_TI89,
+	                                                "ti89/group.89g",
+	                                                "ti89/group.89g_");
 
 	return ret;
 }
 
 static int test_ti89_flash_support()
 {
-	int ret;
-
-	ret = test_tixx_flash_support("--> Testing TI89 flashapp support...\n",
-	                              CALC_TI89,
-	                              "ti89/ticabfra.89k",
-	                              "ti89/ticabfra.89k_");
+	const int ret = test_tixx_flash_support("--> Testing TI89 flashapp support...\n",
+	                                        CALC_TI89,
+	                                        "ti89/ticabfra.89k",
+	                                        "ti89/ticabfra.89k_");
 
 	return ret;
 }
@@ -706,12 +680,10 @@ static int test_ti89_flash_support()
 
 static int test_v200_regular_support()
 {
-	int ret;
-
-	ret = test_tixx_regular_support_group("--> Testing V200 regular support (group)...\n",
-	                                      CALC_V200,
-	                                      "./v200/xy.v2g",
-	                                      "./v200/xy.v2g_");
+	const int ret = test_tixx_regular_support_group("--> Testing V200 regular support (group)...\n",
+	                                                CALC_V200,
+	                                                "./v200/xy.v2g",
+	                                                "./v200/xy.v2g_");
 
 	return ret;
 }
@@ -722,24 +694,20 @@ static int test_v200_regular_support()
 
 static int test_ti8x_cert_support()
 {
-	int ret;
-
-	ret = test_tixx_flash_support("--> Testing TI8X certif support...\n",
-	                              CALC_TI84P,
-	                              "certs/celsheet1.8Xk",
-	                              "certs/celsheet1.8Xk_");
+	const int ret = test_tixx_flash_support("--> Testing TI8X certif support...\n",
+	                                        CALC_TI84P,
+	                                        "certs/celsheet1.8Xk",
+	                                        "certs/celsheet1.8Xk_");
 
 	return ret;
 }
 
 static int test_ti9x_cert_support()
 {
-	int ret;
-
-	ret = test_tixx_flash_support("--> Testing TI9X certif support...\n",
-	                              CALC_TI92P,
-	                              "certs/ticsheet.9xk",
-	                              "certs/ticsheet.9xk_");
+	const int ret = test_tixx_flash_support("--> Testing TI9X certif support...\n",
+	                                        CALC_TI92P,
+	                                        "certs/ticsheet.9xk",
+	                                        "certs/ticsheet.9xk_");
 
 	return ret;
 }
@@ -747,10 +715,9 @@ static int test_ti9x_cert_support()
 static int test_ti8x_group_merge()
 {
 	VarEntry ve;
-	int ret;
 
 	printf("--> Testing add/del from group support (r/w)...\n");
-	ret = tifiles_group_add_file("misc/group1.8Xg", "misc/group2.8Xg");
+	int ret = tifiles_group_add_file("misc/group1.8Xg", "misc/group2.8Xg");
 	if (!ret)
 	{
 		strncpy(ve.name, "A", sizeof(ve.name) - 1);
@@ -773,11 +740,11 @@ static int test_ti8x_group_merge()
 
 static int test_tigroup()
 {
-	TigContent *content = NULL;
-	TigEntry te = { NULL, TIFILE_NONE, { NULL } };
+	TigContent *content = nullptr;
+	TigEntry te = { nullptr, TIFILE_NONE, {nullptr} };
 	int ret = -1;
 
-	// SVN can't handle file like 'pépé'. You will have to rename it from pepe to pépé and
+	// SVN can't handle file like 'p?p?'. You will have to rename it from pepe to p?p? and
 	// uncomment line below and another line.
 	//char *name = g_filename_from_utf8("tig/p\xC3\xA9p\xC3\xA9.tig", -1, NULL, NULL, NULL);
 
@@ -788,7 +755,7 @@ static int test_tigroup()
 	tifiles_file_display_tigroup("tig/test.tig");
 
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);
-	if (content != NULL)
+	if (content != nullptr)
 	{
 		ret = tifiles_file_read_tigroup("tig/test2.tig", content);
 		if (!ret)
@@ -801,7 +768,7 @@ static int test_tigroup()
 	if (!ret)
 	{
 		content = tifiles_content_create_tigroup(CALC_NONE, 0);
-		if (content != NULL)
+		if (content != nullptr)
 		{
 			ret = tifiles_file_read_tigroup("tig/test.tig", content);
 			if (!ret)
@@ -855,7 +822,7 @@ static int test_tigroup()
 		if (!ret)
 		{
 			tifiles_file_display("tig/test_.tig");
-			ret = tifiles_untigroup_file("tig/test.tig", NULL);
+			ret = tifiles_untigroup_file("tig/test.tig", nullptr);
 			if (!ret)
 			{
 				rename("A.8Xn", "tig/AA.8Xn");
@@ -875,7 +842,7 @@ static int test_tigroup()
 // The main function
 int main(int argc, char **argv)
 {
-	char *msg = NULL;
+	char *msg = nullptr;
 	char buffer[256];
 	int i;
 	int ret;

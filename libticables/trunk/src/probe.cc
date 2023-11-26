@@ -40,10 +40,9 @@
 
 int TICALL ticables_probing_found(int *array)
 {
-	if (array != NULL)
+	if (array != nullptr)
 	{
-		int i;
-		for (i = PORT_FIRST; i < PORT_MAX; i++)
+		for (int i = PORT_FIRST; i < PORT_MAX; i++)
 		{
 			if (array[i])
 			{
@@ -61,14 +60,12 @@ int TICALL ticables_probing_found(int *array)
 
 void TICALL ticables_probing_show(int **array)
 {
-	if (array != NULL)
+	if (array != nullptr)
 	{
-		int model;
-
-		for (model = CABLE_NUL; model < CABLE_MAX; model++)
+		for (int model = CABLE_NUL; model < CABLE_MAX; model++)
 		{
-			int * arraymodel = array[model];
-			if (arraymodel != NULL)
+			const int * arraymodel = array[model];
+			if (arraymodel != nullptr)
 			{
 				ticables_info(" %i: %i %i %i %i", model, array[model][PORT_1], array[model][PORT_2], array[model][PORT_3], array[model][PORT_4]);
 			}
@@ -101,20 +98,19 @@ int TICALL ticables_probing_do(int ***result, unsigned int timeout, ProbingMetho
 {
 	int port;
 	int model;
-	int **array;
 	int found = 0;
 
-	if (result == NULL)
+	if (result == nullptr)
 	{
 		ticables_critical("%s: result is NULL", __FUNCTION__);
 		return ERR_PROBE_FAILED;
 	}
-	*result = NULL;
+	*result = nullptr;
 
 	ticables_info("%s", _("Link cable probing:"));
 
-	array = (int **)calloc(CABLE_MAX + 1, sizeof(int *));
-	if (array == NULL)
+	int** array = (int**)calloc(CABLE_MAX + 1, sizeof(int*));
+	if (array == nullptr)
 	{
 		return ERR_PROBE_FAILED; // THIS RETURNS !
 	}
@@ -122,7 +118,7 @@ int TICALL ticables_probing_do(int ***result, unsigned int timeout, ProbingMetho
 	for (model = CABLE_NUL; model <= CABLE_MAX; model++)
 	{
 		array[model] = (int *)calloc(PORT_MAX, sizeof(int));
-		if (array[model] == NULL)
+		if (array[model] == nullptr)
 		{
 			for (model = CABLE_NUL; model <= CABLE_MAX; model++)
 			{
@@ -136,11 +132,11 @@ int TICALL ticables_probing_do(int ***result, unsigned int timeout, ProbingMetho
 	// look for USB devices (faster)
 	if (method & PROBE_USB)
 	{
-		int *list, n, i;
+		int *list, n;
 
 		ticables_get_usb_devices(&list, &n);
 
-		for (i = 0; i < n; i++)
+		for (int i = 0; i < n; i++)
 		{
 			port = i+1;
 
@@ -172,14 +168,13 @@ int TICALL ticables_probing_do(int ***result, unsigned int timeout, ProbingMetho
 		{
 			for (port = PORT_1; port < PORT_MAX; port++)
 			{
-				CableHandle* handle;
-				int err, ret;
+				int ret;
 
-				handle = ticables_handle_new((CableModel)model, (CablePort)port);
-				if (handle != NULL)
+				CableHandle* handle = ticables_handle_new((CableModel)model, (CablePort)port);
+				if (handle != nullptr)
 				{
 					ticables_options_set_timeout(handle, timeout);
-					err = ticables_cable_probe(handle, &ret);
+					const int err = ticables_cable_probe(handle, &ret);
 					array[model][port] = (ret && !err) ? 1: 0;
 					if (array[model][port])
 					{
@@ -211,18 +206,16 @@ int TICALL ticables_probing_do(int ***result, unsigned int timeout, ProbingMetho
  **/
 int TICALL ticables_probing_finish(int ***result)
 {
-	int i;
-
-	if (result != NULL && *result != NULL)
+	if (result != nullptr && *result != nullptr)
 	{
-		for (i = CABLE_NUL; i <= CABLE_MAX; i++)
+		for (int i = CABLE_NUL; i <= CABLE_MAX; i++)
 		{
 			free((*result)[i]);
-			(*result)[i] = NULL;
+			(*result)[i] = nullptr;
 		}
 
 		free(*result);
-		*result = NULL;
+		*result = nullptr;
 	}
 	else
 	{
@@ -267,10 +260,10 @@ int TICALL ticables_is_usb_enabled(void)
  **/
 int TICALL ticables_get_usb_devices(int **list, int *len)
 {
-	if (list != NULL)
+	if (list != nullptr)
 	{
 		int ret = 0;
-		const USBCableInfo *info = NULL;
+		const USBCableInfo *info = nullptr;
 		int i, n = 0;
 
 #if defined(__WIN32__) || (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0))
@@ -441,10 +434,10 @@ void translate_usb_device_info(CableDeviceInfo *info, const USBCableInfo *usbinf
  **/
 int TICALL ticables_get_usb_device_info(CableDeviceInfo **list, int *len)
 {
-	if (list != NULL)
+	if (list != nullptr)
 	{
 		int ret = 0;
-		const USBCableInfo *usbinfo = NULL;
+		const USBCableInfo *usbinfo = nullptr;
 		int i, n = 0;
 
 #if defined(__WIN32__) || (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0))

@@ -64,7 +64,7 @@ const char *TICALL ticables_model_to_string(CableModel model)
  **/
 CableModel TICALL ticables_string_to_model(const char *str)
 {
-	if (str == NULL)
+	if (str == nullptr)
 	{
 		ticables_critical("%s(NULL)", __FUNCTION__);
 		return CABLE_NUL;
@@ -129,7 +129,7 @@ const char *TICALL ticables_port_to_string(CablePort port)
  **/
 CablePort TICALL ticables_string_to_port(const char *str)
 {
-	if (str == NULL)
+	if (str == nullptr)
 	{
 		ticables_critical("%s(NULL)", __FUNCTION__);
 		return PORT_0;
@@ -182,7 +182,7 @@ const char *TICALL ticables_usbpid_to_string(UsbPid pid)
  **/
 UsbPid TICALL ticables_string_to_usbpid(const char *str)
 {
-	if (str == NULL)
+	if (str == nullptr)
 	{
 		ticables_critical("%s(NULL)", __FUNCTION__);
 		return PID_UNKNOWN;

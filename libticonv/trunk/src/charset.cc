@@ -41,14 +41,14 @@ static unsigned short* ticonv_nonusb_to_utf16(const unsigned long * charset, con
 	const unsigned char *p = (const unsigned char *)ti;
 	unsigned short *q = utf16;
 
-	if (ti == NULL || utf16 == NULL)
+	if (ti == nullptr || utf16 == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	while (*p)
 	{
-		unsigned long c = charset[*(p++)];
+		const unsigned long c = charset[*(p++)];
 		if (c < 0x10000)
 		{
 			*(q++) = (unsigned short)c;
@@ -66,17 +66,15 @@ static unsigned short* ticonv_nonusb_to_utf16(const unsigned long * charset, con
 
 static unsigned short * ticonv_usb_to_utf16(const char *ti, unsigned short *utf16)
 {
-	unsigned short *tmp;
-
-	if (ti == NULL || utf16 == NULL)
+	if (ti == nullptr || utf16 == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
-	tmp = ticonv_utf8_to_utf16(ti);
-	if (tmp == NULL)
+	unsigned short* tmp = ticonv_utf8_to_utf16(ti);
+	if (tmp == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	memcpy(utf16, tmp, 2 * ticonv_utf16_strlen(tmp));
@@ -90,9 +88,9 @@ static char * ticonv_utf16_to_nonusb(const unsigned long * charset, const unsign
 	const unsigned short *p = utf16;
 	unsigned char *q = (unsigned char *)ti;
 
-	if (utf16 == NULL || ti == NULL)
+	if (utf16 == nullptr || ti == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	while (*p)
@@ -133,9 +131,8 @@ static char * ticonv_utf16_to_nonusb(const unsigned long * charset, const unsign
 		}
 		else
 		{
-			unsigned int i;
 			*q = '?';
-			for (i = 0; i < 256; i++) {
+			for (unsigned int i = 0; i < 256; i++) {
 				if (charset[i] == c) {
 					*q = i;
 					break;
@@ -151,17 +148,15 @@ static char * ticonv_utf16_to_nonusb(const unsigned long * charset, const unsign
 
 static char* ticonv_utf16_to_usb(const unsigned short *utf16, char *ti)
 {
-	char *tmp;
-
-	if (utf16 == NULL || ti == NULL)
+	if (utf16 == nullptr || ti == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
-	tmp = ticonv_utf16_to_utf8(utf16);
-	if (tmp == NULL)
+	char* tmp = ticonv_utf16_to_utf8(utf16);
+	if (tmp == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	strcpy(ti, tmp);
@@ -466,9 +461,9 @@ char* TICALL ticonv_utf16_to_ti80(const unsigned short *utf16, char *ti)
 	const unsigned short *p = utf16;
 	unsigned char *q = (unsigned char *)ti;
 
-	if (utf16 == NULL || ti == NULL)
+	if (utf16 == nullptr || ti == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	while (*p) 
@@ -748,9 +743,9 @@ char* TICALL ticonv_utf16_to_ti83p(const unsigned short *utf16, char *ti)
 	const unsigned short *p = utf16;
 	unsigned char *q = (unsigned char *)ti;
 
-	if (utf16 == NULL || ti == NULL)
+	if (utf16 == nullptr || ti == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	while (*p)

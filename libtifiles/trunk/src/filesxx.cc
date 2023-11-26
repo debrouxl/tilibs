@@ -51,7 +51,7 @@ FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 {
 	FileContent* content = (FileContent *)g_malloc0(sizeof(FileContent));
 
-	if (content != NULL)
+	if (content != nullptr)
 	{
 		if ((unsigned int)model >= CALC_MAX)
 		{
@@ -78,20 +78,18 @@ FileContent* TICALL tifiles_content_create_regular(CalcModel model)
  **/
 int TICALL tifiles_content_delete_regular(FileContent *content)
 {
-	unsigned int i;
-
 #ifdef TRACE_CONTENT_INSTANCES
 	tifiles_info("tifiles_content_delete_regular: %p", content);
 	tifiles_file_display_regular(content);
 #endif
 
-	if (content != NULL)
+	if (content != nullptr)
 	{
-		for (i = 0; i < content->num_entries; i++) 
+		for (unsigned int i = 0; i < content->num_entries; i++) 
 		{
 			VarEntry *entry = content->entries[i];
 
-			if (entry != NULL)
+			if (entry != nullptr)
 			{
 				g_free(entry->data);
 				g_free(entry);
@@ -122,26 +120,25 @@ int TICALL tifiles_content_delete_regular(FileContent *content)
  **/
 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
 {
-	FileContent *dup = NULL;
-	unsigned int i;
+	FileContent *dup = nullptr;
 
-	if (content != NULL)
+	if (content != nullptr)
 	{
 		dup = tifiles_content_create_regular(content->model);
-		if (dup != NULL)
+		if (dup != nullptr)
 		{
 			memcpy(dup, content, sizeof(FileContent));
 			dup->entries = tifiles_ve_create_array(content->num_entries);
 
-			if (dup->entries != NULL)
+			if (dup->entries != nullptr)
 			{
-				for (i = 0; i < content->num_entries; i++)
+				for (unsigned int i = 0; i < content->num_entries; i++)
 				{
 					dup->entries[i] = tifiles_ve_dup(content->entries[i]);
-					if (dup->entries[i] == NULL)
+					if (dup->entries[i] == nullptr)
 					{
 						tifiles_content_delete_regular(dup);
-						dup = NULL;
+						dup = nullptr;
 						break;
 					}
 				}
@@ -150,7 +147,7 @@ FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
 			{
 				dup->num_entries = 0;
 				tifiles_content_delete_regular(dup);
-				dup = NULL;
+				dup = nullptr;
 			}
 		}
 	}
@@ -181,7 +178,7 @@ FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
  **/
 int tifiles_file_read_regular(const char *filename, FileContent *content)
 {
-	if (filename == NULL || content == NULL)
+	if (filename == nullptr || content == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -227,7 +224,7 @@ int tifiles_file_read_regular(const char *filename, FileContent *content)
  **/
 int tifiles_file_write_regular(const char *filename, FileContent *content, char **real_fname)
 {
-	if (content == NULL || (filename == NULL && real_fname == NULL))
+	if (content == nullptr || (filename == nullptr && real_fname == nullptr))
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -267,11 +264,10 @@ int tifiles_file_write_regular(const char *filename, FileContent *content, char 
  **/
 int TICALL tifiles_file_display_regular(FileContent *content)
 {
-	unsigned int i;
 	char trans[257];
 	int model_supports_folder = 1;
 
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -311,12 +307,12 @@ int TICALL tifiles_file_display_regular(FileContent *content)
 	tifiles_info("Number of entries: %u", content->num_entries);
 	tifiles_info("Entries:           %p", content->entries);
 
-	if (content->entries != NULL)
+	if (content->entries != nullptr)
 	{
-		for (i = 0; i < content->num_entries; i++)
+		for (unsigned int i = 0; i < content->num_entries; i++)
 		{
 			VarEntry * ve = content->entries[i];
-			if (ve != NULL)
+			if (ve != nullptr)
 			{
 				tifiles_info("Entry #%u %p", i, ve);
 				if (model_supports_folder)
@@ -355,7 +351,7 @@ BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 {
 	BackupContent* content = (BackupContent *)g_malloc0(sizeof(BackupContent));
 
-	if (content != NULL)
+	if (content != nullptr)
 	{
 		if ((unsigned int)model >= CALC_MAX)
 		{
@@ -387,7 +383,7 @@ int TICALL tifiles_content_delete_backup(BackupContent *content)
 	tifiles_file_display_backup(content);
 #endif
 
-	if (content != NULL)
+	if (content != nullptr)
 	{
 		if (tifiles_calc_is_ti9x(content->model))
 		{
@@ -425,7 +421,7 @@ int TICALL tifiles_content_delete_backup(BackupContent *content)
  **/
 int tifiles_file_read_backup(const char *filename, BackupContent *content)
 {
-	if (filename == NULL || content == NULL)
+	if (filename == nullptr || content == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -459,7 +455,7 @@ int tifiles_file_read_backup(const char *filename, BackupContent *content)
  **/
 int tifiles_file_write_backup(const char *filename, BackupContent *content)
 {
-	if (filename == NULL || content == NULL)
+	if (filename == nullptr || content == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -492,7 +488,7 @@ int tifiles_file_write_backup(const char *filename, BackupContent *content)
  **/
 int TICALL tifiles_file_display_backup(BackupContent *content)
 {
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -527,7 +523,7 @@ FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 {
 	FlashContent* content = (FlashContent *)g_malloc0(sizeof(FlashContent));
 
-	if (content != NULL)
+	if (content != nullptr)
 	{
 		if ((unsigned int)model >= CALC_MAX)
 		{
@@ -577,23 +573,21 @@ int TICALL tifiles_content_delete_flash(FlashContent *content)
 	tifiles_file_display_flash(content);
 #endif
 
-	if (content != NULL)
+	if (content != nullptr)
 	{
 #if !defined(DISABLE_TI8X) && !defined(DISABLE_TI9X)
-		FlashContent *ptr;
-		unsigned int i;
 
 		g_free(content->data_part);
 
-		ptr = content->next;
-		while (ptr != NULL)
+		FlashContent* ptr = content->next;
+		while (ptr != nullptr)
 		{
 			FlashContent *next = ptr->next;
 
 			g_free(ptr->data_part);
 			g_free(ptr);
 
-			for (i = 0; i < content->num_pages; i++)
+			for (unsigned int i = 0; i < content->num_pages; i++)
 			{
 				g_free(content->pages[i]->data);
 				g_free(content->pages[i]);
@@ -625,13 +619,13 @@ int TICALL tifiles_content_delete_flash(FlashContent *content)
  **/
 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 {
-	FlashContent *dup = NULL;
+	FlashContent *dup = nullptr;
 	FlashContent *p, *q;
 
-	if (content != NULL)
+	if (content != nullptr)
 	{
 		dup = tifiles_content_create_flash(content->model);
-		if (dup != NULL)
+		if (dup != nullptr)
 		{
 			for (p = content, q = dup; p; p = p->next, q = q->next)
 			{
@@ -650,11 +644,9 @@ FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 				// TI-Z80 part
 				if (tifiles_calc_is_ti8x(content->model))
 				{
-					unsigned int i;
-
 					// copy pages
 					q->pages = tifiles_fp_create_array(p->num_pages);
-					for (i = 0; i < content->num_pages; i++)
+					for (unsigned int i = 0; i < content->num_pages; i++)
 					{
 						q->pages[i] = (FlashPage *)g_malloc0(sizeof(FlashPage));
 						memcpy(q->pages[i], p->pages[i], sizeof(FlashPage));
@@ -698,7 +690,7 @@ FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
  **/
 int tifiles_file_read_flash(const char *filename, FlashContent *content)
 {
-	if (filename == NULL || content == NULL)
+	if (filename == nullptr || content == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -744,7 +736,7 @@ int tifiles_file_read_flash(const char *filename, FlashContent *content)
  **/
 int tifiles_file_write_flash2(const char *filename, FlashContent *content, char **real_fname)
 {
-	if (content == NULL || (filename == NULL && real_fname == NULL))
+	if (content == nullptr || (filename == nullptr && real_fname == nullptr))
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -779,7 +771,7 @@ int tifiles_file_write_flash2(const char *filename, FlashContent *content, char 
  **/
 int tifiles_file_write_flash(const char *filename, FlashContent *content)
 {
-	return tifiles_file_write_flash2(filename, content, NULL);
+	return tifiles_file_write_flash2(filename, content, nullptr);
 }
 
 /**
@@ -792,7 +784,7 @@ int tifiles_file_write_flash(const char *filename, FlashContent *content)
  **/
 int TICALL tifiles_file_display_flash(FlashContent *content)
 {
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -876,24 +868,23 @@ int** tifiles_create_table_of_entries(FileContent *content, unsigned int *nfolde
 {
 	unsigned int num_folders = 0;
 	unsigned int i, j;
-	char **ptr, *folder_list[32768] = { 0 };
-	int **table;
+	char **ptr, *folder_list[32768] = { nullptr };
 
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
-	if (content->entries != NULL)
+	if (content->entries != nullptr)
 	{
 		// determine how many folders we have
 		for (i = 0; i < content->num_entries; i++)
 		{
-			VarEntry *entry = content->entries[i];
+			const VarEntry *entry = content->entries[i];
 
 			// scan for an existing folder entry
-			for (ptr = folder_list; *ptr != NULL; ptr++)
+			for (ptr = folder_list; *ptr != nullptr; ptr++)
 			{
 				if (!strcmp(*ptr, entry->folder))
 				{
@@ -901,13 +892,13 @@ int** tifiles_create_table_of_entries(FileContent *content, unsigned int *nfolde
 					break;
 				}
 			}
-			if (*ptr == NULL)
+			if (*ptr == nullptr)
 			{		// add new folder entry
 				folder_list[num_folders] = (char *) g_malloc0(257);
 				//printf("%i: adding '%s'\n", num_folders, entry->folder);
 				strncpy(folder_list[num_folders], entry->folder, 257 - 1);
 				folder_list[num_folders][257 - 1] = 0;
-				folder_list[num_folders + 1] = NULL;
+				folder_list[num_folders + 1] = nullptr;
 				num_folders++;
 			}
 		}
@@ -916,14 +907,14 @@ int** tifiles_create_table_of_entries(FileContent *content, unsigned int *nfolde
 			num_folders++;
 		}
 	}
-	if (nfolders != NULL)
+	if (nfolders != nullptr)
 	{
 		*nfolders = num_folders;
 	}
 
 	// allocate the folder list
-	table = (int **) g_malloc0((num_folders + 1) * sizeof(int *));
-	table[num_folders] = NULL;
+	int** table = (int**)g_malloc0((num_folders + 1) * sizeof(int*));
+	table[num_folders] = nullptr;
 
 	// for each folder, determine how many variables we have
 	// and allocate array with indexes
@@ -933,7 +924,7 @@ int** tifiles_create_table_of_entries(FileContent *content, unsigned int *nfolde
 
 		for (i = 0, k = 0; i < content->num_entries; i++)
 		{
-			VarEntry *entry = content->entries[i];
+			const VarEntry *entry = content->entries[i];
 
 			if (!strcmp(folder_list[j], entry->folder))
 			{
@@ -957,10 +948,10 @@ int** tifiles_create_table_of_entries(FileContent *content, unsigned int *nfolde
 
 void tifiles_free_table_of_entries(int ** table)
 {
-	if (table != NULL)
+	if (table != nullptr)
 	{
 		int ** ptr = table;
-		while (*ptr != NULL)
+		while (*ptr != nullptr)
 		{
 			g_free(*ptr);
 			ptr++;

@@ -67,7 +67,7 @@ const char *TICALL ticalcs_scrfmt_to_string(CalcScreenFormat format)
 
 CalcScreenFormat TICALL ticalcs_string_to_scrfmt(const char *str)
 {
-	if (str != NULL)
+	if (str != nullptr)
 	{
 		if (!strcmp(str, _("full")))
 		{
@@ -99,7 +99,7 @@ const char *TICALL ticalcs_pathtype_to_string(CalcPathType type)
 
 CalcPathType TICALL ticalcs_string_to_pathtype(const char *str)
 {
-	if (str != NULL)
+	if (str != nullptr)
 	{
 		if (!strcmp(str, _("full")))
 		{
@@ -131,7 +131,7 @@ const char *TICALL ticalcs_memtype_to_string(CalcMemType type)
 
 CalcMemType TICALL ticalcs_string_to_memtype(const char *str)
 {
-	if (str != NULL)
+	if (str != nullptr)
 	{
 		if (!strcmp(str, _("free")))
 		{
@@ -148,7 +148,7 @@ CalcMemType TICALL ticalcs_string_to_memtype(const char *str)
 
 int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen)
 {
-	if (infos != NULL)
+	if (infos != nullptr)
 	{
 		char language_ids[25];
 		char device_type[6];
