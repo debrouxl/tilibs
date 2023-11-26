@@ -77,12 +77,12 @@
 
 static inline int ticables_validate_handle(CableHandle * handle)
 {
-	return handle != NULL;
+	return handle != nullptr;
 }
 
 static inline int ticables_validate_cablefncts(const CableFncts * cable)
 {
-	return cable != NULL;
+	return cable != nullptr;
 }
 
 static inline void ticables_event_fill_header(CableHandle * handle, CableEventData * event, CableEventType type, int retval, CableFnctsIdx operation)

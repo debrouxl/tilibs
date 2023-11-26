@@ -191,7 +191,7 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_GODIRECT_USB
 	&calc_godirect_usb,
 #endif
-	NULL
+	nullptr
 };
 
 static const uint64_t supported_calcs =
@@ -481,8 +481,8 @@ int ticalcs_default_event_hook(CalcHandle * handle, uint32_t event_count, const 
 	CableHandle * cable = ticalcs_cable_get(handle);
 	const char * cablestr = ticables_model_to_string(ticables_get_model(cable));
 	const char * portstr = ticables_port_to_string(ticables_get_port(cable));
-	int pkt_debug = (getenv("TICALCS_PKT_DEBUG") != NULL);
-	if (getenv("TICALCS_EVENT_DEBUG") != NULL)
+	const int pkt_debug = (getenv("TICALCS_PKT_DEBUG") != nullptr);
+	if (getenv("TICALCS_EVENT_DEBUG") != nullptr)
 	{
 		ticalcs_info("Event #%u %d for calc %s connected through cable %s port %s", event_count, event->type, calcstr, cablestr, portstr);
 	}
@@ -632,11 +632,10 @@ int ticalcs_default_event_hook(CalcHandle * handle, uint32_t event_count, const 
  **/
 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 {
-	CalcHandle *handle = NULL;
-	CalcFncts * calc = NULL;
-	unsigned int i;
+	CalcHandle *handle = nullptr;
+	CalcFncts * calc = nullptr;
 
-	for (i = 0; i < sizeof(calcs) / sizeof(calcs[0]) - 1; i++) // - 1 for the terminating NULL.
+	for (unsigned int i = 0; i < sizeof(calcs) / sizeof(calcs[0]) - 1; i++) // - 1 for the terminating NULL.
 	{
 		if (calcs[i]->model == (int)model)
 		{
@@ -645,10 +644,10 @@ CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 		}
 	}
 
-	if (calc != NULL)
+	if (calc != nullptr)
 	{
 		handle = (CalcHandle *)g_malloc0(sizeof(CalcHandle));
-		if (handle != NULL)
+		if (handle != nullptr)
 		{
 			handle->model = model;
 			handle->calc = calc;
@@ -662,17 +661,17 @@ CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 			//handle->event_count = 0;
 
 			handle->buffer = (uint8_t *)g_malloc(65536 + 6);
-			if (handle->buffer == NULL)
+			if (handle->buffer == nullptr)
 			{
 				g_free(handle);
-				handle = NULL;
+				handle = nullptr;
 			}
 			handle->buffer2 = (uint8_t *)g_malloc(65536 + 6);
-			if (handle->buffer2 == NULL)
+			if (handle->buffer2 == nullptr)
 			{
 				g_free(handle->buffer);
 				g_free(handle);
-				handle = NULL;
+				handle = nullptr;
 			}
 		}
 	}
@@ -810,7 +809,7 @@ int TICALL ticalcs_cable_detach(CalcHandle* handle)
 			handle->open = 0;
 
 			handle->attached = 0;
-			handle->cable = NULL;
+			handle->cable = nullptr;
 		}
 	}
 
@@ -834,7 +833,7 @@ CableHandle* TICALL ticalcs_cable_get(CalcHandle *handle)
 		return handle->cable;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -870,7 +869,7 @@ CalcUpdate* TICALL ticalcs_update_get(CalcHandle *handle)
 		return handle->updat;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -957,7 +956,7 @@ ticalcs_event_hook_type TICALL ticalcs_calc_get_event_hook(CalcHandle *handle)
 	if (!ticalcs_validate_handle(handle))
 	{
 		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
 	return handle->event_hook;
@@ -973,15 +972,13 @@ ticalcs_event_hook_type TICALL ticalcs_calc_get_event_hook(CalcHandle *handle)
  */
 ticalcs_event_hook_type TICALL ticalcs_calc_set_event_hook(CalcHandle *handle, ticalcs_event_hook_type hook)
 {
-	ticalcs_event_hook_type old_hook;
-
 	if (!ticalcs_validate_handle(handle))
 	{
 		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
-	old_hook = handle->event_hook;
+	const ticalcs_event_hook_type old_hook = handle->event_hook;
 	handle->event_hook = hook;
 
 	return old_hook;
@@ -999,7 +996,7 @@ void * ticalcs_calc_get_event_user_pointer(CalcHandle *handle)
 	if (!ticalcs_validate_handle(handle))
 	{
 		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
 	return handle->user_pointer;
@@ -1015,15 +1012,13 @@ void * ticalcs_calc_get_event_user_pointer(CalcHandle *handle)
  */
 void * ticalcs_calc_set_event_user_pointer(CalcHandle *handle, void * user_pointer)
 {
-	void * old_pointer;
-
 	if (!ticalcs_validate_handle(handle))
 	{
 		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
-	old_pointer = handle->user_pointer;
+	void* old_pointer = handle->user_pointer;
 	handle->user_pointer = user_pointer;
 
 	return old_pointer;

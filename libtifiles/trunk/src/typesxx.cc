@@ -128,7 +128,7 @@ const char *TICALL tifiles_vartype2string(CalcModel model, uint8_t data)
  **/
 uint8_t TICALL tifiles_string2vartype(CalcModel model, const char *s)
 {
-  if (s == NULL)
+  if (s == nullptr)
   {
     tifiles_critical("%s: invalid string !", __FUNCTION__);
     return 0;
@@ -300,7 +300,7 @@ const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
  **/
 uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
 {
-  if (s == NULL)
+  if (s == nullptr)
   {
     tifiles_critical("%s: invalid string !", __FUNCTION__);
     return 0;
@@ -871,7 +871,7 @@ const char *TICALL tifiles_calctype2signature(CalcModel model)
     break;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 /**
@@ -884,7 +884,7 @@ const char *TICALL tifiles_calctype2signature(CalcModel model)
  **/
 CalcModel TICALL tifiles_signature2calctype(const char *s)
 {
-  if (s != NULL)
+  if (s != nullptr)
   {
     if (!g_ascii_strcasecmp(s, "**TI73**"))
       return CALC_TI73;

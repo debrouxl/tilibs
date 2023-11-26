@@ -98,7 +98,7 @@ static int fill_buf(FILE *f, char data, int flush)
 {
 	static char buf[WIDTH];
 	static unsigned int cnt = 0;
-	unsigned int i, j;
+	unsigned int i;
 
 	if (!flush)
 	{
@@ -116,7 +116,7 @@ static int fill_buf(FILE *f, char data, int flush)
 
 		if (flush)
 		{
-			for (j = i; j < WIDTH; j++)
+			for (unsigned int j = i; j < WIDTH; j++)
 			{
 				fprintf(f, "   ");
 			}
@@ -142,16 +142,11 @@ int dbus_decomp(const char *filename, int resync)
 {
 	char src_name[1024];
 	char dst_name[1024];
-	FILE *fi = NULL, *fo = NULL;
-	long file_size;
-	unsigned char *buffer;
+	FILE *fi = nullptr, *fo = nullptr;
 	int i;
 	unsigned int j;
 	int num_bytes;
 	char str[256];
-	unsigned char mid, cid;
-	unsigned int length;
-	int idx;
 	int ret = 0;
 
 	// build filenames
@@ -163,7 +158,7 @@ int dbus_decomp(const char *filename, int resync)
 
 	// open files
 	fi = fopen(src_name, "rt");
-	if (fi == NULL)
+	if (fi == nullptr)
 	{
 		fprintf(stderr, "Unable to open input file: %s\n", src_name);
 		return -1;
@@ -174,7 +169,7 @@ int dbus_decomp(const char *filename, int resync)
 		fclose(fi);
 		return -1;
 	}
-	file_size = ftell(fi);
+	const long file_size = ftell(fi);
 	if (file_size < 0)
 	{
 		fclose(fi);
@@ -187,8 +182,8 @@ int dbus_decomp(const char *filename, int resync)
 	}
 
 	// allocate buffer
-	buffer = (unsigned char*)calloc(file_size < 131072 ? 65536 : file_size / 2, 1);
-	if (buffer == NULL)
+	unsigned char* buffer = (unsigned char*)calloc(file_size < 131072 ? 65536 : file_size / 2, 1);
+	if (buffer == nullptr)
 	{
 		fprintf(stderr, "calloc error.\n");
 		fclose(fi);
@@ -197,7 +192,7 @@ int dbus_decomp(const char *filename, int resync)
 	memset(buffer, 0xff, file_size/2);
 
 	fo = fopen(dst_name, "wt");
-	if (fo == NULL)
+	if (fo == nullptr)
 	{
 		fprintf(stderr, "Unable to open output file: %s\n", dst_name);
 		free(buffer);
@@ -208,9 +203,9 @@ int dbus_decomp(const char *filename, int resync)
 	fprintf(fo, "TI packet decompiler for D-BUS, version 1.2\n");
 
 	// skip comments
-	if (   fgets(str, sizeof(str), fi) == NULL
-	    || fgets(str, sizeof(str), fi) == NULL
-	    || fgets(str, sizeof(str), fi) == NULL)
+	if (   fgets(str, sizeof(str), fi) == nullptr
+	       || fgets(str, sizeof(str), fi) == nullptr
+	       || fgets(str, sizeof(str), fi) == nullptr)
 	{
 		goto exit;
 	}
@@ -247,9 +242,9 @@ int dbus_decomp(const char *filename, int resync)
 	for (i = 0; i < num_bytes;)
 	{
 restart:
-		mid = buffer[i+0];
-		cid = buffer[i+1];
-		length = buffer[i+2];
+		const unsigned char mid = buffer[i + 0];
+		const unsigned char cid = buffer[i + 1];
+		unsigned int length = buffer[i + 2];
 		length |= ((int)(buffer[i+3])) << 8;
 
 		// check for valid packet
@@ -260,7 +255,7 @@ restart:
 		}
 
 		// check for valid packet
-		idx = is_a_command_id(cid);
+		const int idx = is_a_command_id(cid);
 		if (idx == -1)
 		{
 			ret = -2;

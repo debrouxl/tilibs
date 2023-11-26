@@ -33,10 +33,10 @@
 // Helper function for factoring code.
 static inline char * tifiles_comment_set_sn(const char * prefix, char * comment, uint32_t maxlen)
 {
-	if (NULL != comment && maxlen > 0)
+	if (nullptr != comment && maxlen > 0)
 	{
 		char * str;
-		time_t t = time(NULL);
+		time_t t = time(nullptr);
 #ifdef HAVE_CTIME_R
 		char datetime[64];
 		ctime_r(&t, datetime);

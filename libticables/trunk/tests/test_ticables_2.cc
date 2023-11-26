@@ -115,7 +115,7 @@ int main(int argc, char **argv)
 
 	// set cable
 	handle = ticables_handle_new(CABLE_PAR, PORT_1);
-	if (handle == NULL)
+	if (handle == nullptr)
 	{
 		return -1;
 	}

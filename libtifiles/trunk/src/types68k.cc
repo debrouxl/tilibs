@@ -84,7 +84,7 @@ const TI68k_DATA TI68k_CONST[TI89_MAXTYPES + 1] =
 	{"", "89?", "92?", "9x?", "v2?", "Unknown", N_("Unknown")},
 	{"", "89?", "92?", "9x?", "v2?", "Unknown", N_("Unknown")},
 	{"", "89?", "92?", "9x?", "v2?", "Unknown", N_("Unknown")},
-	{NULL, NULL, NULL, NULL, NULL, NULL, NULL}
+	{ nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
 };
 
 #endif

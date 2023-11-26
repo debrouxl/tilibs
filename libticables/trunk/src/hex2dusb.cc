@@ -53,7 +53,7 @@ static const Packet packets[] =
 	{ 0x03, 1, 6, "Virtual Packet Data with Continuation" },
 	{ 0x04, 1, 6, "Virtual Packet Data Final" },
 	{ 0x05, 0, 2, "Virtual Packet Data Acknowledgement" },
-	{ 0x00, 0, 0, NULL }
+	{ 0x00, 0, 0, nullptr }
 };
 
 typedef struct
@@ -85,7 +85,7 @@ static const Opcode opcodes[] =
 	{ 0xBB00, "Acknowledgement of Parameter Request"},
 	{ 0xDD00, "End of Transmission"},
 	{ 0xEE00, "Error"},
-	{ 0,      NULL }
+	{ 0, nullptr }
 };
 
 /* */
@@ -107,9 +107,7 @@ static const Opcode opcodes[] =
 
 static const char* name_of_packet(uint8_t id)
 {
-	int i;
-
-	for (i=0; packets[i].name; i++)
+	for (int i = 0; packets[i].name; i++)
 	{
 		if (id == packets[i].type)
 		{
@@ -155,9 +153,7 @@ static const char* name_of_packet(uint8_t id)
 
 static const char* name_of_data(uint16_t id)
 {
-	unsigned int i;
-
-	for (i=0; opcodes[i].name != NULL; i++)
+	for (unsigned int i = 0; opcodes[i].name != nullptr; i++)
 	{
 		if (id == opcodes[i].type)
 		{
@@ -255,13 +251,12 @@ static int add_data_code(uint16_t code)
 
 /* */
 
-static FILE *hex = NULL;
-static FILE *logfile = NULL;
+static FILE *hex = nullptr;
+static FILE *logfile = nullptr;
 
 static int hex_read(unsigned char *data)
 {
 	static int idx = 0;
-	int ret;
 	int data2;
 
 	if (feof(hex))
@@ -269,7 +264,7 @@ static int hex_read(unsigned char *data)
 		return -1;
 	}
 
-	ret = fscanf(hex, "%02X", &data2);
+	const int ret = fscanf(hex, "%02X", &data2);
 	if (ret < 1)
 	{
 		return -1;
@@ -283,10 +278,8 @@ static int hex_read(unsigned char *data)
 
 	if (idx >= 16)
 	{
-		int i;
-
 		idx = 0;
-		for (i = 0; (i < 67-49) && !feof(hex); i++)
+		for (int i = 0; (i < 67-49) && !feof(hex); i++)
 		{
 			if (fgetc(hex) < 0)
 			{
@@ -310,7 +303,7 @@ static int dusb_write(int dir, uint8_t data)
 	static int cnt;
 	static int first = 1;
 
-	if (logfile == NULL)
+	if (logfile == nullptr)
 	{
 		return -1;
 	}
@@ -340,7 +333,7 @@ static int dusb_write(int dir, uint8_t data)
 	case 7:
 		if (raw_type == 5)
 		{
-			uint16_t tmp = (((uint32_t)(array[5])) << 8) | ((uint32_t)(array[6]));
+			const uint16_t tmp = (((uint32_t)(array[5])) << 8) | ((uint32_t)(array[6]));
 			fprintf(logfile, "\t[%04x]\n", tmp);
 			state = 0;
 		}
@@ -349,7 +342,7 @@ static int dusb_write(int dir, uint8_t data)
 	case 9:
 		if (raw_type == 1 || raw_type == 2)
 		{
-			uint32_t tmp = (((uint32_t)(array[5])) << 24) | (((uint32_t)(array[6])) << 16) | (((uint32_t)(array[7])) << 8) | ((uint32_t)(array[8]));
+			const uint32_t tmp = (((uint32_t)(array[5])) << 24) | (((uint32_t)(array[6])) << 16) | (((uint32_t)(array[7])) << 8) | ((uint32_t)(array[8]));
 			fprintf(logfile, "\t[%08x]\n", (unsigned int)tmp);
 			state = 0;
 		}
@@ -429,14 +422,14 @@ int dusb_decomp(const char *filename)
 	dst_name[sizeof(dst_name) - 1] = 0;
 
 	hex = fopen(src_name, "rt");
-	if (hex == NULL)
+	if (hex == nullptr)
 	{
 		fprintf(stderr, "Unable to open input file: %s\n", src_name);
 		return -1;
 	}
 
 	logfile = fopen(dst_name, "wt");
-	if (logfile == NULL)
+	if (logfile == nullptr)
 	{
 		fprintf(stderr, "Unable to open output file: %s\n", dst_name);
 		fclose(hex);
@@ -446,9 +439,9 @@ int dusb_decomp(const char *filename)
 	fprintf(logfile, "TI packet decompiler for D-USB, version 1.0\n");
 
 	// skip comments
-	if (   fgets(line, sizeof(line), hex) == NULL
-	    || fgets(line, sizeof(line), hex) == NULL
-	    || fgets(line, sizeof(line), hex) == NULL)
+	if (   fgets(line, sizeof(line), hex) == nullptr
+	       || fgets(line, sizeof(line), hex) == nullptr
+	       || fgets(line, sizeof(line), hex) == nullptr)
 	{
 		goto exit;
 	}

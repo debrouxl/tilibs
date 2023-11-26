@@ -115,9 +115,7 @@ static const DBUSMachineInfo machine_types[] =
 
 const char* TICALL dbus_cmd2name(uint8_t id)
 {
-	unsigned int i;
-
-	for (i = 0; i < sizeof(cmd_types) / sizeof(cmd_types[0]); i++)
+	for (unsigned int i = 0; i < sizeof(cmd_types) / sizeof(cmd_types[0]); i++)
 	{
 		if (id == cmd_types[i].id)
 		{
@@ -130,9 +128,7 @@ const char* TICALL dbus_cmd2name(uint8_t id)
 
 const char* TICALL dbus_cmd2officialname(uint8_t id)
 {
-	unsigned int i;
-
-	for (i = 0; i < sizeof(cmd_types) / sizeof(cmd_types[0]); i++)
+	for (unsigned int i = 0; i < sizeof(cmd_types) / sizeof(cmd_types[0]); i++)
 	{
 		if (id == cmd_types[i].id)
 		{
@@ -145,9 +141,7 @@ const char* TICALL dbus_cmd2officialname(uint8_t id)
 
 const char* TICALL dbus_cmd2desc(uint8_t id)
 {
-	unsigned int i;
-
-	for (i = 0; i < sizeof(cmd_types) / sizeof(cmd_types[0]); i++)
+	for (unsigned int i = 0; i < sizeof(cmd_types) / sizeof(cmd_types[0]); i++)
 	{
 		if (id == cmd_types[i].id)
 		{
@@ -160,9 +154,7 @@ const char* TICALL dbus_cmd2desc(uint8_t id)
 
 const char* TICALL dbus_mid2direction(uint8_t id)
 {
-	unsigned int i;
-
-	for (i = 0; i < sizeof(machine_types) / sizeof(machine_types[0]); i++)
+	for (unsigned int i = 0; i < sizeof(machine_types) / sizeof(machine_types[0]); i++)
 	{
 		if (id == machine_types[i].id)
 		{
@@ -187,10 +179,8 @@ const char* TICALL dbus_mid2direction(uint8_t id)
 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uint8_t* data)
 {
 	int i;
-	uint16_t sum;
-	uint32_t length = (len == 0x0000) ? 65536 : len;   // wrap around
+	const uint32_t length = (len == 0x0000) ? 65536 : len;   // wrap around
 	uint8_t *buf;
-	int r, q;
 	static int ref = 0;
 	int ret = 0;
 	CalcEventData event;
@@ -198,7 +188,7 @@ int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t l
 	VALIDATE_HANDLE(handle);
 
 	buf = (uint8_t *)handle->buffer;                    //[65536+6];
-	if (buf == NULL)
+	if (buf == nullptr)
 	{
 		ticalcs_critical("%s: handle->buffer is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
@@ -214,7 +204,7 @@ int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t l
 
 	if (!ret)
 	{
-		if (data == NULL)
+		if (data == nullptr)
 		{
 			// short packet (no data)
 			buf[0] = target;
@@ -237,7 +227,7 @@ int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t l
 			memcpy(buf+4, data, length);
 
 			// add checksum of packet
-			sum = tifiles_checksum(data, length);
+			const uint16_t sum = tifiles_checksum(data, length);
 			buf[length+4+0] = LSB(sum);
 			buf[length+4+1] = MSB(sum);
 
@@ -253,8 +243,8 @@ int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t l
 				handle->priv.progress_blk_size = 128;	// SilverLink doesn't like small block (< 32)
 			}
 
-			q = (length + 6) / handle->priv.progress_blk_size;
-			r = (length + 6) % handle->priv.progress_blk_size;
+			const int q = (length + 6) / handle->priv.progress_blk_size;
+			const int r = (length + 6) % handle->priv.progress_blk_size;
 
 			handle->updat->max1 = length + 6;
 			handle->updat->cnt1 = 0;
@@ -269,7 +259,7 @@ int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t l
 				{
 					break;
 				}
-				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+				ticables_progress_get(handle->cable, nullptr, nullptr, &handle->updat->rate);
 
 				handle->updat->cnt1 += handle->priv.progress_blk_size;
 				if (length > handle->priv.progress_min_size)
@@ -290,7 +280,7 @@ int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t l
 				ret = ticables_cable_send(handle->cable, &buf[i*handle->priv.progress_blk_size], (uint16_t)r);
 				if (!ret)
 				{
-					ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+					ticables_progress_get(handle->cable, nullptr, nullptr, &handle->updat->rate);
 
 					handle->updat->cnt1 += 1;
 					if (length > handle->priv.progress_min_size)
@@ -336,7 +326,7 @@ int TICALL dbus_recv_header(CalcHandle *handle, uint8_t* host, uint8_t* cmd, uin
 	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_DBUS_PKT_HEADER, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
-	ticalcs_event_fill_dbus_pkt(&event, /* length */ 0, /* id */ 0, /* cmd */ 0, /* data */ NULL);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ 0, /* id */ 0, /* cmd */ 0, /* data */ nullptr);
 	ret = ticalcs_event_send(handle, &event);
 
 	if (!ret)
@@ -365,7 +355,7 @@ int TICALL dbus_recv_header(CalcHandle *handle, uint8_t* host, uint8_t* cmd, uin
 	}
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_RECV_DBUS_PKT_HEADER, /* retval */ ret, /* operation */ CALC_FNCT_LAST);
-	ticalcs_event_fill_dbus_pkt(&event, /* length */ *length, /* id */ *host, /* cmd */ *cmd, /* data */ NULL);
+	ticalcs_event_fill_dbus_pkt(&event, /* length */ *length, /* id */ *host, /* cmd */ *cmd, /* data */ nullptr);
 	ret = ticalcs_event_send(handle, &event);
 
 	CLEAR_HANDLE_BUSY_IF_NECESSARY(handle);
@@ -377,9 +367,7 @@ int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_t* data)
 {
 	int ret = 0;
 	int i;
-	uint16_t chksum;
 	uint8_t buf[4] = { 0, 0, 0, 0 };
-	int r, q;
 	CalcEventData event;
 
 	VALIDATE_HANDLE(handle);
@@ -402,8 +390,8 @@ int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_t* data)
 			handle->priv.progress_blk_size = 1;
 		}
 
-		q = *length / handle->priv.progress_blk_size;
-		r = *length % handle->priv.progress_blk_size;
+		const int q = *length / handle->priv.progress_blk_size;
+		const int r = *length % handle->priv.progress_blk_size;
 		handle->updat->max1 = *length;
 		handle->updat->cnt1 = 0;
 
@@ -416,7 +404,7 @@ int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_t* data)
 			{
 				break;
 			}
-			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+			ticables_progress_get(handle->cable, nullptr, nullptr, &handle->updat->rate);
 
 			handle->updat->cnt1 += handle->priv.progress_blk_size;
 			if (*length > handle->priv.progress_min_size)
@@ -437,7 +425,7 @@ int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_t* data)
 			ret = ticables_cable_recv(handle->cable, &data[i*handle->priv.progress_blk_size], (uint16_t)r);
 			if (!ret)
 			{
-				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+				ticables_progress_get(handle->cable, nullptr, nullptr, &handle->updat->rate);
 				ret = ticables_cable_recv(handle->cable, buf, 2);
 				if (!ret)
 				{
@@ -458,7 +446,7 @@ int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_t* data)
 		if (!ret)
 		{
 			// verify checksum
-			chksum = buf[0] | ((uint16_t)buf[1] << 8);
+			const uint16_t chksum = buf[0] | ((uint16_t)buf[1] << 8);
 			if (chksum != tifiles_checksum(data, *length))
 			{
 				ret = ERR_CHECKSUM;
@@ -486,7 +474,6 @@ int TICALL dbus_recv_data(CalcHandle *handle, uint16_t* length, uint8_t* data)
 int TICALL dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data)
 {
 	static int ref = 0;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(host);
@@ -496,7 +483,7 @@ int TICALL dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* 
 	// Subroutines don't take busy if it's already taken.
 	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
-	ret = dbus_recv_header(handle, host, cmd, length);
+	int ret = dbus_recv_header(handle, host, cmd, length);
 	if (!ret)
 	{
 		if (*cmd == DBUS_CMD_ERR || *cmd == DBUS_CMD_ERR2)
@@ -546,14 +533,8 @@ int TICALL dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* 
 
 int TICALL dbus_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len)
 {
-	uint8_t mid, cmd;
 	uint16_t length = 0;
 	uint32_t expected_length = 0;
-	uint16_t chksum;
-	uint32_t i;
-	const char * cmdname;
-	const char * cmddesc;
-	const char * direction;
 	VALIDATE_NONNULL(f);
 	VALIDATE_NONNULL(data);
 
@@ -564,8 +545,8 @@ int TICALL dbus_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_
 	}
 
 	// If we come here, we know that we can at least read mid + cmd.
-	mid = data[0];
-	cmd = data[1];
+	const uint8_t mid = data[0];
+	const uint8_t cmd = data[1];
 
 	// Get the special case of the TI-80 2-byte packets out of the way first.
 	if (mid == DBUS_MID_PC_TI80)
@@ -631,14 +612,14 @@ read_length:
 		return ERR_INVALID_PACKET;
 	}
 
-	direction = dbus_mid2direction(mid);
+	const char* direction = dbus_mid2direction(mid);
 	if (direction[0] == 0)
 	{
 		ticalcs_warning("Unknown machine ID %u (%X)", mid, mid);
 	}
 
-	cmdname = dbus_cmd2name(cmd);
-	cmddesc = dbus_cmd2desc(cmd);
+	const char* cmdname = dbus_cmd2name(cmd);
+	const char* cmddesc = dbus_cmd2desc(cmd);
 	if (cmdname[0] == 0 || cmddesc[0] == 0)
 	{
 		ticalcs_warning("Unknown command ID %u (%X)", cmd, cmd);
@@ -649,7 +630,7 @@ read_length:
 
 	if (len > 4)
 	{
-		chksum = (((uint16_t)(data[4 + length + 1])) << 8) | data[4 + length];
+		const uint16_t chksum = (((uint16_t)(data[4 + length + 1])) << 8) | data[4 + length];
 		if (chksum != tifiles_checksum(data + 4, length))
 		{
 			fprintf(f, "%s", " (Checksum mismatch)");
@@ -659,7 +640,7 @@ read_length:
 		data += 4;
 		len -= 4;
 		fprintf(f, "\t\t");
-		for (i = 0; i < len;)
+		for (uint32_t i = 0; i < len;)
 		{
 			fprintf(f, "%02X ", *data++);
 			if (!(++i & 15))
