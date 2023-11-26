@@ -55,7 +55,7 @@ int fread_n_chars(FILE * f, unsigned int n, char *s)
 		// set NULL terminator
 		s[n] = '\0';
 		// and set unused bytes to 0
-		for (unsigned int i = strlen(s); i < n; i++)
+		for (size_t i = strlen(s); i < n; i++)
 		{
 			s[i] = '\0';
 		}
@@ -74,7 +74,7 @@ int fwrite_n_chars(FILE * f, unsigned int n, const char *s)
 {
 	unsigned int i;
 
-	const unsigned int l = strlen(s);
+	const unsigned int l = (unsigned int)strlen(s);
 	if (l > n)
 	{
 		tifiles_critical("string passed to 'fwrite_n_chars' is too long (>n chars).\n");
@@ -111,12 +111,12 @@ int fwrite_n_chars2(FILE * f, unsigned int n, const char *s)
 {
 	unsigned int i;
 
-	const unsigned int l = strlen(s);
+	const unsigned int l = (unsigned int)strlen(s);
 	if (l > n)
 	{
 		tifiles_critical("string passed to 'fwrite_n_chars2' is too long (>n chars).\n");
 		tifiles_critical( "s = %s, len(s) = %u\n", s, l);
-		tifiles_hexdump((uint8_t *)s, (l < n) ? n : l);
+		tifiles_hexdump((const uint8_t *)s, (l < n) ? n : l);
 		return -1;
 	}
 

@@ -116,6 +116,7 @@ const char *TICALL tifiles_class_to_string(FileClass klass)
 	case TIFILE_OS:		return _("os");
 	case TIFILE_APP:	return _("application");
 	case TIFILE_FLASH:  return _("flash");
+	case TIFILE_NONE:
 	default: return _("unknown");
 	}
 }

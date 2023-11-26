@@ -59,7 +59,7 @@ int TICALL tifiles_cert_field_get(const uint8_t *data, uint32_t length, uint16_t
 	}
 
 	// Retrieve field ID and number of additional bytes we need to read for the field's size.
-	const uint16_t field_id = (((uint16_t)data[0]) << 8) | data[1];
+	const uint16_t field_id = (((uint16_t)data[0]) << 8) | (uint16_t)data[1];
 	switch (field_id & 0xF)
 	{
 		case 0xD: additional_len = 1; break;
@@ -145,7 +145,7 @@ int TICALL tifiles_cert_field_next(const uint8_t **data, uint32_t *length)
 	const int ret = tifiles_cert_field_get(*data, *length, nullptr, &contents, &field_size);
 	if (!ret)
 	{
-		*length -= contents + field_size - *data;
+		*length -= (uint32_t)((contents + field_size) - *data);
 		*data = contents + field_size;
 	}
 

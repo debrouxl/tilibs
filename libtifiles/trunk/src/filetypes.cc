@@ -147,6 +147,7 @@ const char * TICALL tifiles_fext_of_group (CalcModel model)
 		case CALC_LABPRO:
 		case CALC_TIPRESENTER:
 			return nullptr;
+		case CALC_MAX:
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
@@ -229,6 +230,7 @@ const char * TICALL tifiles_fext_of_backup (CalcModel model)
 		case CALC_LABPRO:
 		case CALC_TIPRESENTER:
 			return nullptr;
+		case CALC_MAX:
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
@@ -313,6 +315,7 @@ const char * TICALL tifiles_fext_of_flash_app (CalcModel model)
 		case CALC_LABPRO:
 		case CALC_TIPRESENTER:
 			return nullptr;
+		case CALC_MAX:
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
@@ -414,6 +417,7 @@ const char * TICALL tifiles_fext_of_flash_os(CalcModel model)
 			return "c2u"; // .hex is also seen in some OS upgraders.
 		case CALC_TIPRESENTER:
 			return "hex"; // Sbase132.hex from the Windows TI-Presenter OS upgrader.
+		case CALC_MAX:
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
@@ -498,6 +502,7 @@ const char * TICALL tifiles_fext_of_certif(CalcModel model)
 		case CALC_LABPRO:
 		case CALC_TIPRESENTER:
 			return nullptr;
+		case CALC_MAX:
 		default:
 			tifiles_critical("%s: invalid calc_type argument", __FUNCTION__);
 			break;
@@ -514,11 +519,11 @@ const char * TICALL tifiles_fext_of_certif(CalcModel model)
  *
  * Return value: a file extension without dot as string (like "89g").
  **/
-char * TICALL tifiles_fext_get(const char *filename)
+const char * TICALL tifiles_fext_get(const char *filename)
 {
 	if (filename != nullptr)
 	{
-		char * d = (char *)strrchr(filename, '.');
+		const char * d = strrchr(filename, '.');
 		if (d != nullptr)
 		{
 			return (++d);
@@ -529,7 +534,7 @@ char * TICALL tifiles_fext_get(const char *filename)
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 
-	return (char *)"";
+	return "";
 }
 
 /**
@@ -584,7 +589,7 @@ int TICALL tifiles_file_has_ti_header(const char *filename)
 			{
 				for (char* p = buf; *p != '\0'; p++)
 				{
-					*p = toupper(*p);
+					*p = (char)toupper(*p);
 				}
 
 				if (!strcmp(buf, "**TI73**") || !strcmp(buf, "**TI82**") ||
@@ -823,7 +828,7 @@ int TICALL tifiles_file_has_tno_header(const char *filename)
 					// Look for a CX II signature, which isn't at the beginning of the file anymore. Sigh.
 					// Sadly, memmem() is not portable.
 					unsigned int remaining = sizeof(str) - 1 - sizeof(TCO2_SIGNATURE) - 1;
-					char * ptr1 = (char *)memchr(str, 'T', remaining);
+					const char * ptr1 = (const char *)memchr(str, 'T', remaining);
 					const char * ptr2 = str;
 					while (nullptr != ptr1)
 					{
@@ -837,7 +842,7 @@ int TICALL tifiles_file_has_tno_header(const char *filename)
 							break;
 						}
 						ptr2 = ptr1 + 1;
-						ptr1 = (char *)memchr(ptr2, 'T', remaining);
+						ptr1 = (const char *)memchr(ptr2, 'T', remaining);
 					}
 				}
 			}

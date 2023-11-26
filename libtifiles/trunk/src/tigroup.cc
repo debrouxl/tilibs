@@ -154,7 +154,7 @@ int TICALL tifiles_te_display(TigEntry* entry)
 	}
 
 	tifiles_info("Filename:          %s", entry->filename);
-	tifiles_info("File class:        %04X (%u)", entry->type, entry->type);
+	tifiles_info("File class:        %04X (%u)", (unsigned int)entry->type, (unsigned int)entry->type);
 
 	if (entry->type == TIFILE_FLASH)
 	{
@@ -1461,9 +1461,9 @@ int TICALL tifiles_file_display_tigcontent(TigContent *content)
 		return ERR_INVALID_FILE;
 	}
 
-	tifiles_info("Model:             %02X (%u)", content->model, content->model);
+	tifiles_info("Model:             %02X (%u)", (unsigned int)content->model, (unsigned int)content->model);
 	tifiles_info("Signature:         %s", tifiles_calctype2signature(content->model));
-	tifiles_info("model_dst:         %02X (%u)", content->model_dst, content->model_dst);
+	tifiles_info("model_dst:         %02X (%u)", (unsigned int)content->model_dst, (unsigned int)content->model_dst);
 	tifiles_info("Comment:           %s", content->comment);
 	tifiles_info("Compression level: %d", content->comp_level);
 

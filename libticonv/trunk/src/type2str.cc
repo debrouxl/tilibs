@@ -80,6 +80,7 @@ const char * TICALL ticonv_model_to_string(CalcModel model)
 	case CALC_CBR2: return "CBR2";
 	case CALC_LABPRO: return "LabPro";
 	case CALC_TIPRESENTER: return "TI-Presenter";
+	case CALC_MAX:
 	default: return "unknown";
 	}
 }

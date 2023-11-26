@@ -14,7 +14,8 @@ fprintf(stderr, "%d\t" TYPE "\n", __LINE__, FUNCTION(__VA_ARGS__))
 FUNCTION(__VA_ARGS__); fprintf(stderr, "%d\n", __LINE__)
 
 #define INT "%d"
-#define SIZE "%zd"
+#define UINT "%u"
+#define SIZE "%zu"
 #define PTR "%p"
 #define STR "\"%s\""
 
@@ -84,7 +85,7 @@ int main(int argc, char **argv)
     PRINTF(ticonv_model_has_real_screen, INT, CALC_NONE);
     PRINTF(ticonv_model_has_monochrome_screen, INT, CALC_NONE);
     PRINTF(ticonv_model_has_color_screen, INT, CALC_NONE);
-    PRINTF(ticonv_model_to_product_id, INT, CALC_NONE);
+    PRINTF(ticonv_model_to_product_id, UINT, CALC_NONE);
     PRINTF(ticonv_varname_to_utf16_s, PTR, -1, NULL, (void *)0x12345678, 0);
     PRINTF(ticonv_varname_to_utf16_s, PTR, -1, (void *)0x12345678, NULL, 0);
     PRINTF(ticonv_varname_to_utf16, PTR, -1, NULL, 0);
@@ -112,7 +113,7 @@ int main(int argc, char **argv)
     PRINTF(ticonv_varname_from_tifile, STR, -1, NULL, 0);
     PRINTF(ticonv_model_to_string, STR, CALC_NONE);
 
-    PRINTF(ticonv_string_to_model, INT, NULL);
+    PRINTF(ticonv_string_to_model, UINT, NULL);
     fprintf(stderr, "%d\t%p\n", __LINE__, ti73_charset);
     fprintf(stderr, "%d\t%p\n", __LINE__, ti80_charset);
     fprintf(stderr, "%d\t%p\n", __LINE__, ti82_charset);

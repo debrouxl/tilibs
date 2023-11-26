@@ -357,7 +357,7 @@ typedef struct
 	TIEXPORT2 const char* TICALL tifiles_fext_of_flash_os (CalcModel model);
 	TIEXPORT2 const char* TICALL tifiles_fext_of_certif   (CalcModel model);
 
-	TIEXPORT2 char* TICALL tifiles_fext_get (const char *filename);
+	TIEXPORT2 const char* TICALL tifiles_fext_get (const char *filename);
 	TIEXPORT2 char* TICALL tifiles_fext_dup (const char *filename);
 	TIEXPORT2 void  TICALL tifiles_fext_free(char *filename);
 
@@ -421,9 +421,9 @@ typedef struct
 	TIEXPORT2 uint16_t TICALL tifiles_checksum(const uint8_t * buffer, unsigned int size);
 	TIEXPORT2 int TICALL      tifiles_hexdump(const uint8_t* ptr, unsigned int length);
 
-	TIEXPORT2 char* TICALL tifiles_get_varname(const char *full_name);
-	TILIBS_DEPRECATED TIEXPORT2 char* TICALL tifiles_get_fldname(const char *full_name);
-	TIEXPORT2 char* TICALL tifiles_get_fldname_s(const char *full_name, char * dest_fldname);
+	TIEXPORT2 const char* TICALL tifiles_get_varname(const char *full_name);
+	TILIBS_DEPRECATED TIEXPORT2 const char* TICALL tifiles_get_fldname(const char *full_name);
+	TIEXPORT2 const char* TICALL tifiles_get_fldname_s(const char *full_name, char * dest_fldname);
 	TIEXPORT2 char* TICALL tifiles_build_fullname(CalcModel model, char *full_name, const char *fldname, const char *varname);
 	TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *ve);
 	TIEXPORT2 void  TICALL tifiles_filename_free(char * filename);

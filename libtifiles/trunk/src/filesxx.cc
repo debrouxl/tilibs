@@ -297,7 +297,7 @@ int TICALL tifiles_file_display_regular(FileContent *content)
 		return ERR_BAD_CALC;
 	}
 
-	tifiles_info("Model:             %02X (%u)", content->model, content->model);
+	tifiles_info("Model:             %02X (%d)", (unsigned int)content->model, content->model);
 	tifiles_info("Signature:         %s", tifiles_calctype2signature(content->model));
 	tifiles_info("Comment:           %s", content->comment);
 	if (model_supports_folder)
@@ -334,7 +334,7 @@ int TICALL tifiles_file_display_regular(FileContent *content)
 	}
 
 	tifiles_info("Checksum:      %04X (%u)", content->checksum, content->checksum);
-	tifiles_info("Dest model:    %02X (%u)", content->model_dst, content->model_dst);
+	tifiles_info("Dest model:    %02X (%d)", (unsigned int)content->model_dst, content->model_dst);
 
 	return 0;
 }
@@ -545,9 +545,9 @@ FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 			content->revision_minor = 0;
 			content->flags = 0;
 			content->object_type = 0;
-			content->revision_day = lt.tm_mday;
-			content->revision_month = lt.tm_mon;
-			content->revision_year = lt.tm_year + 1900;
+			content->revision_day = (uint8_t)lt.tm_mday;
+			content->revision_month = (uint8_t)lt.tm_mon;
+			content->revision_year = (uint16_t)(lt.tm_year + 1900);
 		}
 	}
 

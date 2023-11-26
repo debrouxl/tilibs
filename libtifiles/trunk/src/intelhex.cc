@@ -83,7 +83,7 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
 	int c = fgetc(f);
 	if (c != ':')
 	{
-		printf("Unexpected char: <%c> = %02X\n", c, c);
+		printf("Unexpected char: <%c> = %02X\n", c, (unsigned int)c);
 		return -1;
 	}
 
@@ -182,7 +182,7 @@ eof:
 */
 int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8_t *data, uint16_t *page)
 {
-	static int flag = 0x80;
+	static uint8_t flag = UINT8_C(0x80);
 	static uint16_t flash_page;
 	static uint16_t flash_addr;
 	int new_page = 0;
@@ -208,7 +208,7 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 	*size = 0;
 
 	// load data
-	for (int i = 0; i < BLK_MAX; )
+	for (uint16_t i = 0; i < BLK_MAX; )
 	{
 		uint8_t pkt_size, pkt_type;
 		uint8_t pkt_data[PKT_MAX];
@@ -255,7 +255,7 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 
 		case HEX_PAGE: 
 			// new page
-			flash_page = (((uint16_t)(pkt_data[0])) << 8) | pkt_data[1];
+			flash_page = (((uint16_t)(pkt_data[0])) << 8) | (uint16_t)(pkt_data[1]);
 			new_page = !0;
 			break;
 
@@ -368,8 +368,8 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 	}
 	else
 	{
-		buf[0] = page >> 8;
-		buf[1] = page & 0xff;
+		buf[0] = (uint8_t)(page >> 8);
+		buf[1] = (uint8_t)(page & 0xff);
 		bytes_written += hex_packet_write(f, 2, 0x0000, HEX_PAGE, buf);
 		new_section = 0;
 	}

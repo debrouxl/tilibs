@@ -110,7 +110,10 @@ const char *TICALL tifiles_vartype2string(CalcModel model, uint8_t data)
   case CALC_NSPIRE_CXIIT:
   case CALC_NSPIRE_CXIIT_CAS:
     return tixx_byte2type(NSP_CONST, NSP_MAXTYPES, data);
+  case CALC_NONE:
+  case CALC_TI80:
   case CALC_TIPRESENTER:
+  case CALC_MAX:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
@@ -199,7 +202,10 @@ uint8_t TICALL tifiles_string2vartype(CalcModel model, const char *s)
   case CALC_NSPIRE_CXIIT:
   case CALC_NSPIRE_CXIIT_CAS:
     return tixx_type2byte(NSP_CONST, NSP_MAXTYPES, s);
+  case CALC_NONE:
+  case CALC_TI80:
   case CALC_TIPRESENTER:
+  case CALC_MAX:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return 0;
@@ -282,7 +288,10 @@ const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
   case CALC_NSPIRE_CXIIT:
   case CALC_NSPIRE_CXIIT_CAS:
     return tixx_byte2fext(NSP_CONST, NSP_MAXTYPES, data, "tn?");
+  case CALC_NONE:
+  case CALC_TI80:
   case CALC_TIPRESENTER:
+  case CALC_MAX:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
@@ -371,7 +380,10 @@ uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
   case CALC_NSPIRE_CXIIT:
   case CALC_NSPIRE_CXIIT_CAS:
     return tixx_fext2byte(NSP_CONST, NSP_MAXTYPES, s);
+  case CALC_NONE:
+  case CALC_TI80:
   case CALC_TIPRESENTER:
+  case CALC_MAX:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return 0;
@@ -455,7 +467,10 @@ const char *TICALL tifiles_vartype2type(CalcModel model, uint8_t vartype)
   case CALC_NSPIRE_CXIIT:
   case CALC_NSPIRE_CXIIT_CAS:
     return tixx_byte2desc(NSP_CONST, NSP_MAXTYPES, vartype);
+  case CALC_NONE:
+  case CALC_TI80:
   case CALC_TIPRESENTER:
+  case CALC_MAX:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
@@ -539,7 +554,10 @@ const char *TICALL tifiles_vartype2icon(CalcModel model, uint8_t vartype)
   case CALC_NSPIRE_CXIIT:
   case CALC_NSPIRE_CXIIT_CAS:
     return tixx_byte2icon(NSP_CONST, NSP_MAXTYPES, vartype);
+  case CALC_NONE:
+  case CALC_TI80:
   case CALC_TIPRESENTER:
+  case CALC_MAX:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
@@ -562,8 +580,6 @@ uint8_t TICALL tifiles_folder_type(CalcModel model)
 {
   switch (model) 
   {
-  case CALC_NONE:
-    return -1;
 #ifndef DISABLE_TI8X
   case CALC_TI73:
     return TI73_DIR;
@@ -621,7 +637,9 @@ uint8_t TICALL tifiles_folder_type(CalcModel model)
   case CALC_NSPIRE_CXIIT:
   case CALC_NSPIRE_CXIIT_CAS:
     return NSP_DIR;
+  case CALC_NONE:
   case CALC_TIPRESENTER:
+  case CALC_MAX:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     break;
@@ -642,8 +660,6 @@ uint8_t TICALL tifiles_flash_type(CalcModel model)
 {
   switch (model) 
   {
-  case CALC_NONE:
-    return -1;
 #ifndef DISABLE_TI8X
   case CALC_TI73:
     return TI73_APPL;
@@ -701,8 +717,9 @@ uint8_t TICALL tifiles_flash_type(CalcModel model)
   case CALC_NSPIRE_CXII_CAS:
   case CALC_NSPIRE_CXIIT:
   case CALC_NSPIRE_CXIIT_CAS:
+  case CALC_NONE:
   case CALC_TIPRESENTER:
-    return -1;
+  case CALC_MAX:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     break;
@@ -723,8 +740,6 @@ uint8_t TICALL tifiles_idlist_type(CalcModel model)
 {
   switch (model) 
   {
-  case CALC_NONE:
-    return -1;
 #ifndef DISABLE_TI8X
   case CALC_TI73:
     return TI73_IDLIST;
@@ -783,6 +798,8 @@ uint8_t TICALL tifiles_idlist_type(CalcModel model)
   case CALC_NSPIRE_CXIIT_CAS:
   case CALC_TIPRESENTER:
     return -1;
+  case CALC_NONE:
+  case CALC_MAX:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     break;
@@ -866,6 +883,7 @@ const char *TICALL tifiles_calctype2signature(CalcModel model)
   case CALC_NSPIRE_CXIIT_CAS:
   case CALC_TIPRESENTER:
     return "";
+  case CALC_MAX:
   default:
     tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     break;
