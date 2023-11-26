@@ -540,7 +540,10 @@ int ti82_send_asm_exec(CalcHandle* handle, VarEntry * var)
 	endptr = (var->name[0] == 0x24 ? fpBase : tempMem);
 	buffer[8] = 0x2a; buffer[9] = LSB(endptr); buffer[10] = MSB(endptr);
 	/* ld de, -program_size */
+#pragma warning(push)
+#pragma warning(disable:4146)
 	offset = -(var->size - 2);
+#pragma warning(pop)
 	buffer[11] = 0x11; buffer[12] = LSB(offset); buffer[13] = MSB(offset);
 	/* add hl, de */
 	buffer[14] = 0x19;
