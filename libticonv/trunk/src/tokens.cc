@@ -122,7 +122,35 @@ static char *detokenize_vartype(CalcModel model, const char *src, unsigned char 
 			return (dst = g_strdup("ZRCL"));
 		}
 		break;
-	default: 
+	case CALC_NONE:
+	case CALC_TI89:
+	case CALC_TI89T:
+	case CALC_TI92:
+	case CALC_TI92P:
+	case CALC_V200:
+	case CALC_TI89T_USB:
+	case CALC_NSPIRE:
+	case CALC_TI80:
+	case CALC_NSPIRE_CRADLE:
+	case CALC_NSPIRE_CLICKPAD:
+	case CALC_NSPIRE_CLICKPAD_CAS:
+	case CALC_NSPIRE_TOUCHPAD:
+	case CALC_NSPIRE_TOUCHPAD_CAS:
+	case CALC_NSPIRE_CX:
+	case CALC_NSPIRE_CX_CAS:
+	case CALC_NSPIRE_CMC:
+	case CALC_NSPIRE_CMC_CAS:
+	case CALC_NSPIRE_CXII:
+	case CALC_NSPIRE_CXII_CAS:
+	case CALC_NSPIRE_CXIIT:
+	case CALC_NSPIRE_CXIIT_CAS:
+	case CALC_CBL:
+	case CALC_CBR:
+	case CALC_CBL2:
+	case CALC_CBR2:
+	case CALC_LABPRO:
+	case CALC_TIPRESENTER:
+	default:
 		break;
 	}
 
@@ -144,7 +172,7 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 		{
 			if (tok2 != 0x09)
 			{
-				dst = g_strdup_printf("Image%d", tok2 + 1);
+				dst = g_strdup_printf("Image%u", tok2 + 1);
 			}
 			else
 			{
@@ -307,11 +335,11 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 	case 0x60:			/* Pictures */
 		if (model == CALC_TI73)
 		{
-			dst = g_strdup_printf("Pic%d", tok2);
+			dst = g_strdup_printf("Pic%u", tok2);
 		}
 		else if (tok2 != 0x09)
 		{
-			dst = g_strdup_printf("Pic%d", tok2 + 1);
+			dst = g_strdup_printf("Pic%u", tok2 + 1);
 		}
 		else
 		{
@@ -322,11 +350,11 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 	case 0x61:			/* GDB */
 		if (model == CALC_TI73)
 		{
-			dst = g_strdup_printf("GDB%d", tok2);
+			dst = g_strdup_printf("GDB%u", tok2);
 		}
 		else if (tok2 != 0x09)
 		{
-			dst = g_strdup_printf("GDB%d", tok2 + 1);
+			dst = g_strdup_printf("GDB%u", tok2 + 1);
 		}
 		else
 		{
@@ -461,11 +489,11 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 	case 0xAA:
 		if (model == CALC_TI73)
 		{
-			dst = g_strdup_printf("Str%d", tok2);
+			dst = g_strdup_printf("Str%u", tok2);
 		}
 		else if (tok2 != 0x09)
 		{
-			dst = g_strdup_printf("Str%d", tok2 + 1);
+			dst = g_strdup_printf("Str%u", tok2 + 1);
 		}
 		else
 		{
@@ -509,6 +537,7 @@ char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigne
 	case CALC_TI83P:
 	case CALC_TI84P:
 	case CALC_TI84PC:
+	case CALC_TI80:
 	case CALC_CBL:    // FIXME is that correct ?
 	case CALC_CBR:
 	case CALC_CBL2:
@@ -527,6 +556,7 @@ char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigne
 		{
 			return dst;
 		}
+		return g_strdup(src);
 	case CALC_TI89:
 	case CALC_TI89T:
 	case CALC_TI92:
@@ -557,6 +587,7 @@ char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigne
 	case CALC_NSPIRE_CXIIT:
 	case CALC_NSPIRE_CXIIT_CAS:
 		return g_strdup(src);
+	case CALC_NONE:
 	case CALC_TIPRESENTER:
 	default:
 		return g_strdup("________");
@@ -655,6 +686,41 @@ char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_, unsigned
 				return g_strdup("");
 			}
 		break;
+		case CALC_NONE:
+		case CALC_TI89:
+		case CALC_TI89T:
+		case CALC_TI92:
+		case CALC_TI92P:
+		case CALC_V200:
+		case CALC_TI84P_USB:
+		case CALC_TI89T_USB:
+		case CALC_NSPIRE:
+		case CALC_TI80:
+		case CALC_TI84PC_USB:
+		case CALC_TI83PCE_USB:
+		case CALC_TI84PCE_USB:
+		case CALC_TI82A_USB:
+		case CALC_TI84PT_USB:
+		case CALC_NSPIRE_CRADLE:
+		case CALC_NSPIRE_CLICKPAD:
+		case CALC_NSPIRE_CLICKPAD_CAS:
+		case CALC_NSPIRE_TOUCHPAD:
+		case CALC_NSPIRE_TOUCHPAD_CAS:
+		case CALC_NSPIRE_CX:
+		case CALC_NSPIRE_CX_CAS:
+		case CALC_NSPIRE_CMC:
+		case CALC_NSPIRE_CMC_CAS:
+		case CALC_NSPIRE_CXII:
+		case CALC_NSPIRE_CXII_CAS:
+		case CALC_NSPIRE_CXIIT:
+		case CALC_NSPIRE_CXIIT_CAS:
+		case CALC_TI82AEP_USB:
+		case CALC_CBL:
+		case CALC_CBR:
+		case CALC_CBL2:
+		case CALC_CBR2:
+		case CALC_LABPRO:
+		case CALC_TIPRESENTER:
 		default:
 		break;
 	}

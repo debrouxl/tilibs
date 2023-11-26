@@ -127,14 +127,14 @@ static char * ticonv_utf16_to_nonusb(const unsigned long * charset, const unsign
 				p++;
 			}
 
-			*(q++) = c;
+			*(q++) = (unsigned char)c; // c < 256 if we come here...
 		}
 		else
 		{
 			*q = '?';
 			for (unsigned int i = 0; i < 256; i++) {
 				if (charset[i] == c) {
-					*q = i;
+					*q = (unsigned char)i;
 					break;
 				}
 			}
