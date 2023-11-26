@@ -54,7 +54,7 @@
  **/
 int TICALL ticables_error_get(int number, char **message)
 {
-	if (message == NULL)
+	if (message == nullptr)
 	{
 		ticables_critical("ticables_error_get(NULL)\n");
 		return number;
@@ -341,10 +341,9 @@ int TICALL ticables_error_get(int number, char **message)
 #ifndef __WIN32__
 	if (errno != 0) 
 	{
-		gchar *str;
 		char * tmp = *message;
 
-		str = g_strdup_printf(" (errno = %i)", errno);
+		gchar* str = g_strdup_printf(" (errno = %i)", errno);
 		*message = g_strconcat(tmp, "\n", "System: ", strerror(errno), str, "\n", NULL);
 		g_free(tmp);
 		g_free(str);
@@ -387,7 +386,7 @@ int TICALL ticables_error_get(int number, char **message)
  **/
 int TICALL ticables_error_free(char *message)
 {
-	if (message == NULL)
+	if (message == nullptr)
 	{
 		ticables_critical("ticables_error_free(NULL)\n");
 		return ERR_ILLEGAL_ARG;

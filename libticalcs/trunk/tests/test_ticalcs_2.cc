@@ -161,17 +161,15 @@ static uint64_t registers[8+1] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 static int read_filename(char * filename, const char * message)
 {
-	int ret;
 	filename[0] = 0;
 	printf("Enter filename%s: ", message);
-	ret = scan_print_output_1("", "%" xstr(FILENAME_DATA_SIZE) "s", "%s", filename, filename);
+	const int ret = scan_print_output_1("", "%" xstr(FILENAME_DATA_SIZE) "s", "%s", filename, filename);
 	return ret;
 }
 
 static int read_varname(CalcHandle* h, VarRequest *vr, const char *prompt)
 {
 	char buf[256];
-	const char *s;
 	int ret = 0;
 	char * endptr;
 
@@ -217,8 +215,8 @@ static int read_varname(CalcHandle* h, VarRequest *vr, const char *prompt)
 			// The string doesn't seem to be a valid numeric value.
 			// Let's try to parse a fext instead.
 			vr->type = tifiles_fext2vartype(h->model, buf);
-			s = tifiles_vartype2string(h->model, vr->type);
-			if (s == NULL || *s == 0)
+			const char* s = tifiles_vartype2string(h->model, vr->type);
+			if (s == nullptr || *s == 0)
 			{
 				vr->type = tifiles_string2vartype(h->model, buf);
 			}
@@ -231,10 +229,9 @@ static int read_varname(CalcHandle* h, VarRequest *vr, const char *prompt)
 static int build_raw_bytes_from_hex_string(char * buffer, uint32_t maxbuflen, unsigned char * data, uint32_t maxdatalen, uint32_t * length)
 {
 	int ret = 1;
-	uint32_t i;
 	uint8_t c = 0;
 	int odd = 0;
-	for (i = 0; i < maxbuflen; i++)
+	for (uint32_t i = 0; i < maxbuflen; i++)
 	{
 		if (buffer[i] == 0)
 		{
@@ -376,14 +373,13 @@ static int parse_access_type(const char * datatype, unsigned int * endianness, u
 
 static int parse_check_uint32(const char * input, uint32_t * val, uint32_t maxval)
 {
-	int ret;
 	unsigned int regno;
 
 	if (nullptr == input)
 	{
 		return 1;
 	}
-	ret = sscanf(input, "r%u", &regno);
+	int ret = sscanf(input, "r%u", &regno);
 	if (ret < 1)
 	{
 		ret = !sscanf(input, "%" SCNi32, val);
@@ -425,14 +421,13 @@ static int parse_check_uint32(const char * input, uint32_t * val, uint32_t maxva
 
 static int parse_check_uint64(const char * input, uint64_t * val)
 {
-	int ret;
 	unsigned int regno;
 
 	if (nullptr == input)
 	{
 		return 1;
 	}
-	ret = sscanf(input, "r%u", &regno);
+	int ret = sscanf(input, "r%u", &regno);
 	if (ret < 1)
 	{
 		ret = !sscanf(input, "%" SCNi64, val);
@@ -465,10 +460,8 @@ static int parse_check_uint64(const char * input, uint64_t * val)
 
 static int parse_check_register(const char * input, unsigned int * regno)
 {
-	int ret;
-
 	*regno = 0;
-	ret = sscanf(input, "r%u", regno);
+	int ret = sscanf(input, "r%u", regno);
 	if (ret == 1)
 	{
 		ret = check_regno(*regno);
@@ -489,22 +482,20 @@ static int parse_check_register(const char * input, unsigned int * regno)
 
 static int parse_reg_commands_args(char * input, uint64_t * val, uint32_t * regno)
 {
-	int ret;
-	char * token;
-	char * saveptr = NULL;
+	char * saveptr = nullptr;
 
-	token = STRTOK(input, " ", &saveptr);
-	if (NULL == token)
+	const char* token = STRTOK(input, " ", &saveptr);
+	if (nullptr == token)
 	{
 		fputs("Missing parameter 1\n", stderr);
 		return 1;
 	}
 
-	ret = parse_check_uint64(token, val);
+	int ret = parse_check_uint64(token, val);
 	if (ret) return 1;
 
-	token = STRTOK(NULL, " ", &saveptr);
-	if (NULL == token)
+	token = STRTOK(nullptr, " ", &saveptr);
+	if (nullptr == token)
 	{
 		fputs("Missing parameter 2\n", stderr);
 		return 1;
@@ -533,7 +524,7 @@ static void hexdump(uint8_t * ptr, uint32_t length)
 
 static void print_lc_error(int errnum)
 {
-	char *msg = NULL;
+	char *msg = nullptr;
 
 	ticables_error_get(errnum, &msg);
 	fprintf(stderr, "Link cable error (code %i)...\n<<%s>>\n", errnum, msg);
@@ -546,7 +537,7 @@ typedef int (*FNCT_MENU) (CalcHandle*, int, char *);
 
 static int cfg_get(CalcHandle * h, int, char *)
 {
-	int ret = -1;
+	const int ret = -1;
 
 	fputs("Not implemented\n", stderr);
 
@@ -555,7 +546,7 @@ static int cfg_get(CalcHandle * h, int, char *)
 
 static int cfg_set(CalcHandle * h, int, char *)
 {
-	int ret = -1;
+	const int ret = -1;
 
 	fputs("Not implemented\n", stderr);
 
@@ -564,11 +555,10 @@ static int cfg_set(CalcHandle * h, int, char *)
 
 static int sleep(CalcHandle * h, int, char * input)
 {
-	int ret;
 	unsigned int delay;
 
 	printf("Enter delay in tenths of seconds: ");
-	ret = scan_print_output_1(input, "%u", "%u", &delay, delay);
+	int ret = scan_print_output_1(input, "%u", "%u", &delay, delay);
 	if (ret < 1)
 	{
 		fputs("Missing parameters\n", stderr);
@@ -591,7 +581,7 @@ static int sleep(CalcHandle * h, int, char * input)
 
 static int timeout(CalcHandle * h, int, char *)
 {
-	int ret = -1;
+	const int ret = -1;
 
 	fputs("Not implemented\n", stderr);
 
@@ -600,7 +590,7 @@ static int timeout(CalcHandle * h, int, char *)
 
 static int delay(CalcHandle * h, int, char *)
 {
-	int ret = -1;
+	const int ret = -1;
 
 	fputs("Not implemented\n", stderr);
 
@@ -611,11 +601,10 @@ static int probe_calc(CalcHandle * h, int, char * input)
 {
 	int m = 0;
 	int p = 0;
-	int ret;
 	CalcModel model = CALC_NONE;
 
 	printf("Enter cable & port for probing (c p): ");
-	ret = scan_print_output_2(input, "%d %d", "%d %d", &m, &p, m, p);
+	int ret = scan_print_output_2(input, "%d %d", "%d %d", &m, &p, m, p);
 	if (ret < 2)
 	{
 		fputs("Missing parameters\n", stderr);
@@ -632,9 +621,7 @@ static int probe_calc(CalcHandle * h, int, char * input)
 
 static int is_ready(CalcHandle * h, int, char *)
 {
-	int ret;
-
-	ret = ticalcs_calc_isready(h);
+	const int ret = ticalcs_calc_isready(h);
 	printf("%d Hand-held is %sready !\n", ret, ret ? "not " : "");
 
 	return ret;
@@ -642,11 +629,10 @@ static int is_ready(CalcHandle * h, int, char *)
 
 static int send_key(CalcHandle * h, int, char * input)
 {
-	int ret;
 	unsigned int key_value;
 
 	printf("Enter key value to be sent: ");
-	ret = scan_print_output_1(input, "%u", "%u", &key_value, key_value);
+	const int ret = scan_print_output_1(input, "%u", "%u", &key_value, key_value);
 	if (ret < 1)
 	{
 		fputs("Missing parameters\n", stderr);
@@ -672,11 +658,10 @@ static int execute(CalcHandle * h, int, char *)
 
 static int recv_screen(CalcHandle * h, int, char *)
 {
-	int ret;
 	CalcInfos infos;
 
 	memset((void *)&infos, 0, sizeof(infos));
-	ret = ticalcs_calc_get_version(h, &infos);
+	int ret = ticalcs_calc_get_version(h, &infos);
 	if (!ret)
 	{
 		CalcScreenCoord sc = { SCREEN_CLIPPED, 0, 0, 0, 0, CALC_PIXFMT_MONO };
@@ -699,7 +684,7 @@ static int recv_screen(CalcHandle * h, int, char *)
 		}
 		if (!ret)
 		{
-			uint8_t* bitmap = NULL;
+			uint8_t* bitmap = nullptr;
 			ret = ticalcs_calc_recv_screen_rgb888(h, &sc, &bitmap);
 			if (!ret)
 			{
@@ -713,9 +698,9 @@ static int recv_screen(CalcHandle * h, int, char *)
 				{
 					ret = 1;
 					FILE * f = fopen(filename, "w+b");
-					if (NULL != f)
+					if (nullptr != f)
 					{
-						unsigned int count = sc.width * sc.height * 3;
+						const unsigned int count = sc.width * sc.height * 3;
 						if (count > fwrite((void *)bitmap, 1, sc.width * sc.height * 3, f))
 						{
 							fprintf(stderr, "Error writing bitmap data\n");
@@ -737,10 +722,9 @@ static int recv_screen(CalcHandle * h, int, char *)
 
 static int get_dirlist(CalcHandle * h, int, char *)
 {
-	int ret;
 	GNode *vars, *apps;
 
-	ret = ticalcs_calc_get_dirlist(h, &vars, &apps);
+	const int ret = ticalcs_calc_get_dirlist(h, &vars, &apps);
 	if (!ret)
 	{
 		ticalcs_dirlist_display(vars);
@@ -754,10 +738,9 @@ static int get_dirlist(CalcHandle * h, int, char *)
 
 static int get_memfree(CalcHandle * h, int, char *)
 {
-	int ret;
 	uint32_t ram, flash;
 
-	ret = ticalcs_calc_get_memfree(h, &ram, &flash);
+	const int ret = ticalcs_calc_get_memfree(h, &ram, &flash);
 	if (!ret)
 	{
 		printf("RAM: %lu\tFlash: %lu\n", (unsigned long)ram, (unsigned long)flash);
@@ -768,11 +751,10 @@ static int get_memfree(CalcHandle * h, int, char *)
 
 static int send_backup(CalcHandle * h, int, char *)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 1];
 	char filename2[FILENAME_DATA_SIZE + 11];
 
-	ret = read_filename(filename, "");
+	int ret = read_filename(filename, "");
 	if (ret < 1)
 	{
 		return 1;
@@ -788,11 +770,10 @@ static int send_backup(CalcHandle * h, int, char *)
 
 static int recv_backup(CalcHandle * h, int, char *)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 1];
 	char filename2[FILENAME_DATA_SIZE + 11];
 
-	ret = read_filename(filename, " for backup");
+	int ret = read_filename(filename, " for backup");
 	if (ret < 1)
 	{
 		return 1;
@@ -808,12 +789,10 @@ static int recv_backup(CalcHandle * h, int, char *)
 
 static int send_var(CalcHandle * h, int, char *)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 1];
-	FileContent *content;
 	VarEntry ve;
 
-	ret = read_filename(filename, " for variable");
+	int ret = read_filename(filename, " for variable");
 	if (ret < 1)
 	{
 		if (ticonv_model_is_tinspire(h->model))
@@ -826,7 +805,7 @@ static int send_var(CalcHandle * h, int, char *)
 		}
 
 		content = tifiles_content_create_regular(h->model);
-		if (content != NULL)
+		if (content != nullptr)
 		{
 			ret = tifiles_file_read_regular(filename, content);
 			if (!ret)
@@ -853,11 +832,10 @@ static int send_var(CalcHandle * h, int, char *)
 
 static int recv_var(CalcHandle * h, int, char *)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 1];
 	VarEntry ve;
 
-	ret = read_filename(filename, " for variable");
+	int ret = read_filename(filename, " for variable");
 	if (ret < 1)
 	{
 		return 1;
@@ -875,10 +853,9 @@ static int recv_var(CalcHandle * h, int, char *)
 
 static int send_var_ns(CalcHandle * h, int, char *)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 1];
 
-	ret = read_filename(filename, " for variable");
+	int ret = read_filename(filename, " for variable");
 	if (ret < 1)
 	{
 		return 1;
@@ -891,11 +868,10 @@ static int send_var_ns(CalcHandle * h, int, char *)
 
 static int recv_var_ns(CalcHandle * h, int, char *)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 1];
 	VarRequest *ve;
 
-	ret = read_filename(filename, " for variable");
+	int ret = read_filename(filename, " for variable");
 	if (ret < 1)
 	{
 		return 1;
@@ -908,11 +884,10 @@ static int recv_var_ns(CalcHandle * h, int, char *)
 
 static int send_app(CalcHandle * h, int, char *)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 1];
 	char filename2[FILENAME_DATA_SIZE + 11];
 
-	ret = read_filename(filename, " for app");
+	int ret = read_filename(filename, " for app");
 	if (ret < 1)
 	{
 		return 1;
@@ -928,11 +903,10 @@ static int send_app(CalcHandle * h, int, char *)
 
 static int recv_app(CalcHandle * h, int, char *)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 1];
 	VarEntry ve;
 
-	ret = read_filename(filename, " for app");
+	int ret = read_filename(filename, " for app");
 	if (ret < 1)
 	{
 		return 1;
@@ -956,10 +930,9 @@ static int recv_app(CalcHandle * h, int, char *)
 
 static int send_os(CalcHandle * h, int, char *)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 1];
 
-	ret = read_filename(filename, " for OS");
+	int ret = read_filename(filename, " for OS");
 	if (ret < 1)
 	{
 		return 1;
@@ -972,10 +945,9 @@ static int send_os(CalcHandle * h, int, char *)
 
 static int recv_idlist(CalcHandle * h, int, char *)
 {
-	int ret;
 	uint8_t id[32];
 
-	ret = ticalcs_calc_recv_idlist(h, id);
+	const int ret = ticalcs_calc_recv_idlist(h, id);
 	if (!ret)
 	{
 		printf("IDLIST: <%s>\n", id);
@@ -986,10 +958,9 @@ static int recv_idlist(CalcHandle * h, int, char *)
 
 static int dump_rom(CalcHandle * h, int, char *)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 1];
 
-	ret = read_filename(filename, " for ROM / Flash dump");
+	int ret = read_filename(filename, " for ROM / Flash dump");
 	if (ret < 1)
 	{
 		return 1;
@@ -1006,10 +977,9 @@ static int dump_rom(CalcHandle * h, int, char *)
 
 static int set_clock(CalcHandle * h, int, char *)
 {
-	int ret;
 	CalcClock clk;
 
-	ret = ticalcs_calc_get_clock(h, &clk);
+	int ret = ticalcs_calc_get_clock(h, &clk);
 	if (!ret)
 	{
 		ret = ticalcs_calc_set_clock(h, &clk);
@@ -1020,10 +990,9 @@ static int set_clock(CalcHandle * h, int, char *)
 
 static int get_clock(CalcHandle * h, int, char *)
 {
-	int ret;
 	CalcClock clk;
 
-	ret = ticalcs_calc_get_clock(h, &clk);
+	const int ret = ticalcs_calc_get_clock(h, &clk);
 	if (!ret)
 	{
 		ticalcs_clock_show(h->model, &clk);
@@ -1072,12 +1041,11 @@ static int new_folder(CalcHandle * h, int, char *)
 
 static int get_version(CalcHandle * h, int, char *)
 {
-	int ret;
 	CalcInfos infos;
 	char str[2048];
 
 	memset((void *)&infos, 0, sizeof(infos));
-	ret = ticalcs_calc_get_version(h, &infos);
+	int ret = ticalcs_calc_get_version(h, &infos);
 	if (!ret)
 	{
 		str[0] = 0;
@@ -1093,7 +1061,7 @@ static int get_version(CalcHandle * h, int, char *)
 
 static int send_cert(CalcHandle * h, int, char *)
 {
-	int ret = -1;
+	const int ret = -1;
 
 	fputs("Not implemented\n", stderr);
 
@@ -1102,7 +1070,7 @@ static int send_cert(CalcHandle * h, int, char *)
 
 static int recv_cert(CalcHandle * h, int, char *)
 {
-	int ret = -1;
+	const int ret = -1;
 
 	fputs("Not implemented\n", stderr);
 
@@ -1172,7 +1140,7 @@ static int lock_var(CalcHandle * h, int, char *)
 
 static int send_all_vars_backup(CalcHandle * h, int, char *)
 {
-	int ret = -1;
+	const int ret = -1;
 
 	fputs("Not implemented\n", stderr);
 
@@ -1181,7 +1149,7 @@ static int send_all_vars_backup(CalcHandle * h, int, char *)
 
 static int recv_all_vars_backup(CalcHandle * h, int, char *)
 {
-	int ret = -1;
+	const int ret = -1;
 
 	fputs("Not implemented\n", stderr);
 
@@ -1243,28 +1211,25 @@ static int control_lab_equipment(CalcHandle * h, int, char * input)
 
 static int send_lab_equipment_data(CalcHandle * h, int, char * input)
 {
-	int ret;
-	const uint8_t * ptr;
-	uint8_t * orig_ptr;
 	CalcLabEquipmentData lab_equipment_data;
 	int model;
 	unsigned int vartype;
 	unsigned int datatype;
 
 	printf("Enter calc model, variable type (4 for TI-68k lists, 1 for TI-73/82/83/83+/84+ lists, 4 for TI-85/86 lists) and data type (1=string, 2=TI-68k raw, 3=TI-85/86 raw, 4=TI-Z80 raw): ");
-	ret = scan_print_output_3(input, "%d %u %u", "%d %u %u", &model, &vartype, &datatype, model, vartype, datatype);
+	int ret = scan_print_output_3(input, "%d %u %u", "%d %u %u", &model, &vartype, &datatype, model, vartype, datatype);
 	if (ret < 3)
 	{
 		fputs("Missing parameters\n", stderr);
 		return 1;
 	}
 
-		printf("Enter list data as '{...}': \n");
-	orig_ptr = (uint8_t *)inbuf + 1024 + 4;
-	ptr = (const uint8_t *)fgets((char *)orig_ptr, 1024, stdin);
+	printf("Enter list data as '{...}': \n");
+	uint8_t* orig_ptr = (uint8_t *)inbuf + 1024 + 4;
+	const uint8_t* ptr = (const uint8_t *)fgets((char *)orig_ptr, 1024, stdin);
 
 	ret = 1;
-	if (NULL != ptr)
+	if (nullptr != ptr)
 	{
 		ticalcs_fill_lab_equipment_data(&lab_equipment_data, CALC_LAB_EQUIPMENT_DATA_TYPE_STRING,
 		                                (uint16_t)(strlen((const char *)ptr) + 1), 0, ptr, nullptr, (uint8_t)vartype, 0, 0);
@@ -1306,14 +1271,13 @@ static int send_lab_equipment_data(CalcHandle * h, int, char * input)
 
 static int get_lab_equipment_data(CalcHandle * h, int, char * input)
 {
-	int ret;
 	CalcLabEquipmentData lab_equipment_data;
 	int model;
 	unsigned int vartype;
 	unsigned int datatype;
 
 	printf("Enter calc model, variable type (4 for TI-68k lists, 1 for TI-73/82/83/83+/84+ lists, 4 for TI-85/86 lists) and expected data type (1=string, 2=TI-68k raw, 3=TI-85/86 raw, 4=TI-Z80 raw): ");
-	ret = scan_print_output_3(input, "%d %u %u", "%d %u %u", &model, &vartype, &datatype, model, vartype, datatype);
+	int ret = scan_print_output_3(input, "%d %u %u", "%d %u %u", &model, &vartype, &datatype, model, vartype, datatype);
 	if (ret < 3)
 	{
 		fputs("Missing parameters\n", stderr);
@@ -1500,12 +1464,11 @@ static int recv_os(CalcHandle * h, int, char *)
 
 static int buffer_set_data(CalcHandle * h, int, char * input)
 {
-	int ret;
 	uint32_t offset = 0;
 	uint32_t length = 0;
 
 	printf("Enter offset: ");
-	ret = parse_check_uint32(input, &offset, sizeof(pktdata) / 2);
+	int ret = parse_check_uint32(input, &offset, sizeof(pktdata) / 2);
 	if (ret) return 1;
 
 	ret = get_hex_input(inbuf, sizeof(inbuf), pktdata + offset, sizeof(pktdata) / 2, &length, "raw data", xstr(INBUF_DATA_SIZE));
@@ -1522,19 +1485,18 @@ static int buffer_get_data(CalcHandle * h, int, char * input)
 	int ret = 0;
 	uint32_t length = pktdata_len;
 	uint32_t offset = 0;
-	char * token;
-	char * saveptr = NULL;
+	char * saveptr = nullptr;
 
 	printf("Enter nothing, offset, or offset and length: ");
-	token = STRTOK(input, " ", &saveptr);
-	if (NULL != token)
+	const char* token = STRTOK(input, " ", &saveptr);
+	if (nullptr != token)
 	{
 		// There's at least an offset.
 		ret = parse_check_uint32(token, &offset, sizeof(pktdata));
 		if (ret) return 1;
 
-		token = STRTOK(NULL, " ", &saveptr);
-		if (NULL != token)
+		token = STRTOK(nullptr, " ", &saveptr);
+		if (nullptr != token)
 		{
 			// There's also a length.
 			ret = parse_check_uint32(token, &length, sizeof(pktdata));
@@ -1558,14 +1520,11 @@ static int buffer_get_data(CalcHandle * h, int, char * input)
 
 static int buffer_peek_data(CalcHandle * h, int, char * input)
 {
-	int ret;
 	unsigned int endianness;
 	unsigned int bytes;
 	uint32_t offset;
 	unsigned int regno;
-	uint64_t val;
-	char * token;
-	char * saveptr = NULL;
+	char * saveptr = nullptr;
 
 	if (!pktdata_len)
 	{
@@ -1574,18 +1533,18 @@ static int buffer_peek_data(CalcHandle * h, int, char * input)
 	}
 
 	// Parse input to retrieve access type (e.g. le32), offset, destination register.
-	token = STRTOK(input, " ", &saveptr);
-	if (NULL == token)
+	const char* token = STRTOK(input, " ", &saveptr);
+	if (nullptr == token)
 	{
 		fputs("Missing parameter 1\n", stderr);
 		return 1;
 	}
 
-	ret = parse_access_type(token, &endianness, &bytes);
+	int ret = parse_access_type(token, &endianness, &bytes);
 	if (ret) return 1;
 
-	token = STRTOK(NULL, " ", &saveptr);
-	if (NULL == token)
+	token = STRTOK(nullptr, " ", &saveptr);
+	if (nullptr == token)
 	{
 		fputs("Missing parameter 2\n", stderr);
 		return 1;
@@ -1594,8 +1553,8 @@ static int buffer_peek_data(CalcHandle * h, int, char * input)
 	ret = parse_check_uint32(token, &offset, sizeof(pktdata) - bytes);
 	if (ret) return 1;
 
-	token = STRTOK(NULL, " ", &saveptr);
-	if (NULL == token)
+	token = STRTOK(nullptr, " ", &saveptr);
+	if (nullptr == token)
 	{
 		fputs("Missing parameter 3\n", stderr);
 		return 1;
@@ -1606,11 +1565,11 @@ static int buffer_peek_data(CalcHandle * h, int, char * input)
 
 	puts("Good");
 
-	val = 0;
+	uint64_t val = 0;
 	if (!endianness)
 	{
 		// Read LE: MSB are stored last.
-		uint8_t * ptr = pktdata + offset + bytes;
+		const uint8_t * ptr = pktdata + offset + bytes;
 		for (unsigned int i = 0; i < bytes; i++)
 		{
 			val |= *--ptr;
@@ -1623,7 +1582,7 @@ static int buffer_peek_data(CalcHandle * h, int, char * input)
 	else
 	{
 		// Read BE: MSB are stored first.
-		uint8_t * ptr = pktdata + offset;
+		const uint8_t * ptr = pktdata + offset;
 		for (unsigned int i = 0; i < bytes; i++)
 		{
 			val |= *ptr++;
@@ -1641,27 +1600,25 @@ static int buffer_peek_data(CalcHandle * h, int, char * input)
 
 static int buffer_poke_data(CalcHandle * h, int, char * input)
 {
-	int ret;
 	uint32_t offset;
 	unsigned int endianness;
 	unsigned int bytes;
 	uint64_t val;
-	char * token;
-	char * saveptr = NULL;
+	char * saveptr = nullptr;
 
 	// Parse input to retrieve access type (e.g. le32), offset, destination register.
-	token = STRTOK(input, " ", &saveptr);
-	if (NULL == token)
+	const char* token = STRTOK(input, " ", &saveptr);
+	if (nullptr == token)
 	{
 		fputs("Missing parameter 1\n", stderr);
 		return 1;
 	}
 
-	ret = parse_access_type(token, &endianness, &bytes);
+	int ret = parse_access_type(token, &endianness, &bytes);
 	if (ret) return 1;
 
-	token = STRTOK(NULL, " ", &saveptr);
-	if (NULL == token)
+	token = STRTOK(nullptr, " ", &saveptr);
+	if (nullptr == token)
 	{
 		fputs("Missing parameter 2\n", stderr);
 		return 1;
@@ -1670,8 +1627,8 @@ static int buffer_poke_data(CalcHandle * h, int, char * input)
 	ret = parse_check_uint32(token, &offset, sizeof(pktdata) - bytes);
 	if (ret) return 1;
 
-	token = STRTOK(NULL, " ", &saveptr);
-	if (NULL == token)
+	token = STRTOK(nullptr, " ", &saveptr);
+	if (nullptr == token)
 	{
 		fputs("Missing parameter 3\n", stderr);
 		return 1;
@@ -1716,7 +1673,7 @@ static int buffer_poke_data(CalcHandle * h, int, char * input)
 
 static int buffer_clear_data(CalcHandle * h, int, char * input)
 {
-	int ret = 0;
+	const int ret = 0;
 
 	memset((void *)pktdata, 0, sizeof(pktdata));
 	pktdata_len = 0;
@@ -1726,11 +1683,10 @@ static int buffer_clear_data(CalcHandle * h, int, char * input)
 
 static /* __attribute__((always_inline)) */ int reg_op(CalcHandle * h, int, char * input, void (* op)(unsigned int regno, uint64_t val))
 {
-	int ret;
 	uint64_t val;
 	unsigned int regno;
 
-	ret = parse_reg_commands_args(input, &val, &regno);
+	const int ret = parse_reg_commands_args(input, &val, &regno);
 	if (ret) return 1;
 	else
 	{
@@ -1772,9 +1728,7 @@ static int reg_xor(CalcHandle * h, int, char * input)
 
 static int raw_send_data(CalcHandle * h, int, char * input)
 {
-	int ret;
-
-	ret = buffer_set_data(h, 1, (char *)"0");
+	int ret = buffer_set_data(h, 1, (char*)"0");
 	if (!ret)
 	{
 		printf("raw_send_data: %u\n", pktdata_len);
@@ -1789,19 +1743,18 @@ static int raw_send_data_from_buffer(CalcHandle * h, int, char * input)
 	int ret;
 	uint32_t offset = 0;
 	uint32_t length = 0;
-	char * token;
-	char * saveptr = NULL;
+	char * saveptr = nullptr;
 
 	printf("Enter nothing, offset, or offset and length: ");
-	token = STRTOK(input, " ", &saveptr);
-	if (NULL != token)
+	const char* token = STRTOK(input, " ", &saveptr);
+	if (nullptr != token)
 	{
 		// There's at least an offset.
 		ret = parse_check_uint32(token, &offset, sizeof(pktdata) / 2);
 		if (ret) return 1;
 
-		token = STRTOK(NULL, " ", &saveptr);
-		if (NULL != token)
+		token = STRTOK(nullptr, " ", &saveptr);
+		if (nullptr != token)
 		{
 			// There's also a length.
 			ret = parse_check_uint32(token, &length, sizeof(pktdata) / 2);
@@ -1818,11 +1771,10 @@ static int raw_send_data_from_buffer(CalcHandle * h, int, char * input)
 
 static int raw_recv_data(CalcHandle * h, int, char * input)
 {
-	int ret;
 	uint32_t length;
 
 	printf("Enter length of raw data to be read: ");
-	ret = parse_check_uint32(input, &length, sizeof(pktdata) / 2);
+	int ret = parse_check_uint32(input, &length, sizeof(pktdata) / 2);
 	if (ret) return 1;
 
 	fprintf(stderr, "%u\n", length);
@@ -1839,7 +1791,6 @@ static int raw_recv_data(CalcHandle * h, int, char * input)
 
 static int dbus_send_pkt(CalcHandle * h, int, char * input)
 {
-	int ret;
 	uint8_t target = 0;
 	uint8_t cmd = 0;
 	uint16_t slen = 0;
@@ -1847,7 +1798,8 @@ static int dbus_send_pkt(CalcHandle * h, int, char * input)
 
 	// Entering the length is necessary for e.g. the simple commands, see cmd68k.cc and cmdz80.cc.
 	printf("Enter target (mid), cmd and length: ");
-	ret = scan_print_output_3(input, "%" SCNi8 " %" SCNi8 " %" SCNi16, "%" PRIu8 " %" PRIu8 " %" PRIu16, &target, &cmd, &slen, target, cmd, slen);
+	int ret = scan_print_output_3(input, "%" SCNi8 " %" SCNi8 " %" SCNi16, "%" PRIu8 " %" PRIu8 " %" PRIu16, &target, &cmd, &slen, target, cmd,
+	                              slen);
 	if (ret < 3)
 	{
 		fputs("Missing parameters\n", stderr);
@@ -1873,7 +1825,7 @@ static int dbus_send_pkt(CalcHandle * h, int, char * input)
 			fputs("Note: declared length is larger than the given hex data\n", stderr);
 		}
 		// Special case for packets without data.
-		ret = dbus_send(h, target, cmd, slen, slen == 0 ? NULL : pktdata);
+		ret = dbus_send(h, target, cmd, slen, slen == 0 ? nullptr : pktdata);
 		printf("%d\n", ret);
 	}
 
@@ -1882,11 +1834,10 @@ static int dbus_send_pkt(CalcHandle * h, int, char * input)
 
 static int dbus_recv_header(CalcHandle * h, int, char * input)
 {
-	int ret;
 	uint32_t offset = 0;
 
 	printf("Enter nothing or offset: ");
-	ret = parse_check_uint32(input, &offset, sizeof(pktdata) / 2);
+	int ret = parse_check_uint32(input, &offset, sizeof(pktdata) / 2);
 	// Don't need to test ret here, the argument is optional
 
 	ret = dbus_recv_header(h, pktdata + offset, pktdata + offset + 1, (uint16_t *)(pktdata + offset + 2));
@@ -1910,19 +1861,18 @@ static int dbus_recv_data(CalcHandle * h, int, char * input)
 	uint32_t offset = 0;
 	uint32_t length = 0;
 	uint16_t slength;
-	char * token;
-	char * saveptr = NULL;
+	char * saveptr = nullptr;
 
 	printf("Enter offset and length: ");
-	token = STRTOK(input, " ", &saveptr);
-	if (NULL != token)
+	const char* token = STRTOK(input, " ", &saveptr);
+	if (nullptr != token)
 	{
 		// There's at least an offset.
 		ret = parse_check_uint32(token, &offset, sizeof(pktdata));
 		if (ret) return 1;
 
-		token = STRTOK(NULL, " ", &saveptr);
-		if (NULL != token)
+		token = STRTOK(nullptr, " ", &saveptr);
+		if (nullptr != token)
 		{
 			// There's also a length.
 			ret = parse_check_uint32(token, &length, sizeof(pktdata) / 2);
@@ -1964,11 +1914,10 @@ static int dbus_recv_data(CalcHandle * h, int, char * input)
 
 static int dbus_recv(CalcHandle * h, int, char * input)
 {
-	int ret;
 	uint32_t offset = 0;
 
 	printf("Enter nothing or offset: ");
-	ret = parse_check_uint32(input, &offset, sizeof(pktdata) / 2);
+	int ret = parse_check_uint32(input, &offset, sizeof(pktdata) / 2);
 	// Don't need to test ret here, the argument is optional
 
 	ret = dbus_recv(h, pktdata + offset, pktdata + offset + 1, (uint16_t *)(pktdata + offset + 2), pktdata + offset + 4);
@@ -1988,7 +1937,7 @@ static int dbus_recv(CalcHandle * h, int, char * input)
 
 static int dusb_send_rpkt(CalcHandle * h, int, char *)
 {
-	int ret = -1;
+	const int ret = -1;
 
 	fputs("Not implemented\n", stderr);
 
@@ -1997,7 +1946,7 @@ static int dusb_send_rpkt(CalcHandle * h, int, char *)
 
 static int dusb_recv_rpkt(CalcHandle * h, int, char *)
 {
-	int ret = -1;
+	const int ret = -1;
 
 	fputs("Not implemented\n", stderr);
 
@@ -2006,7 +1955,7 @@ static int dusb_recv_rpkt(CalcHandle * h, int, char *)
 
 static int nsp_send_rpkt(CalcHandle * h, int, char *)
 {
-	int ret = -1;
+	const int ret = -1;
 
 	fputs("Not implemented\n", stderr);
 
@@ -2015,7 +1964,7 @@ static int nsp_send_rpkt(CalcHandle * h, int, char *)
 
 static int nsp_recv_rpkt(CalcHandle * h, int, char *)
 {
-	int ret = -1;
+	const int ret = -1;
 
 	fputs("Not implemented\n", stderr);
 
@@ -2024,10 +1973,9 @@ static int nsp_recv_rpkt(CalcHandle * h, int, char *)
 
 static int rdmp_send_dumper(CalcHandle * h, int, char * input)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 1];
 
-	ret = read_filename(filename, " for variable");
+	int ret = read_filename(filename, " for variable");
 	if (ret < 1)
 	{
 		return 1;
@@ -2040,10 +1988,9 @@ static int rdmp_send_dumper(CalcHandle * h, int, char * input)
 
 static int rdmp_is_ready(CalcHandle * h, int, char * input)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 1];
 
-	ret = read_filename(filename, " for variable");
+	int ret = read_filename(filename, " for variable");
 	if (ret < 1)
 	{
 		return 1;
@@ -2056,10 +2003,9 @@ static int rdmp_is_ready(CalcHandle * h, int, char * input)
 
 static int rdmp_read_dump(CalcHandle * h, int, char * input)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 1];
 
-	ret = read_filename(filename, " for output ROM dump");
+	int ret = read_filename(filename, " for output ROM dump");
 	if (ret < 1)
 	{
 		return 1;
@@ -2072,12 +2018,11 @@ static int rdmp_read_dump(CalcHandle * h, int, char * input)
 
 static int dbus_dissect_pkt(CalcHandle * h, int, char * input)
 {
-	int ret;
 	uint32_t length = 0;
 	int model;
 
 	printf("Enter calc model (usually 1-12, 16-17): ");
-	ret = scan_print_output_1(input, "%d", "%d", &model, model);
+	int ret = scan_print_output_1(input, "%d", "%d", &model, model);
 	if (ret < 1)
 	{
 		fputs("Missing parameters\n", stderr);
@@ -2095,14 +2040,13 @@ static int dbus_dissect_pkt(CalcHandle * h, int, char * input)
 
 static int dusb_dissect_rpkt(CalcHandle * h, int, char * input)
 {
-	int ret;
-	uint8_t ep = 2; // Assume PC -> TI.
+	const uint8_t ep = 2; // Assume PC -> TI.
 	uint8_t first = 1; // Assume all packets are first packets.
 	uint32_t length = 0;
 	int model;
 
 	printf("Enter calc model (usually 13, 14, 18-21): ");
-	ret = scan_print_output_1(input, "%d", "%d", &model, model);
+	int ret = scan_print_output_1(input, "%d", "%d", &model, model);
 	if (ret < 1)
 	{
 		fputs("Missing parameters\n", stderr);
@@ -2120,13 +2064,12 @@ static int dusb_dissect_rpkt(CalcHandle * h, int, char * input)
 
 static int nsp_dissect_rpkt(CalcHandle * h, int, char * input)
 {
-	int ret;
-	uint8_t ep = 2; // Assume PC -> TI.
+	const uint8_t ep = 2; // Assume PC -> TI.
 	uint32_t length = 0;
 	int model;
 
 	printf("Enter calc model (usually 15): ");
-	ret = scan_print_output_1(input, "%d", "%d", &model, model);
+	int ret = scan_print_output_1(input, "%d", "%d", &model, model);
 	if (ret < 1)
 	{
 		fputs("Missing parameters\n", stderr);
@@ -2144,15 +2087,13 @@ static int nsp_dissect_rpkt(CalcHandle * h, int, char * input)
 
 static int ti83p_dump(CalcHandle * h, int, char * input)
 {
-	int ret;
 	char filename[FILENAME_DATA_SIZE + 7];
 	int page;
 	uint16_t length;
-	FILE *f;
 
 	filename[0] = 0;
 	printf("Enter page number for dumping: ");
-	ret = scan_print_output_1(input, "%d", "%d", &page, page);
+	int ret = scan_print_output_1(input, "%d", "%d", &page, page);
 	if (ret < 1)
 	{
 		fputs("Missing parameters\n", stderr);
@@ -2165,13 +2106,13 @@ static int ti83p_dump(CalcHandle * h, int, char * input)
 		return 1;
 	}
 
-	f = fopen(filename, "wb");
-	if (f != NULL)
+	FILE* f = fopen(filename, "wb");
+	if (f != nullptr)
 	{
 		//memset(pktdata, 0, sizeof(pktdata));
 
 		if (   (ti73_send_DUMP(h, (uint16_t)page) == 0)
-		    && (ti73_recv_ACK(h, NULL) == 0)
+		    && (ti73_recv_ACK(h, nullptr) == 0)
 		    && (ti73_recv_XDP(h, &length, pktdata) == 0)
 		    && (ti73_send_ACK(h) == 0))
 		{
@@ -2185,13 +2126,11 @@ static int ti83p_dump(CalcHandle * h, int, char * input)
 
 static int ti83p_eke(CalcHandle * h, int, char *)
 {
-	int ret;
-
-	ret = ti73_send_EKE(h);
+	int ret = ti73_send_EKE(h);
 	if (!ret)
 	{
 		puts("EKE successfully sent");
-		ret = ti73_recv_ACK(h, NULL);
+		ret = ti73_recv_ACK(h, nullptr);
 		if (!ret)
 		{
 			puts("ACK received");
@@ -2203,13 +2142,11 @@ static int ti83p_eke(CalcHandle * h, int, char *)
 
 static int ti83p_dke(CalcHandle * h, int, char *)
 {
-	int ret;
-
-	ret = ti73_send_DKE(h);
+	int ret = ti73_send_DKE(h);
 	if (!ret)
 	{
 		puts("DKE successfully sent");
-		ret = ti73_recv_ACK(h, NULL);
+		ret = ti73_recv_ACK(h, nullptr);
 		if (!ret)
 		{
 			puts("ACK received");
@@ -2221,13 +2158,11 @@ static int ti83p_dke(CalcHandle * h, int, char *)
 
 static int ti83p_eld(CalcHandle * h, int, char *)
 {
-	int ret;
-
-	ret = ti73_send_ELD(h);
+	int ret = ti73_send_ELD(h);
 	if (!ret)
 	{
 		puts("ELD successfully sent");
-		ret = ti73_recv_ACK(h, NULL);
+		ret = ti73_recv_ACK(h, nullptr);
 		if (!ret)
 		{
 			puts("ACK received");
@@ -2239,13 +2174,11 @@ static int ti83p_eld(CalcHandle * h, int, char *)
 
 static int ti83p_dld(CalcHandle * h, int, char *)
 {
-	int ret;
-
-	ret = ti73_send_DLD(h);
+	int ret = ti73_send_DLD(h);
 	if (!ret)
 	{
 		puts("DLD successfully sent");
-		ret = ti73_recv_ACK(h, NULL);
+		ret = ti73_recv_ACK(h, nullptr);
 		if (!ret)
 		{
 			puts("ACK received");
@@ -2257,14 +2190,13 @@ static int ti83p_dld(CalcHandle * h, int, char *)
 
 static int ti83p_gid(CalcHandle * h, int, char *)
 {
-	int ret;
 	uint16_t length;
 
-	ret = ti73_send_GID(h);
+	int ret = ti73_send_GID(h);
 	if (!ret)
 	{
 		puts("GID successfully sent");
-		ret = ti73_recv_ACK(h, NULL);
+		ret = ti73_recv_ACK(h, nullptr);
 		if (!ret)
 		{
 			puts("ACK received");
@@ -2291,10 +2223,9 @@ static int ti83p_gid(CalcHandle * h, int, char *)
 
 static int ti83p_rid(CalcHandle * h, int, char *)
 {
-	int ret;
 	uint16_t length;
 
-	ret = ti73_send_RID(h);
+	int ret = ti73_send_RID(h);
 	if (!ret)
 	{
 		puts("RID successfully sent");
@@ -2320,10 +2251,9 @@ static int ti83p_rid(CalcHandle * h, int, char *)
 
 static int ti83p_sid(CalcHandle * h, int, char *)
 {
-	int ret;
 	uint32_t length = 0;
 
-	ret = get_hex_input(inbuf, sizeof(inbuf), pktdata, 32, &length, "raw data", xstr(INBUF_DATA_SIZE));
+	int ret = get_hex_input(inbuf, sizeof(inbuf), pktdata, 32, &length, "raw data", xstr(INBUF_DATA_SIZE));
 	if (!ret)
 	{
 		pktdata_len = length;
@@ -2333,7 +2263,7 @@ static int ti83p_sid(CalcHandle * h, int, char *)
 			if (!ret)
 			{
 				puts("SID successfully sent");
-				ret = ti73_recv_ACK(h, NULL);
+				ret = ti73_recv_ACK(h, nullptr);
 				if (!ret)
 				{
 					puts("ACK successfully received");
@@ -2351,17 +2281,14 @@ static int ti83p_sid(CalcHandle * h, int, char *)
 
 static int dusb_get_param_ids(CalcHandle * h, int, char *)
 {
-	int ret;
 	uint32_t length = 0;
 
-	ret = get_hex_input(inbuf, sizeof(inbuf), pktdata2, 512 * 2, &length, "parameter IDs", xstr(INBUF_DATA_SIZE));
+	int ret = get_hex_input(inbuf, sizeof(inbuf), pktdata2, 512 * 2, &length, "parameter IDs", xstr(INBUF_DATA_SIZE));
 	if (!ret)
 	{
 		if ((length & 1) == 0)
 		{
-			DUSBCalcParam **params;
-
-			params = dusb_cp_new_array(h, length / 2);
+			DUSBCalcParam** params = dusb_cp_new_array(h, length / 2);
 			ret = dusb_cmd_s_param_request(h, length / 2, (uint16_t *)pktdata2);
 			if (!ret)
 			{
@@ -2371,11 +2298,10 @@ static int dusb_get_param_ids(CalcHandle * h, int, char *)
 					for (uint32_t i = 0; i < length / 2; i++)
 					{
 						printf("%04X\t%s\t%04X (%u)\n\t\t", params[i]->id, params[i]->ok ? "OK" : "NOK", params[i]->size, params[i]->size);
-						if (params[i]->ok && params[i]->size > 0 && params[i]->data != NULL)
+						if (params[i]->ok && params[i]->size > 0 && params[i]->data != nullptr)
 						{
-							uint16_t j;
-							uint8_t * ptr = params[i]->data;
-							for (j = 0; j < params[i]->size;)
+							const uint8_t * ptr = params[i]->data;
+							for (uint16_t j = 0; j < params[i]->size;)
 							{
 								printf("%02X ", *ptr++);
 								if (!(++j & 15))
@@ -2401,14 +2327,13 @@ static int dusb_get_param_ids(CalcHandle * h, int, char *)
 
 static int dusb_set_param_id(CalcHandle * h, int, char * input)
 {
-	int ret;
 	uint32_t length = 0;
 	unsigned int param_id;
 
 	uint8_t * data = (uint8_t *)dusb_cp_alloc_data(h, 2048);
 
 	printf("Enter DUSB parameter ID to be set (usually < 0x60): ");
-	ret = scan_print_output_1(input, "%u", "%u", &param_id, param_id);
+	int ret = scan_print_output_1(input, "%u", "%u", &param_id, param_id);
 	if (ret < 1)
 	{
 		dusb_cp_free_data(h, data);
@@ -2419,9 +2344,7 @@ static int dusb_set_param_id(CalcHandle * h, int, char * input)
 	ret = get_hex_input(inbuf, sizeof(inbuf), pktdata2, sizeof(pktdata2), &length, "raw data", xstr(INBUF_DATA_SIZE));
 	if (!ret)
 	{
-		DUSBCalcParam *param;
-
-		param = dusb_cp_new_ex(h, param_id, length, data);
+		DUSBCalcParam* param = dusb_cp_new_ex(h, param_id, length, data);
 		ret = dusb_cmd_s_param_set(h, param);
 		dusb_cp_del(h, param); // This frees data.
 
@@ -2471,10 +2394,9 @@ static int nsp_send_key(CalcHandle * h, int, char *)
 
 static int nsp_remote_mgmt(CalcHandle * h, int, char *)
 {
-	int ret;
 	static uint8_t data[9] = { 0x00, 0x00, 0x02, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
-	ret = is_ready(h, 1, NULL);
+	int ret = is_ready(h, 1, nullptr);
 	if (!ret)
 	{
 		printf("Packet 1\n");
@@ -2483,7 +2405,7 @@ static int nsp_remote_mgmt(CalcHandle * h, int, char *)
 		if (!ret || ret == ERR_INVALID_PACKET)
 		{
 			uint32_t size;
-			uint8_t * data2 = NULL;
+			uint8_t * data2 = nullptr;
 			printf("Packet 2\n");
 			ret = nsp_cmd_r_generic_data(h, &size, &data2);
 			g_free(data2);
@@ -2500,7 +2422,7 @@ static int cables_event_hook(CableHandle * handle, uint32_t event_count, const C
 {
 	int ret = 0;
 
-	if (NULL != handle && NULL != event)
+	if (nullptr != handle && nullptr != event)
 	{
 		// TODO
 	}
@@ -2516,7 +2438,7 @@ static int calcs_event_hook(CalcHandle * handle, uint32_t event_count, const Cal
 {
 	int ret = 0;
 
-	if (NULL != handle && NULL != event)
+	if (nullptr != handle && nullptr != event)
 	{
 		// TODO
 	}
@@ -2545,8 +2467,8 @@ static menu_entry fnct_menu[] =
 	{ NULL, NULL, 0, NULL }
 
 	// IMPORTANT NOTES: for backwards compatibility, after a scriptable name was defined, it shall never be changed.
-	{ "GEN  Exit now", "exit", 4, NULL },                                                      // 0
-	{ "GEN  Exit if previous operation failed", "exit_if_failed", 14, NULL },
+	{ "GEN  Exit now", "exit", 4, nullptr },                                                      // 0
+	{ "GEN  Exit if previous operation failed", "exit_if_failed", 14, nullptr },
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("CFG  Get config value", cfg_get),
 	DEFINE_MENU_ENTRY("CFG  Set config value", cfg_set),
@@ -2685,12 +2607,11 @@ int main(int argc, char **argv)
 	CableModel cable_model = CABLE_NUL;
 	CablePort port_number = PORT_1;
 	CalcModel calc_model = CALC_NONE;
-	CableHandle* cable = NULL;
-	CalcHandle* calc = NULL;
+	CableHandle* cable = nullptr;
+	CalcHandle* calc = nullptr;
 	int err = 0, preverr = 0, i;
 	unsigned int j;
 	int do_exit = 0;
-	char* colon;
 	int do_probe = 1;
 	int quiet = 0;
 	int first = 1;
@@ -2699,7 +2620,7 @@ int main(int argc, char **argv)
 	{
 		if (i == 'c')
 		{
-			colon = strchr(optarg, ':');
+			char* colon = strchr(optarg, ':');
 			if (colon)
 			{
 				*colon = 0;
@@ -2774,7 +2695,7 @@ int main(int argc, char **argv)
 
 	printf("Cable is %d (%s), port is #%d\n", cable_model, ticables_model_to_string(cable_model), port_number);
 	cable = ticables_handle_new(cable_model, port_number);
-	if (cable == NULL)
+	if (cable == nullptr)
 	{
 		fprintf(stderr, "ticables_handle_new failed\n");
 		goto end;
@@ -2793,7 +2714,7 @@ int main(int argc, char **argv)
 
 	printf("Calc is %d (%s)\n", calc_model, ticalcs_model_to_string(calc_model));
 	calc = ticalcs_handle_new(calc_model);
-	if (calc == NULL)
+	if (calc == nullptr)
 	{
 		fprintf(stderr, "ticalcs_handle_new failed\n");
 		goto end;
@@ -2812,7 +2733,6 @@ int main(int argc, char **argv)
 
 	do
 	{
-		char * ptr;
 		unsigned int choice;
 		// Display menu
 		printf("Choose an action:\n");
@@ -2820,7 +2740,7 @@ int main(int argc, char **argv)
 		{
 			for (i = 0, j = 0; i < (int)(sizeof(fnct_menu)/sizeof(fnct_menu[0])); i++)
 			{
-				if (NULL != fnct_menu[i].desc)
+				if (nullptr != fnct_menu[i].desc)
 				{
 					printf("%2d. %-45s", j, fnct_menu[i].desc);
 					j++;
@@ -2834,10 +2754,10 @@ int main(int argc, char **argv)
 		}
 
 		inbuf2[0] = 0;
-		ptr = fgets(inbuf2, 128, stdin);
+		char* ptr = fgets(inbuf2, 128, stdin);
 
 		//printf("%d %02X\n", err, inbuf2[0]);
-		if (NULL == ptr)
+		if (nullptr == ptr)
 		{
 /*			// Couldn't read a single char; try again, in a rate-limited way.
 #ifdef __WIN32__
@@ -2924,7 +2844,7 @@ int main(int argc, char **argv)
 					{
 						// strstr and the second check are used to cope with names which are prefixes of others, e.g. send_var / send_var_ns,
 						// while allowing for other parameters on the same line.
-						if (NULL != fnct_menu[i].scriptable_name)
+						if (nullptr != fnct_menu[i].scriptable_name)
 						{
 							if (   (strstr(inbuf2, fnct_menu[i].scriptable_name) == inbuf2)
 							    && (inbuf2[fnct_menu[i].scriptable_name_len] != '_')
@@ -2954,7 +2874,7 @@ int main(int argc, char **argv)
 			{
 				for (i = 2, j = 2; i < (int)(sizeof(fnct_menu)/sizeof(fnct_menu[0])); i++)
 				{
-					if (NULL != fnct_menu[i].fnct)
+					if (nullptr != fnct_menu[i].fnct)
 					{
 						if (j == choice)
 						{

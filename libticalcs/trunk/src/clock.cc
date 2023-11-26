@@ -124,7 +124,7 @@ int TICALL ticalcs_clock_date2format(CalcModel model, const char *format)
 {
 	int i = 1;
 
-	if (format == NULL)
+	if (format == nullptr)
 	{
 		ticalcs_critical("ticalcs_clock_date2format: format is NULL");
 		return 0;
@@ -173,7 +173,7 @@ int TICALL ticalcs_clock_date2format(CalcModel model, const char *format)
  **/
 int TICALL ticalcs_clock_show(CalcModel model, CalcClock* s)
 {
-	if (s != NULL)
+	if (s != nullptr)
 	{
 		ticalcs_info("Date: %04i/%02i/%02i", s->year, s->month, s->day);
 		ticalcs_info("Time: %02i/%02i/%02i", s->hours, s->minutes, s->seconds);

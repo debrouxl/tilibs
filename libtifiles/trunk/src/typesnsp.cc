@@ -32,5 +32,5 @@ const TIXX_DATA NSP_CONST[NSP_MAXTYPES + 1] =
 {
 	{"TNS", "tns", "TIicon1", N_("Document")},
 	{"DIR", "???", "Directory", N_("Directory")},
-	{NULL, NULL, NULL, NULL}
+	{ nullptr, nullptr, nullptr, nullptr }
 };

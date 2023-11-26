@@ -31,10 +31,6 @@ FUNCTION(__VA_ARGS__); fprintf(stderr, "%d\n", __LINE__)
 
 static void torture_ticalcs()
 {
-    CalcHandle * handle;
-    CableHandle * cable;
-    CalcUpdate * update;
-
 // error.c
     PRINTF(ticalcs_error_get, INT, -1, nullptr);
     PRINTFVOID(ticalcs_error_free, nullptr);
@@ -44,7 +40,7 @@ static void torture_ticalcs()
     PRINTF(ticalcs_supported_calcs, X64);
     PRINTF(ticalcs_supported_protocols, X32);
     PRINTF(ticalcs_max_calc_function_idx, UINT);
-    handle = ticalcs_handle_new((CalcModel)- 1);
+    CalcHandle* handle = ticalcs_handle_new((CalcModel)-1);
     PRINTF(, PTR, handle);
     ticalcs_handle_del(handle);
     PRINTF(ticalcs_handle_del, INT, nullptr);
@@ -53,10 +49,10 @@ static void torture_ticalcs()
     PRINTF(ticalcs_get_model, INT, nullptr);
     PRINTF(ticalcs_cable_attach, INT, nullptr, (CableHandle *)0x12345678);
     PRINTF(ticalcs_cable_detach, INT, nullptr);
-    cable = ticalcs_cable_get(nullptr);
+    CableHandle* cable = ticalcs_cable_get(nullptr);
     PRINTF(, PTR, cable);
     PRINTF(ticalcs_update_set, INT, nullptr, (CalcUpdate *)0x12345678);
-    update = ticalcs_update_get(nullptr);
+    CalcUpdate* update = ticalcs_update_get(nullptr);
     PRINTF(, PTR, update);
     PRINTF(ticalcs_model_supports_dbus, INT, CALC_NONE);
     PRINTF(ticalcs_model_supports_dusb, INT, CALC_NONE);
@@ -296,9 +292,7 @@ static void torture_ticalcs()
 
 static void torture_nsp()
 {
-    void * ptr;
-
-// nsp_rpkt.c
+    // nsp_rpkt.c
     PRINTF(nsp_addr2name, STR, 0);
     PRINTF(nsp_sid2name, STR, 0);
     PRINTF(nsp_dissect, INT, CALC_NONE, nullptr, (const uint8_t*)0x12345678, 8, 2);
@@ -309,7 +303,7 @@ static void torture_nsp()
     PRINTFVOID(nsp_vtl_pkt_fill, nullptr, 0x12345678, 0x1234, 0x1234, 0x1234, 0x1234, 0x12, nullptr);
     PRINTFVOID(nsp_vtl_pkt_del, nullptr, (NSPVirtualPacket*)0x12345678);
     PRINTFVOID(nsp_vtl_pkt_del, (CalcHandle*)0x12345678, nullptr);
-    ptr = nsp_vtl_pkt_alloc_data(nullptr, 0);
+    void* ptr = nsp_vtl_pkt_alloc_data(nullptr, 0);
     PRINTF(, PTR, ptr);
     nsp_vtl_pkt_free_data(nullptr, ptr);
 
@@ -413,7 +407,6 @@ static void torture_nsp()
 
 static void torture_dusb()
 {
-    void* ptr;
     const DUSBModeSet mode = DUSB_MODE_STARTUP;
 
 // dusb_rpkt.c
@@ -427,7 +420,7 @@ static void torture_dusb()
     PRINTFVOID(dusb_vtl_pkt_fill, nullptr, 0, 0, (uint8_t*)0x12345678);
     PRINTFVOID(dusb_vtl_pkt_del, nullptr, (DUSBVirtualPacket*)0x12345678);
     PRINTFVOID(dusb_vtl_pkt_del, (CalcHandle*)0x12345678, nullptr);
-    ptr = dusb_vtl_pkt_alloc_data(nullptr, 0);
+    void* ptr = dusb_vtl_pkt_alloc_data(nullptr, 0);
     PRINTF(, PTR, ptr);
     dusb_vtl_pkt_free_data(nullptr, ptr);
 

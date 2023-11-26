@@ -54,7 +54,7 @@ VarEntry* TICALL tifiles_ve_create(void)
 VarEntry* TICALL tifiles_ve_create_alloc_data(uint32_t size)
 {
 	VarEntry* ve = tifiles_ve_create();
-	if (ve != NULL)
+	if (ve != nullptr)
 	{
 		ve->data = (uint8_t *)g_malloc0(size);
 	}
@@ -85,7 +85,7 @@ VarEntry* TICALL tifiles_ve_create_with_data(uint32_t size)
 VarEntry* TICALL tifiles_ve_create_with_data2(uint32_t size, uint8_t * data)
 {
 	VarEntry* ve = tifiles_ve_create();
-	if (ve != NULL)
+	if (ve != nullptr)
 	{
 		ve->data = data;
 		ve->size = size;
@@ -104,7 +104,7 @@ VarEntry* TICALL tifiles_ve_create_with_data2(uint32_t size, uint8_t * data)
  **/
 void TICALL tifiles_ve_delete(VarEntry* ve)
 {
-	if (ve != NULL)
+	if (ve != nullptr)
 	{
 		g_free(ve->data);
 		g_free(ve);
@@ -138,7 +138,7 @@ void * TICALL tifiles_ve_alloc_data(size_t size)
  **/
 VarEntry * TICALL tifiles_ve_realloc_data(VarEntry* ve, size_t size)
 {
-	if (ve != NULL)
+	if (ve != nullptr)
 	{
 		uint8_t * data = (uint8_t *)g_realloc(ve->data, (size+1) * sizeof(uint8_t));
 		if (size > ve->size)
@@ -188,9 +188,9 @@ VarEntry** TICALL tifiles_ve_create_array(unsigned int nelts)
 VarEntry** TICALL tifiles_ve_resize_array(VarEntry** array, unsigned int nelts)
 {
 	VarEntry ** ptr = (VarEntry **)g_realloc(array, (nelts + 1) * sizeof(VarEntry *));
-	if (ptr != NULL)
+	if (ptr != nullptr)
 	{
-		ptr[nelts] = NULL;
+		ptr[nelts] = nullptr;
 	}
 	return ptr;
 }
@@ -205,11 +205,9 @@ VarEntry** TICALL tifiles_ve_resize_array(VarEntry** array, unsigned int nelts)
  **/
 void TICALL tifiles_ve_delete_array(VarEntry** array)
 {
-	VarEntry** ptr;
-
-	if (array != NULL)
+	if (array != nullptr)
 	{
-		for (ptr = array; *ptr; ptr++)
+		for (VarEntry** ptr = array; *ptr; ptr++)
 		{
 			tifiles_ve_delete(*ptr);
 		}
@@ -233,25 +231,23 @@ void TICALL tifiles_ve_delete_array(VarEntry** array)
  **/
 VarEntry* TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src)
 {
-	int alloc;
-
-	if (src != NULL && dst != NULL)
+	if (src != nullptr && dst != nullptr)
 	{
-		alloc = (dst->data == NULL);
+		const int alloc = (dst->data == nullptr);
 
 		memcpy(dst, src, sizeof(VarEntry));
 		if (alloc)
 		{
 			dst->data = (uint8_t *)g_malloc0(dst->size);
-			if (dst->data == NULL)
-				return NULL;
+			if (dst->data == nullptr)
+				return nullptr;
 		}
 		memcpy(dst->data, src->data, src->size);
 	}
 	else
 	{
 		tifiles_critical("%s(): an argument is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
 	return dst;
@@ -267,17 +263,17 @@ VarEntry* TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src)
  **/
 VarEntry* TICALL tifiles_ve_dup(VarEntry* src)
 {
-	VarEntry* dst = NULL;
+	VarEntry* dst = nullptr;
 
-	if (src != NULL)
+	if (src != nullptr)
 	{
 		dst = (VarEntry *)g_malloc0(sizeof(VarEntry));
-		if (dst != NULL)
+		if (dst != nullptr)
 		{
 			memcpy(dst, src, sizeof(VarEntry));
 			dst->data = (uint8_t *)g_malloc0(dst->size);
 
-			if (src->data != NULL && dst->data != NULL)
+			if (src->data != nullptr && dst->data != nullptr)
 			{
 				memcpy(dst->data, src->data, dst->size);
 			}
@@ -315,10 +311,8 @@ FlashPage* TICALL tifiles_fp_create(void)
  **/
 void * TICALL tifiles_fp_alloc_data(size_t size)
 {
-	uint8_t *data;
-
-	data = (uint8_t *)g_malloc0((size+1) * sizeof(uint8_t));
-	if (data != NULL)
+	uint8_t* data = (uint8_t*)g_malloc0((size + 1) * sizeof(uint8_t));
+	if (data != nullptr)
 	{
 		memset(data, 0xFF, size);
 	}
@@ -336,7 +330,7 @@ void * TICALL tifiles_fp_alloc_data(size_t size)
  **/
 FlashPage * TICALL tifiles_fp_realloc_data(FlashPage* fp, size_t size)
 {
-	if (fp != NULL)
+	if (fp != nullptr)
 	{
 		uint8_t * data = (uint8_t *)g_realloc(fp->data, (size+1) * sizeof(uint8_t));
 		if (size > fp->size)
@@ -370,7 +364,7 @@ void TICALL tifiles_fp_free_data(void * data)
 FlashPage* TICALL tifiles_fp_create_alloc_data(uint32_t size)
 {
 	FlashPage* ve = tifiles_fp_create();
-	if (ve != NULL)
+	if (ve != nullptr)
 	{
 		ve->data = (uint8_t *)g_malloc0(size);
 	}
@@ -401,7 +395,7 @@ FlashPage* TICALL tifiles_fp_create_with_data(uint32_t size)
 FlashPage* TICALL tifiles_fp_create_with_data2(uint32_t size, uint8_t * data)
 {
 	FlashPage* ve = tifiles_fp_create();
-	if (ve != NULL)
+	if (ve != nullptr)
 	{
 		ve->data = data;
 		ve->size = size;
@@ -437,9 +431,9 @@ FlashPage** TICALL tifiles_fp_create_array(unsigned int nelts)
 FlashPage** TICALL tifiles_fp_resize_array(FlashPage** array, unsigned int nelts)
 {
 	FlashPage ** ptr = (FlashPage **)g_realloc(array, (nelts + 1) * sizeof(FlashPage *));
-	if (ptr != NULL)
+	if (ptr != nullptr)
 	{
-		ptr[nelts] = NULL;
+		ptr[nelts] = nullptr;
 	}
 	return ptr;
 }
@@ -454,7 +448,7 @@ FlashPage** TICALL tifiles_fp_resize_array(FlashPage** array, unsigned int nelts
  **/
 void TICALL tifiles_fp_delete(FlashPage* fp)
 {
-	if (fp != NULL)
+	if (fp != nullptr)
 	{
 		g_free(fp->data);
 		g_free(fp);
@@ -475,11 +469,9 @@ void TICALL tifiles_fp_delete(FlashPage* fp)
  **/
 void TICALL tifiles_fp_delete_array(FlashPage** array)
 {
-	FlashPage** ptr;
-
-	if (array != NULL)
+	if (array != nullptr)
 	{
-		for (ptr = array; *ptr; ptr++)
+		for (FlashPage** ptr = array; *ptr; ptr++)
 		{
 			tifiles_fp_delete(*ptr);
 		}
