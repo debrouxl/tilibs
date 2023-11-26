@@ -38,17 +38,16 @@
  **/
 int TICALL tifiles_cert_field_get(const uint8_t *data, uint32_t length, uint16_t *field_type, const uint8_t **contents, uint32_t *field_size)
 {
-	uint16_t field_id;
 	uint32_t field_len;
 	uint32_t additional_len;
 
 	// Initial sanity checks.
-	if (data == NULL)
+	if (data == nullptr)
 	{
 		tifiles_critical("%s: data is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAM;
 	}
-	if (field_type == NULL && contents == NULL && field_size == NULL)
+	if (field_type == nullptr && contents == nullptr && field_size == nullptr)
 	{
 		tifiles_critical("%s: all output parameters are NULL", __FUNCTION__);
 		return ERR_INVALID_PARAM;
@@ -60,7 +59,7 @@ int TICALL tifiles_cert_field_get(const uint8_t *data, uint32_t length, uint16_t
 	}
 
 	// Retrieve field ID and number of additional bytes we need to read for the field's size.
-	field_id = (((uint16_t)data[0]) << 8) | data[1];
+	const uint16_t field_id = (((uint16_t)data[0]) << 8) | data[1];
 	switch (field_id & 0xF)
 	{
 		case 0xD: additional_len = 1; break;
@@ -109,16 +108,16 @@ int TICALL tifiles_cert_field_get(const uint8_t *data, uint32_t length, uint16_t
 		return ERR_CERT_TRUNCATED;
 	}
 
-	if (field_type != NULL)
+	if (field_type != nullptr)
 	{
 		// Don't mask out the size indication, it may be useful to the user.
 		*field_type = field_id;
 	}
-	if (contents != NULL)
+	if (contents != nullptr)
 	{
 		*contents = data + 2 + additional_len;
 	}
-	if (field_size != NULL)
+	if (field_size != nullptr)
 	{
 		*field_size = field_len;
 	}
@@ -128,23 +127,22 @@ int TICALL tifiles_cert_field_get(const uint8_t *data, uint32_t length, uint16_t
 
 int TICALL tifiles_cert_field_next(const uint8_t **data, uint32_t *length)
 {
-	int ret;
 	const uint8_t * contents;
 	uint32_t field_size;
 
 	// Initial sanity checks.
-	if (data == NULL)
+	if (data == nullptr)
 	{
 		tifiles_critical("%s: data is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAM;
 	}
-	if (length == NULL)
+	if (length == nullptr)
 	{
 		tifiles_critical("%s: length is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAM;
 	}
 
-	ret = tifiles_cert_field_get(*data, *length, NULL, &contents, &field_size);
+	const int ret = tifiles_cert_field_get(*data, *length, nullptr, &contents, &field_size);
 	if (!ret)
 	{
 		*length -= contents + field_size - *data;
@@ -160,7 +158,7 @@ int TICALL tifiles_cert_field_find(const uint8_t *data, uint32_t length, uint16_
 	uint16_t ft;
 
 	// Initial sanity checks.
-	if (data == NULL)
+	if (data == nullptr)
 	{
 		tifiles_critical("%s: data is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAM;
@@ -193,12 +191,12 @@ int TICALL tifiles_cert_field_find_path(const uint8_t *data, uint32_t length, co
 	int ret = 0;
 
 	// Initial sanity checks.
-	if (data == NULL)
+	if (data == nullptr)
 	{
 		tifiles_critical("%s: data is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAM;
 	}
-	if (field_path == NULL)
+	if (field_path == nullptr)
 	{
 		tifiles_critical("%s: field_path is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAM;
@@ -220,11 +218,11 @@ int TICALL tifiles_cert_field_find_path(const uint8_t *data, uint32_t length, co
 		//tifiles_warning("%p\t%u", data, length);
 		field_path++;
 		field_path_len--;
-		if (contents != NULL)
+		if (contents != nullptr)
 		{
 			*contents = data;
 		}
-		if (field_size != NULL)
+		if (field_size != nullptr)
 		{
 			*field_size = length;
 		}

@@ -44,15 +44,13 @@
  **/
 CalcFeatures TICALL ticalcs_calc_features(CalcHandle* handle)
 {
-	const CalcFncts *calc;
-
-	if (handle == NULL)
+	if (handle == nullptr)
 	{
 		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
 		return FTS_NONE;
 	}
 
-	calc = handle->calc;
+	const CalcFncts* calc = handle->calc;
 	if (!calc)
 	{
 		return FTS_NONE;
@@ -76,12 +74,11 @@ CalcFeatures TICALL ticalcs_calc_features(CalcHandle* handle)
  **/
 int TICALL ticalcs_calc_isready(CalcHandle* handle)
 {
-	const CalcFncts *calc;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	calc = handle->calc;
+	const CalcFncts* calc = handle->calc;
 	VALIDATE_CALCFNCTS(calc);
 
 	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
@@ -258,7 +255,7 @@ int TICALL ticalcs_calc_recv_screen_rgb888(CalcHandle* handle, CalcScreenCoord* 
 
 	if (!ret)
 	{
-		uint8_t * bitmap2 = NULL;
+		uint8_t * bitmap2 = nullptr;
 
 		if (sc->width > 320)
 		{
@@ -279,7 +276,7 @@ int TICALL ticalcs_calc_recv_screen_rgb888(CalcHandle* handle, CalcScreenCoord* 
 			if (ret)
 			{
 				ticalcs_free_screen(bitmap2);
-				bitmap2 = NULL;
+				bitmap2 = nullptr;
 			}
 		}
 		*bitmap = bitmap2;
@@ -311,7 +308,6 @@ void TICALL ticalcs_free_screen(uint8_t * bitmap)
  **/
 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, GNode **apps)
 {
-	const CalcFncts *calc;
 	int ret = 0;
 	TreeInfo *ti;
 
@@ -319,15 +315,15 @@ int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, GNode **ap
 	VALIDATE_NONNULL(vars);
 	VALIDATE_NONNULL(apps);
 
-	calc = handle->calc;
+	const CalcFncts* calc = handle->calc;
 	VALIDATE_CALCFNCTS(calc);
 
 	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	*vars = NULL;
-	*apps = NULL;
+	*vars = nullptr;
+	*apps = nullptr;
 
 	ticalcs_info("%s", _("Requesting folder & vars & apps listing:"));
 	handle->busy = 1;
@@ -344,14 +340,14 @@ int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, GNode **ap
 
 	if (!ret)
 	{
-		if (*vars != NULL)
+		if (*vars != nullptr)
 		{
 			ti = (TreeInfo *)((*vars)->data);
 			ti->mem_mask |= MEMORY_USED;
 			ti->mem_used = ticalcs_dirlist_ram_used(*vars);
 		}
 
-		if (*apps != NULL)
+		if (*apps != nullptr)
 		{
 			ti = (TreeInfo *)((*apps)->data);
 			ti->mem_mask |= MEMORY_USED;
@@ -374,14 +370,13 @@ int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, GNode **ap
  **/
 int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram, uint32_t *flash)
 {
-	const CalcFncts *calc;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(ram);
 	VALIDATE_NONNULL(flash);
 
-	calc = handle->calc;
+	const CalcFncts* calc = handle->calc;
 	VALIDATE_CALCFNCTS(calc);
 
 	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
@@ -891,12 +886,11 @@ int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlist)
  **/
 int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
 {
-	const CalcFncts *calc;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	calc = handle->calc;
+	const CalcFncts* calc = handle->calc;
 	VALIDATE_CALCFNCTS(calc);
 
 	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
@@ -931,13 +925,12 @@ int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
  **/
 int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	const CalcFncts *calc;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(filename);
 
-	calc = handle->calc;
+	const CalcFncts* calc = handle->calc;
 	VALIDATE_CALCFNCTS(calc);
 
 	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
@@ -1480,13 +1473,12 @@ int TICALL ticalcs_calc_recv_all_vars_backup(CalcHandle* handle, FileContent* co
  **/
 int TICALL ticalcs_calc_send_lab_equipment_data(CalcHandle *handle, CalcModel model, CalcLabEquipmentData * lab_equipment_data)
 {
-	const CalcFncts *calc;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(lab_equipment_data);
 
-	calc = handle->calc;
+	const CalcFncts* calc = handle->calc;
 	VALIDATE_CALCFNCTS(calc);
 
 	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
@@ -1528,13 +1520,12 @@ int TICALL ticalcs_calc_send_lab_equipment_data(CalcHandle *handle, CalcModel mo
  **/
 int TICALL ticalcs_calc_get_lab_equipment_data(CalcHandle *handle, CalcModel model, CalcLabEquipmentData * lab_equipment_data)
 {
-	const CalcFncts *calc;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(lab_equipment_data);
 
-	calc = handle->calc;
+	const CalcFncts* calc = handle->calc;
 	VALIDATE_CALCFNCTS(calc);
 
 	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
@@ -1791,7 +1782,7 @@ int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *filename)
 		ret = ticalcs_calc_recv_all_vars_backup(handle, content);
 		if (!ret)
 		{
-			ret = tifiles_file_write_regular(filename, content, NULL);
+			ret = tifiles_file_write_regular(filename, content, nullptr);
 		}
 		// content is not destroyed by the functions behind ticalcs_calc_recv_all_vars_backup() if an error occurs.
 		tifiles_content_delete_regular(content);
@@ -1803,9 +1794,6 @@ int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *filename)
 // ticalcs_calc_send_var2_: core of ticalcs_calc_send_var2, the take_busy argument enables avoiding playing games with handle->busy in rd_send_dumper() / rd_send_dumper2().
 int ticalcs_calc_send_var2_(CalcHandle* handle, CalcMode mode, const char* filename, int take_busy)
 {
-	FileContent *content;
-	int ret;
-
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(filename);
 
@@ -1816,8 +1804,8 @@ int ticalcs_calc_send_var2_(CalcHandle* handle, CalcMode mode, const char* filen
 		RETURN_IF_HANDLE_BUSY(handle);
 	}
 
-	content = tifiles_content_create_regular(handle->model);
-	ret = tifiles_file_read_regular(filename, content);
+	FileContent* content = tifiles_content_create_regular(handle->model);
+	int ret = tifiles_file_read_regular(filename, content);
 	if (!ret)
 	{
 		ret = ticalcs_calc_send_var_(handle, mode, content, take_busy);
@@ -1856,9 +1844,6 @@ int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode, const char*
  **/
 int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, const char* filename, VarRequest* vr)
 {
-	FileContent *content;
-	int ret;
-
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(filename);
 	VALIDATE_VARREQUEST(vr);
@@ -1867,11 +1852,11 @@ int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, const char*
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	content = tifiles_content_create_regular(handle->model);
-	ret = ticalcs_calc_recv_var(handle, mode, content, vr);
+	FileContent* content = tifiles_content_create_regular(handle->model);
+	int ret = ticalcs_calc_recv_var(handle, mode, content, vr);
 	if (!ret)
 	{
-		ret = tifiles_file_write_regular(filename, content, NULL);
+		ret = tifiles_file_write_regular(filename, content, nullptr);
 	}
 	// content is not destroyed by the functions behind ticalcs_calc_recv_var() if an error occurs.
 	tifiles_content_delete_regular(content);
@@ -1891,7 +1876,6 @@ int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, const char*
  **/
 int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode, const char* filename)
 {
-	FileContent *content;
 	int ret = ERR_FILE_OPEN;
 
 	VALIDATE_HANDLE(handle);
@@ -1901,7 +1885,7 @@ int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode, const ch
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	content = tifiles_content_create_regular(handle->model);
+	FileContent* content = tifiles_content_create_regular(handle->model);
 	ret = tifiles_file_read_regular(filename, content);
 	if (!ret)
 	{
@@ -1926,9 +1910,6 @@ int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode, const ch
  **/
 int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode, const char* filename, VarEntry** vr)
 {
-	FileContent *content;
-	int ret;
-
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(filename);
 	VALIDATE_NONNULL(vr);
@@ -1937,11 +1918,11 @@ int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode, const ch
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	content = tifiles_content_create_regular(handle->model);
-	ret = ticalcs_calc_recv_var_ns(handle, mode, content, vr);
+	FileContent* content = tifiles_content_create_regular(handle->model);
+	int ret = ticalcs_calc_recv_var_ns(handle, mode, content, vr);
 	if (!ret)
 	{
-		ret = tifiles_file_write_regular(filename, content, NULL);
+		ret = tifiles_file_write_regular(filename, content, nullptr);
 	}
 	// content is not destroyed by the functions behind ticalcs_calc_recv_var_ns() if an error occurs.
 	tifiles_content_delete_regular(content);
@@ -1960,9 +1941,6 @@ int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode, const ch
  **/
 int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* filename)
 {
-	FlashContent *content;
-	int ret;
-
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(filename);
 
@@ -1970,8 +1948,8 @@ int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* filename)
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	content = tifiles_content_create_flash(handle->model);
-	ret = tifiles_file_read_flash(filename, content);
+	FlashContent* content = tifiles_content_create_flash(handle->model);
+	int ret = tifiles_file_read_flash(filename, content);
 	if (!ret)
 	{
 		ret = ticalcs_calc_send_app(handle, content);
@@ -1994,9 +1972,6 @@ int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* filename)
  **/
 int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* filename, VarRequest* vr)
 {
-	FlashContent *content;
-	int ret;
-
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(filename);
 	VALIDATE_VARREQUEST(vr);
@@ -2005,8 +1980,8 @@ int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* filename, VarR
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	content = tifiles_content_create_flash(handle->model);
-	ret = ticalcs_calc_recv_app(handle, content, vr);
+	FlashContent* content = tifiles_content_create_flash(handle->model);
+	int ret = ticalcs_calc_recv_app(handle, content, vr);
 	if (!ret)
 	{
 		ret = tifiles_file_write_flash(filename, content);
@@ -2028,9 +2003,6 @@ int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* filename, VarR
  **/
 int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* filename)
 {
-	FlashContent *content;
-	int ret;
-
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(filename);
 
@@ -2038,8 +2010,8 @@ int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* filename)
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	content = tifiles_content_create_flash(handle->model);
-	ret = tifiles_file_read_flash(filename, content);
+	FlashContent* content = tifiles_content_create_flash(handle->model);
+	int ret = tifiles_file_read_flash(filename, content);
 	if (!ret)
 	{
 		ret = ticalcs_calc_send_cert(handle, content);
@@ -2061,9 +2033,6 @@ int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* filename)
  **/
 int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filename)
 {
-	FlashContent *content;
-	int ret;
-
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(filename);
 
@@ -2071,8 +2040,8 @@ int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filename)
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	content = tifiles_content_create_flash(handle->model);
-	ret = tifiles_file_read_flash(filename, content);
+	FlashContent* content = tifiles_content_create_flash(handle->model);
+	int ret = tifiles_file_read_flash(filename, content);
 	if (!ret)
 	{
 		ret = ticalcs_calc_send_os(handle, content);
@@ -2096,7 +2065,6 @@ int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filename)
  **/
 int TICALL ticalcs_calc_send_lab_equipment_datastr(CalcHandle *handle, CalcModel model, uint8_t vartype, const char * data)
 {
-	int ret;
 	CalcLabEquipmentData lab_equipment_data;
 
 	VALIDATE_HANDLE(handle);
@@ -2107,7 +2075,7 @@ int TICALL ticalcs_calc_send_lab_equipment_datastr(CalcHandle *handle, CalcModel
 	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_fill_lab_equipment_data(&lab_equipment_data, CALC_LAB_EQUIPMENT_DATA_TYPE_STRING, (uint16_t)(strlen(data) + 1), 0, (const uint8_t *)data, nullptr, vartype, 0, 0);
-	ret = ticalcs_calc_send_lab_equipment_data(handle, model, &lab_equipment_data);
+	const int ret = ticalcs_calc_send_lab_equipment_data(handle, model, &lab_equipment_data);
 
 	return ret;
 }
@@ -2125,7 +2093,6 @@ int TICALL ticalcs_calc_send_lab_equipment_datastr(CalcHandle *handle, CalcModel
  **/
 int TICALL ticalcs_calc_get_lab_equipment_datastr(CalcHandle *handle, CalcModel model, uint8_t vartype, const char ** data)
 {
-	int ret;
 	CalcLabEquipmentData lab_equipment_data;
 
 	VALIDATE_HANDLE(handle);
@@ -2136,7 +2103,7 @@ int TICALL ticalcs_calc_get_lab_equipment_datastr(CalcHandle *handle, CalcModel 
 	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_fill_lab_equipment_data(&lab_equipment_data, CALC_LAB_EQUIPMENT_DATA_TYPE_NONE, 0, 0, nullptr, nullptr, vartype, 0, 0);
-	ret = ticalcs_calc_get_lab_equipment_data(handle, model, &lab_equipment_data);
+	int ret = ticalcs_calc_get_lab_equipment_data(handle, model, &lab_equipment_data);
 	if (!ret)
 	{
 		uint32_t item_count;
@@ -2176,8 +2143,7 @@ int TICALL ticalcs_calc_get_lab_equipment_datastr(CalcHandle *handle, CalcModel 
  **/
 int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* filename)
 {
-	FlashContent *content = NULL;
-	char *ext;
+	FlashContent *content = nullptr;
 	int ret;
 
 	VALIDATE_HANDLE(handle);
@@ -2188,21 +2154,19 @@ int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* filename)
 	RETURN_IF_HANDLE_BUSY(handle);
 
 	do {
-		ext = tifiles_fext_get(filename);
+		const char* ext = tifiles_fext_get(filename);
 		if (!strcmp(ext, "cer"))
 		{
 			// .cer format as generated by SDK
 			gchar *basename = strdup(filename);
-			FILE *f;
-			gchar *e;
 
-			if (basename == NULL)
+			if (basename == nullptr)
 			{
 				ret = ERR_MALLOC;
 				break;
 			}
 
-			e = tifiles_fext_get(basename);
+			gchar* e = tifiles_fext_get(basename);
 
 			memcpy(e, "crt", 3);
 
@@ -2214,7 +2178,7 @@ int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* filename)
 				break;
 			}
 
-			f = fopen(basename, "wb");
+			FILE* f = fopen(basename, "wb");
 			free(basename);
 			if (!f)
 			{
@@ -2297,9 +2261,6 @@ int TICALL ticalcs_calc_recv_os2(CalcHandle* handle, const char* filename)
  **/
 int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* filename, TigMode mode)
 {
-	TigContent *content;
-	int ret;
-
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(filename);
 
@@ -2307,8 +2268,8 @@ int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* filename, 
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	content = tifiles_content_create_tigroup(handle->model, 0);
-	ret = tifiles_file_read_tigroup(filename, content);
+	TigContent* content = tifiles_content_create_tigroup(handle->model, 0);
+	int ret = tifiles_file_read_tigroup(filename, content);
 	if (!ret)
 	{
 		ret = ticalcs_calc_send_tigroup(handle, content, mode);
@@ -2331,9 +2292,6 @@ int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* filename, 
  **/
 int TICALL ticalcs_calc_recv_tigroup2(CalcHandle* handle, const char* filename, TigMode mode)
 {
-	TigContent *content;
-	int ret;
-
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(filename);
 
@@ -2341,8 +2299,8 @@ int TICALL ticalcs_calc_recv_tigroup2(CalcHandle* handle, const char* filename, 
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	content = tifiles_content_create_tigroup(handle->model, 0);
-	ret = ticalcs_calc_recv_tigroup(handle, content, mode);
+	TigContent* content = tifiles_content_create_tigroup(handle->model, 0);
+	int ret = ticalcs_calc_recv_tigroup(handle, content, mode);
 	if (!ret)
 	{
 		ret = tifiles_file_write_tigroup(filename, content);

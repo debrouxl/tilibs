@@ -45,7 +45,7 @@
  **/
 int TICALL tifiles_error_get(int number, char **message)
 {
-	if (message == NULL)
+	if (message == nullptr)
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 		return number;
@@ -160,7 +160,7 @@ int TICALL tifiles_error_get(int number, char **message)
  **/
 int TICALL tifiles_error_free(char *message)
 {
-	if (message == NULL)
+	if (message == nullptr)
 	{
 		tifiles_critical("tifiles_error_free(NULL)\n");
 		return ERR_INVALID_PARAM;

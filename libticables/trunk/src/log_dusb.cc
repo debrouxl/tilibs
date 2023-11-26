@@ -39,8 +39,8 @@
 
 #define LOG_DUSB_FILE	"ticables-dusb.pkt"
 
-static char *ifn = NULL;
-static char *ofn = NULL;
+static char *ifn = nullptr;
+static char *ofn = nullptr;
 
 int log_dusb_start(void)
 {
@@ -57,22 +57,19 @@ int log_dusb_N(int dir, const uint8_t * data, uint32_t len)
 
 int log_dusb_stop(void)
 {
-	char *r;
-	char * ifn2;
-
 	if (!ifn || ! ofn)
 	{
 		return 0;
 	}
 
-	r = strrchr(ifn, '.');
+	char* r = strrchr(ifn, '.');
 	if(r)
 	{
 		*r = '\0';
 	}
 
 	dusb_decomp(ifn);
-	ifn2 = g_strconcat(ifn, ".pkt", NULL);
+	char* ifn2 = g_strconcat(ifn, ".pkt", NULL);
 	g_free(ifn);
 	ifn = ifn2;
 
@@ -83,9 +80,9 @@ int log_dusb_stop(void)
 	}
 
 	g_free(ifn); 
-	ifn = NULL;
+	ifn = nullptr;
 	g_free(ofn); 
-	ofn = NULL;
+	ofn = nullptr;
 
 	return 0;
 }

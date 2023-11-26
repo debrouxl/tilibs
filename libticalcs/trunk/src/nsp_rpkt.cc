@@ -83,9 +83,7 @@ static const NSPServiceId nspsids[] =
 
 const char* TICALL nsp_addr2name(uint16_t id)
 {
-	unsigned int i;
-
-	for (i = 0; i < sizeof(nspaddrs) / sizeof(nspaddrs[0]); i++)
+	for (unsigned int i = 0; i < sizeof(nspaddrs) / sizeof(nspaddrs[0]); i++)
 	{
 		if (id == nspaddrs[i].id)
 		{
@@ -98,9 +96,7 @@ const char* TICALL nsp_addr2name(uint16_t id)
 
 const char* TICALL nsp_sid2name(uint16_t id)
 {
-	unsigned int i;
-
-	for (i = 0; i < sizeof(nspsids) / sizeof(nspsids[0]); i++)
+	for (unsigned int i = 0; i < sizeof(nspsids) / sizeof(nspsids[0]); i++)
 	{
 		if (id == nspsids[i].id)
 		{
@@ -115,21 +111,18 @@ const char* TICALL nsp_sid2name(uint16_t id)
 static uint16_t compute_crc(uint8_t *data, uint32_t size)
 {
 	uint16_t acc = 0;
-	uint32_t i;
 
 	if (size == 0)
 	{
 		return 0;
 	}
 
-	for (i = 0; i < size; i++)
+	for (uint32_t i = 0; i < size; i++)
 	{
-		uint16_t first, second, third;
-
-		first = (((uint16_t)data[i]) << 8) | (acc >> 8);
+		const uint16_t first = (((uint16_t)data[i]) << 8) | (acc >> 8);
 		acc &= 0xff;
-		second = (((acc & 0x0f) << 4) ^ acc) << 8;
-		third = second >> 5;
+		const uint16_t second = (((acc & 0x0f) << 4) ^ acc) << 8;
+		const uint16_t third = second >> 5;
 		acc = third >> 7;
 		acc = (acc ^ first ^ second ^ third);
 	}
@@ -141,14 +134,13 @@ static int hexdump(uint8_t *data, uint32_t size)
 {
 #if (VPKT_DBG == 1)
 	char str[64];
-	uint32_t i;
 
 	str[0] = 0;
 	if (size <= 12)
 	{
 		str[0] = ' '; str[1] = ' '; str[2] = ' '; str[3] = ' ';
 
-		for (i = 0; i < size; i++)
+		for (uint32_t i = 0; i < size; i++)
 		{
 			sprintf(&str[3*i+4], "%02X ", data[i]);
 		}
@@ -191,8 +183,6 @@ static int hexdump(uint8_t *data, uint32_t size)
 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 {
 	uint8_t buf[sizeof(NSPRawPacket)] = { 0 };
-	uint32_t size;
-	int ret;
 	CalcEventData event;
 
 	VALIDATE_HANDLE(handle);
@@ -203,11 +193,11 @@ int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_SEND_NSP_RPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_nsp_rpkt(&event, /* src_addr */ pkt->src_addr, /* src_port */ pkt->src_port, /* dst_addr */ pkt->dst_addr, /* dst_port */ pkt->dst_port,
 	                            /* data_sum */ pkt->data_sum, /* data_size */ pkt->data_size, /* ack */ pkt->ack, /* seq */ pkt->seq, /* hdr_sum */ pkt->hdr_sum, /* data */ pkt->data);
-	ret = ticalcs_event_send(handle, &event);
+	int ret = ticalcs_event_send(handle, &event);
 
 	if (!ret)
 	{
-		size = pkt->data_size + NSP_HEADER_SIZE;
+		const uint32_t size = pkt->data_size + NSP_HEADER_SIZE;
 		pkt->data_sum = compute_crc(pkt->data, pkt->data_size);
 
 		if (pkt->src_port == 0x00fe || pkt->src_port == 0x00ff || pkt->src_port == 0x00d3)
@@ -257,7 +247,7 @@ int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 		{
 			if (size >= 128)
 			{
-				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+				ticables_progress_get(handle->cable, nullptr, nullptr, &handle->updat->rate);
 			}
 
 			if (handle->updat->cancel)
@@ -280,7 +270,6 @@ int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 {
 	uint8_t buf[NSP_HEADER_SIZE];
-	int ret;
 	CalcEventData event;
 
 	VALIDATE_HANDLE(handle);
@@ -291,7 +280,7 @@ int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_NSP_RPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
 	ticalcs_event_fill_nsp_rpkt(&event, /* src_addr */ 0, /* src_port */ 0, /* dst_addr */ 0, /* dst_port */ 0,
 	                            /* data_sum */ 0, /* data_size */ 0, /* ack */ 0, /* seq */ 0, /* hdr_sum */ 0, /* data */ pkt->data);
-	ret = ticalcs_event_send(handle, &event);
+	int ret = ticalcs_event_send(handle, &event);
 
 	if (!ret)
 	{
@@ -330,7 +319,7 @@ int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 
 				if (pkt->data_size >= 128)
 				{
-					ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+					ticables_progress_get(handle->cable, nullptr, nullptr, &handle->updat->rate);
 				}
 			}
 
@@ -380,21 +369,8 @@ static const char* ep_way(uint8_t ep)
 
 int TICALL nsp_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t len, uint8_t ep)
 {
-	int ret = 0;
-	uint16_t unused;
-	uint16_t src_addr;
-	uint16_t src_port;
-	uint16_t dst_addr;
-	uint16_t dst_port;
-	uint16_t data_sum;
-	uint8_t data_size;
-	uint8_t ack;
-	uint8_t seq;
-	uint8_t hdr_sum;
-	uint8_t cmd;
+	const int ret = 0;
 	uint32_t i;
-	uint8_t computed_hdr_sum;
-	uint16_t computed_data_sum;
 
 	VALIDATE_NONNULL(f);
 	VALIDATE_NONNULL(data);
@@ -405,17 +381,17 @@ int TICALL nsp_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t
 		return ERR_INVALID_PACKET;
 	}
 
-	unused    = (((uint16_t)data[0]) << 8) | data[1];
-	src_addr  = (((uint16_t)data[2]) << 8) | data[3];
-	src_port  = (((uint16_t)data[4]) << 8) | data[5];
-	dst_addr  = (((uint16_t)data[6]) << 8) | data[7];
-	dst_port  = (((uint16_t)data[8]) << 8) | data[9];
-	data_sum  = (((uint16_t)data[10]) << 8) | data[11];
-	data_size = data[12];
-	ack       = data[13];
-	seq       = data[14];
-	hdr_sum   = data[15];
-	cmd       = data[16];
+	const uint16_t unused = (((uint16_t)data[0]) << 8) | data[1];
+	const uint16_t src_addr = (((uint16_t)data[2]) << 8) | data[3];
+	const uint16_t src_port = (((uint16_t)data[4]) << 8) | data[5];
+	const uint16_t dst_addr = (((uint16_t)data[6]) << 8) | data[7];
+	const uint16_t dst_port = (((uint16_t)data[8]) << 8) | data[9];
+	const uint16_t data_sum = (((uint16_t)data[10]) << 8) | data[11];
+	const uint8_t data_size = data[12];
+	const uint8_t ack = data[13];
+	const uint8_t seq = data[14];
+	const uint8_t hdr_sum = data[15];
+	const uint8_t cmd = data[16];
 
 	fprintf(f, "%08lX\t| %s: %04X - %s (%04X - %s) -> %04X - %s (%04X - %s)\n", (unsigned long)len, ep_way(ep),
 	           src_addr, nsp_addr2name(src_addr), src_port, nsp_sid2name(src_port),
@@ -435,12 +411,12 @@ int TICALL nsp_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_t
 		return ERR_INVALID_PACKET;
 	}
 
-	computed_hdr_sum = 0;
+	uint8_t computed_hdr_sum = 0;
 	for (i = 0; i < NSP_HEADER_SIZE - 1; i++)
 	{
 		computed_hdr_sum += data[i];
 	}
-	computed_data_sum = tifiles_checksum(data, len);
+	const uint16_t computed_data_sum = tifiles_checksum(data, len);
 	fprintf(f, "\t  computed_hdr_sum=%02X computed_data_sum=%04X\n", computed_hdr_sum, computed_data_sum);
 	if (computed_hdr_sum != hdr_sum || computed_data_sum != data_sum)
 	{

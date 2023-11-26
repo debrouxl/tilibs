@@ -55,27 +55,27 @@
  **/
 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 {
-	int is_utf8 = ticonv_environment_is_utf8();
+	const int is_utf8 = ticonv_environment_is_utf8();
 	const char *str;
-	unsigned short *utf16_src, *p;
-	unsigned short *utf16_dst, *q;
+	unsigned short *utf16_src;
+	unsigned short *utf16_dst;
 	char *dst;
 
-	if (src == NULL)
+	if (src == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	// detokenization to UTF-16
-	p = utf16_src = (unsigned short *)src;
-	q = utf16_dst = (unsigned short *)g_malloc0(18*ticonv_utf16_strlen(utf16_src)+2);
+	unsigned short* p = utf16_src = (unsigned short*)src;
+	unsigned short* q = utf16_dst = (unsigned short*)g_malloc0(18 * ticonv_utf16_strlen(utf16_src) + 2);
 
 	// conversion from UTF-16 to UTF-16
 	if (ticonv_model_is_ti68k(model) && !is_utf8)
 	{
 		while (*p)
 		{
-			unsigned long msb = *p & 0xff00;
+			const unsigned long msb = *p & 0xff00;
 
 			if (!msb)
 			{
@@ -83,7 +83,6 @@ char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 			}
 			else
 			{
-				gunichar2 *str2;
 				glong ir, iw;
 
 				switch (*p)
@@ -113,7 +112,7 @@ char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 					default: str = ""; break;
 				}
 
-				str2 = g_utf8_to_utf16(str, -1, &ir, &iw, NULL);
+				gunichar2* str2 = g_utf8_to_utf16(str, -1, &ir, &iw, nullptr);
 				memcpy(q, str2, (iw+1) * sizeof(unsigned short));
 				g_free(str2);
 
@@ -127,7 +126,7 @@ char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 	{
 		while (*p)
 		{
-			unsigned long msb = *p & 0xff00;
+			const unsigned long msb = *p & 0xff00;
 
 			if (!msb)
 			{
@@ -141,7 +140,6 @@ char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 				}
 				else
 				{
-					gunichar2 *str2;
 					glong ir, iw;
 
 					switch(*p)
@@ -171,7 +169,7 @@ char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 						default: str = ""; break;
 					}
 
-					str2 = g_utf8_to_utf16(str, -1, &ir, &iw, NULL);
+					gunichar2* str2 = g_utf8_to_utf16(str, -1, &ir, &iw, nullptr);
 					memcpy(q, str2, (iw+1) * sizeof(gunichar2));
 					g_free(str2);
 
@@ -211,12 +209,10 @@ char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 
 	// UTF-16 to UTF-8 to GFE encoding
 	{
-		gchar *utf8;
-
-		utf8 = g_utf16_to_utf8(utf16_dst, -1, NULL, NULL, NULL);
+		gchar* utf8 = g_utf16_to_utf8(utf16_dst, -1, nullptr, nullptr, nullptr);
 		g_free(utf16_dst);
 
-		dst = g_filename_from_utf8(utf8, -1, NULL, NULL, NULL);
+		dst = g_filename_from_utf8(utf8, -1, nullptr, nullptr, nullptr);
 		g_free(utf8);
 	}
 
@@ -247,10 +243,10 @@ void TICALL ticonv_gfe_free(char *src)
  **/
 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 {
-	char *src, *p;
-	char *dst, *q;
+	char *src;
+	char *dst;
 
-	if (src_ == NULL)
+	if (src_ == nullptr)
 	{
 		return g_strdup("");
 	}
@@ -260,8 +256,8 @@ char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 	// ticonv_utf16_to_gfe.
 	if (!ticonv_environment_has_utf8_filenames()) return g_strdup(src_);
 
-	p = src = (char *)src_;
-	q = dst = (char *)g_malloc0(18*strlen(src)+1);
+	const char* p = src = (char*)src_;
+	char* q = dst = (char*)g_malloc0(18 * strlen(src) + 1);
 
 	while(*p)
 	{
@@ -335,7 +331,7 @@ int TICALL ticonv_environment_is_utf8(void)
 #ifdef __WIN32__
 	return G_WIN32_HAVE_WIDECHAR_API();
 #else
-	return g_get_charset(NULL);
+	return g_get_charset(nullptr);
 #endif
 }
 
@@ -348,5 +344,5 @@ int TICALL ticonv_environment_is_utf8(void)
  **/
 int TICALL ticonv_environment_has_utf8_filenames(void)
 {
-	return g_get_filename_charsets(NULL);
+	return g_get_filename_charsets(nullptr);
 }

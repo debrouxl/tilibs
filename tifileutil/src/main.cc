@@ -277,9 +277,9 @@ static int tifileutil_dump(int * argc, char *** argv, unsigned int offset)
 	}
 
 	fstat(fileno(infile), &st);
-	length = st.st_size;
+	const unsigned long length = st.st_size;
 
-	lenread = fread(data, sizeof(char), length < sizeof(data) ? length : sizeof(data), infile);
+	const unsigned long lenread = fread(data, sizeof(char), length < sizeof(data) ? length : sizeof(data), infile);
 
 	if (infile != stdin) {
 		fclose(infile);
