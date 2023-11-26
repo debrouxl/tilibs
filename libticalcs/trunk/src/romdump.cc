@@ -62,7 +62,6 @@ static int send_pkt(CalcHandle* handle, uint16_t cmd, uint16_t len, uint8_t* dat
 	int ret = 0;
 	CalcEventData event;
 
-	uint16_t sum;
 	uint8_t * buf = (uint8_t *)handle->buffer;
 
 	// command
@@ -80,7 +79,7 @@ static int send_pkt(CalcHandle* handle, uint16_t cmd, uint16_t len, uint8_t* dat
 	}
 
 	// checksum
-	sum = tifiles_checksum(buf, 4 + len);
+	const uint16_t sum = tifiles_checksum(buf, 4 + len);
 	buf[len+4+0] = LSB(sum);
 	buf[len+4+1] = MSB(sum);
 
@@ -121,8 +120,7 @@ static inline int cmd_is_valid(uint16_t cmd)
 
 static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* data)
 {
-	int i, r, q;
-	uint16_t sum, chksum;
+	int i;
 	int ret = 0;
 	uint8_t * buf = (uint8_t *)handle->buffer;
 	CalcEventData event;
@@ -161,8 +159,8 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 				handle->priv.progress_blk_size = 1;
 			}
 
-			q = *len / handle->priv.progress_blk_size;
-			r = *len % handle->priv.progress_blk_size;
+			const int q = *len / handle->priv.progress_blk_size;
+			const int r = *len % handle->priv.progress_blk_size;
 			handle->updat->cnt1 = 0;
 			handle->updat->max1 = *len;
 
@@ -174,7 +172,7 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 				{
 					goto exit;
 				}
-				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+				ticables_progress_get(handle->cable, nullptr, nullptr, &handle->updat->rate);
 				handle->updat->cnt1 += handle->priv.progress_blk_size;
 				if (*len > handle->priv.progress_min_size)
 				{
@@ -191,7 +189,7 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 				{
 					goto exit;
 				}
-				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+				ticables_progress_get(handle->cable, nullptr, nullptr, &handle->updat->rate);
 				handle->updat->cnt1++;
 				if (*len > handle->priv.progress_min_size)
 				{
@@ -205,8 +203,8 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 			}
 
 			// verify checksum
-			chksum = ((uint16_t)buf[*len+4 + 1] << 8) | buf[*len+4 + 0];
-			sum = tifiles_checksum(buf, *len + 4);
+			const uint16_t chksum = ((uint16_t)buf[*len + 4 + 1] << 8) | buf[*len + 4 + 0];
+			const uint16_t sum = tifiles_checksum(buf, *len + 4);
 			//printf("<%04x %04x>\n", sum, chksum);
 
 			if (chksum != sum)
@@ -236,15 +234,14 @@ exit:
 static int rom_send_RDY(CalcHandle* handle)
 {
 	ticalcs_info(" PC->TI: IS_READY");
-	return send_pkt(handle, CMD_IS_READY, 0, NULL);
+	return send_pkt(handle, CMD_IS_READY, 0, nullptr);
 }
 
 static int rom_recv_RDY(CalcHandle* handle)
 {
 	uint16_t cmd = 0, len = 0;
-	int ret;
 
-	ret = recv_pkt(handle, &cmd, &len, NULL);
+	const int ret = recv_pkt(handle, &cmd, &len, nullptr);
 	ticalcs_info(" TI->PC: %s", ret ? "ERROR" : (cmd ? "OK" : "KO"));
 
 	return ret;
@@ -253,15 +250,14 @@ static int rom_recv_RDY(CalcHandle* handle)
 static int rom_send_EXIT(CalcHandle* handle)
 {
 	ticalcs_info(" PC->TI: EXIT");
-	return send_pkt(handle, CMD_EXIT, 0, NULL);
+	return send_pkt(handle, CMD_EXIT, 0, nullptr);
 }
 
 static int rom_recv_EXIT(CalcHandle* handle)
 {
 	uint16_t cmd = 0, len = 0;
-	int ret;
 
-	ret = recv_pkt(handle, &cmd, &len, NULL);
+	const int ret = recv_pkt(handle, &cmd, &len, nullptr);
 	ticalcs_info(" TI->PC: EXIT");
 
 	return ret;
@@ -270,15 +266,14 @@ static int rom_recv_EXIT(CalcHandle* handle)
 static int rom_send_SIZE(CalcHandle* handle)
 {
 	ticalcs_info(" PC->TI: REQ_SIZE");
-	return send_pkt(handle, CMD_REQ_SIZE, 0, NULL);
+	return send_pkt(handle, CMD_REQ_SIZE, 0, nullptr);
 }
 
 static int rom_recv_SIZE(CalcHandle* handle, uint32_t* size)
 {
 	uint16_t cmd = 0, len = 0;
-	int ret;
 
-	ret = recv_pkt(handle, &cmd, &len, (uint8_t *)size);
+	const int ret = recv_pkt(handle, &cmd, &len, (uint8_t*)size);
 	ticalcs_info(" TI->PC: SIZE (0x%08x bytes)", *size);
 
 	return ret;
@@ -292,10 +287,9 @@ static int rom_send_DATA(CalcHandle* handle, uint32_t addr)
 
 static int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 {
-	uint16_t cmd = 0, rpt;
-	int ret;
+	uint16_t cmd = 0;
 
-	ret = recv_pkt(handle, &cmd, size, data);
+	int ret = recv_pkt(handle, &cmd, size, data);
 	if (!ret)
 	{
 		if (cmd == CMD_DATA1)
@@ -306,7 +300,7 @@ static int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 		else if (cmd == CMD_DATA2)
 		{
 			*size = (((uint16_t)data[1]) << 8) | data[0];
-			rpt = (((uint16_t)data[3]) << 8) | data[2];
+			const uint16_t rpt = (((uint16_t)data[3]) << 8) | data[2];
 			memset(data, rpt, *size);
 			ticalcs_info(" TI->PC: BLOCK WITH REPEATED DATA (0x%04x bytes)", *size);
 			handle->priv.romdump_sav_blk++;
@@ -331,21 +325,18 @@ static int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 
 int TICALL rd_read_dump(CalcHandle* handle, const char *filename)
 {
-	FILE *f;
 	int ret = 0;
 	uint32_t size;
-	uint32_t addr;
 	uint16_t length;
 	uint32_t i;
-	uint8_t * data;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(filename);
 
-	data = (uint8_t *)handle->buffer;
+	uint8_t* data = (uint8_t*)handle->buffer;
 
-	f = fopen(filename, "wb");
-	if (f == NULL)
+	FILE* f = fopen(filename, "wb");
+	if (f == nullptr)
 	{
 		return ERR_OPEN_FILE;
 	}
@@ -381,7 +372,7 @@ int TICALL rd_read_dump(CalcHandle* handle, const char *filename)
 
 	// get packets
 	handle->priv.romdump_std_blk = handle->priv.romdump_sav_blk = 0;
-	for (addr = 0x0000; addr < size; )
+	for (uint32_t addr = 0x0000; addr < size; )
 	{
 		if (ret == ERR_ABORT)
 		{
@@ -475,13 +466,11 @@ exit:
 
 int TICALL rd_is_ready(CalcHandle* handle)
 {
-	int ret;
-
 	VALIDATE_HANDLE(handle);
 
 	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
-	ret = rom_send_RDY(handle);
+	int ret = rom_send_RDY(handle);
 	if (!ret)
 	{
 		ret = rom_recv_RDY(handle);
@@ -494,8 +483,8 @@ int TICALL rd_is_ready(CalcHandle* handle)
 
 int TICALL rd_send_dumper(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *data)
 {
-	char *templatename, *tempfname;
-	int fd, ret;
+	char*tempfname;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(prgname);
@@ -513,8 +502,8 @@ int TICALL rd_send_dumper(CalcHandle *handle, const char *prgname, uint16_t size
 	   the correct suffix or tifiles_file_read_regular will be
 	   confused) */
 
-	templatename = g_strconcat("rdXXXXXX", strrchr(prgname, '.'), NULL);
-	fd = g_file_open_tmp(templatename, &tempfname, NULL);
+	char* templatename = g_strconcat("rdXXXXXX", strrchr(prgname, '.'), NULL);
+	const int fd = g_file_open_tmp(templatename, &tempfname, nullptr);
 	g_free(templatename);
 	if (fd == -1)
 	{
@@ -543,15 +532,13 @@ end:
 
 int TICALL rd_send_dumper2(CalcHandle *handle, const char *filename)
 {
-	int ret;
-
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(filename);
 
 	// busy will be taken adequately by the subroutines.
 
 	// Transfer program to calc, using special internal API, taking busy if it's not taken.
-	ret = ticalcs_calc_send_var2_(handle, MODE_SEND_EXEC_ASM, filename, !handle->busy);
+	const int ret = ticalcs_calc_send_var2_(handle, MODE_SEND_EXEC_ASM, filename, !handle->busy);
 
 	return ret;
 }

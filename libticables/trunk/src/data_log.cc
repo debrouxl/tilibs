@@ -47,10 +47,9 @@
 
 int log_start(CableHandle *h)
 {
-	gchar *tmp;
 	int ret;
 
-	tmp = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, NULL);
+	gchar* tmp = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, NULL);
 	if (!g_mkdir_with_parents(tmp, 0750))
 	{
 		ret = log_hex_start();

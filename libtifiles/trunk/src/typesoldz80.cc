@@ -85,7 +85,7 @@ const TIXX_DATA TI73_CONST[TI73_MAXTYPES + 1] =
 	{"", "73?", "Unknown", N_("Unknown")},
 	{"", "73?", "Unknown", N_("Unknown")},
 	{"", "73?", "Unknown", N_("Unknown")},
-	{NULL, NULL, NULL, NULL}
+	{ nullptr, nullptr, nullptr, nullptr }
 };
 
 const TIXX_DATA TI82_CONST[TI82_MAXTYPES + 1] =
@@ -138,7 +138,7 @@ const TIXX_DATA TI82_CONST[TI82_MAXTYPES + 1] =
 	{"", "82?", "Unknown", N_("Unknown")},
 	{"", "82?", "Unknown", N_("Unknown")},
 	{"", "82?", "Unknown", N_("Unknown")},
-	{NULL, NULL, NULL, NULL}
+	{ nullptr, nullptr, nullptr, nullptr }
 };
 
 const TIXX_DATA TI83_CONST[TI83_MAXTYPES + 1] =
@@ -191,7 +191,7 @@ const TIXX_DATA TI83_CONST[TI83_MAXTYPES + 1] =
 	{"", "83?", "Unknown", N_("Unknown")},
 	{"", "83?", "Unknown", N_("Unknown")},
 	{"", "83?", "Unknown", N_("Unknown")},
-	{NULL, NULL, NULL, NULL}
+	{ nullptr, nullptr, nullptr, nullptr }
 };
 
 const TIXX_DATA TI85_CONST[TI85_MAXTYPES + 1] =
@@ -244,7 +244,7 @@ const TIXX_DATA TI85_CONST[TI85_MAXTYPES + 1] =
 	{"", "85?", "Unknown", N_("Unknown")},
 	{"", "85?", "Unknown", N_("Unknown")},
 	{"", "85?", "Unknown", N_("Unknown")},
-	{NULL, NULL, NULL, NULL},
+	{ nullptr, nullptr, nullptr, nullptr },
 };
 
 const TIXX_DATA TI86_CONST[TI86_MAXTYPES + 1] =
@@ -297,7 +297,7 @@ const TIXX_DATA TI86_CONST[TI86_MAXTYPES + 1] =
 	{"", "86?", "Unknown", N_("Unknown")},
 	{"", "86?", "Unknown", N_("Unknown")},
 	{"", "86?", "Unknown", N_("Unknown")},
-	{NULL, NULL, NULL, NULL},
+	{ nullptr, nullptr, nullptr, nullptr },
 };
 
 #endif

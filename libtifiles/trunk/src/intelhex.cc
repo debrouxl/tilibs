@@ -79,12 +79,8 @@ static uint8_t read_byte(FILE * f)
 */
 static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type, uint8_t *data)
 {
-	int c, i;
-	uint8_t sum, checksum;
-	uint16_t localaddr;
-
-	sum = 0;
-	c = fgetc(f);
+	uint8_t sum = 0;
+	int c = fgetc(f);
 	if (c != ':')
 	{
 		printf("Unexpected char: <%c> = %02X\n", c, c);
@@ -92,7 +88,7 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
 	}
 
 	*size = read_byte(f);
-	localaddr = ((uint16_t)(read_byte(f))) << 8;
+	uint16_t localaddr = ((uint16_t)(read_byte(f))) << 8;
 	localaddr |= read_byte(f);
 	*addr = localaddr;
 	*type = read_byte(f);
@@ -104,13 +100,13 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
 
 	sum = *size + MSB(*addr) + LSB(*addr) + *type;
 
-	for (i = 0; i < *size; i++) 
+	for (int i = 0; i < *size; i++) 
 	{
 		data[i] = read_byte(f);
 		sum += data[i];
 	}
 
-	checksum = read_byte(f); // verify checksum of block
+	const uint8_t checksum = read_byte(f); // verify checksum of block
 	if (LSB(sum + checksum))
 	{
 		return -3;
@@ -189,17 +185,16 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 	static int flag = 0x80;
 	static uint16_t flash_page;
 	static uint16_t flash_addr;
-	int i;
 	int new_page = 0;
 
 	// reset condition
-	if (f == NULL)
+	if (f == nullptr)
 	{
 		flag = 0x80;
 		flash_page = flash_addr = 0;
 		return 0;
 	}
-	if (size == NULL || addr == NULL || type == NULL || data == NULL || page == NULL)
+	if (size == nullptr || addr == nullptr || type == nullptr || data == nullptr || page == nullptr)
 	{
 		return -1;
 	}
@@ -213,15 +208,14 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 	*size = 0;
 
 	// load data
-	for (i = 0; i < BLK_MAX; )
+	for (int i = 0; i < BLK_MAX; )
 	{
-		int ret;
 		uint8_t pkt_size, pkt_type;
 		uint8_t pkt_data[PKT_MAX];
 		uint16_t pkt_addr;
 
 		// read packet
-		ret = hex_packet_read(f, &pkt_size, &pkt_addr, &pkt_type, pkt_data);
+		const int ret = hex_packet_read(f, &pkt_size, &pkt_addr, &pkt_type, pkt_data);
 		if(ret < 0)
 		{
 			return ret; // THIS RETURNS !
@@ -301,10 +295,8 @@ static int write_byte(uint8_t b, FILE * f)
 */
 static int hex_packet_write(FILE *f, uint8_t size, uint16_t addr, uint8_t type_, uint8_t *data)
 {
-	int i;
-	int sum;
 	int num = 0;
-	uint8_t type = (type_ == HEX_EOF ? HEX_END : type_);
+	const uint8_t type = (type_ == HEX_EOF ? HEX_END : type_);
 
 	fputc(':', f); num++;
 	num += write_byte((uint8_t)size, f);
@@ -312,8 +304,8 @@ static int hex_packet_write(FILE *f, uint8_t size, uint16_t addr, uint8_t type_,
 	num += write_byte(LSB(addr), f);
 	num += write_byte(type, f);
 
-	sum = size + MSB(addr) + LSB(addr) + type;
-	for (i = 0; i < size; i++) 
+	int sum = size + MSB(addr) + LSB(addr) + type;
+	for (int i = 0; i < size; i++) 
 	{
 		num += write_byte(data[i], f);
 		sum += data[i];
@@ -348,14 +340,13 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 {
 	int bytes_written = 0;
 	static int old_flag = 0x80;
-	int n, m;
 	uint8_t buf[PKT_MAX];
 	int new_section = 0;
 
 	// write end block
 	if(!size && !addr && !type && !data && !page)
 	{
-		return hex_packet_write(f, 0, 0x0000, HEX_EOF, NULL);
+		return hex_packet_write(f, 0, 0x0000, HEX_EOF, nullptr);
 	}
 
 	// new section (FLASH OS only)
@@ -367,7 +358,7 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 	if(old_flag != type)
 	{
 		old_flag = type;
-		bytes_written += hex_packet_write(f, 0, 0x0000, HEX_END, NULL);
+		bytes_written += hex_packet_write(f, 0, 0x0000, HEX_END, nullptr);
 	}
 
 	// write page
@@ -386,7 +377,7 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 	// write a block (=page)
 	while (size > 0 || extra_bytes > 0)
 	{
-		n = (size > PKT_MAX ? PKT_MAX : size);
+		const int n = (size > PKT_MAX ? PKT_MAX : size);
 		if (n > 0)
 		{
 			memcpy(buf, data, n);
@@ -394,7 +385,7 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 			data += n;
 		}
 
-		m = (extra_bytes > PKT_MAX - n ? PKT_MAX - n : extra_bytes);
+		const int m = (extra_bytes > PKT_MAX - n ? PKT_MAX - n : extra_bytes);
 		if (m > 0)
 		{
 			memset(buf + n, 0xff, m);

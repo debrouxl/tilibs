@@ -159,7 +159,7 @@ static char *detokenize_vartype(CalcModel model, const char *src, unsigned char 
 		break;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 // beware: raw varname is not always NUL-terminated
@@ -529,7 +529,7 @@ char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigne
 {
 	char *dst;
 
-	if (src == NULL)
+	if (src == nullptr)
 	{
 		return g_strdup("________");
 	}
@@ -619,9 +619,9 @@ char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_, unsigned
 {
 	const unsigned char *src = (const unsigned char *)src_;
 
-	if (src == NULL)
+	if (src == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	switch(model)
@@ -826,9 +826,9 @@ char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_, unsigned
  **/
 char* TICALL ticonv_varname_strdup(char * varname)
 {
-	if (NULL == varname)
+	if (nullptr == varname)
 	{
-		return NULL;
+		return nullptr;
 	}
 	return g_strdup(varname);
 }

@@ -134,11 +134,11 @@ extern const CableFncts cable_nul =
 	N_("Dummy link used when no cable is set"),
 	0,
 	&noop_prepare,
-	&noop_open, &noop_close, &noop_reset, &noop_probe, NULL,
+	&noop_open, &noop_close, &noop_reset, &noop_probe, nullptr,
 	&noop_put, &noop_get, &noop_check,
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
-	NULL, NULL,
+	nullptr, nullptr,
 	&noop_get_device_info,
 	&noop_set_extra_options, &noop_get_extra_options
 };
@@ -151,11 +151,11 @@ extern const CableFncts cable_nul =
 	N_("Internal Link Port cable for TiEmu (internal use)"),
 	!0,
 	&noop_prepare,
-	&noop_open, &noop_close, &noop_reset, &noop_probe, NULL,
+	&noop_open, &noop_close, &noop_reset, &noop_probe, nullptr,
 	&noop_put, &noop_get, &noop_check,
 	&noop_set_red_wire, &noop_set_white_wire,
 	&noop_get_red_wire, &noop_get_white_wire,
-	NULL, NULL,
+	nullptr, nullptr,
 	&noop_get_device_info,
 	&noop_set_extra_options, &noop_get_extra_options
 };

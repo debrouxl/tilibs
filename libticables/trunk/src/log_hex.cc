@@ -34,8 +34,8 @@
 #include "data_log.h"
 #include "log_hex.h"
 
-static char *ofn = NULL;
-static FILE *logfile = NULL;
+static char *ofn = nullptr;
+static FILE *logfile = nullptr;
 
 int log_hex_start(void)
 {
@@ -44,7 +44,7 @@ int log_hex_start(void)
 	ofn = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, G_DIR_SEPARATOR_S, HEX_FILE, NULL);
 
 	logfile = fopen(ofn, "wt");
-	if (logfile != NULL)
+	if (logfile != nullptr)
 	{
 		fprintf(logfile, "TiCables-2 data logger\n");	// needed by log_dbus.c
 		fprintf(logfile, "Version %s\n", ticables_version_get());
@@ -65,7 +65,7 @@ int log_hex_1(int dir, uint8_t data)
 	static int array[20];
 	static int i = 0;
 
-	if (logfile == NULL)
+	if (logfile == nullptr)
 	{
 		return 1;
 	}
@@ -75,12 +75,10 @@ int log_hex_1(int dir, uint8_t data)
 
 	if ((i != 0) && !(i % 16))
 	{
-		int j;
-		int c;
 		fprintf(logfile, "| ");
-		for (j = 0; j < 16; j++) 
+		for (int j = 0; j < 16; j++) 
 		{
-			c = array[j];
+			const int c = array[j];
 			if ((c < 32) || (c > 127))
 			{
 				fprintf(logfile, " ");
@@ -111,14 +109,14 @@ int log_hex_N(int dir, const uint8_t * data, uint32_t len)
 
 int log_hex_stop(void)
 {
-	if (logfile != NULL)
+	if (logfile != nullptr)
 	{
 		fclose(logfile);
-		logfile = NULL;
+		logfile = nullptr;
 	}
 
 	g_free(ofn);
-	ofn = NULL;
+	ofn = nullptr;
 
 	return 0;
 }
