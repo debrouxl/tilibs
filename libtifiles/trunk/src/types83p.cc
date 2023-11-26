@@ -80,7 +80,7 @@ const TI83p_DATA TI83p_CONST[TI83p_MAXTYPES + 1] =
 	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")}, // 45, 0x2D
 	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
 	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
-	{NULL,     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,           NULL}
+	{ nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
 };
 
 #endif

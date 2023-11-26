@@ -48,18 +48,18 @@
 
 NSPVirtualPacket* TICALL nsp_vtl_pkt_new(CalcHandle * handle)
 {
-	return nsp_vtl_pkt_new_ex(handle, 0, 0, 0, 0, 0, 0, NULL);
+	return nsp_vtl_pkt_new_ex(handle, 0, 0, 0, 0, 0, 0, nullptr);
 }
 
 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data)
 {
-	NSPVirtualPacket* vtl = NULL;
+	NSPVirtualPacket* vtl = nullptr;
 
 	if (ticalcs_validate_handle(handle))
 	{
 		vtl = (NSPVirtualPacket *)g_malloc0(sizeof(NSPVirtualPacket));
 
-		if (NULL != vtl)
+		if (nullptr != vtl)
 		{
 			//GList * vtl_pkt_list;
 
@@ -79,7 +79,7 @@ NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(CalcHandle * handle, uint32_t size, 
 
 void TICALL nsp_vtl_pkt_fill(NSPVirtualPacket* vtl, uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port, uint8_t cmd, uint8_t * data)
 {
-	if (vtl != NULL)
+	if (vtl != nullptr)
 	{
 		vtl->src_addr = src_addr;
 		vtl->src_port = src_port;
@@ -105,7 +105,7 @@ void TICALL nsp_vtl_pkt_del(CalcHandle *handle, NSPVirtualPacket* vtl)
 		return;
 	}
 
-	if (vtl == NULL)
+	if (vtl == nullptr)
 	{
 		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
 		return;
@@ -133,12 +133,12 @@ NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(CalcHandle * handle, NSPVirtu
 	{
 		return nullptr;
 	}
-	if (vtl != NULL)
+	if (vtl != nullptr)
 	{
 		if (size + 1 > size)
 		{
 			uint8_t * data = (uint8_t *)g_realloc(vtl->data, size + 1);
-			if (NULL != data)
+			if (nullptr != data)
 			{
 				if (size > vtl->size)
 				{
@@ -150,12 +150,12 @@ NSPVirtualPacket * TICALL nsp_vtl_pkt_realloc_data(CalcHandle * handle, NSPVirtu
 			}
 			else
 			{
-				return NULL;
+				return nullptr;
 			}
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -186,15 +186,13 @@ int TICALL nsp_session_open(CalcHandle *handle, uint16_t port)
 
 int TICALL nsp_session_close(CalcHandle *handle)
 {
-	int ret;
-
 	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  closed session from port #%04x to port #%04x:", handle->priv.nsp_src_port, handle->priv.nsp_dst_port);
 
 	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
-	ret = nsp_send_disconnect(handle);
+	int ret = nsp_send_disconnect(handle);
 	if (!ret)
 	{
 		ret = nsp_recv_ack(handle);
@@ -214,7 +212,6 @@ int TICALL nsp_session_close(CalcHandle *handle)
 int TICALL nsp_addr_request(CalcHandle *handle)
 {
 	NSPRawPacket pkt;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 
@@ -223,7 +220,7 @@ int TICALL nsp_addr_request(CalcHandle *handle)
 	memset(&pkt, 0, sizeof(pkt));
 
 	// Reset connection so that device send an address request packet
-	ret = handle->cable->cable->reset(handle->cable);
+	int ret = handle->cable->cable->reset(handle->cable);
 	if (!ret)
 	{
 		handle->priv.nsp_seq_pc = 1;
@@ -326,7 +323,6 @@ int TICALL nsp_send_nack_ex(CalcHandle* handle, uint16_t port)
 int TICALL nsp_recv_ack(CalcHandle *handle)
 {
 	NSPRawPacket pkt;
-	uint16_t addr;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
@@ -353,7 +349,7 @@ int TICALL nsp_recv_ack(CalcHandle *handle)
 
 		if (pkt.data_size >= 2)
 		{
-			addr = (((uint16_t)pkt.data[0]) << 8) | pkt.data[1];
+			const uint16_t addr = (((uint16_t)pkt.data[0]) << 8) | pkt.data[1];
 			if (addr != handle->priv.nsp_dst_port)
 			{
 				ticalcs_info("XXX weird addr\n");
@@ -403,8 +399,6 @@ int TICALL nsp_send_disconnect(CalcHandle *handle)
 int TICALL nsp_recv_disconnect(CalcHandle *handle)
 {
 	NSPRawPacket pkt;
-	uint16_t addr;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
 
@@ -414,7 +408,7 @@ int TICALL nsp_recv_disconnect(CalcHandle *handle)
 
 	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
-	ret = nsp_recv(handle, &pkt);
+	int ret = nsp_recv(handle, &pkt);
 	if (!ret)
 	{
 
@@ -426,7 +420,7 @@ int TICALL nsp_recv_disconnect(CalcHandle *handle)
 		{
 			// nasty hacks
 			handle->priv.nsp_dst_port = (((uint16_t)pkt.data[0]) << 8) | pkt.data[1];
-			addr = pkt.dst_port;
+			const uint16_t addr = pkt.dst_port;
 
 			ticalcs_info("  sending ack:");
 
@@ -456,7 +450,6 @@ int TICALL nsp_recv_disconnect(CalcHandle *handle)
 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 {
 	NSPRawPacket raw;
-	int i, r, q;
 	long offset = 0;
 	int ret = 0;
 	CalcEventData event;
@@ -482,10 +475,10 @@ int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 		raw.dst_addr = vtl->dst_addr;
 		raw.dst_port = vtl->dst_port;
 
-		q = (vtl->size - offset) / (NSP_DATA_SIZE-1);
-		r = (vtl->size - offset) % (NSP_DATA_SIZE-1);
+		const int q = (vtl->size - offset) / (NSP_DATA_SIZE - 1);
+		const int r = (vtl->size - offset) % (NSP_DATA_SIZE - 1);
 
-		for (i = 1; i <= q; i++)
+		for (int i = 1; i <= q; i++)
 		{
 			raw.data_size = NSP_DATA_SIZE;
 			raw.data[0] = vtl->cmd;
@@ -550,7 +543,6 @@ int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 {
 	NSPRawPacket raw;
 	long offset = 0;
-	uint32_t size;
 	int ret = 0;
 	CalcEventData event;
 
@@ -560,14 +552,14 @@ int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 	SET_HANDLE_BUSY_IF_NECESSARY(handle);
 
 	ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_RECV_NSP_VPKT, /* retval */ 0, /* operation */ CALC_FNCT_LAST);
-	ticalcs_event_fill_nsp_vpkt(&event, /* src_addr */ 0, /* src_port */ 0, /* dst_addr */ 0, /* dst_port */ 0, /* cmd */ 0, /* size */ 0, /* data */ NULL);
+	ticalcs_event_fill_nsp_vpkt(&event, /* src_addr */ 0, /* src_port */ 0, /* dst_addr */ 0, /* dst_port */ 0, /* cmd */ 0, /* size */ 0, /* data */ nullptr);
 	ret = ticalcs_event_send(handle, &event);
 
 	if (!ret)
 	{
 		memset(&raw, 0, sizeof(raw));
 
-		size = vtl->size;
+		const uint32_t size = vtl->size;
 		vtl->size = 0;
 		vtl->data = (uint8_t *)g_malloc(NSP_DATA_SIZE);
 

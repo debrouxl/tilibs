@@ -122,7 +122,7 @@ int TICALL ticables_cable_close(CableHandle* handle)
 			}
 			handle->open = 0;
 			free(handle->device);
-			handle->device = NULL;
+			handle->device = nullptr;
 		}
 	}
 
@@ -184,7 +184,6 @@ int TICALL ticables_cable_reset(CableHandle* handle)
  **/
 int TICALL ticables_cable_probe(CableHandle* handle, int* result)
 {
-	int opened;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
@@ -192,7 +191,7 @@ int TICALL ticables_cable_probe(CableHandle* handle, int* result)
 	const CableFncts * cable = handle->cable;
 	VALIDATE_CABLEFNCTS(cable);
 
-	opened = handle->open;
+	const int opened = handle->open;
 
 	// Check if device is already opened
 	if (!opened && cable->need_open)
@@ -223,7 +222,7 @@ int TICALL ticables_cable_probe(CableHandle* handle, int* result)
 				ret = cable->probe(handle);
 			}
 			ret = ticables_event_send_simple_generic(handle, /* type */ CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ CABLE_FNCT_PROBE);
-			if (result != NULL)
+			if (result != nullptr)
 			{
 				*result = !ret;
 			}
@@ -239,8 +238,8 @@ int TICALL ticables_cable_probe(CableHandle* handle, int* result)
 			}
 			else if (!opened && !cable->need_open)
 			{
-				free(handle->device); handle->device = NULL;
-				free(handle->priv2); handle->priv2 = NULL;
+				free(handle->device); handle->device = nullptr;
+				free(handle->priv2); handle->priv2 = nullptr;
 			}
 		}
 	}
@@ -290,7 +289,7 @@ int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint32_t len)
 	if (!ret)
 	{
 		handle->busy = 1;
-		if (data != NULL)
+		if (data != nullptr)
 		{
 			handle->rate.count += len;
 			if (cable->send)
@@ -356,7 +355,7 @@ int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint32_t len)
 	if (!ret)
 	{
 		handle->busy = 1;
-		if (data != NULL)
+		if (data != nullptr)
 		{
 			handle->rate.count += len;
 			if (cable->recv)
@@ -409,7 +408,7 @@ int TICALL ticables_cable_check(CableHandle* handle, CableStatus *status)
 	RETURN_IF_HANDLE_BUSY(handle);
 
 	handle->busy = 1;
-	if (status != NULL)
+	if (status != nullptr)
 	{
 		if (cable->check)
 		{
@@ -879,7 +878,7 @@ ticables_pre_send_hook_type TICALL ticables_cable_get_pre_send_hook(CableHandle 
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -894,7 +893,7 @@ ticables_pre_send_hook_type TICALL ticables_cable_set_pre_send_hook(CableHandle 
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -908,7 +907,7 @@ ticables_post_send_hook_type TICALL ticables_cable_get_post_send_hook(CableHandl
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -923,7 +922,7 @@ ticables_post_send_hook_type TICALL ticables_cable_set_post_send_hook(CableHandl
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -937,7 +936,7 @@ ticables_pre_recv_hook_type TICALL ticables_cable_get_pre_recv_hook(CableHandle 
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -952,7 +951,7 @@ ticables_pre_recv_hook_type TICALL ticables_cable_set_pre_recv_hook(CableHandle 
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -966,7 +965,7 @@ ticables_post_recv_hook_type TICALL ticables_cable_get_post_recv_hook(CableHandl
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -981,7 +980,7 @@ ticables_post_recv_hook_type TICALL ticables_cable_set_post_recv_hook(CableHandl
 {
 	ticables_critical("%s: deprecated function, does nothing anymore", __FUNCTION__);
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -996,7 +995,7 @@ ticables_event_hook_type TICALL ticables_cable_get_event_hook(CableHandle *handl
 	if (!ticables_validate_handle(handle))
 	{
 		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
 	return handle->event_hook;
@@ -1012,15 +1011,13 @@ ticables_event_hook_type TICALL ticables_cable_get_event_hook(CableHandle *handl
  */
 ticables_event_hook_type TICALL ticables_cable_set_event_hook(CableHandle *handle, ticables_event_hook_type hook)
 {
-	ticables_event_hook_type old_hook;
-
 	if (!ticables_validate_handle(handle))
 	{
 		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
-	old_hook = handle->event_hook;
+	const ticables_event_hook_type old_hook = handle->event_hook;
 	handle->event_hook = hook;
 
 	return old_hook;
@@ -1038,7 +1035,7 @@ void * ticables_cable_get_event_user_pointer(CableHandle *handle)
 	if (!ticables_validate_handle(handle))
 	{
 		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
 	return handle->user_pointer;
@@ -1054,15 +1051,13 @@ void * ticables_cable_get_event_user_pointer(CableHandle *handle)
  */
 void * ticables_cable_set_event_user_pointer(CableHandle *handle, void * user_pointer)
 {
-	void * old_pointer;
-
 	if (!ticables_validate_handle(handle))
 	{
 		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 
-	old_pointer = handle->user_pointer;
+	void* old_pointer = handle->user_pointer;
 	handle->user_pointer = user_pointer;
 
 	return old_pointer;

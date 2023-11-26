@@ -114,14 +114,12 @@ static const DUSBCmdParamInfo param_types[] =
 	{ DUSB_PID_STOPWATCH_VALUE1, "Stopwatch value 1" }, // 0x005B
 	{ DUSB_PID_STOPWATCH_VALUE2, "Stopwatch value 2" }, // 0x005C
 	{ DUSB_PID_PYTHON_ON_BOARD, "Python On Board" }, // 0x005D
-	{ 0xFFFF, NULL}
+	{ 0xFFFF, nullptr }
 };
 
 const char* TICALL dusb_cmd_param_type2name(uint16_t id)
 {
-	const DUSBCmdParamInfo *p;
-
-	for (p = param_types; p->name != NULL; p++)
+	for (const DUSBCmdParamInfo* p = param_types; p->name != nullptr; p++)
 	{
 		if (p->id == id)
 		{
@@ -141,13 +139,13 @@ DUSBCalcParam* TICALL dusb_cp_new(CalcHandle * handle, uint16_t id, uint16_t siz
 
 DUSBCalcParam* TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data)
 {
-	DUSBCalcParam* cp = NULL;
+	DUSBCalcParam* cp = nullptr;
 
 	if (ticalcs_validate_handle(handle))
 	{
 		cp = (DUSBCalcParam *)g_malloc0(sizeof(DUSBCalcParam));
 
-		if (NULL != cp)
+		if (nullptr != cp)
 		{
 			//GList * cpca_list;
 
@@ -169,7 +167,7 @@ DUSBCalcParam* TICALL dusb_cp_new_ex(CalcHandle * handle, uint16_t id, uint16_t 
 
 void TICALL dusb_cp_fill(DUSBCalcParam * cp, uint16_t id, uint16_t size, uint8_t * data)
 {
-	if (cp != NULL)
+	if (cp != nullptr)
 	{
 		cp->id = id;
 		cp->ok = 0;
@@ -192,7 +190,7 @@ void TICALL dusb_cp_del(CalcHandle * handle, DUSBCalcParam* cp)
 		return;
 	}
 
-	if (cp == NULL)
+	if (cp == nullptr)
 	{
 		ticalcs_critical("%s: cp is NULL", __FUNCTION__);
 		return;
@@ -207,7 +205,7 @@ void TICALL dusb_cp_del(CalcHandle * handle, DUSBCalcParam* cp)
 
 DUSBCalcParam ** TICALL dusb_cp_new_array(CalcHandle * handle, unsigned int size)
 {
-	DUSBCalcParam ** array = NULL;
+	DUSBCalcParam ** array = nullptr;
 
 	if (ticalcs_validate_handle(handle))
 	{
@@ -223,7 +221,7 @@ DUSBCalcParam ** TICALL dusb_cp_new_array(CalcHandle * handle, unsigned int size
 
 DUSBCalcParam * TICALL dusb_cp_new_array2(CalcHandle * handle, unsigned int size)
 {
-	DUSBCalcParam * array = NULL;
+	DUSBCalcParam * array = nullptr;
 
 	if (ticalcs_validate_handle(handle))
 	{
@@ -239,21 +237,19 @@ DUSBCalcParam * TICALL dusb_cp_new_array2(CalcHandle * handle, unsigned int size
 
 void TICALL dusb_cp_del_array(CalcHandle * handle, DUSBCalcParam **params, unsigned int size)
 {
-	unsigned int i;
-
 	if (!ticalcs_validate_handle(handle))
 	{
 		ticalcs_critical("%s: handle is invalid", __FUNCTION__);
 		return;
 	}
 
-	if (params == NULL)
+	if (params == nullptr)
 	{
 		ticalcs_critical("%s: params is NULL", __FUNCTION__);
 		return;
 	}
 
-	for (i = 0; i < size && params[i]; i++)
+	for (unsigned int i = 0; i < size && params[i]; i++)
 	{
 		dusb_cp_del(handle, params[i]);
 	}
@@ -262,21 +258,19 @@ void TICALL dusb_cp_del_array(CalcHandle * handle, DUSBCalcParam **params, unsig
 
 void TICALL dusb_cp_del_array2(CalcHandle * handle, DUSBCalcParam *params, unsigned int size, int is_allocated)
 {
-	unsigned int i;
-
 	if (!ticalcs_validate_handle(handle))
 	{
 		ticalcs_critical("%s: handle is invalid", __FUNCTION__);
 		return;
 	}
 
-	if (params == NULL)
+	if (params == nullptr)
 	{
 		ticalcs_critical("%s: params is NULL", __FUNCTION__);
 		return;
 	}
 
-	for (i = 0; i < size; i++)
+	for (unsigned int i = 0; i < size; i++)
 	{
 		g_free(params[i].data);
 	}
@@ -301,10 +295,10 @@ DUSBCalcParam * TICALL dusb_cp_realloc_data(CalcHandle * handle, DUSBCalcParam *
 	{
 		return nullptr;
 	}
-	if (cp != NULL)
+	if (cp != nullptr)
 	{
 		uint8_t * data = (uint8_t *)g_realloc(cp->data, size);
-		if (NULL != data)
+		if (nullptr != data)
 		{
 			if (size > cp->size)
 			{
@@ -314,7 +308,7 @@ DUSBCalcParam * TICALL dusb_cp_realloc_data(CalcHandle * handle, DUSBCalcParam *
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -337,7 +331,7 @@ void TICALL dusb_cp_free_array_data(CalcHandle * handle, DUSBCalcParam * cp, uns
 		return;
 	}
 
-	if (cp == NULL)
+	if (cp == nullptr)
 	{
 		ticalcs_critical("%s: cp is NULL", __FUNCTION__);
 		return;
@@ -358,13 +352,13 @@ DUSBCalcAttr* TICALL dusb_ca_new(CalcHandle * handle, uint16_t id, uint16_t size
 
 DUSBCalcAttr* TICALL dusb_ca_new_ex(CalcHandle * handle, uint16_t id, uint16_t size, uint8_t * data)
 {
-	DUSBCalcAttr* ca = NULL;
+	DUSBCalcAttr* ca = nullptr;
 
 	if (ticalcs_validate_handle(handle))
 	{
 		ca = (DUSBCalcAttr *)g_malloc0(sizeof(DUSBCalcAttr));
 
-		if (NULL != ca)
+		if (nullptr != ca)
 		{
 			//GList * cpca_list;
 
@@ -386,7 +380,7 @@ DUSBCalcAttr* TICALL dusb_ca_new_ex(CalcHandle * handle, uint16_t id, uint16_t s
 
 void TICALL dusb_ca_fill(DUSBCalcAttr * ca, uint16_t id, uint16_t size, uint8_t * data)
 {
-	if (ca != NULL)
+	if (ca != nullptr)
 	{
 		ca->id = id;
 		ca->ok = 0;
@@ -409,7 +403,7 @@ void TICALL dusb_ca_del(CalcHandle * handle, DUSBCalcAttr* ca)
 		return;
 	}
 
-	if (ca == NULL)
+	if (ca == nullptr)
 	{
 		ticalcs_critical("%s: ca is NULL", __FUNCTION__);
 		return;
@@ -424,7 +418,7 @@ void TICALL dusb_ca_del(CalcHandle * handle, DUSBCalcAttr* ca)
 
 DUSBCalcAttr ** TICALL dusb_ca_new_array(CalcHandle * handle, unsigned int size)
 {
-	DUSBCalcAttr ** array = NULL;
+	DUSBCalcAttr ** array = nullptr;
 
 	if (ticalcs_validate_handle(handle))
 	{
@@ -440,7 +434,7 @@ DUSBCalcAttr ** TICALL dusb_ca_new_array(CalcHandle * handle, unsigned int size)
 
 DUSBCalcAttr * TICALL dusb_ca_new_array2(CalcHandle * handle, unsigned int size)
 {
-	DUSBCalcAttr * array = NULL;
+	DUSBCalcAttr * array = nullptr;
 
 	if (ticalcs_validate_handle(handle))
 	{
@@ -456,21 +450,19 @@ DUSBCalcAttr * TICALL dusb_ca_new_array2(CalcHandle * handle, unsigned int size)
 
 void TICALL dusb_ca_del_array(CalcHandle * handle, DUSBCalcAttr **attrs, unsigned int size)
 {
-	unsigned int i;
-
 	if (!ticalcs_validate_handle(handle))
 	{
 		ticalcs_critical("%s: handle is invalid", __FUNCTION__);
 		return;
 	}
 
-	if (attrs == NULL)
+	if (attrs == nullptr)
 	{
 		ticalcs_critical("%s: attrs is NULL", __FUNCTION__);
 		return;
 	}
 
-	for (i = 0; i < size && attrs[i]; i++)
+	for (unsigned int i = 0; i < size && attrs[i]; i++)
 	{
 		dusb_ca_del(handle, attrs[i]);
 	}
@@ -479,21 +471,19 @@ void TICALL dusb_ca_del_array(CalcHandle * handle, DUSBCalcAttr **attrs, unsigne
 
 void TICALL dusb_ca_del_array2(CalcHandle * handle, DUSBCalcAttr *attrs, unsigned int size, int is_allocated)
 {
-	unsigned int i;
-
 	if (!ticalcs_validate_handle(handle))
 	{
 		ticalcs_critical("%s: handle is invalid", __FUNCTION__);
 		return;
 	}
 
-	if (attrs == NULL)
+	if (attrs == nullptr)
 	{
 		ticalcs_critical("%s: attrs is NULL", __FUNCTION__);
 		return;
 	}
 
-	for (i = 0; i < size; i++)
+	for (unsigned int i = 0; i < size; i++)
 	{
 		g_free(attrs[i].data);
 	}
@@ -518,10 +508,10 @@ DUSBCalcAttr * TICALL dusb_ca_realloc_data(CalcHandle * handle, DUSBCalcAttr* ca
 	{
 		return nullptr;
 	}
-	if (ca != NULL)
+	if (ca != nullptr)
 	{
 		uint8_t * data = (uint8_t *)g_realloc(ca->data, size);
-		if (NULL != data)
+		if (nullptr != data)
 		{
 			if (size > ca->size)
 			{
@@ -531,7 +521,7 @@ DUSBCalcAttr * TICALL dusb_ca_realloc_data(CalcHandle * handle, DUSBCalcAttr* ca
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -554,7 +544,7 @@ void TICALL dusb_ca_free_array_data(CalcHandle * handle, DUSBCalcAttr * ca, unsi
 		return;
 	}
 
-	if (ca == NULL)
+	if (ca == nullptr)
 	{
 		ticalcs_critical("%s: ca is NULL", __FUNCTION__);
 		return;
@@ -605,9 +595,7 @@ static const uint16_t usb_errors[] = {
 
 static int err_code(uint16_t code)
 {
-	unsigned int i;
-
-	for (i = 0; i < sizeof(usb_errors) / sizeof(usb_errors[0]); i++)
+	for (unsigned int i = 0; i < sizeof(usb_errors) / sizeof(usb_errors[0]); i++)
 	{
 		if (usb_errors[i] == code)
 		{
@@ -648,7 +636,7 @@ int dusb_check_cmd_data(CalcModel model, const uint8_t * data, uint32_t len, uin
 		{
 			if (len >= 2U)
 			{
-				uint16_t npids = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+				const uint16_t npids = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
 				if (len == 2U + npids * 2)
 				{
 					ret = 0;
@@ -663,21 +651,20 @@ int dusb_check_cmd_data(CalcModel model, const uint8_t * data, uint32_t len, uin
 		{
 			if (len >= 2U)
 			{
-				uint16_t nparams = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+				const uint16_t nparams = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
 				data += 2;
 				if (len >= 2U + 3 * nparams)
 				{
-					uint16_t i;
 					uint32_t additional_size = 0;
 					int overrun = 0;
 
-					for (i = 0; i < nparams; i++)
+					for (uint16_t i = 0; i < nparams; i++)
 					{
-						uint8_t ok = !(data[2]);
+						const uint8_t ok = !(data[2]);
 						data += 3;
 						if (ok)
 						{
-							uint16_t size = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+							const uint16_t size = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
 							data += size + 2;
 							additional_size += size + 2;
 						}
@@ -704,7 +691,7 @@ int dusb_check_cmd_data(CalcModel model, const uint8_t * data, uint32_t len, uin
 		{
 			if (len > 4U)
 			{
-				uint16_t size = (((uint16_t)(data[2])) << 8) | ((uint16_t)(data[3]));
+				const uint16_t size = (((uint16_t)(data[2])) << 8) | ((uint16_t)(data[3]));
 				if (len == 4U + size)
 				{
 					ret = 0;
@@ -808,7 +795,7 @@ int dusb_check_cmd_data(CalcModel model, const uint8_t * data, uint32_t len, uin
 
 int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32_t len, uint32_t vtl_size, uint16_t vtl_type)
 {
-	int ret = dusb_check_cmd_data(model, data, len, vtl_size, vtl_type);
+	const int ret = dusb_check_cmd_data(model, data, len, vtl_size, vtl_type);
 	(void)vtl_size;
 
 	if (ret)
@@ -820,27 +807,26 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 	{
 		case DUSB_VPKT_PING:
 		{
-			uint16_t arg1 = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
-			uint16_t arg2 = (((uint16_t)(data[2])) << 8) | ((uint16_t)(data[3]));
-			uint16_t arg3 = (((uint16_t)(data[4])) << 8) | ((uint16_t)(data[5]));
-			uint16_t arg4 = (((uint16_t)(data[6])) << 8) | ((uint16_t)(data[7]));
-			uint16_t arg5 = (((uint16_t)(data[8])) << 8) | ((uint16_t)(data[9]));
+			const uint16_t arg1 = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+			const uint16_t arg2 = (((uint16_t)(data[2])) << 8) | ((uint16_t)(data[3]));
+			const uint16_t arg3 = (((uint16_t)(data[4])) << 8) | ((uint16_t)(data[5]));
+			const uint16_t arg4 = (((uint16_t)(data[6])) << 8) | ((uint16_t)(data[7]));
+			const uint16_t arg5 = (((uint16_t)(data[8])) << 8) | ((uint16_t)(data[9]));
 			fprintf(f, "Set mode: { %u, %u, %u, %u, 0x%04X }\n", arg1, arg2, arg3, arg4, arg5);
 		}
 		break;
 
 		case DUSB_VPKT_PARM_REQ:
 		{
-			uint16_t npids = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
-			uint16_t i;
+			const uint16_t npids = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
 
 			if (len == 2U + npids * 2)
 			{
 				data += 2;
 				fprintf(f, "Requested %u (%X) parameter IDs:\n", npids, npids);
-				for (i = 0; i < npids; i++)
+				for (uint16_t i = 0; i < npids; i++)
 				{
-					uint16_t pid = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+					const uint16_t pid = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
 					data += 2;
 					fprintf(f, "\t%04X (%s)\n", pid, dusb_cmd_param_type2name(pid));
 				}
@@ -851,25 +837,22 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 
 		case DUSB_VPKT_PARM_DATA:
 		{
-			uint16_t nparams = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
-			uint16_t i;
+			const uint16_t nparams = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
 			uint32_t additional_size = 0;
 
 			if (len >= 2U + 3 * nparams)
 			{
 				data += 2;
 				fprintf(f, "Received %u (%X) parameter values:\n", nparams, nparams);
-				for (i = 0; i < nparams; i++)
+				for (uint16_t i = 0; i < nparams; i++)
 				{
-					uint16_t pid = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
-					uint8_t ok;
+					const uint16_t pid = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
 					data += 2;
-					ok = !(*data++);
+					const uint8_t ok = !(*data++);
 					fprintf(f, "\t%04X (%s): ", pid, dusb_cmd_param_type2name(pid));
 					if (ok)
 					{
-						uint16_t j;
-						uint16_t size = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+						const uint16_t size = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
 
 						data += 2;
 						additional_size += size + 2;
@@ -878,7 +861,7 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 							break;
 						}
 						fprintf(f, "OK, size %04X\n\t\t", size);
-						for (j = 0; j < size;)
+						for (uint16_t j = 0; j < size;)
 						{
 							fprintf(f, "%02X ", *data++);
 							if (!(++j & 15))
@@ -900,15 +883,14 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 
 		case DUSB_VPKT_PARM_SET:
 		{
-			uint16_t id = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
-			uint16_t size = (((uint16_t)(data[2])) << 8) | ((uint16_t)(data[3]));
-			uint16_t i;
+			const uint16_t id = (((uint16_t)(data[0])) << 8) | ((uint16_t)(data[1]));
+			const uint16_t size = (((uint16_t)(data[2])) << 8) | ((uint16_t)(data[3]));
 
 			data += 4;
 			if (len == 4U + size)
 			{
 				fprintf(f, "Sending value of size %04X for parameter %04X\n\t", size, id);
-				for (i = 0; i < size; i++)
+				for (uint16_t i = 0; i < size; i++)
 				{
 					fprintf(f, "%02X ", *data++);
 					if (!(++i & 15))
@@ -923,14 +905,14 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 
 		case DUSB_VPKT_OS_BEGIN:
 		{
-			uint32_t size = (((uint32_t)data[7]) << 24) | (((uint32_t)data[8]) << 16) | (((uint32_t)data[9]) << 8) | (((uint32_t)data[10]) << 0);
+			const uint32_t size = (((uint32_t)data[7]) << 24) | (((uint32_t)data[8]) << 16) | (((uint32_t)data[9]) << 8) | (((uint32_t)data[10]) << 0);
 			fprintf(f, "Size: %lu / %08lX\n", (unsigned long)size, (unsigned long)size);
 		}
 		break;
 
 		case DUSB_VPKT_OS_ACK:
 		{
-			uint32_t size = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (((uint32_t)data[3]) << 0);
+			const uint32_t size = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (((uint32_t)data[3]) << 0);
 			fprintf(f, "Chunk size: %lu / %08lX\n", (unsigned long)size, (unsigned long)size);
 		}
 		break;
@@ -940,12 +922,12 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 		{
 			if (model == CALC_TI83PCE_USB || model == CALC_TI84PCE_USB)
 			{
-				uint32_t addr = (((uint32_t)data[3]) << 24) | (((uint32_t)data[2]) << 16) | (((uint32_t)data[1]) << 8) | (((uint32_t)data[0]) << 0);
+				const uint32_t addr = (((uint32_t)data[3]) << 24) | (((uint32_t)data[2]) << 16) | (((uint32_t)data[1]) << 8) | (((uint32_t)data[0]) << 0);
 				fprintf(f, "Address: %08lX\n", (unsigned long)addr);
 			}
 			else if (model != CALC_TI89T_USB)
 			{
-				uint16_t addr = (((uint16_t)data[0]) << 8) | (((uint32_t)data[1]) << 0);
+				const uint16_t addr = (((uint16_t)data[0]) << 8) | (((uint32_t)data[1]) << 0);
 				fprintf(f, "Address: %04X\tPage: %02X\tFlag: %02X\n", addr, data[2], data[3]);
 			}
 			// else do nothing.
@@ -954,14 +936,14 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 
 		case DUSB_VPKT_DELAY_ACK:
 		{
-			uint32_t delay = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (data[3] << 0);
+			const uint32_t delay = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (data[3] << 0);
 			fprintf(f, "Delay: %lu\n", (unsigned long)delay);
 		}
 		break;
 
 		case DUSB_VPKT_ERROR:
 		{
-			int err = err_code((((uint16_t)data[0]) << 8) | (((uint32_t)data[1]) << 0));
+			const int err = err_code((((uint16_t)data[0]) << 8) | (((uint32_t)data[1]) << 0));
 			fprintf(f, "Error code: %u (%04X)\n", err, err);
 		}
 		break;
@@ -1027,7 +1009,6 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 // 0x0001: set mode or ping
 int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, const DUSBModeSet mode)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
@@ -1035,10 +1016,10 @@ int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, const DUSBModeSet mode)
 	retval = dusb_send_buf_size_request(handle, DUSB_DFL_BUF_SIZE);
 	if (!retval)
 	{
-		retval = dusb_recv_buf_size_alloc(handle, NULL);
+		retval = dusb_recv_buf_size_alloc(handle, nullptr);
 		if (!retval)
 		{
-			pkt = dusb_vtl_pkt_new_ex(handle, sizeof(mode), DUSB_VPKT_PING, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, sizeof(mode)));
+			DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, sizeof(mode), DUSB_VPKT_PING, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, sizeof(mode)));
 
 			pkt->data[0] = MSB(mode.arg1);
 			pkt->data[1] = LSB(mode.arg1);
@@ -1065,12 +1046,11 @@ int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, const DUSBModeSet mode)
 // 0x0002: begin OS transfer
 int TICALL dusb_cmd_s_os_begin(CalcHandle *handle, uint32_t size)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 11, DUSB_VPKT_OS_BEGIN, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, 11));
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 11, DUSB_VPKT_OS_BEGIN, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, 11));
 
 	pkt->data[7] = MSB(MSW(size));
 	pkt->data[8] = LSB(MSW(size));
@@ -1088,12 +1068,11 @@ int TICALL dusb_cmd_s_os_begin(CalcHandle *handle, uint32_t size)
 // 0x0003: acknowledgement of OS transfer
 int TICALL dusb_cmd_r_os_ack(CalcHandle *handle, uint32_t *size)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, NULL);
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, nullptr);
 
 	retval = dusb_recv_data(handle, pkt);
 
@@ -1112,7 +1091,7 @@ int TICALL dusb_cmd_r_os_ack(CalcHandle *handle, uint32_t *size)
 			goto end;
 		}
 
-		if (size != NULL)
+		if (size != nullptr)
 		{
 			*size = (((uint32_t)pkt->data[0]) << 24) | (((uint32_t)pkt->data[1]) << 16) | (((uint32_t)pkt->data[2]) << 8) | (((uint32_t)pkt->data[3]) << 0);
 			ticalcs_info("   chunk size = %08x (%i)", *size, *size);
@@ -1127,13 +1106,12 @@ end:
 
 static int s_os(uint8_t type, CalcHandle *handle, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 4 + size, type, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, 4 + size));
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 4 + size, type, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, 4 + size));
 
 	pkt->data[0] = MSB(addr);
 	pkt->data[1] = LSB(addr);
@@ -1163,13 +1141,12 @@ int TICALL dusb_cmd_s_os_data(CalcHandle *handle, uint16_t addr, uint8_t page, u
 // 0x0004: OS header
 int TICALL dusb_cmd_s_os_header_89(CalcHandle *handle, uint32_t size, uint8_t *data)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_OS_HEADER, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, size));
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_OS_HEADER, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, size));
 
 	memcpy(pkt->data, data, size);
 	retval = dusb_send_data(handle, pkt);
@@ -1183,13 +1160,12 @@ int TICALL dusb_cmd_s_os_header_89(CalcHandle *handle, uint32_t size, uint8_t *d
 // 0x0005: OS data
 int TICALL dusb_cmd_s_os_data_89(CalcHandle *handle, uint32_t size, uint8_t *data)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_OS_DATA, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, size));
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_OS_DATA, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, size));
 
 	memcpy(pkt->data, data, size);
 	retval = dusb_send_data(handle, pkt);
@@ -1203,13 +1179,12 @@ int TICALL dusb_cmd_s_os_data_89(CalcHandle *handle, uint32_t size, uint8_t *dat
 // 0x0005: OS data
 int TICALL dusb_cmd_s_os_data_834pce(CalcHandle *handle, uint32_t addr, uint32_t size, uint8_t *data)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 4 + size, DUSB_VPKT_OS_DATA, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, 4 + size));
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 4 + size, DUSB_VPKT_OS_DATA, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, 4 + size));
 
 	pkt->data[0] = (addr      ) & 0xFF;
 	pkt->data[1] = (addr >>  8) & 0xFF;
@@ -1227,12 +1202,11 @@ int TICALL dusb_cmd_s_os_data_834pce(CalcHandle *handle, uint32_t addr, uint32_t
 // 0x0006: acknowledgement of EOT
 int TICALL dusb_cmd_r_eot_ack(CalcHandle *handle)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, NULL);
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, nullptr);
 
 	retval = dusb_recv_data(handle, pkt);
 
@@ -1259,19 +1233,18 @@ end:
 // 0x0007: parameter request
 int TICALL dusb_cmd_s_param_request(CalcHandle *handle, unsigned int npids, const uint16_t *pids)
 {
-	DUSBVirtualPacket* pkt;
-	unsigned int i;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_ATTRS(npids, pids);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 2 + npids * sizeof(uint16_t), DUSB_VPKT_PARM_REQ, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, 2 + npids * sizeof(uint16_t)));
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 2 + npids * sizeof(uint16_t), DUSB_VPKT_PARM_REQ,
+	                                             (uint8_t*)dusb_vtl_pkt_alloc_data(handle, 2 + npids * sizeof(uint16_t)));
 
 	pkt->data[0] = MSB(npids);
 	pkt->data[1] = LSB(npids);
 
-	for (i = 0; i < npids; i++)
+	for (unsigned int i = 0; i < npids; i++)
 	{
 		pkt->data[2*(i+1) + 0] = MSB(pids[i]);
 		pkt->data[2*(i+1) + 1] = LSB(pids[i]);
@@ -1288,14 +1261,13 @@ int TICALL dusb_cmd_s_param_request(CalcHandle *handle, unsigned int npids, cons
 // 0x0008: parameter data
 int TICALL dusb_cmd_r_param_data(CalcHandle *handle, unsigned int nparams, DUSBCalcParam **params)
 {
-	DUSBVirtualPacket* pkt;
 	unsigned int i, j;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(params);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, NULL);
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, nullptr);
 
 	retval = dusb_recv_data(handle, pkt);
 
@@ -1324,7 +1296,7 @@ int TICALL dusb_cmd_r_param_data(CalcHandle *handle, unsigned int nparams, DUSBC
 		{
 			DUSBCalcParam *s = dusb_cp_new(handle, 0, 0);
 
-			if (s != NULL)
+			if (s != nullptr)
 			{
 				s->id = ((uint16_t)pkt->data[j++]) << 8; s->id |= pkt->data[j++];
 				s->ok = !pkt->data[j++];
@@ -1334,7 +1306,7 @@ int TICALL dusb_cmd_r_param_data(CalcHandle *handle, unsigned int nparams, DUSBC
 					if (s->size > 0)
 					{
 						s->data = (uint8_t *)g_malloc0(s->size);
-						if (s->data != NULL)
+						if (s->data != nullptr)
 						{
 							memcpy(s->data, &pkt->data[j], s->size);
 						}
@@ -1367,7 +1339,6 @@ end:
 // 0x0008 (variant): screenshot data (for TI-84 Plus C support)
 int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, uint8_t **data)
 {
-	DUSBVirtualPacket* pkt;
 	uint32_t declared_size;
 	int retval = 0;
 
@@ -1375,7 +1346,7 @@ int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, uint8_t **d
 	VALIDATE_NONNULL(size);
 	VALIDATE_NONNULL(data);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, NULL);
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, nullptr);
 
 	retval = dusb_recv_data_varsize(handle, pkt, &declared_size, 153600);
 
@@ -1415,22 +1386,21 @@ end:
 // 0x0009: request directory listing
 int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, unsigned int naids, const uint16_t *aids)
 {
-	DUSBVirtualPacket* pkt;
-	unsigned int i;
 	unsigned int j = 0;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_ATTRS(naids, aids);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 4 + 2 * naids + 7, DUSB_VPKT_DIR_REQ, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, 4 + 2 * naids + 7));
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 4 + 2 * naids + 7, DUSB_VPKT_DIR_REQ,
+	                                             (uint8_t*)dusb_vtl_pkt_alloc_data(handle, 4 + 2 * naids + 7));
 
 	pkt->data[j++] = MSB(MSW(naids));
 	pkt->data[j++] = LSB(MSW(naids));
 	pkt->data[j++] = MSB(LSW(naids));
 	pkt->data[j++] = LSB(LSW(naids));
 
-	for (i = 0; i < naids; i++)
+	for (unsigned int i = 0; i < naids; i++)
 	{
 		pkt->data[j++] = MSB(aids[i]);
 		pkt->data[j++] = LSB(aids[i]);
@@ -1453,11 +1423,6 @@ int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, unsigned int naids, co
 // beware: attr array contents is allocated by function
 int TICALL dusb_cmd_r_var_header(CalcHandle *handle, char *folder, char *name, DUSBCalcAttr **attr)
 {
-	DUSBVirtualPacket* pkt;
-	uint8_t fld_len;
-	uint8_t var_len;
-	int nattr;
-	int i, j;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
@@ -1467,7 +1432,7 @@ int TICALL dusb_cmd_r_var_header(CalcHandle *handle, char *folder, char *name, D
 
 	folder[0] = 0;
 	name[0] = 0;
-	pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, NULL);
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, nullptr);
 
 	retval = dusb_recv_data(handle, pkt);
 
@@ -1491,24 +1456,24 @@ int TICALL dusb_cmd_r_var_header(CalcHandle *handle, char *folder, char *name, D
 			goto end;
 		}
 
-		j = 0;
-		fld_len = pkt->data[j++];
+		int j = 0;
+		const uint8_t fld_len = pkt->data[j++];
 		if (fld_len)
 		{
 			memcpy(folder, &pkt->data[j], fld_len + 1);
 			j += fld_len+1;
 		}
-		var_len = pkt->data[j++];
+		const uint8_t var_len = pkt->data[j++];
 		if (var_len)
 		{
 			memcpy(name, &pkt->data[j], var_len + 1);
 			j += var_len+1;
 		}
 
-		nattr = (((int)pkt->data[j + 0]) << 8) | pkt->data[j + 1];
+		const int nattr = (((int)pkt->data[j + 0]) << 8) | pkt->data[j + 1];
 		j += 2;
 
-		for (i = 0; i < nattr; i++)
+		for (int i = 0; i < nattr; i++)
 		{
 			DUSBCalcAttr *s = attr[i] = dusb_ca_new(handle, 0, 0);
 
@@ -1534,8 +1499,6 @@ end:
 // 0x000B: request to send
 static int dusb_cmd_s_rts2(CalcHandle *handle, const char *folder, const char *name, uint32_t size, unsigned int nattrs, const DUSBCalcAttr **attrs, int modeflag)
 {
-	DUSBVirtualPacket* pkt;
-	int pks;
 	unsigned int i;
 	unsigned int j = 0;
 	int retval = 0;
@@ -1545,7 +1508,7 @@ static int dusb_cmd_s_rts2(CalcHandle *handle, const char *folder, const char *n
 	VALIDATE_NONNULL(name);
 	VALIDATE_ATTRS(nattrs, attrs);
 
-	pks = 2 + strlen(name) + 1 + 5 + 2;
+	int pks = 2 + strlen(name) + 1 + 5 + 2;
 	if (strlen(folder))
 	{
 		pks += strlen(folder)+1;
@@ -1555,7 +1518,7 @@ static int dusb_cmd_s_rts2(CalcHandle *handle, const char *folder, const char *n
 		pks += 4 + attrs[i]->size;
 	}
 
-	pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_RTS, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, pks));
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_RTS, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, pks));
 
 	if (strlen(folder))
 	{
@@ -1614,8 +1577,6 @@ int TICALL dusb_cmd_s_rts_ns(CalcHandle *handle, const char *folder, const char 
 // 0x000C: variable request
 int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const char *name, unsigned int naids, const uint16_t *aids, unsigned int nattrs, const DUSBCalcAttr **attrs)
 {
-	DUSBVirtualPacket* pkt;
-	int pks;
 	unsigned int i;
 	unsigned int j = 0;
 	int retval = 0;
@@ -1626,7 +1587,7 @@ int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const 
 	VALIDATE_ATTRS(naids, aids);
 	VALIDATE_ATTRS(nattrs, attrs);
 
-	pks = 2 + strlen(name) + 1 + 5 + 2 + 2 * naids + 2;
+	int pks = 2 + strlen(name) + 1 + 5 + 2 + 2 * naids + 2;
 	if (strlen(folder))
 	{
 		pks += strlen(folder)+1;
@@ -1637,7 +1598,7 @@ int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const 
 	}
 	pks += 2;
 
-	pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_VAR_REQ, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, pks));
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_VAR_REQ, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, pks));
 
 	if (strlen(folder))
 	{
@@ -1691,13 +1652,12 @@ int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const 
 // 0x000D: variable contents (recv)
 int TICALL dusb_cmd_r_var_content(CalcHandle *handle, uint32_t *size, uint8_t **data)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, NULL);
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, nullptr);
 
 	retval = dusb_recv_data(handle, pkt);
 
@@ -1716,13 +1676,13 @@ int TICALL dusb_cmd_r_var_content(CalcHandle *handle, uint32_t *size, uint8_t **
 			goto end;
 		}
 
-		if (size != NULL)
+		if (size != nullptr)
 		{
 			*size = pkt->size;
 		}
 
 		*data = (uint8_t *)g_malloc0(pkt->size);
-		if (*data != NULL)
+		if (*data != nullptr)
 		{
 			memcpy(*data, pkt->data, pkt->size);
 		}
@@ -1742,13 +1702,12 @@ end:
 // 0x000D: variable contents (send)
 int TICALL dusb_cmd_s_var_content(CalcHandle *handle, uint32_t size, uint8_t *data)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_VAR_CNTS, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, size));
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_VAR_CNTS, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, size));
 
 	memcpy(pkt->data, data, size);
 	retval = dusb_send_data(handle, pkt);
@@ -1762,13 +1721,13 @@ int TICALL dusb_cmd_s_var_content(CalcHandle *handle, uint32_t size, uint8_t *da
 // 0x000E: parameter set
 int TICALL dusb_cmd_s_param_set(CalcHandle *handle, const DUSBCalcParam *param)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(param);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 2 + 2 + param->size, DUSB_VPKT_PARM_SET, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, 2 + 2 + param->size));
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 2 + 2 + param->size, DUSB_VPKT_PARM_SET,
+	                                             (uint8_t*)dusb_vtl_pkt_alloc_data(handle, 2 + 2 + param->size));
 
 	pkt->data[0] = MSB(param->id);
 	pkt->data[1] = LSB(param->id);
@@ -1791,10 +1750,8 @@ int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
                      const char *dst_folder, const char *dst_name,
                      unsigned int n_dst_attrs, const DUSBCalcAttr **dst_attrs)
 {
-	DUSBVirtualPacket* pkt;
 	unsigned int i;
 	unsigned int j = 0;
-	unsigned int pks;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
@@ -1805,7 +1762,7 @@ int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 	VALIDATE_NONNULL(dst_name);
 	VALIDATE_ATTRS(n_dst_attrs, dst_attrs);
 
-	pks = 2 + strlen(src_name)+1 + 2;
+	unsigned int pks = 2 + strlen(src_name) + 1 + 2;
 	if (strlen(src_folder))
 	{
 		pks += strlen(src_folder)+1;
@@ -1830,7 +1787,7 @@ int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 		pks += 4 + dst_attrs[i]->size;
 	}
 
-	pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_MODIF_VAR, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, pks));
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_MODIF_VAR, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, pks));
 
 	if (strlen(src_folder))
 	{
@@ -1915,14 +1872,13 @@ int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 
 int TICALL dusb_cmd_s_var_delete(CalcHandle *handle, const char *folder, const char *name, unsigned int nattrs, const DUSBCalcAttr **attrs)
 {
-	return dusb_cmd_s_var_modify(handle, folder, name, nattrs, attrs, "", "", 0, NULL);
+	return dusb_cmd_s_var_modify(handle, folder, name, nattrs, attrs, "", "", 0, nullptr);
 }
 
 // 0x0011: remote control
 int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, const char *name, uint8_t action, const char *args, uint16_t code)
 {
-	DUSBVirtualPacket* pkt = NULL;
-	int pks;
+	DUSBVirtualPacket* pkt = nullptr;
 	int j = 0;
 	int retval = 0;
 
@@ -1930,7 +1886,7 @@ int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, const char
 	VALIDATE_NONNULL(folder);
 	VALIDATE_NONNULL(name);
 
-	pks = 3;
+	int pks = 3;
 	if (handle->model == CALC_TI89T_USB && folder[0] != 0)
 	{
 		pks += strlen(folder) + 1;
@@ -2007,12 +1963,11 @@ int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, const char
 // 0x0012: acknowledgement of mode setting
 int TICALL dusb_cmd_r_mode_ack(CalcHandle *handle)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, NULL);
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, nullptr);
 
 	retval = dusb_recv_data(handle, pkt);
 
@@ -2039,12 +1994,11 @@ end:
 // 0xAA00: acknowledgement of data
 int TICALL dusb_cmd_r_data_ack(CalcHandle *handle)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, NULL);
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, nullptr);
 
 	retval = dusb_recv_data(handle, pkt);
 
@@ -2072,12 +2026,11 @@ end:
 // 0xBB00: delay acknowledgement
 int TICALL dusb_cmd_r_delay_ack(CalcHandle *handle)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, NULL);
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, nullptr);
 
 	retval = dusb_recv_data(handle, pkt);
 
@@ -2104,12 +2057,11 @@ int TICALL dusb_cmd_r_delay_ack(CalcHandle *handle)
 // 0xDD00: end of transmission (send)
 int TICALL dusb_cmd_s_eot(CalcHandle *handle)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 0, DUSB_VPKT_EOT, NULL);
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 0, DUSB_VPKT_EOT, nullptr);
 
 	retval = dusb_send_data(handle, pkt);
 
@@ -2121,12 +2073,11 @@ int TICALL dusb_cmd_s_eot(CalcHandle *handle)
 // 0xDD00: end of transmission (recv)
 int TICALL dusb_cmd_r_eot(CalcHandle *handle)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, NULL);
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 0, 0, nullptr);
 
 	retval = dusb_recv_data(handle, pkt);
 
@@ -2155,12 +2106,11 @@ end:
 // 0xEE00: error
 int TICALL dusb_cmd_s_error(CalcHandle *handle, uint16_t code)
 {
-	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	pkt = dusb_vtl_pkt_new_ex(handle, 2, DUSB_VPKT_ERROR, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, 2));
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 2, DUSB_VPKT_ERROR, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, 2));
 
 	pkt->data[0] = MSB(code);
 	pkt->data[1] = LSB(code);
@@ -2176,18 +2126,17 @@ int TICALL dusb_cmd_s_error(CalcHandle *handle, uint16_t code)
 
 int TICALL dusb_cmd_s_param_set_r_data_ack(CalcHandle *handle, uint16_t id, uint16_t size, const uint8_t * data)
 {
-	DUSBCalcParam *param;
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
 
-	if (size > 0 && NULL == data)
+	if (size > 0 && nullptr == data)
 	{
 		return ERR_INVALID_PARAMETER;
 	}
 
-	param = dusb_cp_new(handle, id, size);
-	if (NULL != data)
+	DUSBCalcParam* param = dusb_cp_new(handle, id, size);
+	if (nullptr != data)
 	{
 		memcpy(param->data, data, size);
 	}

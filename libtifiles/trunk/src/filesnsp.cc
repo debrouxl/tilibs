@@ -60,7 +60,7 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 	FILE *f;
 	int ret = ERR_FILE_IO;
 
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -73,7 +73,7 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 	}
 
 	f = g_fopen(filename, "rb");
-	if (f == NULL)
+	if (f == nullptr)
 	{
 		tifiles_info( "Unable to open this file: %s", filename);
 		ret = ERR_FILE_OPEN;
@@ -86,7 +86,6 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 	content->entries = (VarEntry **)g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
 
 	{
-		long cur_pos;
 		VarEntry *entry = content->entries[0] = (VarEntry *)g_malloc0(sizeof(VarEntry));
 
 		gchar *basename = g_path_get_basename(filename);
@@ -102,7 +101,7 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 
 		entry->attr = ATTRB_NONE;
 		if (fseek(f, 0, SEEK_END) < 0) goto tfrr;
-		cur_pos = ftell(f);
+		const long cur_pos = ftell(f);
 		if (cur_pos < 0) goto tfrr;
 		if (fseek(f, 0, SEEK_SET) < 0) goto tfrr;
 
@@ -152,7 +151,7 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	uint32_t file_size;
 	int ret = ERR_FILE_IO;
 
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -165,7 +164,7 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	}
 
 	f = g_fopen(filename, "rb");
-	if (f == NULL)
+	if (f == nullptr)
 	{
 		tifiles_info("Unable to open this file: %s", filename);
 		ret = ERR_FILE_OPEN;
@@ -250,14 +249,14 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	if (fseek(f, 0, SEEK_SET) < 0) goto tfrf;
 
 	content->data_part = (uint8_t *)g_malloc0(content->data_length);
-	if (content->data_part == NULL) 
+	if (content->data_part == nullptr)
 	{
 		fclose(f);
 		tifiles_content_delete_flash(content);
 		return ERR_MALLOC;
 	}
 
-	content->next = NULL;
+	content->next = nullptr;
 	if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
 
 	fclose(f);
@@ -291,20 +290,18 @@ tfrf2:
  **/
 int tnsp_file_write_regular(const char *fname, FileContent *content, char **real_fname)
 {
-	FILE *f;
-	char *filename = NULL;
-	VarEntry *entry;
+	char *filename = nullptr;
 
-	if (content->entries == NULL || content->entries[0] == NULL)
+	if (content->entries == nullptr || content->entries[0] == nullptr)
 	{
 		tifiles_warning("%s: skipping content with NULL content->entries or content->entries[0]", __FUNCTION__);
 		return ERR_FILE_IO;
 	}
 
-	if (fname != NULL) 
+	if (fname != nullptr)
 	{
 		filename = g_strdup(fname);
-		if (filename == NULL)
+		if (filename == nullptr)
 		{
 			return ERR_MALLOC;
 		}
@@ -312,21 +309,21 @@ int tnsp_file_write_regular(const char *fname, FileContent *content, char **real
 	else
 	{
 		filename = tifiles_build_filename(content->model_dst, content->entries[0]);
-		if (real_fname != NULL)
+		if (real_fname != nullptr)
 		{
 			*real_fname = g_strdup(filename);
 		}
 	}
 
-	f = g_fopen(filename, "wb");
-	if (f == NULL) 
+	FILE* f = g_fopen(filename, "wb");
+	if (f == nullptr)
 	{
 		tifiles_info( "Unable to open this file: %s", filename);
 		g_free(filename);
 		return ERR_FILE_OPEN;
 	}
 
-	entry = content->entries[0];
+	const VarEntry* entry = content->entries[0];
 	if(fwrite(entry->data, 1, entry->size, f) < entry->size)
 	{
 		goto tfwr;
@@ -359,13 +356,13 @@ int tnsp_content_display_flash(FlashContent *content)
 {
 	FlashContent *ptr = content;
 
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 		return ERR_INVALID_FILE;
 	}
 
-	for (ptr = content; ptr != NULL; ptr = ptr->next)
+	for (ptr = content; ptr != nullptr; ptr = ptr->next)
 	{
 		tifiles_info("FlashContent for TI-Nspire: %p", ptr);
 		tifiles_info("Model:           %02X (%u)", ptr->model, ptr->model);
@@ -395,13 +392,11 @@ int tnsp_content_display_flash(FlashContent *content)
  **/
 int tnsp_file_display(const char *filename)
 {
-	FileContent *content1;
-	FlashContent *content3;
 	int ret;
 
 	if (tifiles_file_is_os(filename)) 
 	{
-		content3 = tifiles_content_create_flash(CALC_NSPIRE);
+		FlashContent* content3 = tifiles_content_create_flash(CALC_NSPIRE);
 		ret = tnsp_file_read_flash(filename, content3);
 		if (!ret)
 		{
@@ -411,7 +406,7 @@ int tnsp_file_display(const char *filename)
 	}
 	else if (tifiles_file_is_regular(filename)) 
 	{
-		content1 = tifiles_content_create_regular(CALC_NSPIRE);
+		FileContent* content1 = tifiles_content_create_regular(CALC_NSPIRE);
 		ret = tnsp_file_read_regular(filename, content1);
 		if (!ret)
 		{

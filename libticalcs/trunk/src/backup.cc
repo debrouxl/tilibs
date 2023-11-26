@@ -38,17 +38,13 @@
 
 int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content)
 {
-	int i, j, k;
-	int i_max;
 	GNode *vars, *apps;
-	int nvars, ivars = 0;
+	int ivars = 0;
 	int b = 0;
-	FileContent **group;
 	FileContent *single;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		ticalcs_critical("tixx_recv_backup: content is NULL");
 		return -1;
@@ -56,12 +52,12 @@ int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content)
 	VALIDATE_CALCFNCTS(handle->calc);
 
 	// Do a directory list and check for something to backup
-	ret = handle->calc->fncts.get_dirlist(handle, &vars, &apps);
+	int ret = handle->calc->fncts.get_dirlist(handle, &vars, &apps);
 	if (ret)
 	{
 		return ret;
 	}
-	nvars = ticalcs_dirlist_ve_count(vars);
+	const int nvars = ticalcs_dirlist_ve_count(vars);
 	if (!nvars)
 	{
 		return ERR_NO_VARS;
@@ -76,19 +72,19 @@ int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content)
 	PAUSE(100); // needed by TI84+/USB
 
 	// Create a group file
-	k = 0;
-	group = tifiles_content_create_group(nvars);
+	int k = 0;
+	FileContent** group = tifiles_content_create_group(nvars);
 
 	// Receive all vars except for FLASH apps
-	i_max = g_node_n_children(vars);
-	for (i = 0; i < i_max; i++)
+	const int i_max = g_node_n_children(vars);
+	for (int i = 0; i < i_max; i++)
 	{
 		GNode *parent = g_node_nth_child(vars, i);
 
-		int j_max = g_node_n_children(parent);
-		for (j = 0; j < j_max; j++)
+		const int j_max = g_node_n_children(parent);
+		for (int j = 0; j < j_max; j++)
 		{
-			GNode *node = g_node_nth_child(parent, j);
+			const GNode *node = g_node_nth_child(parent, j);
 			VarEntry *ve = (VarEntry *) (node->data);
 
 			handle->updat->cnt2 = handle->updat->cnt3 = ++ivars;
@@ -124,7 +120,7 @@ end:
 			// Steal contents of cnt, then clean up.
 			memcpy(content, cnt, sizeof(*content));
 			cnt->num_entries = 0;
-			cnt->entries = NULL;
+			cnt->entries = nullptr;
 			tifiles_content_delete_regular(cnt);
 
 			tifiles_comment_set_group_sn(content->comment, sizeof(content->comment));
@@ -156,17 +152,16 @@ int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, Ti
 	GNode *vars, *apps;
 	int nvars = 0;
 	int napps = 0;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		ticalcs_critical("ticalcs_calc_send_tigroup: content is NULL");
 		return -1;
 	}
 	VALIDATE_CALCFNCTS(handle->calc);
 
-	ret = handle->calc->fncts.get_dirlist(handle, &vars, &apps);
+	int ret = handle->calc->fncts.get_dirlist(handle, &vars, &apps);
 	if (ret)
 	{
 		return ret;
@@ -192,7 +187,7 @@ int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, Ti
 		ret = ti89_send_VAR(handle, 0, TI89_BKUP, "main");
 		if (!ret)
 		{
-			ret = ti89_recv_ACK(handle, NULL);
+			ret = ti89_recv_ACK(handle, nullptr);
 			if (!ret)
 			{
 				ret = ti89_recv_CTS(handle);
@@ -204,7 +199,7 @@ int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, Ti
 						ret = ti89_send_EOT(handle);
 						if (!ret)
 						{
-							ret = ti89_recv_ACK(handle, NULL);
+							ret = ti89_recv_ACK(handle, nullptr);
 						}
 					}
 				}
@@ -219,7 +214,7 @@ int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, Ti
 		{
 			for (ptr = content->var_entries; *ptr; ptr++)
 			{
-				TigEntry *te = *ptr;
+				const TigEntry *te = *ptr;
 
 				handle->updat->cnt3++;
 				ticalcs_update_pbar(handle);
@@ -251,7 +246,7 @@ int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, Ti
 				{
 					for (ptr = content->app_entries; *ptr; ptr++)
 					{
-						TigEntry *te = *ptr;
+						const TigEntry *te = *ptr;
 						VarEntry ve;
 
 						handle->updat->cnt3++;
@@ -297,10 +292,9 @@ int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, Ti
 	int nvars = 0;
 	int napps = 0;
 	int b = 0;
-	int ret;
 
 	VALIDATE_HANDLE(handle);
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		ticalcs_critical("ticalcs_calc_send_tigroup: content is NULL");
 		return -1;
@@ -311,7 +305,7 @@ int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, Ti
 	ticalcs_update_pbar(handle);
 
 	// Do a directory list and check for something to backup
-	ret = handle->calc->fncts.get_dirlist(handle, &vars, &apps);
+	int ret = handle->calc->fncts.get_dirlist(handle, &vars, &apps);
 	if (ret)
 	{
 		return ret;
@@ -343,17 +337,16 @@ int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, Ti
 	// Receive all vars
 	if ((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
 	{
-		int i_max = g_node_n_children(vars);
+		const int i_max = g_node_n_children(vars);
 		for (i = 0; i < i_max; i++)
 		{
 			GNode *parent = g_node_nth_child(vars, i);
 
-			int j_max = g_node_n_children(parent);
+			const int j_max = g_node_n_children(parent);
 			for (j = 0; j < j_max; j++)
 			{
-				GNode *node = g_node_nth_child(parent, j);
+				const GNode *node = g_node_nth_child(parent, j);
 				VarEntry *ve = (VarEntry *) (node->data);
-				TigEntry *te;
 
 				PAUSE(100);
 				ret = handle->calc->fncts.is_ready(handle);
@@ -383,9 +376,9 @@ int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, Ti
 					g_free(varname);
 					g_free(fldname);
 
-					te = tifiles_te_create(filename, TIFILE_SINGLE, handle->model);
+					TigEntry* te = tifiles_te_create(filename, TIFILE_SINGLE, handle->model);
 					g_free(filename);
-					if (te != NULL)
+					if (te != nullptr)
 					{
 						ret = handle->calc->fncts.recv_var(handle, MODE_NORMAL, te->content.regular, ve);
 						if (ret)
@@ -408,19 +401,16 @@ int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, Ti
 	// Receive all apps
 	if (mode & TIG_FLASH)
 	{
-		int i_max = g_node_n_children(apps);
+		const int i_max = g_node_n_children(apps);
 		for(i = 0; i < i_max; i++) 
 		{
 			GNode *parent = g_node_nth_child(apps, i);
 
-			int j_max = g_node_n_children(parent);
+			const int j_max = g_node_n_children(parent);
 			for (j = 0; j < j_max; j++) 
 			{
-				GNode *node = g_node_nth_child(parent, j);
+				const GNode *node = g_node_nth_child(parent, j);
 				VarEntry *ve = (VarEntry *) (node->data);
-				TigEntry *te;
-				char *filename;
-				char *basename;
 
 				ret = handle->calc->fncts.is_ready(handle);
 				if (ret)
@@ -431,13 +421,13 @@ int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, Ti
 				handle->updat->cnt3++;
 				ticalcs_update_pbar(handle);
 
-				basename = ticonv_varname_to_filename(handle->model, ve->name, ve->type);
-				filename = g_strconcat(basename, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
+				char* basename = ticonv_varname_to_filename(handle->model, ve->name, ve->type);
+				char* filename = g_strconcat(basename, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
 				g_free(basename);
 
-				te = tifiles_te_create(filename, TIFILE_FLASH, handle->model);
+				TigEntry* te = tifiles_te_create(filename, TIFILE_FLASH, handle->model);
 				g_free(filename);
-				if (te != NULL)
+				if (te != nullptr)
 				{
 					ret = handle->calc->fncts.recv_app(handle, te->content.flash, ve);
 					if (ret)

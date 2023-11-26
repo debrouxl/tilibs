@@ -81,7 +81,7 @@ const char *TICALL tifiles_attribute_to_string(FileAttr attrb)
  **/
 FileAttr TICALL tifiles_string_to_attribute(const char *str)
 {
-	if (str != NULL)
+	if (str != nullptr)
 	{
 		if(!g_ascii_strcasecmp(str, _("none     ")))
 			return ATTRB_NONE;
@@ -130,7 +130,7 @@ const char *TICALL tifiles_class_to_string(FileClass klass)
  **/
 FileClass TICALL tifiles_string_to_class(const char *str)
 {
-	if (str != NULL)
+	if (str != nullptr)
 	{
 		if(!g_ascii_strcasecmp(str, _("single")))
 			return TIFILE_SINGLE;

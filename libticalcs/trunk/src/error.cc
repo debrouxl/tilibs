@@ -59,7 +59,7 @@ int TICALL ticalcs_error_get(int number, char **message)
 	//dusb_cpca_purge();
 	//nsp_vtl_pkt_purge();
 
-	if (message == NULL)
+	if (message == nullptr)
 	{
 		ticalcs_critical("ticalcs_error_get(NULL)\n");
 		return number;
@@ -494,7 +494,7 @@ int TICALL ticalcs_error_get(int number, char **message)
  **/
 int TICALL ticalcs_error_free(char *message)
 {
-	if (message == NULL)
+	if (message == nullptr)
 	{
 		ticalcs_critical("ticalcs_error_free(NULL)\n");
 		return ERR_INVALID_PARAMETER;

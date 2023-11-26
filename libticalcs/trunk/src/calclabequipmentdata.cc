@@ -45,24 +45,20 @@
 
 int tixx_convert_lab_equipment_data_string_to_ti8586_raw_list(const char * lab_equipment_data, CalcLabEquipmentData * out_data)
 {
-	int ret;
-
 	VALIDATE_NONNULL(lab_equipment_data);
 	VALIDATE_NONNULL(out_data);
 
-	ret = ERR_UNSUPPORTED;
+	const int ret = ERR_UNSUPPORTED;
 
 	return ret;
 }
 
 int tixx_convert_lab_equipment_data_string_to_tiz80_raw_list(const char * lab_equipment_data, CalcLabEquipmentData * out_data)
 {
-	int ret;
-
 	VALIDATE_NONNULL(lab_equipment_data);
 	VALIDATE_NONNULL(out_data);
 
-	ret = ERR_UNSUPPORTED;
+	const int ret = ERR_UNSUPPORTED;
 
 	return ret;
 }
@@ -70,15 +66,11 @@ int tixx_convert_lab_equipment_data_string_to_tiz80_raw_list(const char * lab_eq
 int tixx_convert_lab_equipment_data_string_to_ti68k_raw_list(const char * lab_equipment_data, CalcLabEquipmentData * out_data)
 {
 	int ret;
-	uint8_t * ptr;
-	uint8_t * orig_ptr;
-	unsigned int state;
-	uint32_t items;
 
 	VALIDATE_NONNULL(lab_equipment_data);
 	VALIDATE_NONNULL(out_data);
 
-	ptr = (uint8_t *)strdup(lab_equipment_data);
+	uint8_t* ptr = (uint8_t*)strdup(lab_equipment_data);
 	if (nullptr == ptr)
 	{
 		return ERR_MALLOC;
@@ -96,12 +88,12 @@ int tixx_convert_lab_equipment_data_string_to_ti68k_raw_list(const char * lab_eq
 	// TODO perform more RE of the protocol using TIEmu, especially for floating-point numbers.
 	// TODO FIXME parse floating-point numbers as well.
 	// TODO FIXME convert leading - to unary minus, if necessary.
-	state = 0;
-	items = 0;
-	orig_ptr = ptr;
+	unsigned int state = 0;
+	uint32_t items = 0;
+	const uint8_t* orig_ptr = ptr;
 	do
 	{
-		uint8_t c = *ptr;
+		const uint8_t c = *ptr;
 		switch (state)
 		{
 			// We'd need more states if we wanted to cope with spaces before and after '{', ',' and '}'.
@@ -144,28 +136,24 @@ int tixx_convert_lab_equipment_data_string_to_ti68k_raw_list(const char * lab_eq
 
 int tixx_convert_lab_equipment_data_ti8586_raw_list_to_string(CalcLabEquipmentData * lab_equipment_data, uint32_t * item_count, double ** raw_values, const char ** out_data)
 {
-	int ret;
-
 	VALIDATE_NONNULL(lab_equipment_data);
 	VALIDATE_NONNULL(item_count);
 	VALIDATE_NONNULL(raw_values);
 	VALIDATE_NONNULL(out_data);
 
-	ret = ERR_UNSUPPORTED;
+	const int ret = ERR_UNSUPPORTED;
 
 	return ret;
 }
 
 int tixx_convert_lab_equipment_data_tiz80_raw_list_to_string(CalcLabEquipmentData * lab_equipment_data, uint32_t * item_count, double ** raw_values, const char ** out_data)
 {
-	int ret;
-
 	VALIDATE_NONNULL(lab_equipment_data);
 	VALIDATE_NONNULL(item_count);
 	VALIDATE_NONNULL(raw_values);
 	VALIDATE_NONNULL(out_data);
 
-	ret = ERR_UNSUPPORTED;
+	const int ret = ERR_UNSUPPORTED;
 
 	return ret;
 }
@@ -180,9 +168,6 @@ int tixx_convert_lab_equipment_data_ti68k_raw_list_to_string(CalcLabEquipmentDat
 	size_t deststrsize;
 	size_t offset;
 	double * fpvals = nullptr;
-	struct lconv * lc;
-	const char * decimal_point_str;
-	size_t decimal_point_len;
 
 	VALIDATE_NONNULL(lab_equipment_data);
 	VALIDATE_NONNULL(item_count);
@@ -212,12 +197,12 @@ int tixx_convert_lab_equipment_data_ti68k_raw_list_to_string(CalcLabEquipmentDat
 		return 0;
 	}
 
-	lc = localeconv();
-	decimal_point_str = lc->decimal_point;
-	decimal_point_len = strlen(decimal_point_str);
+	const struct lconv* lc = localeconv();
+	const char* decimal_point_str = lc->decimal_point;
+	const size_t decimal_point_len = strlen(decimal_point_str);
 
 	ptr = lab_equipment_data->data + 4;
-	deststrsize = strlen((const char *)ptr);
+	deststrsize = strlen((const char*)ptr);
 	deststrsize += items * (decimal_point_len - 1);
 	deststr = (char *)malloc(deststrsize + 1);
 	if (nullptr == deststr)
@@ -234,7 +219,7 @@ int tixx_convert_lab_equipment_data_ti68k_raw_list_to_string(CalcLabEquipmentDat
 		goto err;
 	}
 
-	ptr2 = (uint8_t *)strchr(deststr, '.');
+	ptr2 = (uint8_t*)strchr(deststr, '.');
 	// Need to replace the decimal point.
 	if (decimal_point_str[0] != '.' || decimal_point_str[1] != 0)
 	{
@@ -267,7 +252,7 @@ int tixx_convert_lab_equipment_data_ti68k_raw_list_to_string(CalcLabEquipmentDat
 	offset = 1;
 	for (uint16_t i = 0; i < items; i++)
 	{
-		int printed = sprintf(deststr + offset, "%g,", fpvals[i]);
+		const int printed = sprintf(deststr + offset, "%g,", fpvals[i]);
 		offset += printed;
 	}
 	deststr[offset - 1] = '}';
@@ -315,8 +300,6 @@ void tixx_free_converted_lab_equipment_data_fpvals(double * raw_values)
 int tixx_send_lab_equipment_data(CalcHandle* handle, CalcModel model, CalcLabEquipmentData * lab_equipment_data)
 {
 	int ret;
-	uint8_t target1;
-	uint8_t target2;
 	uint32_t size = 0;
 	uint32_t items = 0;
 	const uint8_t * ptr = nullptr;
@@ -326,8 +309,8 @@ int tixx_send_lab_equipment_data(CalcHandle* handle, CalcModel model, CalcLabEqu
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(lab_equipment_data);
 
-	target1 = ti68k_model_to_dbus_mid(model);
-	target2 = tiz80_model_to_dbus_mid(model);
+	const uint8_t target1 = ti68k_model_to_dbus_mid(model);
+	const uint8_t target2 = tiz80_model_to_dbus_mid(model);
 
 	if (target1 == DBUS_MID_PC_TIXX && target2 == DBUS_MID_PC_TIXX)
 	{
@@ -444,11 +427,10 @@ int tixx_send_lab_equipment_data(CalcHandle* handle, CalcModel model, CalcLabEqu
 */
 		do
 		{
-			uint8_t * ptr2;
 			ret = ti68k_send_VAR_lab_equipment_data(handle, size, vartype, target1);
 			if (ret) break;
 
-			ret = ti89_recv_ACK(handle, NULL);
+			ret = ti89_recv_ACK(handle, nullptr);
 			if (ret) break;
 
 			ret = ti92_recv_CTS(handle);
@@ -460,7 +442,7 @@ int tixx_send_lab_equipment_data(CalcHandle* handle, CalcModel model, CalcLabEqu
 			ticalcs_info("Sending \"%s\"", ptr);
 
 			// Build number of items as 32-bit little-endian.
-			ptr2 = (uint8_t *)handle->buffer2;
+			uint8_t* ptr2 = (uint8_t*)handle->buffer2;
 			ptr2[0] =  items        & 0xFF;
 			ptr2[1] = (items >>  8) & 0xFF;
 			ptr2[2] = (items >> 16) & 0xFF;
@@ -469,13 +451,13 @@ int tixx_send_lab_equipment_data(CalcHandle* handle, CalcModel model, CalcLabEqu
 			ret = ti68k_send_XDP(handle, size + 4, ptr2, target1);
 			if (ret) break;
 
-			ret = ti89_recv_ACK(handle, NULL);
+			ret = ti89_recv_ACK(handle, nullptr);
 			if (ret) break;
 
 			ret = ti68k_send_EOT(handle, target1);
 			if (ret) break;
 
-			ret = ti89_recv_ACK(handle, NULL);
+			ret = ti89_recv_ACK(handle, nullptr);
 		}
 		while(0);
 	}
@@ -565,14 +547,12 @@ end:
 int tixx_get_lab_equipment_data(CalcHandle* handle, CalcModel model, CalcLabEquipmentData * lab_equipment_data)
 {
 	int ret;
-	uint8_t target1;
-	uint8_t target2;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(lab_equipment_data);
 
-	target1 = ti68k_model_to_dbus_mid(model);
-	target2 = tiz80_model_to_dbus_mid(model);
+	const uint8_t target1 = ti68k_model_to_dbus_mid(model);
+	const uint8_t target2 = tiz80_model_to_dbus_mid(model);
 
 	if (target1 == DBUS_MID_PC_TIXX && target2 == DBUS_MID_PC_TIXX)
 	{
@@ -619,12 +599,11 @@ int tixx_get_lab_equipment_data(CalcHandle* handle, CalcModel model, CalcLabEqui
 			uint8_t vartype;
 			char varname[256 + 1];
 			uint16_t length;
-			uint8_t * ptr;
 
 			ret = ti92_send_REQ(handle, 0, 0x4, "");
 			if (ret) break;
 
-			ret = ti89_recv_ACK(handle, NULL);
+			ret = ti89_recv_ACK(handle, nullptr);
 			if (ret) break;
 
 			varname[0] = 0;
@@ -642,7 +621,7 @@ int tixx_get_lab_equipment_data(CalcHandle* handle, CalcModel model, CalcLabEqui
 			ret = ti68k_send_CTS(handle, target1);
 			if (ret) break;
 
-			ret = ti89_recv_ACK(handle, NULL);
+			ret = ti89_recv_ACK(handle, nullptr);
 			if (ret) break;
 
 			ret = ti68k_recv_XDP(handle, &length, (uint8_t *)handle->buffer2);
@@ -656,7 +635,7 @@ int tixx_get_lab_equipment_data(CalcHandle* handle, CalcModel model, CalcLabEqui
 			ret = ti68k_send_ACK(handle, target1);
 			if (ret) break;
 
-			ptr = (uint8_t *)handle->buffer2;
+			uint8_t* ptr = (uint8_t*)handle->buffer2;
 			lab_equipment_data->type = CALC_LAB_EQUIPMENT_DATA_TYPE_TI68K_RAW_LIST;
 			lab_equipment_data->size = varsize;
 			lab_equipment_data->items = ptr[0] | (((uint16_t)ptr[1]) << 8);

@@ -36,24 +36,24 @@ TIEXPORT3 uint8_t TICALL tiz80_handle_to_dbus_mid(CalcHandle * handle);
 
 static inline uint8_t tiz80_handle_to_dbus_mid_7383p(CalcHandle * handle)
 {
-	return (handle != NULL) ? ((handle->model == CALC_TI73) ? DBUS_MID_PC_TI73 : DBUS_MID_PC_TI83p) : 0;
+	return (handle != nullptr) ? ((handle->model == CALC_TI73) ? DBUS_MID_PC_TI73 : DBUS_MID_PC_TI83p) : 0;
 }
 
 static inline uint8_t tiz80_handle_to_dbus_mid_8283(CalcHandle * handle)
 {
-	return (handle != NULL) ? (   (handle->model == CALC_TI82)
-	                           || (handle->model == CALC_CBL)
-	                           || (handle->model == CALC_CBR)
-	                           || (handle->model == CALC_CBL2)
-	                           || (handle->model == CALC_CBR2)
-	                           || (handle->model == CALC_LABPRO)
-	                           || (handle->model == CALC_TIPRESENTER)
-	                              ? DBUS_MID_PC_TI82 : DBUS_MID_PC_TI83) : 0;
+	return (handle != nullptr) ? (   (handle->model == CALC_TI82)
+	                          || (handle->model == CALC_CBL)
+	                          || (handle->model == CALC_CBR)
+	                          || (handle->model == CALC_CBL2)
+	                          || (handle->model == CALC_CBR2)
+	                          || (handle->model == CALC_LABPRO)
+	                          || (handle->model == CALC_TIPRESENTER)
+		                          ? DBUS_MID_PC_TI82 : DBUS_MID_PC_TI83) : 0;
 }
 
 static inline uint8_t tiz80_handle_to_dbus_mid_8586(CalcHandle * handle)
 {
-	return (handle != NULL) ? ((handle->model == CALC_TI85) ? DBUS_MID_PC_TI85 : DBUS_MID_PC_TI86) : 0;
+	return (handle != nullptr) ? ((handle->model == CALC_TI85) ? DBUS_MID_PC_TI85 : DBUS_MID_PC_TI86) : 0;
 }
 
 

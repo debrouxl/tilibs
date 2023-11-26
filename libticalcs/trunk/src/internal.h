@@ -199,47 +199,47 @@
 
 static inline int ticalcs_validate_handle(CalcHandle * handle)
 {
-	return handle != NULL;
+	return handle != nullptr;
 }
 
 static inline int ticalcs_validate_calcfncts(const CalcFncts * calc)
 {
-	return calc != NULL;
+	return calc != nullptr;
 }
 
 static inline int ticalcs_validate_backupcontent(BackupContent * content)
 {
-	return content != NULL;
+	return content != nullptr;
 }
 
 static inline int ticalcs_validate_filecontent(FileContent * content)
 {
-	return content != NULL;
+	return content != nullptr;
 }
 
 static inline int ticalcs_validate_filecontent_entries(FileContent * content)
 {
-	return content->num_entries == 0 || content->entries != NULL;
+	return content->num_entries == 0 || content->entries != nullptr;
 }
 
 static inline int ticalcs_validate_flashcontent(FlashContent * content)
 {
-	return content != NULL;
+	return content != nullptr;
 }
 
 static inline int ticalcs_validate_varentry(VarEntry * var)
 {
-	return var != NULL;
+	return var != nullptr;
 }
 
 static inline int ticalcs_validate_varrequest(VarRequest * var)
 {
-	return var != NULL;
+	return var != nullptr;
 }
 
 static inline int ticalcs_validate_calcupdate(CalcUpdate * upd)
 {
-	return upd != NULL && upd->start != NULL && upd->stop != NULL && upd->refresh != NULL && upd->label != NULL && upd->pbar != NULL;
+	return upd != nullptr && upd->start != nullptr && upd->stop != nullptr && upd->refresh != nullptr && upd->label != nullptr && upd->pbar != nullptr;
 }
 
 static inline void * ticalcs_alloc_screen(size_t len)
@@ -256,11 +256,11 @@ static inline int dirlist_init_tree(CalcHandle * handle, GNode ** tree, const ch
 {
 	int ret = ERR_MALLOC;
 
-	(*tree) = g_node_new(NULL);
-	if (*tree != NULL)
+	(*tree) = g_node_new(nullptr);
+	if (*tree != nullptr)
 	{
 		TreeInfo *ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
-		if (ti != NULL)
+		if (ti != nullptr)
 		{
 			ti->model = handle->model;
 			ti->type = type;
@@ -287,7 +287,7 @@ static inline int dirlist_init_trees(CalcHandle * handle, GNode ** vars, GNode *
 static inline GNode * dirlist_create_append_node(void * data, GNode ** tree)
 {
 	GNode * node = g_node_new(data);
-	if (node != NULL)
+	if (node != nullptr)
 	{
 		g_node_append(*tree, node);
 	}

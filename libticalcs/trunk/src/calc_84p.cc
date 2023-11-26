@@ -56,10 +56,9 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	int ret;
 	static const DUSBModeSet mode = DUSB_MODE_NORMAL;
 
-	ret = dusb_cmd_s_mode_set(handle, mode);
+	int ret = dusb_cmd_s_mode_set(handle, mode);
 	if (!ret)
 	{
 		// use PID_HOMESCREEN to return status ?
@@ -71,9 +70,7 @@ static int		is_ready	(CalcHandle* handle)
 
 static int		send_key_noack	(CalcHandle* handle, uint32_t key)
 {
-	int ret;
-
-	ret = dusb_cmd_s_execute(handle, "", "", DUSB_EID_KEY, "", (uint16_t)key);
+	int ret = dusb_cmd_s_execute(handle, "", "", DUSB_EID_KEY, "", (uint16_t)key);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_delay_ack(handle);
@@ -84,9 +81,7 @@ static int		send_key_noack	(CalcHandle* handle, uint32_t key)
 
 static int		send_key	(CalcHandle* handle, uint32_t key)
 {
-	int ret;
-
-	ret = send_key_noack(handle, key);
+	int ret = send_key_noack(handle, key);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);
@@ -98,7 +93,6 @@ static int		send_key	(CalcHandle* handle, uint32_t key)
 static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
 {
 	uint8_t action;
-	int ret;
 
 	switch (ve->type)
 	{
@@ -107,7 +101,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
 		default:         action = DUSB_EID_PRGM; break;
 	}
 
-	ret = dusb_cmd_s_execute(handle, ve->folder, ve->name, action, args, 0);
+	int ret = dusb_cmd_s_execute(handle, ve->folder, ve->name, action, args, 0);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_data_ack(handle);
@@ -121,9 +115,8 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	static const uint16_t pid[] = { DUSB_PID_SCREENSHOT };
 	uint32_t size;
 	uint8_t *data;
-	int ret;
 
-	ret = dusb_cmd_s_param_request(handle, 1, pid);
+	int ret = dusb_cmd_s_param_request(handle, 1, pid);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_screenshot(handle, &size, &data);
@@ -146,7 +139,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 				else
 				{
 					g_free(data);
-					*bitmap = NULL;
+					*bitmap = nullptr;
 					ret = ERR_INVALID_SCREENSHOT;
 				}
 				break;
@@ -160,7 +153,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 				if (ret)
 				{
 					ticalcs_free_screen(*bitmap);
-					*bitmap = NULL;
+					*bitmap = nullptr;
 					ret = ERR_INVALID_SCREENSHOT;
 				}
 				else
@@ -193,7 +186,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 			default:
 			{
 				g_free(data);
-				*bitmap = NULL;
+				*bitmap = nullptr;
 				ret = ERR_INVALID_SCREENSHOT;
 				break;
 			}
@@ -208,24 +201,21 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
 	static const uint16_t aids[] = { DUSB_AID_VAR_SIZE, DUSB_AID_VAR_TYPE, DUSB_AID_ARCHIVED };
 	const int size = sizeof(aids) / sizeof(uint16_t);
-	int ret;
-	DUSBCalcAttr **attr;
 	GNode *folder, *root, *node;
 	char fldname[40], varname[40];
-	char *utf8;
 
-	ret = dirlist_init_trees(handle, vars, apps);
+	int ret = dirlist_init_trees(handle, vars, apps);
 	if (ret)
 	{
 		return ret;
 	}
 
-	folder = dirlist_create_append_node(NULL, vars);
+	folder = dirlist_create_append_node(nullptr, vars);
 	if (!folder)
 	{
 		return ERR_MALLOC;
 	}
-	root = dirlist_create_append_node(NULL, apps);
+	root = dirlist_create_append_node(nullptr, apps);
 	if (!root)
 	{
 		return ERR_MALLOC;
@@ -233,13 +223,11 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 	// Add permanent variables (Window, RclWin / RclWindw, TblSet aka WINDW, ZSTO, TABLE)
 	{
-		VarEntry *ve;
-
-		ve = tifiles_ve_create();
+		VarEntry* ve = tifiles_ve_create();
 		ticalcs_strlcpy(ve->name, "Window", sizeof(ve->name));
 		ve->type = TI84p_WINDW;
 		node = dirlist_create_append_node(ve, &folder);
-		if (node != NULL)
+		if (node != nullptr)
 		{
 			ve = tifiles_ve_create();
 			// Actually, "RclWindw" works even on an old 84+ running OS 2.43, but libticalcs
@@ -247,7 +235,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			ticalcs_strlcpy(ve->name, (handle->model == CALC_TI84PC_USB || handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB || handle->model == CALC_TI82AEP_USB) ? "RclWindw" : "RclWin", sizeof(ve->name));
 			ve->type = TI84p_ZSTO;
 			node = dirlist_create_append_node(ve, &folder);
-			if (node != NULL)
+			if (node != nullptr)
 			{
 				ve = tifiles_ve_create();
 				ticalcs_strlcpy(ve->name, "TblSet", sizeof(ve->name));
@@ -267,9 +255,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	{
 		for (;;)
 		{
-			VarEntry *ve;
-
-			attr = dusb_ca_new_array(handle, size);
+			DUSBCalcAttr** attr = dusb_ca_new_array(handle, size);
 			ret = dusb_cmd_r_var_header(handle, fldname, varname, attr);
 			if (ret)
 			{
@@ -282,7 +268,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				break;
 			}
 
-			ve = tifiles_ve_create();
+			VarEntry* ve = tifiles_ve_create();
 			ticalcs_strlcpy(ve->name, varname, sizeof(ve->name));
 			ve->size = (  (((uint32_t)(attr[0]->data[0])) << 24)
 			            | (((uint32_t)(attr[0]->data[1])) << 16)
@@ -299,7 +285,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				break;
 			}
 
-			utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+			char* utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 			ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Parsing %s"), utf8);
 			ticonv_utf8_free(utf8);
 			ticalcs_update_label(handle);
@@ -313,11 +299,9 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
 	static const uint16_t pids[] = { DUSB_PID_FREE_RAM, DUSB_PID_FREE_FLASH };
 	const int size = sizeof(pids) / sizeof(uint16_t);
-	DUSBCalcParam **params;
-	int ret;
 
-	params = dusb_cp_new_array(handle, size);
-	ret = dusb_cmd_s_param_request(handle, size, pids);
+	DUSBCalcParam** params = dusb_cp_new_array(handle, size);
+	int ret = dusb_cmd_s_param_request(handle, size, pids);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_param_data(handle, size, params);
@@ -340,17 +324,15 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
-	DUSBCalcAttr **attrs;
 	const int nattrs = 3;
-	uint32_t length;
-	uint8_t *data, *p;
+	uint8_t*p;
 	int ret = 0;
 	static const uint16_t keys[] = {
 		KEY83P_Quit, KEY83P_LinkIO, KEY83P_Right, KEY83P_1
 	};
 	unsigned int i;
 
-	attrs = dusb_ca_new_array(handle, nattrs);
+	DUSBCalcAttr** attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI84p_BKUP;
@@ -369,8 +351,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	attrs[2]->data[6] = MSB(content->mem_address);
 	attrs[2]->data[7] = LSB(content->mem_address);
 
-	length = content->data_length1 + content->data_length2 + content->data_length3;
-	data = p = (uint8_t *)g_malloc(length);
+	const uint32_t length = content->data_length1 + content->data_length2 + content->data_length3;
+	uint8_t* data = p = (uint8_t*)g_malloc(length);
 	memcpy(p, content->data_part1, content->data_length1);
 	p += content->data_length1;
 	memcpy(p, content->data_part2, content->data_length2);
@@ -440,15 +422,12 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	unsigned int i;
 	int ret = 0;
 
-	for (i = 0; i < content->num_entries; i++)
+	for (unsigned int i = 0; i < content->num_entries; i++)
 	{
-		DUSBCalcAttr **attrs;
 		const int nattrs = 3;
 		VarEntry *entry = content->entries[i];
-		uint32_t size;
 
 		if (!ticalcs_validate_varentry(entry))
 		{
@@ -465,7 +444,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		ticonv_varname_to_utf8_sn(handle->model, entry->name, handle->updat->text, sizeof(handle->updat->text), entry->type);
 		ticalcs_update_label(handle);
 
-		attrs = dusb_ca_new_array(handle, nattrs);
+		DUSBCalcAttr** attrs = dusb_ca_new_array(handle, nattrs);
 		attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
 		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = entry->type;
@@ -474,7 +453,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		attrs[2] = dusb_ca_new(handle, DUSB_AID_VAR_VERSION, 4);
 		attrs[2]->data[3] = entry->version;
 
-		size = entry->size;
+		const uint32_t size = entry->size;
 		if (entry->size >= 65536U)
 		{
 			ticalcs_critical("%s: variable size %u is suspiciously large", __FUNCTION__, size);
@@ -521,22 +500,19 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 {
 	static const uint16_t aids[] = { DUSB_AID_ARCHIVED, DUSB_AID_VAR_VERSION, DUSB_AID_VAR_SIZE };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
-	DUSBCalcAttr **attrs;
 	const int nattrs = 1;
 	char fldname[40], varname[40];
 	uint8_t *data;
-	VarEntry *ve;
-	int ret;
 
 	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
 	ticalcs_update_label(handle);
 
-	attrs = dusb_ca_new_array(handle, nattrs);
+	DUSBCalcAttr** attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
-	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
+	int ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
 	dusb_ca_del_array(handle, attrs, nattrs);
 	if (!ret)
 	{
@@ -544,7 +520,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 		ret = dusb_cmd_r_var_header(handle, fldname, varname, attrs);
 		if (!ret)
 		{
-			ret = dusb_cmd_r_var_content(handle, NULL, &data);
+			ret = dusb_cmd_r_var_content(handle, nullptr, &data);
 			if (!ret)
 			{
 				content->model = handle->model;
@@ -552,7 +528,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 				content->num_entries = 1;
 
 				content->entries = tifiles_ve_create_array(1);
-				ve = content->entries[0] = tifiles_ve_create();
+				VarEntry* ve = content->entries[0] = tifiles_ve_create();
 				memcpy(ve, vr, sizeof(VarEntry));
 
 				ve->size = (  (((uint32_t)(attrs[2]->data[0])) << 24)
@@ -610,16 +586,16 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	uint32_t size;
 
 	// search for data header
-	for (ptr = content; ptr != NULL; ptr = ptr->next)
+	for (ptr = content; ptr != nullptr; ptr = ptr->next)
 	{
 		if (ptr->data_type == TI83p_AMS || ptr->data_type == TI83p_APPL)
 		{
 			break;
 		}
 	}
-	if (   ptr == NULL
-	    || ptr->data_type != TI83p_APPL
-	    || ptr->pages == NULL)
+	if (   ptr == nullptr
+	       || ptr->data_type != TI83p_APPL
+	    || ptr->pages == nullptr)
 	{
 		return ERR_INVALID_PARAMETER;
 	}
@@ -638,7 +614,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 	size = ptr->num_pages * FLASH_PAGE_SIZE;
 	data = (uint8_t *)tifiles_fp_alloc_data(size);	// must be rounded-up
-	if (data == NULL)
+	if (data == nullptr)
 	{
 		return ERR_MALLOC;
 	}
@@ -700,30 +676,26 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 static int		send_flash_834pce	(CalcHandle* handle, FlashContent* content)
 {
 	FlashContent *ptr;
-	DUSBCalcAttr **attrs;
 	const int nattrs = 2;
 	int ret = 0;
 
-	uint8_t *data;
-	uint32_t size;
-
 	// search for data header
-	for (ptr = content; ptr != NULL; ptr = ptr->next)
+	for (ptr = content; ptr != nullptr; ptr = ptr->next)
 	{
 		if (ptr->data_type == TI83p_AMS || ptr->data_type == TI83p_APPL)
 		{
 			break;
 		}
 	}
-	if (   ptr == NULL
-	    || ptr->data_type != TI83p_APPL
-	    || ptr->data_part == NULL)
+	if (   ptr == nullptr
+	       || ptr->data_type != TI83p_APPL
+	    || ptr->data_part == nullptr)
 	{
 		return ERR_INVALID_PARAMETER;
 	}
 
-	size = ptr->data_length;
-	data = ptr->data_part;
+	const uint32_t size = ptr->data_length;
+	uint8_t* data = ptr->data_part;
 
 	handle->updat->cnt2 = 0;
 	handle->updat->max2 = 0;
@@ -732,7 +704,7 @@ static int		send_flash_834pce	(CalcHandle* handle, FlashContent* content)
 	ticonv_varname_to_utf8_sn(handle->model, ptr->name, handle->updat->text, sizeof(handle->updat->text), ptr->data_type);
 	ticalcs_update_label(handle);
 
-	attrs = dusb_ca_new_array(handle, nattrs);
+	DUSBCalcAttr** attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0F;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ptr->data_type;
@@ -765,26 +737,23 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 {
 	static const uint16_t aids[] = { DUSB_AID_ARCHIVED, DUSB_AID_VAR_VERSION };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
-	DUSBCalcAttr **attrs;
 	const int nattrs = 1;
 	char fldname[40], varname[40];
 	uint8_t *data;
 	uint32_t data_length;
 	int page;
-	uint16_t data_addr = 0x4000;
+	const uint16_t data_addr = 0x4000;
 	uint16_t data_page = 0;
-	int r, q;
-	int ret;
 
 	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
 	ticalcs_update_label(handle);
 
-	attrs = dusb_ca_new_array(handle, nattrs);
+	DUSBCalcAttr** attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
-	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
+	int ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
 	dusb_ca_del_array(handle, attrs, nattrs);
 	if (!ret)
 	{
@@ -801,8 +770,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 				content->data_type = vr->type;
 				content->device_type = DEVICE_TYPE_83P;
 
-				q = data_length / FLASH_PAGE_SIZE;
-				r = data_length % FLASH_PAGE_SIZE;
+				const int q = data_length / FLASH_PAGE_SIZE;
+				const int r = data_length % FLASH_PAGE_SIZE;
 				content->num_pages = q + 1;
 				content->pages = tifiles_fp_create_array(content->num_pages);
 
@@ -851,22 +820,20 @@ static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarReq
 {
 	static const uint16_t aids[] = { DUSB_AID_ARCHIVED, DUSB_AID_VAR_VERSION };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
-	DUSBCalcAttr **attrs;
 	const int nattrs = 1;
 	char fldname[40], varname[40];
 	uint8_t *data;
 	uint32_t data_length;
-	int ret;
 
 	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
 	ticalcs_update_label(handle);
 
-	attrs = dusb_ca_new_array(handle, nattrs);
+	DUSBCalcAttr** attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0F;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
-	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
+	int ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
 	dusb_ca_del_array(handle, attrs, nattrs);
 	if (!ret)
 	{
@@ -897,23 +864,23 @@ static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarReq
 
 static int		send_os    (CalcHandle* handle, FlashContent* content)
 {
-	DUSBModeSet mode = { 2, 1, 0, 0, 0x0fa0 }; //MODE_BASIC;
+	const DUSBModeSet mode = { 2, 1, 0, 0, 0x0fa0 }; //MODE_BASIC;
 	uint32_t pkt_size = 266;
 	uint32_t os_size = 0;
 	FlashContent *ptr;
-	unsigned int i, j;
+	unsigned int i;
 	int boot = 0;
 	int ret;
 
 	// search for data header
-	for (ptr = content; ptr != NULL; ptr = ptr->next)
+	for (ptr = content; ptr != nullptr; ptr = ptr->next)
 	{
 		if (ptr->data_type == TI83p_AMS || ptr->data_type == TI83p_APPL)
 		{
 			break;
 		}
 	}
-	if (ptr == NULL)
+	if (ptr == nullptr)
 	{
 		return ERR_INVALID_PARAMETER;
 	}
@@ -921,7 +888,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	{
 		return ERR_INVALID_PARAMETER;
 	}
-	if (ptr->pages == NULL)
+	if (ptr->pages == nullptr)
 	{
 		return ERR_INVALID_PARAMETER;
 	}
@@ -961,7 +928,6 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	{
 		static const uint16_t pids[] = { DUSB_PID_OS_MODE };
 		const int size = sizeof(pids) / sizeof(uint16_t);
-		DUSBCalcParam **params;
 
 		// switch to BASIC mode
 		ret = dusb_cmd_s_mode_set(handle, mode);
@@ -981,7 +947,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		{
 			break;
 		}
-		params = dusb_cp_new_array(handle, size);
+		DUSBCalcParam** params = dusb_cp_new_array(handle, size);
 		ret = dusb_cmd_r_param_data(handle, size, params);
 		if (ret)
 		{
@@ -1066,7 +1032,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 			}
 			else
 			{
-				for (j = 0; j < fp->size; j += 256)
+				for (unsigned int j = 0; j < fp->size; j += 256)
 				{
 					ret = dusb_cmd_s_os_data(handle,
 						(uint16_t)(fp->addr + j), (uint8_t)fp->page, fp->flag,
@@ -1102,25 +1068,25 @@ end:
 
 static int		send_os_834pce    (CalcHandle* handle, FlashContent* content)
 {
-	DUSBModeSet mode = { 2, 1, 0, 0, 0x0fa0 }; //MODE_BASIC;
+	const DUSBModeSet mode = { 2, 1, 0, 0, 0x0fa0 }; //MODE_BASIC;
 	uint32_t pkt_size = 0x3ff;
 	uint32_t hdr_size = 0;
 	uint32_t hdr_offset = 0;
 	const uint32_t memory_offset = 0x30000U;
 	FlashContent *ptr;
 	uint8_t *d;
-	int i, r, q;
+	int i;
 	int ret;
 
 	// search for data header
-	for (ptr = content; ptr != NULL; ptr = ptr->next)
+	for (ptr = content; ptr != nullptr; ptr = ptr->next)
 	{
 		if (ptr->data_type == TI83p_AMS || ptr->data_type == TI83p_APPL)
 		{
 			break;
 		}
 	}
-	if (ptr == NULL)
+	if (ptr == nullptr)
 	{
 		return ERR_INVALID_PARAMETER;
 	}
@@ -1128,7 +1094,7 @@ static int		send_os_834pce    (CalcHandle* handle, FlashContent* content)
 	{
 		return ERR_INVALID_PARAMETER;
 	}
-	if (ptr->data_part == NULL)
+	if (ptr->data_part == nullptr)
 	{
 		return ERR_INVALID_PARAMETER;
 	}
@@ -1177,8 +1143,8 @@ static int		send_os_834pce    (CalcHandle* handle, FlashContent* content)
 		}
 
 		// send OS data
-		q = ptr->data_length / (pkt_size - 4);
-		r = ptr->data_length % (pkt_size - 4);
+		const int q = ptr->data_length / (pkt_size - 4);
+		const int r = ptr->data_length % (pkt_size - 4);
 
 		handle->updat->cnt2 = 0;
 		handle->updat->max2 = q;
@@ -1231,22 +1197,20 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 {
 	static const uint16_t aids[] = { DUSB_AID_ARCHIVED, DUSB_AID_VAR_VERSION };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
-	DUSBCalcAttr **attrs;
 	const int nattrs = 1;
 	char folder[40], name[40];
 	uint8_t *data;
-	uint32_t i, varsize;
-	int ret;
+	uint32_t varsize;
 
 	ticalcs_strlcpy(handle->updat->text, "ID-LIST", sizeof(handle->updat->text));
 	ticalcs_update_label(handle);
 
-	attrs = dusb_ca_new_array(handle, nattrs);
+	DUSBCalcAttr** attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI83p_IDLIST;
 
-	ret = dusb_cmd_s_var_request(handle, "", "IDList", naids, aids, nattrs, CA(attrs));
+	int ret = dusb_cmd_s_var_request(handle, "", "IDList", naids, aids, nattrs, CA(attrs));
 	dusb_ca_del_array(handle, attrs, nattrs);
 	if (!ret)
 	{
@@ -1257,7 +1221,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 			ret = dusb_cmd_r_var_content(handle, &varsize, &data);
 			if (!ret)
 			{
-				i = data[9];
+				uint32_t i = data[9];
 				data[9] = data[10];
 				data[10] = i;
 
@@ -1281,9 +1245,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos);
 static int		dump_rom_1	(CalcHandle* handle)
 {
 	CalcInfos infos;
-	int ret;
 
-	ret = get_version(handle, &infos);
+	int ret = get_version(handle, &infos);
 	if (!ret)
 	{
 		PAUSE(100);
@@ -1325,9 +1288,8 @@ static int		dump_rom_1	(CalcHandle* handle)
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
 	CalcInfos infos;
-	int ret;
 
-	ret = get_version(handle, &infos);
+	int ret = get_version(handle, &infos);
 	if (!ret)
 	{
 		PAUSE(100);
@@ -1335,7 +1297,6 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 		{
 			// The TI-eZ80 series does no longer provide direct remote program launch...
 			// Therefore, use a less sophisticated and more complicated way to queue keypresses.
-			unsigned int i;
 			static const uint16_t keys[] = {
 				0x40, 0x09, 0x09, 0xFC9C, /* Quit, Clear, Clear, Asm( */
 				0xDA, 0xAB, 0xA8, 0xA6,   /* prgm, R, O, M */
@@ -1345,7 +1306,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 
 			// Launch program by remote control
 			PAUSE(200);
-			for (i = 0; i < sizeof(keys) / sizeof(keys[0]); i++)
+			for (unsigned int i = 0; i < sizeof(keys) / sizeof(keys[0]); i++)
 			{
 				ret = send_key(handle, (uint32_t)(keys[i]));
 				if (ret)
@@ -1380,22 +1341,20 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 {
 	static const uint16_t pids[2] = { DUSB_PID_CLASSIC_CLK_SUPPORT, DUSB_PID_NEW_CLK_SUPPORT };
 	const int size = sizeof(pids) / sizeof(uint16_t);
-	DUSBCalcParam **params;
-	int ret;
 
 	// get raw clock
 	ticalcs_strlcpy(handle->updat->text, _("Getting clock..."), sizeof(handle->updat->text));
 	ticalcs_update_label(handle);
 
-	params = dusb_cp_new_array(handle, size);
-	ret = dusb_cmd_s_param_request(handle, size, pids);
+	DUSBCalcParam** params = dusb_cp_new_array(handle, size);
+	int ret = dusb_cmd_s_param_request(handle, size, pids);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_param_data(handle, size, params);
 		if (!ret)
 		{
-			int classic_clock = !!params[0]->ok && !!!params[1]->ok;
-			int new_clock = !!!params[0]->ok && !!params[1]->ok;
+			const int classic_clock = !!params[0]->ok && !!!params[1]->ok;
+			const int new_clock = !!!params[0]->ok && !!params[1]->ok;
 			if ((!classic_clock && !new_clock) || (classic_clock && new_clock))
 			{
 				ticalcs_warning(_("Could not determine clock type: %u %u"), params[0]->ok, params[1]->ok);
@@ -1530,22 +1489,20 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 		DUSB_PID_CLK_SECONDS, DUSB_PID_CLK_MINUTES, DUSB_PID_CLK_HOURS, DUSB_PID_CLK_DAY, DUSB_PID_CLK_MONTH, DUSB_PID_CLK_YEAR
 	};
 	const int size = sizeof(pids) / sizeof(uint16_t);
-	DUSBCalcParam **params;
-	int ret;
 
 	// get raw clock
 	ticalcs_strlcpy(handle->updat->text, _("Getting clock..."), sizeof(handle->updat->text));
 	ticalcs_update_label(handle);
 
-	params = dusb_cp_new_array(handle, size);
-	ret = dusb_cmd_s_param_request(handle, size, pids);
+	DUSBCalcParam** params = dusb_cp_new_array(handle, size);
+	int ret = dusb_cmd_s_param_request(handle, size, pids);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_param_data(handle, size, params);
 		if (!ret)
 		{
-			int classic_clock = !!params[0]->ok && !!!params[1]->ok;
-			int new_clock = !!!params[0]->ok && !!params[1]->ok;
+			const int classic_clock = !!params[0]->ok && !!!params[1]->ok;
+			const int new_clock = !!!params[0]->ok && !!params[1]->ok;
 			if ((!classic_clock && !new_clock) || (classic_clock && new_clock))
 			{
 				ticalcs_warning(_("Could not determine clock type: %u %u"), params[0]->ok, params[1]->ok);
@@ -1559,8 +1516,8 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 				{
 					struct tm ref, cur;
 					time_t r, c, now;
-					uint8_t * data = params[3]->data;
-					uint32_t calc_time = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (data[3] << 0);
+					const uint8_t * data = params[3]->data;
+					const uint32_t calc_time = (((uint32_t)data[0]) << 24) | (((uint32_t)data[1]) << 16) | (((uint32_t)data[2]) << 8) | (data[3] << 0);
 
 					ticalcs_info("%s", _("Found valid classic clock"));
 
@@ -1617,7 +1574,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 				    && params[10]->ok && params[10]->size == 1
 				    && params[11]->ok && params[11]->size == 2)
 				{
-					uint8_t * data = params[11]->data;
+					const uint8_t * data = params[11]->data;
 
 					ticalcs_info("%s", _("Found valid new clock"));
 
@@ -1647,22 +1604,19 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
-	DUSBCalcAttr **attr;
 	const int size = 1;
-	char *utf8;
-	int ret;
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
+	char* utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Deleting %s..."), utf8);
 	ticonv_utf8_free(utf8);
 	ticalcs_update_label(handle);
 
-	attr = dusb_ca_new_array(handle, size);
+	DUSBCalcAttr** attr = dusb_ca_new_array(handle, size);
 	attr[0] = dusb_ca_new(handle, 0x0011, 4);
 	attr[0]->data[0] = 0xF0; attr[0]->data[1] = 0x0B;
 	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
 
-	ret = dusb_cmd_s_var_delete(handle, "", vr->name, size, CA(attr));
+	int ret = dusb_cmd_s_var_delete(handle, "", vr->name, size, CA(attr));
 	dusb_ca_del_array(handle, attr, size);
 	if (!ret)
 	{
@@ -1674,16 +1628,14 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
 {
-	DUSBCalcAttr **attrs;
 	const int size = 1;
-	int ret;
 
-	attrs = dusb_ca_new_array(handle, size);
+	DUSBCalcAttr** attrs = dusb_ca_new_array(handle, size);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = oldname->type;
 
-	ret = dusb_cmd_s_var_modify(handle, "", oldname->name, 1, CA(attrs), "", newname->name, 0, NULL);
+	int ret = dusb_cmd_s_var_modify(handle, "", oldname->name, 1, CA(attrs), "", newname->name, 0, nullptr);
 	dusb_ca_del_array(handle, attrs, size);
 	if (!ret)
 	{
@@ -1695,21 +1647,17 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 
 static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 {
-	DUSBCalcAttr **srcattrs;
-	DUSBCalcAttr **dstattrs;
-	int ret;
-
-	srcattrs = dusb_ca_new_array(handle, 1);
+	DUSBCalcAttr** srcattrs = dusb_ca_new_array(handle, 1);
 	srcattrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
 	srcattrs[0]->data[0] = 0xF0; srcattrs[0]->data[1] = 0x07;
 	srcattrs[0]->data[2] = 0x00; srcattrs[0]->data[3] = vr->type;
 
-	dstattrs = dusb_ca_new_array(handle, 1);
+	DUSBCalcAttr** dstattrs = dusb_ca_new_array(handle, 1);
 	dstattrs[0] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
 	/* use 0xff here rather than 0x01 to work around an OS bug */
 	dstattrs[0]->data[0] = (attr == ATTRB_ARCHIVED ? 0xff : 0x00);
 
-	ret = dusb_cmd_s_var_modify(handle, "", vr->name, 1, CA(srcattrs), "", vr->name, 1, CA(dstattrs));
+	int ret = dusb_cmd_s_var_modify(handle, "", vr->name, 1, CA(srcattrs), "", vr->name, 1, CA(dstattrs));
 	dusb_ca_del_array(handle, dstattrs, 1);
 	dusb_ca_del_array(handle, srcattrs, 1);
 	if (!ret)
@@ -1732,19 +1680,17 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		DUSB_PID_BATTERY_ENOUGH, DUSB_PID_MATH_CAPABILITIES, DUSB_PID_PYTHON_ON_BOARD, DUSB_PID_CLASSIC_CLK_SUPPORT
 	};
 	const int size = sizeof(pids) / sizeof(uint16_t);
-	DUSBCalcParam **params;
 	int i = 0;
-	int ret;
 
 	ticalcs_strlcpy(handle->updat->text, _("Getting version..."), sizeof(handle->updat->text));
 	ticalcs_update_label(handle);
 
 	memset(infos, 0, sizeof(CalcInfos));
-	params = dusb_cp_new_array(handle, size);
+	DUSBCalcParam** params = dusb_cp_new_array(handle, size);
 
 	// TODO rewrite this function to ask for parameters in multiple phases, starting with 0x000A, then
 	// model-dependent sets of parameters. That's how TI-Connect CE 5.x does.
-	ret = dusb_cmd_s_param_request(handle, size, pids);
+	int ret = dusb_cmd_s_param_request(handle, size, pids);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_param_data(handle, size, params);

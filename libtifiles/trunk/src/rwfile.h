@@ -34,11 +34,9 @@
 */
 static inline int fread_n_bytes(FILE * f, unsigned int n, uint8_t *s)
 {
-	if (s == NULL)
+	if (s == nullptr)
 	{
-		unsigned int i;
-
-		for (i = 0; i < n; i++)
+		for (unsigned int i = 0; i < n; i++)
 		{
 			if (fgetc(f) == EOF)
 			{
@@ -98,7 +96,7 @@ static inline int fskip(FILE * f, int n)
 
 static inline int fread_byte(FILE * f, uint8_t * data)
 {
-	if (data != NULL)
+	if (data != nullptr)
 	{
 		return (fread((void *) data, sizeof(uint8_t), 1, f) < 1) ? -1 : 0;
 	}
@@ -113,7 +111,7 @@ static inline int fread_word(FILE * f, uint16_t * data)
 	int ret = 0;
 	uint16_t localdata;
 
-	if (data != NULL)
+	if (data != nullptr)
 	{
 		ret = (fread((void *)&localdata, sizeof(uint16_t), 1, f) < 1) ? -1 : 0;
 		*data = GUINT16_FROM_LE(localdata);
@@ -131,7 +129,7 @@ static inline int fread_long(FILE * f, uint32_t * data)
 	int ret = 0;
 	uint32_t localdata;
 
-	if (data != NULL)
+	if (data != nullptr)
 	{
 		ret = (fread((void *)&localdata, sizeof(uint32_t), 1, f) < 1) ? -1 : 0;
 		*data = GUINT32_FROM_LE(localdata);

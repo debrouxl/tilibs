@@ -87,7 +87,7 @@ static CableFncts const *const cables[] =
 #if !defined(NO_CABLE_TCPS) && !defined(__WIN32__)
 	&cable_tcps,
 #endif
-	NULL
+	nullptr
 };
 
 static const uint64_t supported_cables =
@@ -195,9 +195,9 @@ int TICALL ticables_library_init(void)
 	usb_init();
 #elif defined(HAVE_LIBUSB_1_0)
 	// init libusb, keeping track of success / failure status
-	libusb_working = libusb_init(NULL);
+	libusb_working = libusb_init(nullptr);
 	if (libusb_working == LIBUSB_SUCCESS) {
-		libusb_set_debug(NULL, 3);
+		libusb_set_debug(nullptr, 3);
 	}
 #endif
 
@@ -219,7 +219,7 @@ int TICALL ticables_library_exit(void)
 #elif defined(HAVE_LIBUSB_1_0)
 	// Must not call libusb_exit() if libusb_init() failed, or call it multiple times.
 	if (ticables_instance == 1 && libusb_working == LIBUSB_SUCCESS) {
-		libusb_exit(NULL);
+		libusb_exit(nullptr);
 	}
 #endif
 	return (--ticables_instance);
@@ -283,7 +283,7 @@ static int default_event_hook(CableHandle * handle, uint32_t event_count, const 
 	(void)user_pointer;
 	const char * cablestr = ticables_model_to_string(ticables_get_model(handle));
 	const char * portstr = ticables_port_to_string(ticables_get_port(handle));
-	if (getenv("TICABLES_EVENT_DEBUG") != NULL)
+	if (getenv("TICABLES_EVENT_DEBUG") != nullptr)
 	{
 		ticables_info("Event #%u type %d for cable %s port %s", event_count, event->type, cablestr, portstr);
 	}
@@ -320,7 +320,6 @@ static int default_event_hook(CableHandle * handle, uint32_t event_count, const 
 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort port)
 {
 	CableHandle *handle = (CableHandle *)calloc(1, sizeof(CableHandle));
-	int i;
 
 	handle->model = model;
 	handle->port = port;
@@ -328,7 +327,7 @@ CableHandle* TICALL ticables_handle_new(CableModel model, CablePort port)
 	handle->delay = DFLT_DELAY;
 	handle->timeout = DFLT_TIMEOUT;
 
-	for (i = 0; cables[i] != NULL; i++)
+	for (int i = 0; cables[i] != nullptr; i++)
 	{
 		if (cables[i]->model == model)
 		{
@@ -337,13 +336,13 @@ CableHandle* TICALL ticables_handle_new(CableModel model, CablePort port)
 		}
 	}
 
-	if (handle->cable == NULL)
+	if (handle->cable == nullptr)
 	{
 		free(handle);
-		handle = NULL;
+		handle = nullptr;
 	}
 
-	if (handle != NULL)
+	if (handle != nullptr)
 	{
 		handle->event_hook = default_event_hook;
 		//handle->event_count = 0;
@@ -365,10 +364,10 @@ int TICALL ticables_handle_del(CableHandle* handle)
 	VALIDATE_HANDLE(handle);
 
 	free(handle->priv2);
-	handle->priv2 = NULL;
+	handle->priv2 = nullptr;
 
 	free(handle->device);
-	handle->device = NULL;
+	handle->device = nullptr;
 
 	memset((void *)handle, 0, sizeof(*handle));
 	free(handle);
@@ -387,13 +386,12 @@ int TICALL ticables_handle_del(CableHandle* handle)
  **/
 unsigned int TICALL ticables_options_set_timeout(CableHandle* handle, unsigned int timeout)
 {
-	if (handle != NULL)
+	if (handle != nullptr)
 	{
-		const CableFncts *cable;
-		unsigned int old_timeout = handle->timeout;
+		const unsigned int old_timeout = handle->timeout;
 
 		handle->timeout = timeout;
-		cable = handle->cable;
+		const CableFncts* cable = handle->cable;
 
 		if(!handle->open)
 		{
@@ -431,9 +429,9 @@ unsigned int TICALL ticables_options_set_timeout(CableHandle* handle, unsigned i
  **/
 unsigned int TICALL ticables_options_set_delay(CableHandle* handle, unsigned int delay)
 {
-	if (handle != NULL)
+	if (handle != nullptr)
 	{
-		unsigned int old_delay = handle->delay;
+		const unsigned int old_delay = handle->delay;
 		handle->delay = delay;
 		return old_delay;
 	}
@@ -454,7 +452,7 @@ unsigned int TICALL ticables_options_set_delay(CableHandle* handle, unsigned int
  **/
 CableModel TICALL ticables_get_model(CableHandle* handle)
 {
-	if (handle != NULL)
+	if (handle != nullptr)
 	{
 		return handle->model;
 	}
@@ -475,7 +473,7 @@ CableModel TICALL ticables_get_model(CableHandle* handle)
  **/
 CablePort TICALL ticables_get_port(CableHandle* handle)
 {
-	if (handle != NULL)
+	if (handle != nullptr)
 	{
 		return handle->port;
 	}
@@ -496,14 +494,14 @@ CablePort TICALL ticables_get_port(CableHandle* handle)
  **/
 const char * TICALL ticables_get_device(CableHandle* handle)
 {
-	if (handle != NULL)
+	if (handle != nullptr)
 	{
 		return handle->device;
 	}
 	else
 	{
 		ticables_critical("%s(NULL)", __FUNCTION__);
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -517,7 +515,7 @@ const char * TICALL ticables_get_device(CableHandle* handle)
  **/
 unsigned int TICALL ticables_get_timeout(CableHandle *handle)
 {
-	if (handle != NULL)
+	if (handle != nullptr)
 	{
 		return handle->timeout;
 	}
@@ -538,7 +536,7 @@ unsigned int TICALL ticables_get_timeout(CableHandle *handle)
  **/
 unsigned int TICALL ticables_get_delay(CableHandle *handle)
 {
-	if (handle != NULL)
+	if (handle != nullptr)
 	{
 		return handle->delay;
 	}
@@ -559,7 +557,7 @@ unsigned int TICALL ticables_get_delay(CableHandle *handle)
  **/
 int TICALL ticables_handle_show(CableHandle* handle)
 {
-	if (handle != NULL)
+	if (handle != nullptr)
 	{
 		ticables_info("%s", _("Link cable handle details:"));
 		ticables_info(_("  model   : %s"), ticables_model_to_string(handle->model));

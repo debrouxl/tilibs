@@ -77,7 +77,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 	char varname[VARNAME_MAX];
 	int ret = ERR_FILE_IO;
 
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -90,7 +90,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 	}
 
 	f = g_fopen(filename, "rb");
-	if (f == NULL) 
+	if (f == nullptr) 
 	{
 		ret = ERR_FILE_OPEN;
 		goto tfrr2;
@@ -123,7 +123,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 		content->model_dst = content->model;
 	}
 
-	if (fread_word(f, NULL) < 0) goto tfrr; // Offset 0x8
+	if (fread_word(f, nullptr) < 0) goto tfrr; // Offset 0x8
 	if (fread_8_chars(f, default_folder) < 0) goto tfrr; // Offset 0xA
 	ticonv_varname_from_tifile_sn(content->model_dst, default_folder, content->default_folder, sizeof(content->default_folder), -1);
 	strncpy(current_folder, content->default_folder, sizeof(current_folder) - 1);
@@ -133,7 +133,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 	content->num_entries = tmp;
 
 	content->entries = (VarEntry **)g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
-	if (content->entries == NULL) 
+	if (content->entries == nullptr) 
 	{
 		ret = ERR_MALLOC;
 		goto tfrr;
@@ -155,7 +155,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 		if (fread_byte(f, &(entry->type)) < 0) goto tfrr; // Offset N+12, 0x48 for the first entry
 		if (fread_byte(f, &attr) < 0) goto tfrr; // Offset N+13, 0x49 for the first entry
 		entry->attr = (attr == 2 || attr == 3) ? ATTRB_ARCHIVED : (FileAttr)attr;
-		if (fread_word(f, NULL) < 0) goto tfrr; // Offset N+14, 0x4A for the first entry
+		if (fread_word(f, nullptr) < 0) goto tfrr; // Offset N+14, 0x4A for the first entry
 
 		if (entry->type == TI92_DIR) // same as TI89_DIR, TI89t_DIR, ...
 		{
@@ -186,14 +186,14 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 				goto tfrr;
 			}
 			entry->data = (uint8_t *)g_malloc0(entry->size);
-			if (entry->data == NULL) 
+			if (entry->data == nullptr) 
 			{
 				ret = ERR_MALLOC;
 				goto tfrr;
 			}
 
 			if (fseek(f, curr_offset, SEEK_SET)) goto tfrr;
-			if (fread_long(f, NULL) < 0) goto tfrr;	// Normally: offset N+22, 0x52 for the first entry
+			if (fread_long(f, nullptr) < 0) goto tfrr;	// Normally: offset N+22, 0x52 for the first entry
 			if (fread(entry->data, 1, entry->size, f) < entry->size) goto tfrr; // Normally: offset N+26, 0x56 for the first entry
 
 			if (fread_word(f, &checksum) < 0) goto tfrr;
@@ -246,7 +246,7 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 	uint16_t sum;
 	int ret = ERR_FILE_IO;
 
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -259,7 +259,7 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 	}
 
 	f = g_fopen(filename, "rb");
-	if (f == NULL) 
+	if (f == nullptr) 
 	{
 		tifiles_info( "Unable to open this file: %s", filename);
 		ret = ERR_FILE_OPEN;
@@ -287,15 +287,15 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 		ret = ERR_INVALID_FILE;
 	}
 
-	if (fread_word(f, NULL) < 0) goto tfrb;
-	if (fread_8_chars(f, NULL) < 0) goto tfrb;
+	if (fread_word(f, nullptr) < 0) goto tfrb;
+	if (fread_8_chars(f, nullptr) < 0) goto tfrb;
 	if (fread_n_chars(f, 40, content->comment) < 0) goto tfrb;
-	if (fread_word(f, NULL) < 0) goto tfrb;
-	if (fread_long(f, NULL) < 0) goto tfrb;
+	if (fread_word(f, nullptr) < 0) goto tfrb;
+	if (fread_long(f, nullptr) < 0) goto tfrb;
 	if (fread_8_chars(f, content->rom_version) < 0) goto tfrb;
 	if (fread_byte(f, &(content->type)) < 0) goto tfrb;
-	if (fread_byte(f, NULL) < 0) goto tfrb;
-	if (fread_word(f, NULL) < 0) goto tfrb;
+	if (fread_byte(f, nullptr) < 0) goto tfrb;
+	if (fread_word(f, nullptr) < 0) goto tfrb;
 	if (fread_long(f, &file_size) < 0) goto tfrb;
 	if (file_size > (uint32_t)cur_pos)
 	{
@@ -303,10 +303,10 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 		goto tfrb;
 	}
 	content->data_length = file_size - 0x52 - 2;
-	if (fread_word(f, NULL) < 0) goto tfrb;
+	if (fread_word(f, nullptr) < 0) goto tfrb;
 
 	content->data_part = (uint8_t *)g_malloc0(content->data_length);
-	if (content->data_part == NULL) 
+	if (content->data_part == nullptr) 
 	{
 		ret = ERR_MALLOC;
 		goto tfrb;
@@ -336,9 +336,8 @@ tfrb2:
 static int check_device_type(uint8_t id)
 {
 	static const uint8_t types[] = { 0, DEVICE_TYPE_89, DEVICE_TYPE_92P };
-	int i;
 
-	for (i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
+	for (int i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
 	{
 		if (types[i] == id)
 		{
@@ -352,9 +351,8 @@ static int check_device_type(uint8_t id)
 static int check_data_type(uint8_t id)
 {
 	static const uint8_t types[] = { 0, TI89_AMS, TI89_APPL, TI89_CERTIF, TI89_LICENSE };
-	int i;
 
-	for (i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
+	for (int i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
 	{
 		if (types[i] == id)
 		{
@@ -386,7 +384,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	char signature[9];
 	int ret = ERR_FILE_IO;
 
-	if (head == NULL)
+	if (head == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -402,7 +400,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	tib = tifiles_file_is_tib(filename);
 
 	f = g_fopen(filename, "rb");
-	if (f == NULL) 
+	if (f == nullptr) 
 	{
 		tifiles_info("Unable to open this file: %s", filename);
 		ret = ERR_FILE_OPEN;
@@ -434,7 +432,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 		content->data_type = 0x23;	// FLASH os
 
 		content->data_part = (uint8_t *)g_malloc0(content->data_length);
-		if (content->data_part == NULL) 
+		if (content->data_part == nullptr) 
 		{
 			ret = ERR_MALLOC;
 			goto tfrf;
@@ -451,7 +449,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 			case 9: content->device_type = DEVICE_TYPE_89; break;	// Titanium
 		}
 
-		content->next = NULL;
+		content->next = nullptr;
 	} 
 	else 
 	{
@@ -494,7 +492,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 			}
 
 			content->data_part = (uint8_t *)g_malloc0(content->data_length);
-			if (content->data_part == NULL)
+			if (content->data_part == nullptr)
 			{
 				ret = ERR_MALLOC;
 				goto tfrf;
@@ -507,7 +505,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 				ret = ERR_INVALID_FILE;
 				goto tfrf;
 			}
-			content->next = NULL;
+			content->next = nullptr;
 
 			// check for end of file
 			if (fread_8_chars(f, signature) < 0)
@@ -521,7 +519,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 			if (fseek(f, -8, SEEK_CUR)) goto tfrf;
 
 			content->next = (Ti9xFlash *)g_malloc0(sizeof(Ti9xFlash));
-			if (content->next == NULL) 
+			if (content->next == nullptr) 
 			{
 				ret = ERR_MALLOC;
 				goto tfrf;
@@ -560,25 +558,23 @@ tfrf2:
  **/
 int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real_fname)
 {
-	FILE *f;
 	unsigned int i;
-	char *filename = NULL;
+	char *filename = nullptr;
 	uint32_t offset = 0x52;
-	int **table;
 	unsigned int num_folders;
 	char default_folder[FLDNAME_MAX];
 	char fldname[FLDNAME_MAX], varname[VARNAME_MAX];
 
-	if (content->entries == NULL)
+	if (content->entries == nullptr)
 	{
 		tifiles_warning("%s: skipping content with NULL content->entries", __FUNCTION__);
 		return 0;
 	}
 
-	if (fname != NULL)
+	if (fname != nullptr)
 	{
 		filename = g_strdup(fname);
-		if (filename == NULL)
+		if (filename == nullptr)
 		{
 			return ERR_MALLOC;
 		}
@@ -592,28 +588,28 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 		else
 		{
 			tifiles_warning("%s: asked to build a filename from null content->entries[0], bailing out", __FUNCTION__);
-			if (real_fname != NULL)
+			if (real_fname != nullptr)
 			{
-				*real_fname = NULL;
+				*real_fname = nullptr;
 			}
 			return 0;
 		}
-		if (real_fname != NULL)
+		if (real_fname != nullptr)
 		{
 			*real_fname = g_strdup(filename);
 		}
 	}
 
 	// build the table of folder & variable entries
-	table = tifiles_create_table_of_entries((FileContent *)content, &num_folders);
-	if (table == NULL)
+	int** table = tifiles_create_table_of_entries((FileContent*)content, &num_folders);
+	if (table == nullptr)
 	{
 		g_free(filename);
 		return ERR_MALLOC;
 	}
 
-	f = g_fopen(filename, "wb");
-	if (f == NULL) 
+	FILE* f = g_fopen(filename, "wb");
+	if (f == nullptr) 
 	{
 		tifiles_info( "Unable to open this file: %s", filename);
 		tifiles_free_table_of_entries(table);
@@ -643,13 +639,12 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 	}
 
 	// write table of entries
-	for (i = 0; table[i] != NULL; i++) 
+	for (i = 0; table[i] != nullptr; i++) 
 	{
-		VarEntry *fentry;
 		int j, idx = table[i][0];
-		fentry = content->entries[idx];
+		const VarEntry* fentry = content->entries[idx];
 
-		if (fentry == NULL)
+		if (fentry == nullptr)
 		{
 			tifiles_warning("%s: skipping null content entry %d", __FUNCTION__, i);
 			continue;
@@ -668,8 +663,8 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 
 		for (j = 0; table[i][j] != -1; j++) 
 		{
-			int idx2 = table[i][j];
-			VarEntry *entry = content->entries[idx2];
+			const int idx2 = table[i][j];
+			const VarEntry *entry = content->entries[idx2];
 			uint8_t attr = ATTRB_NONE;
 
 			if (fwrite_long(f, offset) < 0) goto tfwr;
@@ -688,19 +683,16 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 	if (fwrite_word(f, 0x5aa5) < 0) goto tfwr;
 
 	// write data
-	for (i = 0; table[i] != NULL; i++) 
+	for (i = 0; table[i] != nullptr; i++) 
 	{
-		int j;
-
-		for (j = 0; table[i][j] != -1; j++) 
+		for (int j = 0; table[i][j] != -1; j++) 
 		{
-			int idx = table[i][j];
-			VarEntry *entry = content->entries[idx];
-			uint16_t sum;
+			const int idx = table[i][j];
+			const VarEntry *entry = content->entries[idx];
 
 			if (fwrite_long(f, 0) < 0) goto tfwr;
 			if (fwrite(entry->data, 1, entry->size, f) < entry->size) goto tfwr;
-			sum = tifiles_checksum(entry->data, entry->size);
+			const uint16_t sum = tifiles_checksum(entry->data, entry->size);
 			if (fwrite_word(f, sum) < 0) goto tfwr;
 		}
 	}
@@ -729,16 +721,14 @@ tfwr:	// release on exit
  **/
 int ti9x_file_write_backup(const char *filename, Ti9xBackup *content)
 {
-	FILE *f;
-
-	if (filename == NULL || content == NULL)
+	if (filename == nullptr || content == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
 	}
 
-	f = g_fopen(filename, "wb");
-	if (f == NULL) 
+	FILE* f = g_fopen(filename, "wb");
+	if (f == nullptr) 
 	{
 		tifiles_info("Unable to open this file: %s", filename);
 		return ERR_FILE_OPEN;
@@ -780,11 +770,10 @@ tfwb:	// release on exit
  **/
 int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
 {
-	FILE *f;
-	Ti9xFlash *content = head;
+	const Ti9xFlash *content = head;
 	char *filename;
 
-	if (head == NULL)
+	if (head == nullptr)
 	{
 		tifiles_critical("%s: head is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -793,7 +782,7 @@ int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
 	if (fname)
 	{
 		filename = g_strdup(fname);
-		if (filename == NULL)
+		if (filename == nullptr)
 		{
 			return ERR_MALLOC;
 		}
@@ -802,14 +791,14 @@ int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
 	{
 		VarEntry ve;
 
-		for (content = head; content != NULL; content = content->next)
+		for (content = head; content != nullptr; content = content->next)
 		{
 			if (content->data_type == TI89_AMS || content->data_type == TI89_APPL)
 			{
 				break;
 			}
 		}
-		if (content == NULL)
+		if (content == nullptr)
 		{
 			tifiles_critical("%s: content is NULL", __FUNCTION__);
 			return ERR_BAD_FILE;
@@ -820,21 +809,21 @@ int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
 		ve.type = content->data_type;
 
 		filename = tifiles_build_filename(content->model, &ve);
-		if (real_fname != NULL)
+		if (real_fname != nullptr)
 		{
 			*real_fname = g_strdup(filename);
 		}
 	}
 
-	f = g_fopen(filename, "wb");
-	if (f == NULL) 
+	FILE* f = g_fopen(filename, "wb");
+	if (f == nullptr) 
 	{
 		tifiles_info("Unable to open this file: %s", filename);
 		g_free(filename);
 		return ERR_FILE_OPEN;
 	}
 
-	for (content = head; content != NULL; content = content->next) 
+	for (content = head; content != nullptr; content = content->next) 
 	{
 		if (fwrite_8_chars(f, "**TIFL**") < 0) goto tfwf;
 		if (fwrite_byte(f, content->revision_major) < 0) goto tfwf;
@@ -880,7 +869,7 @@ tfwf:	// release on exit
  **/
 int ti9x_content_display_backup(Ti9xBackup *content)
 {
-	if (content == NULL)
+	if (content == nullptr)
 	{
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 		return ERR_INVALID_FILE;
@@ -911,9 +900,7 @@ int ti9x_content_display_backup(Ti9xBackup *content)
  **/
 int ti9x_content_display_flash(Ti9xFlash *content)
 {
-	Ti9xFlash *ptr;
-
-	for (ptr = content; ptr != NULL; ptr = ptr->next)
+	for (Ti9xFlash* ptr = content; ptr != nullptr; ptr = ptr->next)
 	{
 		tifiles_info("FlashContent for TI-9x: %p", ptr);
 		tifiles_info("Model:           %02X (%u)", ptr->model, ptr->model);
@@ -963,15 +950,12 @@ int ti9x_content_display_flash(Ti9xFlash *content)
  **/
 int ti9x_file_display(const char *filename)
 {
-	Ti9xRegular *content1;
-	Ti9xBackup *content2;
-	Ti9xFlash *content3;
 	int ret;
 
 	// the testing order is important: regular before backup (due to TI89/92+)
 	if (tifiles_file_is_flash(filename) || tifiles_file_is_tib(filename)) 
 	{
-		content3 = tifiles_content_create_flash(CALC_TI92);
+		Ti9xFlash* content3 = tifiles_content_create_flash(CALC_TI92);
 		ret = ti9x_file_read_flash(filename, content3);
 		if (!ret)
 		{
@@ -981,7 +965,7 @@ int ti9x_file_display(const char *filename)
 	} 
 	else if (tifiles_file_is_regular(filename)) 
 	{
-		content1 = tifiles_content_create_regular(CALC_TI92);
+		Ti9xRegular* content1 = tifiles_content_create_regular(CALC_TI92);
 		ret = ti9x_file_read_regular(filename, content1);
 		if (!ret)
 		{
@@ -991,7 +975,7 @@ int ti9x_file_display(const char *filename)
 	} 
 	else if (tifiles_file_is_backup(filename)) 
 	{
-		content2 = tifiles_content_create_backup(CALC_TI92);
+		Ti9xBackup* content2 = tifiles_content_create_backup(CALC_TI92);
 		ret = ti9x_file_read_backup(filename, content2);
 		if (!ret)
 		{

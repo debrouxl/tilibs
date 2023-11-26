@@ -68,7 +68,7 @@ static const Address addrs[] =
 	{ 0x0000, "TI" },
 	{ 0x6400, "PC" },
 	{ 0x6401, "TI" },
-	{ 0,      NULL },
+	{ 0, nullptr },
 };
 
 static const ServiceId sids[] = 
@@ -102,7 +102,7 @@ static const ServiceId sids[] =
 	{ 0x8007, "8007" },
 	{ 0x8009, "8009" },
 
-	{ 0,      NULL },
+	{ 0, nullptr },
 };
 
 /* */
@@ -119,9 +119,7 @@ static const ServiceId sids[] =
 
 static const char* name_of_sid(uint16_t id)
 {
-	int i;
-
-	for (i=0; sids[i].name; i++)
+	for (int i = 0; sids[i].name; i++)
 	{
 		if (id == sids[i].value)
 		{
@@ -134,9 +132,7 @@ static const char* name_of_sid(uint16_t id)
 
 static const char* name_of_addr(uint16_t addr)
 {
-	int i;
-
-	for (i=0; addrs[i].name; i++)
+	for (int i = 0; addrs[i].name; i++)
 	{
 		if (addr == addrs[i].value)
 		{
@@ -217,13 +213,12 @@ static int add_addr(uint16_t* array, uint16_t addr, int *count)
 
 /* */
 
-static FILE *hex = NULL;
-static FILE *logfile = NULL;
+static FILE *hex = nullptr;
+static FILE *logfile = nullptr;
 
 static int hex_read(unsigned char *data)
 {
 	static int idx = 0;
-	int ret;
 	int data2;
 
 	if (feof(hex))
@@ -231,7 +226,7 @@ static int hex_read(unsigned char *data)
 		return -1;
 	}
 
-	ret = fscanf(hex, "%02X", &data2);
+	const int ret = fscanf(hex, "%02X", &data2);
 	if (ret < 1)
 	{
 		return -1;
@@ -245,10 +240,8 @@ static int hex_read(unsigned char *data)
 
 	if (idx >= 16)
 	{
-		int i;
-
 		idx = 0;
-		for (i = 0; (i < 67-49) && !feof(hex); i++)
+		for (int i = 0; (i < 67-49) && !feof(hex); i++)
 		{
 			if (fgetc(hex) < 0)
 			{
@@ -275,7 +268,7 @@ static int dusb_write(int dir, uint8_t data)
 	static int cnt;
 	static uint8_t ascii[HEXDUMP_SIZE+1];
 
-	if (logfile == NULL)
+	if (logfile == nullptr)
 	{
 		return -1;
 	}
@@ -414,14 +407,14 @@ int nsp_decomp(const char *filename)
 	dst_name[sizeof(dst_name) - 1] = 0;
 
 	hex = fopen(src_name, "rt");
-	if (hex == NULL)
+	if (hex == nullptr)
 	{
 		fprintf(stderr, "Unable to open this file: %s\n", src_name);
 		return -1;
 	}
 
 	logfile = fopen(dst_name, "wt");
-	if (logfile == NULL)
+	if (logfile == nullptr)
 	{
 		fprintf(stderr, "Unable to open this file: %s\n", dst_name);
 		fclose(hex);
@@ -431,9 +424,9 @@ int nsp_decomp(const char *filename)
 	fprintf(logfile, "TI packet decompiler for NSpire, version 1.0\n");
 
 	// skip comments
-	if (   fgets(line, sizeof(line), hex) == NULL
-	    || fgets(line, sizeof(line), hex) == NULL
-	    || fgets(line, sizeof(line), hex) == NULL)
+	if (   fgets(line, sizeof(line), hex) == nullptr
+	       || fgets(line, sizeof(line), hex) == nullptr
+	       || fgets(line, sizeof(line), hex) == nullptr)
 	{
 		goto exit;
 	}
