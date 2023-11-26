@@ -297,7 +297,7 @@ int TICALL tifiles_file_display_regular(FileContent *content)
 		return ERR_BAD_CALC;
 	}
 
-	tifiles_info("Model:             %02X (%u)", content->model, content->model);
+	tifiles_info("Model:             %02X (%d)", (unsigned int)content->model, content->model);
 	tifiles_info("Signature:         %s", tifiles_calctype2signature(content->model));
 	tifiles_info("Comment:           %s", content->comment);
 	if (model_supports_folder)
@@ -334,7 +334,7 @@ int TICALL tifiles_file_display_regular(FileContent *content)
 	}
 
 	tifiles_info("Checksum:      %04X (%u)", content->checksum, content->checksum);
-	tifiles_info("Dest model:    %02X (%u)", content->model_dst, content->model_dst);
+	tifiles_info("Dest model:    %02X (%d)", (unsigned int)content->model_dst, content->model_dst);
 
 	return 0;
 }

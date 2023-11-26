@@ -28,6 +28,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#define __STDC_FORMAT_MACROS
+#include <cinttypes>
 
 #include <ticonv.h>
 #include "tifiles.h"
@@ -89,7 +91,7 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 		VarEntry *entry = content->entries[0] = (VarEntry *)g_malloc0(sizeof(VarEntry));
 
 		gchar *basename = g_path_get_basename(filename);
-		gchar *ext = tifiles_fext_get(basename);
+		gchar *ext = const_cast<char *>(tifiles_fext_get(basename));
 
 		entry->type = tifiles_fext2vartype(content->model, ext);
 		if (ext && ext[0]) *(ext-1) = '\0';
@@ -204,7 +206,7 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	{
 		goto tfrf;
 	}
-	content->revision_major = c;
+	content->revision_major = (uint8_t)c;
 
 	// Skip char.
 	c = fgetc(f);
@@ -219,7 +221,7 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	{
 		goto tfrf;
 	}
-	content->revision_minor = c;
+	content->revision_minor = (uint8_t)c;
 
 	// Skip chars.
 	c = fgetc(f);
@@ -237,7 +239,7 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 			goto tfrf;
 		}
 	}
-	if (fscanf(f, "%i", &(content->data_length)) < 1)
+	if (fscanf(f, "%" SCNu32, &(content->data_length)) < 1)
 	{
 		goto tfrf;
 	}
@@ -365,16 +367,16 @@ int tnsp_content_display_flash(FlashContent *content)
 	for (ptr = content; ptr != nullptr; ptr = ptr->next)
 	{
 		tifiles_info("FlashContent for TI-Nspire: %p", ptr);
-		tifiles_info("Model:           %02X (%u)", ptr->model, ptr->model);
+		tifiles_info("Model:           %02X (%d)", (unsigned int)ptr->model, ptr->model);
 		tifiles_info("Signature:       %s", tifiles_calctype2signature(ptr->model));
-		tifiles_info("model_dst:       %02X (%u)", ptr->model_dst, ptr->model_dst);
+		tifiles_info("model_dst:       %02X (%d)", (unsigned int)ptr->model_dst, ptr->model_dst);
 		tifiles_info("Revision:        %u.%u", ptr->revision_major, ptr->revision_minor);
 		tifiles_info("Flags:           %02X", ptr->flags);
 		tifiles_info("Object type:     %02X", ptr->object_type);
 		tifiles_info("Date:            %02X/%02X/%02X%02X", ptr->revision_day, ptr->revision_month, ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
 		tifiles_info("Name:            %s", ptr->name);
 		tifiles_info("Data type:       OS data");
-		tifiles_info("Length:          %08X (%i)", ptr->data_length, ptr->data_length);
+		tifiles_info("Length:          %08X (%" PRIu32 ")", ptr->data_length, ptr->data_length);
 		tifiles_info("Data part:       %p", ptr->data_part);
 		tifiles_info("Next:            %p", ptr->next);
 	}

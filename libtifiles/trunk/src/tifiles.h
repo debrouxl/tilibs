@@ -357,7 +357,7 @@ typedef struct
 	TIEXPORT2 const char* TICALL tifiles_fext_of_flash_os (CalcModel model);
 	TIEXPORT2 const char* TICALL tifiles_fext_of_certif   (CalcModel model);
 
-	TIEXPORT2 char* TICALL tifiles_fext_get (const char *filename);
+	TIEXPORT2 const char* TICALL tifiles_fext_get (const char *filename);
 	TIEXPORT2 char* TICALL tifiles_fext_dup (const char *filename);
 	TIEXPORT2 void  TICALL tifiles_fext_free(char *filename);
 

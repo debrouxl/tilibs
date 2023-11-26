@@ -172,7 +172,7 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 		{
 			if (tok2 != 0x09)
 			{
-				dst = g_strdup_printf("Image%d", tok2 + 1);
+				dst = g_strdup_printf("Image%u", tok2 + 1);
 			}
 			else
 			{
@@ -335,11 +335,11 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 	case 0x60:			/* Pictures */
 		if (model == CALC_TI73)
 		{
-			dst = g_strdup_printf("Pic%d", tok2);
+			dst = g_strdup_printf("Pic%u", tok2);
 		}
 		else if (tok2 != 0x09)
 		{
-			dst = g_strdup_printf("Pic%d", tok2 + 1);
+			dst = g_strdup_printf("Pic%u", tok2 + 1);
 		}
 		else
 		{
@@ -350,11 +350,11 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 	case 0x61:			/* GDB */
 		if (model == CALC_TI73)
 		{
-			dst = g_strdup_printf("GDB%d", tok2);
+			dst = g_strdup_printf("GDB%u", tok2);
 		}
 		else if (tok2 != 0x09)
 		{
-			dst = g_strdup_printf("GDB%d", tok2 + 1);
+			dst = g_strdup_printf("GDB%u", tok2 + 1);
 		}
 		else
 		{
@@ -489,11 +489,11 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 	case 0xAA:
 		if (model == CALC_TI73)
 		{
-			dst = g_strdup_printf("Str%d", tok2);
+			dst = g_strdup_printf("Str%u", tok2);
 		}
 		else if (tok2 != 0x09)
 		{
-			dst = g_strdup_printf("Str%d", tok2 + 1);
+			dst = g_strdup_printf("Str%u", tok2 + 1);
 		}
 		else
 		{
@@ -555,6 +555,7 @@ char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigne
 		{
 			return dst;
 		}
+		return g_strdup(src);
 	case CALC_TI89:
 	case CALC_TI89T:
 	case CALC_TI92:

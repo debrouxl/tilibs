@@ -32,4 +32,5 @@ if OS_MAC
   libticonv_la_LDFLAGS += -L/usr/local/opt/libiconv/lib/
   libticonv_la_LIBADD += -liconv
 endif
+  libticonv_la_CPPFLAGS += -DUSE_ICONV
 endif

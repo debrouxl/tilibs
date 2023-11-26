@@ -514,7 +514,7 @@ const char * TICALL tifiles_fext_of_certif(CalcModel model)
  *
  * Return value: a file extension without dot as string (like "89g").
  **/
-char * TICALL tifiles_fext_get(const char *filename)
+const char * TICALL tifiles_fext_get(const char *filename)
 {
 	if (filename != nullptr)
 	{

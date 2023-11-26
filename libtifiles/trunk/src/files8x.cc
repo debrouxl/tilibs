@@ -65,33 +65,33 @@ static int is_ti83p(CalcModel model)
 
 static uint16_t compute_backup_sum(BackupContent* content, uint16_t header_size)
 {
-	uint16_t sum= 0;
+	uint16_t sum = 0;
 
 	sum += header_size;
-	sum += tifiles_checksum((uint8_t *)&(content->data_length1), 2);
+	sum += tifiles_checksum((uint8_t *)&(content->data_length1), 2U);
 	sum += content->type;
 	if (header_size >= 12)
 	{
 		sum += content->version;
 	}
-	sum += tifiles_checksum((uint8_t *)&(content->data_length2), 2);
-	sum += tifiles_checksum((uint8_t *)&(content->data_length3), 2);
+	sum += tifiles_checksum((uint8_t *)&(content->data_length2), 2U);
+	sum += tifiles_checksum((uint8_t *)&(content->data_length3), 2U);
 	if (content->model != CALC_TI86)
 	{
-		sum += tifiles_checksum((uint8_t *)&(content->mem_address), 2);
+		sum += tifiles_checksum((uint8_t *)&(content->mem_address), 2U);
 	}
 	else
 	{
-		sum += tifiles_checksum((uint8_t *)&(content->data_length4), 2);
+		sum += tifiles_checksum((uint8_t *)&(content->data_length4), 2U);
 	}
 
-	sum += tifiles_checksum((uint8_t *)&(content->data_length1), 2);
+	sum += tifiles_checksum((uint8_t *)&(content->data_length1), 2U);
 	sum += tifiles_checksum(content->data_part1, content->data_length1);
-	sum += tifiles_checksum((uint8_t *)&(content->data_length2), 2);
+	sum += tifiles_checksum((uint8_t *)&(content->data_length2), 2U);
 	sum += tifiles_checksum(content->data_part2, content->data_length2);
-	sum += tifiles_checksum((uint8_t *)&(content->data_length3), 2);
+	sum += tifiles_checksum((uint8_t *)&(content->data_length3), 2U);
 	sum += tifiles_checksum(content->data_part3, content->data_length3);
-	sum += tifiles_checksum((uint8_t *)&(content->data_length4), 2);
+	sum += tifiles_checksum((uint8_t *)&(content->data_length4), 2U);
 	sum += tifiles_checksum(content->data_part4, content->data_length4);
 
 	return sum;
@@ -295,7 +295,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 		{
 			for (unsigned int j = 0; j < 8U - name_length; j++)
 			{
-				sum += fgetc(f);
+				sum += (uint8_t)fgetc(f);
 			}
 		}
 		if (ti83p_flag) 
@@ -312,7 +312,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 			else
 			{
 				entry->attr = ((attribute & 0x8000) ? ATTRB_ARCHIVED : ATTRB_NONE);
-				entry->version = attribute & 0xff;
+				entry->version = (uint8_t)(attribute & 0xff);
 			}
 
 			// Handle broken 84+CSE Pic files created by older versions of libtifiles.
@@ -336,15 +336,15 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 		if (fread(entry->data, 1, entry->size, f) < entry->size) goto tfrr;
 
 		sum += packet_length;
-		sum += tifiles_checksum((uint8_t *)&(entry->size), 2);
+		sum += tifiles_checksum((uint8_t *)&(entry->size), 2U);
 		sum += entry->type;
 		if (is_ti8586(content->model))
 		{
-			sum += strlen(entry->name);
+			sum += (uint16_t)strlen(entry->name);
 		}
 		sum += tifiles_checksum((uint8_t *)varname, name_length);
 		sum += 0; // see above (file may be padded with garbage)
-		sum += tifiles_checksum((uint8_t *)&(entry->size), 2);
+		sum += tifiles_checksum((uint8_t *)&(entry->size), 2U);
 		sum += tifiles_checksum(entry->data, entry->size);
 	}
 
@@ -575,7 +575,7 @@ static int check_data_type(uint8_t id)
 	return 0;
 }
 
-static int get_native_app_name(const FlashContent *content, char *buffer, size_t buffer_size)
+static int get_native_app_name(const FlashContent *content, char *buffer, uint32_t buffer_size)
 {
 	const uint8_t *data, *name;
 	uint32_t size, n;
@@ -859,7 +859,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 		const VarEntry *entry = content->entries[i];
 		if (entry == nullptr)
 		{
-			tifiles_warning("%s: skipping null content entry %d", __FUNCTION__, i);
+			tifiles_warning("%s: skipping null content entry %u", __FUNCTION__, i);
 			continue;
 		}
 
@@ -873,7 +873,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 		}
 		else if (content->model == CALC_TI85)
 		{
-			data_length += entry->size + 8 + strlen(entry->name);
+			data_length += entry->size + 8 + (uint32_t)strlen(entry->name);
 		}
 		else if (content->model == CALC_TI86)
 		{
@@ -941,7 +941,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 
 		if (content->model == CALC_TI85)
 		{
-			packet_length = 4 + strlen(entry->name);	//offset to data length
+			packet_length = 4 + (uint16_t)strlen(entry->name);	//offset to data length
 		}
 		else if (content->model == CALC_TI86)
 		{
@@ -963,7 +963,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 		ticonv_varname_to_tifile_sn(content->model_dst, entry->name, varname, sizeof(varname), entry->type);
 		if (is_ti8586(content->model)) 
 		{
-			name_length = strlen(varname);
+			name_length = (uint8_t)strlen(varname);
 			if (fwrite_byte(f, (uint8_t)name_length) < 0) goto tfwr;
 			if (content->model == CALC_TI85)
 			{
@@ -980,7 +980,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 		}
 		if (is_ti83p(content->model))
 		{
-			const uint16_t attr = (uint16_t)((entry->attr == ATTRB_ARCHIVED) ? 0x8000 : 0x00) + entry->version;
+			const uint16_t attr = (uint16_t)((entry->attr == ATTRB_ARCHIVED) ? 0x8000U : 0U) + (uint16_t)entry->version;
 			if (fwrite_word(f, attr) < 0) goto tfwr;
 			sum += MSB(attr);
 			sum += LSB(attr);
@@ -994,12 +994,12 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 		sum += entry->type;
 		if (is_ti8586(content->model))
 		{
-			sum += strlen(entry->name);
+			sum += (uint16_t)strlen(entry->name);
 		}
 		sum += tifiles_checksum((uint8_t *)varname, name_length);
 		if (content->model == CALC_TI86)
 		{
-			sum += (8 - name_length) * ' ';
+			sum += (uint16_t)((8U - name_length) * ' ');
 		}
 		sum += MSB(entry->size);
 		sum += LSB(entry->size);
@@ -1061,7 +1061,7 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
 	if (fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwb;
 	if (fwrite(content->model == CALC_TI85 ? fsignature85 : fsignature8x, 1, 3, f) < 3) goto tfwb;
 	if (fwrite_n_bytes(f, 42, (uint8_t *)content->comment) < 0) goto tfwb;
-	if (fwrite_word(f, data_length) < 0) goto tfwb;
+	if (fwrite_word(f, (uint16_t)data_length) < 0) goto tfwb;
 
 	// Use the old-style header for versions 0 to 5 (84+ OS 2.48 and
 	// earlier), for compatibility with older versions of libtifiles
@@ -1245,7 +1245,7 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 				{
 					int extra_bytes = 0;
 
-					uint32_t page_length = content->pages[i]->size;
+					uint16_t page_length = content->pages[i]->size;
 
 					if (   content->data_type == TI83p_APPL && i == content->num_pages - 1
 					    && content->pages[0]->data[0] == 0x80 && content->pages[0]->data[1] == 0x0f)
@@ -1270,7 +1270,7 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 							page_length--;
 						}
 
-						extra_bytes = app_length + 96 - i * 0x4000 - page_length;
+						extra_bytes = (int)app_length + 96 - i * 0x4000 - page_length;
 
 						/* don't add padding beyond the end of the page */
 						if (page_length + extra_bytes >= 0x3fff)
@@ -1291,7 +1291,7 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 					bytes_written += hex_block_write(f,
 					  page_length, content->pages[i]->addr,
 					  content->pages[i]->flag, content->pages[i]->data,
-					  content->pages[i]->page, extra_bytes);
+					  content->pages[i]->page, (uint16_t)extra_bytes); // 0 <= extra_bytes <= 96, per the above.
 				}
 
 				// final block
@@ -1341,7 +1341,7 @@ int ti8x_content_display_backup(Ti8xBackup *content)
 	}
 
 	tifiles_info("BackupContent for TI-8x: %p", content);
-	tifiles_info("Model:          %02X (%u)", content->model, content->model);
+	tifiles_info("Model:          %02X (%d)", (unsigned int)content->model, content->model);
 	tifiles_info("Signature:      %s", tifiles_calctype2signature(content->model));
 	tifiles_info("Comment:        %s", content->comment);
 	tifiles_info("Type:           %02X (%s)", content->type, tifiles_vartype2string(content->model, content->type));
@@ -1379,9 +1379,9 @@ int ti8x_content_display_flash(Ti8xFlash *content)
 	for (Ti8xFlash* ptr = content; ptr != nullptr; ptr = ptr->next)
 	{
 		tifiles_info("FlashContent for TI-8x: %p", ptr);
-		tifiles_info("Model:           %02X (%u)", ptr->model, ptr->model);
+		tifiles_info("Model:           %02X (%d)", (unsigned int)ptr->model, ptr->model);
 		tifiles_info("Signature:       %s", tifiles_calctype2signature(ptr->model));
-		tifiles_info("model_dst:       %02X (%u)", ptr->model_dst, ptr->model_dst);
+		tifiles_info("model_dst:       %02X (%d)", (unsigned int)ptr->model_dst, ptr->model_dst);
 		tifiles_info("Revision:        %u.%u", ptr->revision_major, ptr->revision_minor);
 		tifiles_info("Flags:           %02X", ptr->flags);
 		tifiles_info("Object type:     %02X", ptr->object_type);
@@ -1410,7 +1410,7 @@ int ti8x_content_display_flash(Ti8xFlash *content)
 		tifiles_info("Hardware ID:     %02X (%u)", ptr->hw_id, ptr->hw_id);
 		tifiles_info("Length:          %08X (%u)", ptr->data_length, ptr->data_length);
 		tifiles_info("Data:            %p", ptr->data_part);
-		tifiles_info("Number of pages: %i", ptr->num_pages);
+		tifiles_info("Number of pages: %u", ptr->num_pages);
 		tifiles_info("Pages:           %p", ptr->pages);
 		tifiles_info("Next:            %p", ptr->next);
 	}

@@ -57,7 +57,7 @@ char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 {
 	const int is_utf8 = ticonv_environment_is_utf8();
 	const char *str;
-	unsigned short *utf16_src;
+	const unsigned short *utf16_src;
 	unsigned short *utf16_dst;
 	char *dst;
 
@@ -67,7 +67,7 @@ char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 	}
 
 	// detokenization to UTF-16
-	unsigned short* p = utf16_src = (unsigned short*)src;
+	const unsigned short* p = utf16_src = src;
 	unsigned short* q = utf16_dst = (unsigned short*)g_malloc0(18 * ticonv_utf16_strlen(utf16_src) + 2);
 
 	// conversion from UTF-16 to UTF-16
@@ -136,7 +136,7 @@ char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 			{
 				if (*p >= 0x2080 && *p <= 0x2089)
 				{
-					*q++ = (*p++ - 0x2080) + '0';
+					*q++ = (unsigned short)((*p++ - 0x2080) + '0');
 				}
 				else
 				{
@@ -243,7 +243,7 @@ void TICALL ticonv_gfe_free(char *src)
  **/
 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 {
-	char *src;
+	const char *src;
 	char *dst;
 
 	if (src_ == nullptr)
@@ -256,7 +256,7 @@ char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 	// ticonv_utf16_to_gfe.
 	if (!ticonv_environment_has_utf8_filenames()) return g_strdup(src_);
 
-	const char* p = src = (char*)src_;
+	const char* p = src = src_;
 	char* q = dst = (char*)g_malloc0(18 * strlen(src) + 1);
 
 	while(*p)
