@@ -180,7 +180,7 @@ esac
 AC_ARG_VAR([CXX_FOR_BUILD], [C++ compiler for programs to be run on the build system])
 AC_ARG_VAR([CXXFLAGS_FOR_BUILD], [C++ compiler flags for CXX_FOR_BUILD])
 AC_MSG_CHECKING([for the host compiler])
-if test "x$build" == "x$host" ; then
+if test "x$build" = "x$host" ; then
   # Not cross-compiling.
   CXX_FOR_BUILD=$CXX
   CXXFLAGS_FOR_BUILD=$CXXFLAGS
