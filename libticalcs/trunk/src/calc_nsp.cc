@@ -142,44 +142,48 @@ static int		is_ready	(CalcHandle* handle)
 			break;
 		}
 
-		// XXX when commenting this OS version detection code, sending many Status or Dirlist
-		// requests in quick succession often triggers memory corruption (hangs, reboots,
-		// a variable amount of black pixels on the screen) on (at least) Nspire (CAS) OS 1.7...
-		ticalcs_info("  waiting for LOGIN request (OS >= 1.2 check)...");
-		const int old = ticables_options_set_timeout(handle->cable, 40);	// 3s mini
-
-		ret = nsp_cmd_r_login(handle);	// no call to nsp_send_nack(handle) because nack is managed in nsp_recv_data()
-
-		ticables_options_set_timeout(handle->cable, old);
-
-		if (ret)
+		// Only pre-Touchpad models may have OS 1.x
+		if (handle->model < CALC_NSPIRE_TOUCHPAD)
 		{
-			ticalcs_info("OS = 1.1");
-			//rom_11 = !0;
+			// XXX when commenting this OS version detection code, sending many Status or Dirlist
+			// requests in quick succession often triggers memory corruption (hangs, reboots,
+			// a variable amount of black pixels on the screen) on (at least) Nspire (CAS) OS 1.7...
+			ticalcs_info("  waiting for LOGIN request (OS >= 1.2 check)...");
+			const int old = ticables_options_set_timeout(handle->cable, 40);	// 3s mini
 
-			ret = nsp_addr_request(handle);
+			ret = nsp_cmd_r_login(handle);	// no call to nsp_send_nack(handle) because nack is managed in nsp_recv_data()
+
+			ticables_options_set_timeout(handle->cable, old);
+
 			if (ret)
 			{
-				break;
-			}
-			ret = nsp_addr_assign(handle, NSP_DEV_ADDR);
-			if (ret)
-			{
-				break;
-			}
-		}
-		else
-		{
-			ret = nsp_recv_disconnect(handle);
-			if (ret)
-			{
-				ticalcs_info("OS = 1.2 or 1.3");
-				//rom_14 = 0;
+				ticalcs_info("OS = 1.1");
+				//rom_11 = !0;
+
+				ret = nsp_addr_request(handle);
+				if (ret)
+				{
+					break;
+				}
+				ret = nsp_addr_assign(handle, NSP_DEV_ADDR);
+				if (ret)
+				{
+					break;
+				}
 			}
 			else
 			{
-				ticalcs_info("OS = 1.4 or later");
-				//rom_14 = !0;
+				ret = nsp_recv_disconnect(handle);
+				if (ret)
+				{
+					ticalcs_info("OS = 1.2 or 1.3");
+					//rom_14 = 0;
+				}
+				else
+				{
+					ticalcs_info("OS = 1.4 or later");
+					//rom_14 = !0;
+				}
 			}
 		}
 
