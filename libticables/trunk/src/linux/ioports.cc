@@ -46,9 +46,9 @@
 #include <errno.h>
 #include <string.h>
 
-#include "gettext.h"
-#include "error.h"
-#include "logging.h"
+#include "../gettext.h"
+#include "../error.h"
+#include "../logging.h"
 #include "ioports.h"
 
 #ifdef HAVE_LINUX_PARPORT_H
