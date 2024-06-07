@@ -4,7 +4,9 @@ project(libticalcs2-tests
         LANGUAGES   CXX)
 
 add_executable(torture_ticalcs torture_ticalcs.cc)
-add_executable(test_ticalcs_2 test_ticalcs_2.cc)
+if(NOT WIN32) # not compatible for now
+    add_executable(test_ticalcs_2 test_ticalcs_2.cc)
+endif()
 
 if(WIN32)
     pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive)
@@ -27,6 +29,10 @@ if(USE_ICONV)
 endif()
 
 foreach(tar torture_ticalcs test_ticalcs_2)
+    if(tar STREQUAL test_ticalcs_2 AND WIN32)
+        continue() # not compatible for now
+    endif ()
+
     if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
         target_include_directories(${tar} PRIVATE ${Iconv_INCLUDE_DIRS})
         target_link_libraries(${tar} ${Iconv_LIBRARIES})
