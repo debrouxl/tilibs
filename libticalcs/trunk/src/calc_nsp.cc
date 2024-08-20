@@ -370,7 +370,7 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 			// We might have to remove some extensions.
 			if (fe->type == NSP_TNS)
 			{
-				char * ext = tifiles_fext_get(varname);
+				char * ext = (char*)tifiles_fext_get((const char*)varname);
 				// Just a sanity check
 				if (ext)
 				{
