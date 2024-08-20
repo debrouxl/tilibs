@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(tilibs C CXX)
-
 ############################
 # CMake support for tilibs #
 ############################
@@ -24,10 +22,6 @@ project(tilibs C CXX)
 #
 # Notes:
 #   - this has been succesfully tested on recent macOS, Linux, and Windows (with vcpkg).
-#   - The TRY_STATIC_LIBS CMake option will try to build the libs (both shared and static) using as many static
-#     dependent libraries as possible.
-#     Let's note however that there is currently not much advantage in building that way, using shared libs is preferred,
-#     but at least you have the choice to do whatever you want should you ever really need a static build (may be useful on Windows)
 #
 # In the future...:
 #   - TODO: add support to build the ROM dumpers (will end up just launching the external tools...)
@@ -35,6 +29,8 @@ project(tilibs C CXX)
 #   - WISH: better expose each lib's generated install target (NTS: look at cmake's components feature?)
 #   - WISH: provide Find* CMake modules for the libs themselves?
 #
+
+get_property(GEN_IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
 # In case there was an env-var override...
 if(DEFINED ENV{CMAKE_INSTALL_PREFIX_OVERRIDE})
@@ -47,6 +43,24 @@ if(CMAKE_INSTALL_PREFIX)
     message("CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
 endif()
 
+option(DEPS_RELEASE_ONLY "Build only release versions of vcpkg dependencies" OFF)
+if(DEPS_RELEASE_ONLY)
+    if(NOT DEFINED VCPKG_TARGET_TRIPLET)
+        message(FATAL_ERROR "Must provide a VCPKG_TARGET_TRIPLET to set as release only")
+    endif()
+    if(NOT VCPKG_TARGET_TRIPLET MATCHES "-release$")
+        set(VCPKG_TARGET_TRIPLET "${VCPKG_TARGET_TRIPLET}-release")
+        message("Updated VCPKG_TARGET_TRIPLET to ${VCPKG_TARGET_TRIPLET}")
+    endif()
+endif()
+
+if(WIN32 AND VCPKG_TARGET_TRIPLET MATCHES "-static(-|$)" AND NOT VCPKG_TARGET_TRIPLET MATCHES "-md(-|$)")
+    message("Using static MSVC runtime...")
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
+
+project(tilibs C CXX)
+
 # Our modules
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.cmake)
 file(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/.cmake/*.cmake")
@@ -56,38 +70,6 @@ endforeach()
 
 set(USED_CMAKE_GENERATOR "${CMAKE_GENERATOR}" CACHE STRING "Expose CMAKE_GENERATOR" FORCE)
 message(STATUS "Detected system: ${CMAKE_SYSTEM_NAME} - host processor: ${CMAKE_HOST_SYSTEM_PROCESSOR} - CXX_COMPILER: ${CMAKE_CXX_COMPILER_ID}")
-
-if(CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
-    include(CheckIPOSupported)
-    check_ipo_supported(RESULT supported OUTPUT error)
-    if(supported)
-        message(STATUS "IPO/LTO enabled")
-        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-    else()
-        message(STATUS "IPO/LTO not supported: <${error}>")
-    endif()
-else()
-    message("IPO/LTO not enabled because this is not a release build")
-endif()
-
-option(TRY_STATIC_LIBS "Build using as many static libs as possible" OFF)
-if (VCPKG_TARGET_TRIPLET MATCHES "-static")
-    if(NOT TRY_STATIC_LIBS)
-        message(WARNING "Setting TRY_STATIC_LIBS to ON anyway due to static vcpkg target")
-        set(TRY_STATIC_LIBS ON)
-    endif()
-endif()
-
-if(TRY_STATIC_LIBS)
-    message("Will try to build as statically as possible...")
-    if(WIN32)
-        set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
-    else()
-        set(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
-    endif()
-    # When we link statically, we don't want the dllimport stuff, so let's workaround that here
-    add_compile_definitions(TICALCS_EXPORTS TIFILES_EXPORTS TICONV_EXPORTS TICABLES_EXPORTS)
-endif()
 
 include(GNUInstallDirs)
 include(CheckSymbolExists)
@@ -152,24 +134,17 @@ if(Intl_FOUND AND GETTEXT_FOUND)
     set(ENABLE_NLS 1)
     include_directories(${Intl_INCLUDE_DIR})
     add_compile_definitions(ENABLE_NLS=1)
-    if(TRY_STATIC_LIBS)
-        # needed by __nl_find_msg in libintl.a(dcigettext.o)...
-        find_package(Iconv REQUIRED)
-        if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
-            include_directories(${Iconv_INCLUDE_DIRS})
-            if(Iconv_LIBRARY_DIRS)
-                link_directories(${Iconv_LIBRARY_DIRS})
-            endif()
-            link_libraries(${Iconv_LIBRARIES})
-        endif()
-    else()
-        link_directories(${Intl_LIBRARY_DIRS})
-        link_libraries(${Intl_LIBRARIES})
-    endif()
+    link_directories(${Intl_LIBRARY_DIRS})
+    link_libraries(${Intl_LIBRARIES})
 else()
     message(WARNING "The Intl and GetText libs are needed for translations - Only English will be available")
 endif()
 set(LOCALEDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LOCALEDIR}")
+
+if(LINUX)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    find_package(Threads REQUIRED)
+endif()
 
 # Global defines
 add_compile_definitions(LOCALEDIR="${LOCALEDIR}")
@@ -185,21 +160,34 @@ endif()
 if(HAVE_ASCTIME_R)
     add_compile_definitions(HAVE_ASCTIME_R=1)
 endif()
-
-# For libs finding
-find_package(PkgConfig)
-
-# Set manually when installed with Homebrew, see https://github.com/Homebrew/legacy-homebrew/issues/45891
-# Note: we can't do the same for libiconv because it exports libiconv_* symbols and not iconv_*, so we fallback on the non-static system lib...
-if(APPLE)
-    set(BREW_LIB_PATHS "/opt/homebrew/lib" "/usr/local/opt" "/usr/local/lib")
-    foreach(LIB_DIR ${BREW_LIB_PATHS})
-        if(EXISTS "${LIB_DIR}/libarchive/lib/pkgconfig")
-            set(ENV{PKG_CONFIG_PATH} "${LIB_DIR}/libarchive/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
-            break()
-        endif()
-    endforeach()
+if(HAVE_STRTOK_R)
+    add_definitions(-DHAVE_STRTOK_R=1)
 endif()
+if(HAVE_STRTOK_S)
+    add_definitions(-DHAVE_STRTOK_S=1)
+endif()
+if (VCPKG_TARGET_TRIPLET MATCHES "-static")
+    # When we link statically, we don't want the dllimport stuff, so let's workaround that here
+    add_compile_definitions(TICALCS_EXPORTS TIFILES_EXPORTS TICONV_EXPORTS TICABLES_EXPORTS)
+endif()
+
+# Don't mess up vcpkg libs finding
+if(CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg" AND DEFINED VCPKG_TARGET_TRIPLET)
+    set(ENV{PKG_CONFIG_PATH} "")
+else()
+    # Set manually when installed with Homebrew, see https://github.com/Homebrew/legacy-homebrew/issues/45891
+    # Note: we can't do the same for libiconv because it exports libiconv_* symbols and not iconv_*
+    if(APPLE)
+        set(BREW_LIB_PATHS "/opt/homebrew/lib" "/opt/homebrew/opt" "/usr/local/opt" "/usr/local/lib")
+        foreach(LIB_DIR ${BREW_LIB_PATHS})
+            if(EXISTS "${LIB_DIR}/libarchive/include/archive.h")
+                set(LibArchive_INCLUDE_DIR "${LIB_DIR}/libarchive/include" CACHE INTERNAL "LibArchive_INCLUDE_DIR")
+                break()
+            endif()
+        endforeach()
+    endif()
+endif()
+find_package(PkgConfig)
 
 add_subdirectory(libticonv/trunk)
 add_subdirectory(libtifiles/trunk)

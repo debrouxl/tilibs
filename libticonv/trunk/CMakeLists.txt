@@ -25,22 +25,27 @@ set(PUBLIC_HEADERS
 option(USE_ICONV "Use libiconv at runtime for libticonv (whether to link with the lib)" ON)
 
 # external deps lookup
-pkg_check_modules(DEPS REQUIRED glib-2.0)
-
-try_static_libs_if_needed()
+pkg_check_modules(glib REQUIRED IMPORTED_TARGET glib-2.0)
 
 # auto-creation of all targets with flags etc., alongside with internal deps
 create_targets_both_lib_types(ticonv)
+
+if(LINUX)
+    target_link_libraries(ticonv_objlib PRIVATE Threads::Threads)
+endif()
+target_link_libraries(ticonv_objlib PRIVATE PkgConfig::glib)
+target_link_libraries(ticonv_shared PRIVATE PkgConfig::glib)
 
 set_target_properties(ticonv_shared PROPERTIES VERSION 9.0.4 SOVERSION 9)
 
 if(USE_ICONV)
     find_package(Iconv REQUIRED)
-    # flags/link for external deps
     add_compile_definitions(USE_ICONV)
     if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
         target_include_directories(ticonv_objlib PRIVATE ${Iconv_INCLUDE_DIRS})
-        target_link_libraries(ticonv_shared ${Iconv_LIBRARIES})
+        target_link_libraries(ticonv_shared PRIVATE ${Iconv_LIBRARIES})
+    elseif(NOT Iconv_FOUND)
+        message(FATAL_ERROR "USE_ICONV true but it is not built-in and libiconv could not be found!")
     endif()
 endif()
 

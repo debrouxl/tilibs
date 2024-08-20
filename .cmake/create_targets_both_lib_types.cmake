@@ -3,12 +3,30 @@ function(create_targets_both_lib_types basename)
     set(lib_shared ${basename}_shared)
     set(lib_static ${basename}_static)
 
+    if(MSVC)
+        set(STATIC_LIB_NAME_PRESUFFIX "-static")
+    else()
+        set(STATIC_LIB_NAME_PRESUFFIX "")
+    endif()
+
     # Object target to unify source building for both (shared/static) real targets
     add_library(${lib_objlib} OBJECT ${SRC_FILES})
 
     # The two real targets
     add_library(${lib_shared} SHARED $<TARGET_OBJECTS:${lib_objlib}>)
     add_library(${lib_static} STATIC $<TARGET_OBJECTS:${lib_objlib}>)
+
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT lto_supported OUTPUT error)
+    if(lto_supported)
+        set_target_properties(${lib_objlib} PROPERTIES
+            INTERPROCEDURAL_OPTIMIZATION_DEBUG FALSE
+            INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE
+            INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO TRUE
+        )
+    else()
+        message(STATUS "IPO/LTO not supported: <${error}>")
+    endif()
 
     # Internal deps
     foreach(idep ${ARGN})
@@ -21,47 +39,28 @@ function(create_targets_both_lib_types basename)
             set(INTERNAL_DEP_LIB_DIR ${PROJECT_BINARY_DIR}/../../lib${idep}/trunk)
             set(INTERNAL_DEP_INC_DIR ${PROJECT_SOURCE_DIR}/../../lib${idep}/trunk/src)
         endif()
+        if(GEN_IS_MULTI_CONFIG)
+            set(INTERNAL_DEP_LIB_DIR "${INTERNAL_DEP_LIB_DIR}/$<CONFIG>")
+        endif()
         target_include_directories(${lib_objlib} PRIVATE ${INTERNAL_DEP_INC_DIR})
-        if(TRY_STATIC_LIBS)
-            target_link_libraries(${lib_shared} "${INTERNAL_DEP_LIB_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${idep}${CMAKE_STATIC_LIBRARY_SUFFIX}")
+        if (VCPKG_TARGET_TRIPLET MATCHES "-static")
+            target_link_libraries(${lib_shared} PRIVATE "${INTERNAL_DEP_LIB_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${idep}${STATIC_LIB_NAME_PRESUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX}")
         else()
             target_link_directories(${lib_shared} PRIVATE "${INTERNAL_DEP_LIB_DIR}")
-            target_link_libraries(${lib_shared} "${idep}")
+            target_link_libraries(${lib_shared} PRIVATE ${idep})
         endif()
     endforeach()
 
     # Main properties
-    if(MSVC)
-        set(static_lib_output_name "${basename}-static")
-    else()
-        set(static_lib_output_name "${basename}")
-    endif()
     set_target_properties(${lib_shared} PROPERTIES
         OUTPUT_NAME     ${basename}
         PUBLIC_HEADER  "${PUBLIC_HEADERS}")
     set_target_properties(${lib_static} PROPERTIES
-        OUTPUT_NAME     ${static_lib_output_name}
+        OUTPUT_NAME    "${basename}${STATIC_LIB_NAME_PRESUFFIX}"
         PUBLIC_HEADER  "${PUBLIC_HEADERS}")
 
     # Defines
     target_compile_definitions(${lib_objlib} PRIVATE PACKAGE="${PROJECT_NAME}" VERSION="${PROJECT_VERSION}")
-
-    # CFLAGS and include dirs
-    if(TRY_STATIC_LIBS)
-        target_compile_options(${lib_objlib} PRIVATE ${DEPS_STATIC_CFLAGS})
-    else()
-        target_compile_options(${lib_objlib} PRIVATE ${DEPS_CFLAGS})
-    endif()
-    target_include_directories(${lib_objlib} PRIVATE src)
-
-    # Link-related properties, flags...
-    if(TRY_STATIC_LIBS)
-        target_link_directories(${lib_shared} PRIVATE ${TRY_STATIC_DEPS_LIBSDIRS})
-        target_link_libraries(${lib_shared} ${TRY_STATIC_DEPS_LDFLAGS_OTHER} ${TRY_STATIC_DEPS_LIBS})
-    else()
-        target_link_directories(${lib_shared} PRIVATE ${DEPS_LIBRARY_DIRS})
-        target_link_libraries(${lib_shared} ${DEPS_LDFLAGS_OTHER} ${DEPS_LIBRARIES})
-    endif()
 
     # Stuff to install and developer-related things
     install(TARGETS ${lib_shared} ${lib_static}

@@ -10,60 +10,61 @@ on:
 
 jobs:
   build:
-    name: "Build: ${{ matrix.os }} - ${{ matrix.deps_type }} deps"
+    name: "Build: ${{ matrix.arch }} ${{ matrix.os }} - ${{ matrix.upload_suffix }}"
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-20.04]
-        try_static_deps: ['OFF','ON']
+        os: [ubuntu-22.04, ubuntu-24.04]
+        arch: [x64]
+        config: [Release]
+        statictype: [ON, OFF]
         include:
-          - try_static_deps: 'OFF'
-            deps_type: shared
-          - try_static_deps: 'ON'
-            deps_type: static
+          - statictype: ON
+            preset_suffix: ""
+            upload_suffix: static
+          - statictype: OFF
+            preset_suffix: "-Dynamic"
+            upload_suffix: shared
 
     steps:
-    - name: Checkout Git Repo
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
+      - name: Checkout Git Repo
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
 
-    - name: workaround for default apt mirror connectivity issues
-      run: |
-        sudo sed -i 's/azure\.//' /etc/apt/sources.list
+      - name: workaround for default apt mirror connectivity issues
+        run: |
+          sudo sed -i 's/azure\.//' /etc/apt/sources.list
 
-    - name: Install dependencies
-      run: |
-        set -e
-        sudo add-apt-repository universe
-        sudo apt update
-        sudo apt install -y cmake ninja-build libarchive-dev libzstd-dev zlib1g-dev libusb-1.0-0-dev libglib2.0-dev gettext nettle-dev libacl1-dev liblzma-dev liblz4-dev libudev-dev libc6-dev
+      - name: Install dependencies
+        run: sudo apt update; sudo apt install -y libudev-dev
 
-    - name: Build tilibs
-      run: |
-        set -e
-        mkdir prefix
-        prefixpath="$(pwd)/prefix"
-        mkdir build && cd build
-        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DTRY_STATIC_LIBS=${{ matrix.try_static_deps }} -DCMAKE_INSTALL_PREFIX=${prefixpath} ..
-        cmake --build . --target all
+      - name: Install latest CMake
+        uses: lukka/get-cmake@9388b6042e1c7b834f01bbd0c06739bc321414e5 # latest as of 2025-06-25
 
-    - name: Test tilibs
-      run: |
-        cd build
-        cmake --build . --target check
+      - name: Restore artifacts, or setup vcpkg (do not install any package)
+        uses: lukka/run-vcpkg@b3dd708d38df5c856fe1c18dc0d59ab771f93921 # latest as of 2025-06-25
 
-    - name: Install tilibs
-      run: |
-        cd build
-        cmake --build . --target install
+      - name: create install folder
+        run: |
+          mkdir -p "${{ github.workspace }}/tilibs.build/Linux-${{ matrix.arch }}/prefix"
 
-    - name: Prepare install folder for upload
-      run: mv prefix tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps
+      - name: Build and install tilibs ${{ matrix.config }} on Linux ${{ matrix.arch }}
+        uses: lukka/run-cmake@67c73a83a46f86c4e0b96b741ac37ff495478c38 # latest as of 2025-06-25
+        with:
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          configurePreset: 'Linux-${{ matrix.arch }}${{ matrix.preset_suffix }}'
+          configurePresetAdditionalArgs: "['-DDEPS_RELEASE_ONLY=ON']"
+          buildPreset: 'Linux-${{ matrix.arch }}${{ matrix.preset_suffix }}-${{ matrix.config }}'
+          buildPresetAdditionalArgs: "['--target', 'check', 'install']"
+        env:
+          CMAKE_INSTALL_PREFIX_OVERRIDE: ${{ github.workspace }}/tilibs.build/Linux-${{ matrix.arch }}/prefix
+          VCPKG_DEFAULT_HOST_TRIPLET: ${{ matrix.arch }}-linux-release
+          VCPKG_FORCE_SYSTEM_BINARIES: 1
 
-    - name: Upload install folder
-      uses: actions/upload-artifact@v3
-      with:
-        name: tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps
-        path: tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps/
+      - name: Upload install folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: tilibs_${{ matrix.os }}-${{ matrix.arch }}_${{ matrix.upload_suffix }}Deps
+          path: ${{ github.workspace }}/tilibs.build/Linux-${{ matrix.arch }}/prefix

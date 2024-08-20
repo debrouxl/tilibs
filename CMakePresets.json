@@ -9,7 +9,7 @@
     {
       "name": "ninja-vcpkg",
       "hidden": true,
-      "generator": "Ninja",
+      "generator": "Ninja Multi-Config",
       "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
       "binaryDir": "${sourceDir}/tilibs.build/${presetName}",
       "installDir": "${sourceDir}/tilibs.build/${presetName}",
@@ -21,6 +21,14 @@
         "VCPKG_MANIFEST_INSTALL": {
           "type": "BOOL",
           "value": "True"
+        },
+        "VCPKG_OVERLAY_TRIPLETS": {
+          "type": "STRING",
+          "value": "${sourceDir}/.cmake/vcpkg_overlay_triplets"
+        },
+        "VCPKG_INSTALL_OPTIONS": {
+          "type": "STRING",
+          "value": "--allow-unsupported"
         }
       }
     },
@@ -31,89 +39,199 @@
       "architecture": {
         "strategy": "external",
         "value": "x64"
-      },
+      }
+    },
+    {
+      "name": "ninja-vcpkg-x86",
+      "hidden": true,
+      "inherits": "ninja-vcpkg",
+      "architecture": {
+        "strategy": "external",
+        "value": "x86"
+      }
+    },
+    {
+      "name": "ninja-vcpkg-arm64",
+      "hidden": true,
+      "inherits": "ninja-vcpkg",
+      "architecture": {
+        "strategy": "external",
+        "value": "arm64"
+      }
+    },
+    {
+      "name": "win-only",
+      "hidden": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "mac-only",
+      "hidden": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "linux-only",
+      "hidden": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "Win-x64",
+      "inherits": [ "ninja-vcpkg-x64", "win-only" ],
       "cacheVariables": {
-        "TRY_STATIC_LIBS": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
         "VCPKG_TARGET_TRIPLET": {
           "type": "STRING",
-          "value": "x64-windows-release"
+          "value": "x64-windows-static"
         }
       }
     },
     {
-      "name": "x64-Debug",
-      "inherits": "ninja-vcpkg-x64",
+      "name": "Win-x86",
+      "inherits": [ "ninja-vcpkg-x86", "win-only" ],
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
+        "VCPKG_TARGET_TRIPLET": {
           "type": "STRING",
-          "value": "Debug"
+          "value": "x86-windows-static"
         }
       }
     },
     {
-      "name": "x64-ReleaseStatic",
-      "inherits": "ninja-vcpkg-x64",
+      "name": "Mac-x64",
+      "inherits": [ "ninja-vcpkg-x64", "mac-only" ],
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
-          "type": "STRING",
-          "value": "Release"
-        },
-        "TRY_STATIC_LIBS": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "VCPKG_HOST_TRIPLET": {
-          "type": "STRING",
-          "value": "x64-windows-static-release"
-        },
         "VCPKG_TARGET_TRIPLET": {
           "type": "STRING",
-          "value": "x64-windows-static-release"
-        },
-        "VCPKG_INSTALL_OPTIONS": {
-          "type": "STRING",
-          "value": "--allow-unsupported"
+          "value": "x64-osx"
         }
       }
     },
     {
-      "name": "x64-ReleaseDynamic",
-      "inherits": "ninja-vcpkg-x64",
+      "name": "Mac-arm64",
+      "inherits": [ "ninja-vcpkg-arm64", "mac-only" ],
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
-          "type": "STRING",
-          "value": "Release"
-        },
-        "TRY_STATIC_LIBS": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "VCPKG_HOST_TRIPLET": {
-          "type": "STRING",
-          "value": "x64-windows-release"
-        },
         "VCPKG_TARGET_TRIPLET": {
           "type": "STRING",
-          "value": "x64-windows-release"
+          "value": "arm64-osx"
+        }
+      }
+    },
+    {
+      "name": "Linux-x64",
+      "inherits": [ "ninja-vcpkg-x64", "linux-only" ],
+      "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": {
+          "type": "STRING",
+          "value": "x64-linux"
+        }
+      }
+    },
+    {
+      "name": "Linux-x64-Dynamic",
+      "inherits": [ "ninja-vcpkg-x64", "linux-only" ],
+      "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": {
+          "type": "STRING",
+          "value": "x64-linux-dynamic"
         }
       }
     }
   ],
   "buildPresets": [
     {
-      "name": "x64-Debug",
-      "configurePreset": "x64-Debug"
+      "name": "Win-x64-Debug",
+      "configurePreset": "Win-x64",
+      "configuration": "Debug"
     },
     {
-      "name": "x64-ReleaseStatic",
-      "configurePreset": "x64-ReleaseStatic"
+      "name": "Win-x64-RelWithDebInfo",
+      "configurePreset": "Win-x64",
+      "configuration": "RelWithDebInfo"
     },
     {
-      "name": "x64-ReleaseDynamic",
-      "configurePreset": "x64-ReleaseDynamic"
+      "name": "Win-x64-Release",
+      "configurePreset": "Win-x64",
+      "configuration": "Release"
+    },
+    {
+      "name": "Win-x86-Debug",
+      "configurePreset": "Win-x86",
+      "configuration": "Debug"
+    },
+    {
+      "name": "Win-x86-RelWithDebInfo",
+      "configurePreset": "Win-x86",
+      "configuration": "RelWithDebInfo"
+    },
+    {
+      "name": "Win-x86-Release",
+      "configurePreset": "Win-x86",
+      "configuration": "Release"
+    },
+    {
+      "name": "Mac-x64-Debug",
+      "configurePreset": "Mac-x64",
+      "configuration": "Debug"
+    },
+    {
+      "name": "Mac-x64-Release",
+      "configurePreset": "Mac-x64",
+      "configuration": "Release"
+    },
+    {
+      "name": "Mac-arm64-Debug",
+      "configurePreset": "Mac-arm64",
+      "configuration": "Debug"
+    },
+    {
+      "name": "Mac-arm64-RelWithDebInfo",
+      "configurePreset": "Mac-arm64",
+      "configuration": "RelWithDebInfo"
+    },
+    {
+      "name": "Mac-arm64-Release",
+      "configurePreset": "Mac-arm64",
+      "configuration": "Release"
+    },
+    {
+      "name": "Linux-x64-Debug",
+      "configurePreset": "Linux-x64",
+      "configuration": "Debug"
+    },
+    {
+      "name": "Linux-x64-RelWithDebInfo",
+      "configurePreset": "Linux-x64",
+      "configuration": "RelWithDebInfo"
+    },
+    {
+      "name": "Linux-x64-Release",
+      "configurePreset": "Linux-x64",
+      "configuration": "Release"
+    },
+    {
+      "name": "Linux-x64-Dynamic-Debug",
+      "configurePreset": "Linux-x64-Dynamic",
+      "configuration": "Debug"
+    },
+    {
+      "name": "Linux-x64-Dynamic-RelWithDebInfo",
+      "configurePreset": "Linux-x64-Dynamic",
+      "configuration": "RelWithDebInfo"
+    },
+    {
+      "name": "Linux-x64-Dynamic-Release",
+      "configurePreset": "Linux-x64-Dynamic",
+      "configuration": "Release"
     }
   ]
 }

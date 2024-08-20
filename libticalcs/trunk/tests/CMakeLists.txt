@@ -8,14 +8,21 @@ if(NOT WIN32) # not compatible for now
     add_executable(test_ticalcs_2 test_ticalcs_2.cc)
 endif()
 
+# external deps lookup
 if(WIN32)
-    pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive)
-    list(APPEND DEPS_LIBRARIES "libusb0")
-    list(APPEND DEPS_STATIC_LIBRARIES "libusb0")
+    find_library(LIBUSB0 NAMES libusb0.lib usb0 REQUIRED)
+    target_link_libraries(torture_ticalcs PRIVATE ${LIBUSB0})
 else()
-    pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive libusb-1.0>=1.0.16)
-    # Needed for the .pc files configured in the function below.
-    set(TICABLES_LIBUSB_REQUIRES_PRIVATE "libusb-1.0")
+    pkg_check_modules(libusb REQUIRED IMPORTED_TARGET libusb-1.0>=1.0.16)
+    target_link_libraries(torture_ticalcs PRIVATE PkgConfig::libusb)
+    target_link_libraries(test_ticalcs_2 PRIVATE PkgConfig::libusb)
+endif()
+pkg_check_modules(glib REQUIRED IMPORTED_TARGET glib-2.0)
+find_package(ZLIB REQUIRED) # for libtifiles
+find_package(LibArchive REQUIRED) # for libticables
+target_link_libraries(torture_ticalcs PRIVATE ZLIB::ZLIB PkgConfig::glib LibArchive::LibArchive)
+if(NOT WIN32) # not compatible for now
+    target_link_libraries(test_ticalcs_2 PRIVATE ZLIB::ZLIB PkgConfig::glib LibArchive::LibArchive)
 endif()
 
 if(WIN32 AND NOT MINGW)
@@ -24,7 +31,6 @@ endif()
 
 if(USE_ICONV)
     find_package(Iconv REQUIRED)
-    # flags/link for external deps
     add_compile_definitions(USE_ICONV)
 endif()
 
@@ -35,14 +41,12 @@ foreach(tar torture_ticalcs test_ticalcs_2)
 
     if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
         target_include_directories(${tar} PRIVATE ${Iconv_INCLUDE_DIRS})
-        target_link_libraries(${tar} ${Iconv_LIBRARIES})
+        target_link_libraries(${tar} PRIVATE ${Iconv_LIBRARIES})
     endif()
 
     if(GETOPT_LIB)
-        target_link_libraries(${tar} ${GETOPT_LIB})
+        target_link_libraries(${tar} PRIVATE ${GETOPT_LIB})
     endif()
-
-    target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
 
     target_include_directories(${tar} PRIVATE
         ${PROJECT_SOURCE_DIR}/../../../libticonv/trunk/src
@@ -50,15 +54,8 @@ foreach(tar torture_ticalcs test_ticalcs_2)
         ${PROJECT_SOURCE_DIR}/../../../libticables/trunk/src
         ${PROJECT_SOURCE_DIR}/../src)
 
-    if(TRY_STATIC_LIBS)
-        target_compile_options(${tar} PRIVATE ${DEPS_STATIC_CFLAGS})
-        target_link_directories(${tar} PRIVATE ${TRY_STATIC_DEPS_LIBSDIRS})
-        target_link_libraries(${tar} ${TRY_STATIC_DEPS_LDFLAGS_OTHER} ${TRY_STATIC_DEPS_LIBS} ticonv_objlib tifiles2_objlib ticables2_objlib ticalcs2_objlib)
-    else()
-        target_compile_options(${tar} PRIVATE ${DEPS_CFLAGS})
-        target_link_directories(${tar} PRIVATE ${DEPS_LIBRARY_DIRS} ${PROJECT_BINARY_DIR}/..)
-        target_link_libraries(${tar} ${DEPS_LIBRARIES} ticonv_objlib tifiles2_objlib ticables2_objlib ticalcs2_objlib)
-    endif()
+    target_link_directories(${tar} PRIVATE ${PROJECT_BINARY_DIR}/..)
+    target_link_libraries(${tar} PRIVATE ticonv_objlib tifiles2_objlib ticables2_objlib ticalcs2_objlib)
 endforeach()
 
 set(builddirlibpaths "${PROJECT_BINARY_DIR}/../../../libticonv/trunk:${PROJECT_BINARY_DIR}/../../../libtifiles/trunk:${PROJECT_BINARY_DIR}/../../../libticables/trunk:${PROJECT_BINARY_DIR}/..")
