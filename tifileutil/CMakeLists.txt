@@ -12,26 +12,22 @@ set(SRC_FILES
         src/main.cc)
 
 # external deps lookup
-pkg_check_modules(DEPS REQUIRED glib-2.0 libarchive)
+find_package(LibArchive REQUIRED)
+pkg_check_modules(glib REQUIRED IMPORTED_TARGET glib-2.0)
+
 add_executable(tifileutil ${SRC_FILES})
 
-try_static_libs_if_needed()
-
-# Defines
 target_compile_definitions(tifileutil PRIVATE PACKAGE="TIFILEUTIL" PACKAGE_VERSION="${PROJECT_VERSION}")
 
-# CFLAGS and include dirs
-if(TRY_STATIC_LIBS)
-    target_compile_options(tifileutil PRIVATE ${DEPS_STATIC_CFLAGS})
-else()
-    target_compile_options(tifileutil PRIVATE ${DEPS_CFLAGS})
-endif()
 target_include_directories(tifileutil PRIVATE src)
 
 if(USE_ICONV)
     find_package(Iconv REQUIRED)
-    # flags/link for external deps
     add_compile_definitions(USE_ICONV)
+    if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
+        target_include_directories(tifileutil PRIVATE ${Iconv_INCLUDE_DIRS})
+        target_link_libraries(tifileutil PRIVATE ${Iconv_LIBRARIES})
+    endif()
 endif()
 
 # internal deps
@@ -39,29 +35,11 @@ target_include_directories(tifileutil PRIVATE
         ${CMAKE_SOURCE_DIR}/libticonv/trunk/src
         ${CMAKE_SOURCE_DIR}/libtifiles/trunk/src)
 
-# Link-related properties, flags...
-if(TRY_STATIC_LIBS)
-    add_dependencies(tifileutil ticonv_static tifiles2_static)
-    target_link_directories(tifileutil PRIVATE ${TRY_STATIC_DEPS_LIBSDIRS})
-    target_link_libraries(tifileutil ${TRY_STATIC_DEPS_LDFLAGS_OTHER} ${TRY_STATIC_DEPS_LIBS} ticonv_objlib tifiles2_objlib)
-    if(Iconv_FOUND AND NOT Iconv_IS_BUILT_IN)
-        target_include_directories(tifileutil PRIVATE ${Iconv_INCLUDE_DIRS})
-        if(Iconv_LIBRARY_DIRS)
-            target_link_directories(tifileutil PRIVATE ${Iconv_LIBRARY_DIRS})
-        endif()
-        target_link_libraries(tifileutil ${Iconv_LIBRARIES})
-    endif()
-    if(LINUX)
-        target_link_libraries(tifileutil ${CMAKE_DL_LIBS} -static-libgcc -static-libstdc++)
-    endif()
-else()
-    add_dependencies(tifileutil ticonv_shared tifiles2_shared)
-    target_link_directories(tifileutil PRIVATE
-            ${DEPS_LIBRARY_DIRS}
-            ${CMAKE_BINARY_DIR}/libticonv/trunk
-            ${CMAKE_BINARY_DIR}/libtifiles/trunk)
-    target_link_libraries(tifileutil ${DEPS_LDFLAGS_OTHER} ${DEPS_LIBRARIES} ticonv_objlib tifiles2_objlib)
-endif()
+add_dependencies(tifileutil ticonv_shared tifiles2_shared)
+target_link_directories(tifileutil PRIVATE
+        ${CMAKE_BINARY_DIR}/libticonv/trunk
+        ${CMAKE_BINARY_DIR}/libtifiles/trunk)
+target_link_libraries(tifileutil PRIVATE PkgConfig::glib LibArchive::LibArchive ticonv_objlib tifiles2_objlib)
 
 # Takes care of the i18n po/pot/gmo/mo files
 if(ENABLE_NLS)

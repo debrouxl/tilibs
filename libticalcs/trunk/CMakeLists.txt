@@ -64,36 +64,30 @@ set(PUBLIC_HEADERS
         src/cmd68k.h
         src/calclabequipmentdata.h)
 
-# external deps lookup
-if(TRY_STATIC_LIBS)
-    # from libticables and libtifiles...
-    if(WIN32)
-        set(external_deps_if_static "libarchive")
-    else()
-        set(external_deps_if_static "libusb-1.0>=1.0.16" "libarchive")
-    endif()
-endif()
-pkg_check_modules(DEPS REQUIRED glib-2.0 ${external_deps_if_static})
-if(WIN32)
-    list(APPEND DEPS_LIBRARIES "libusb0")
-    list(APPEND DEPS_STATIC_LIBRARIES "libusb0")
-endif()
-
-try_static_libs_if_needed()
-
 # auto-creation of all targets with flags etc., alongside with internal deps
 create_targets_both_lib_types(ticalcs2 tifiles2 ticables2 ticonv)
 
-set_target_properties(ticalcs2_shared PROPERTIES VERSION 13.0.3 SOVERSION 13)
-
-# there are relocation issues when linking BZip2 and zlib on linux:
-#   /usr/bin/ld: /usr/lib/x86_64-linux-gnu/libbz2.a(bzlib.o): relocation R_X86_64_PC32 against symbol `BZ2_crc32Table'
-#   /usr/bin/ld: /usr/lib/x86_64-linux-gnu/libz.a(deflate.o): relocation R_X86_64_PC32 against symbol `z_errmsg'
-#                can not be used when making a shared object; recompile with -fPIC
-if(TRY_STATIC_LIBS AND NOT LINUX)
-    find_package(BZip2 REQUIRED) # Needed for some reason
-    target_link_libraries(ticalcs2_shared ${BZIP2_LIBRARIES})
+if(LINUX)
+    target_link_libraries(ticalcs2_objlib PRIVATE Threads::Threads)
 endif()
+
+# external deps lookup
+if(WIN32)
+    find_library(LIBUSB0 NAMES libusb0.lib usb0 REQUIRED)
+    target_link_libraries(ticalcs2_objlib PRIVATE ${LIBUSB0})
+    target_link_libraries(ticalcs2_shared PRIVATE ${LIBUSB0})
+else()
+    pkg_check_modules(libusb REQUIRED IMPORTED_TARGET libusb-1.0>=1.0.16)
+    target_link_libraries(ticalcs2_objlib PRIVATE PkgConfig::libusb)
+    target_link_libraries(ticalcs2_shared PRIVATE PkgConfig::libusb)
+endif()
+pkg_check_modules(glib REQUIRED IMPORTED_TARGET glib-2.0)
+find_package(ZLIB REQUIRED) # for libtifiles
+find_package(LibArchive REQUIRED) # for libticables
+target_link_libraries(ticalcs2_objlib PRIVATE ZLIB::ZLIB PkgConfig::glib LibArchive::LibArchive)
+target_link_libraries(ticalcs2_shared PRIVATE ZLIB::ZLIB PkgConfig::glib LibArchive::LibArchive)
+
+set_target_properties(ticalcs2_shared PROPERTIES VERSION 13.0.3 SOVERSION 13)
 
 # Takes care of the i18n po/pot/gmo/mo files
 if(ENABLE_NLS)

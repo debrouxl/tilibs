@@ -43,21 +43,37 @@ if(WIN32)
     list(APPEND SRC_FILES "src/win64/rwp.c" "src/win32/dha.c")
 endif()
 
-# external deps lookup
-if(WIN32)
-    pkg_check_modules(DEPS REQUIRED glib-2.0)
-    list(APPEND DEPS_LIBRARIES "libusb0")
-    list(APPEND DEPS_STATIC_LIBRARIES "libusb0")
-else()
-    pkg_check_modules(DEPS REQUIRED glib-2.0 libusb-1.0>=1.0.16)
-    # Needed for the .pc files configured in the function below.
+if(NOT WIN32)
     set(TICABLES_LIBUSB_REQUIRES_PRIVATE "libusb-1.0")
 endif()
 
-try_static_libs_if_needed()
-
 # auto-creation of all targets with flags etc.
 create_targets_both_lib_types(ticables2)
+
+if(APPLE)
+    find_library(IOKitFramework IOKit REQUIRED)
+    find_library(SecurityFramework Security REQUIRED)
+    target_link_libraries(ticables2_objlib PRIVATE ${IOKitFramework} ${SecurityFramework})
+    target_link_libraries(ticables2_shared PRIVATE ${IOKitFramework} ${SecurityFramework})
+endif()
+
+if(LINUX)
+    target_link_libraries(ticables2_objlib PRIVATE Threads::Threads)
+endif()
+
+# external deps lookup
+if(WIN32)
+    find_library(LIBUSB0 NAMES libusb0.lib usb0 REQUIRED)
+    target_link_libraries(ticables2_objlib PRIVATE ${LIBUSB0})
+    target_link_libraries(ticables2_shared PRIVATE ${LIBUSB0})
+else()
+    pkg_check_modules(libusb REQUIRED IMPORTED_TARGET libusb-1.0>=1.0.16)
+    target_link_libraries(ticables2_objlib PRIVATE PkgConfig::libusb)
+    target_link_libraries(ticables2_shared PRIVATE PkgConfig::libusb)
+endif()
+pkg_check_modules(glib REQUIRED IMPORTED_TARGET glib-2.0)
+target_link_libraries(ticables2_objlib PRIVATE PkgConfig::glib)
+target_link_libraries(ticables2_shared PRIVATE PkgConfig::glib)
 
 if(NOT WIN32)
     # additional internal defines

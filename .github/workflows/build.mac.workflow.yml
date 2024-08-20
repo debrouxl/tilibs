@@ -10,61 +10,55 @@ on:
 
 jobs:
   build:
-    name: "Build: ${{ matrix.os }} - ${{ matrix.deps_type }} deps"
+    name: "Build: ${{ matrix.arch }} ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-11, macos-12]
-        try_static_deps: ['OFF','ON']
+        os: [macos-13, macos-14]
+        config: [Release]
         include:
-          - try_static_deps: 'OFF'
-            deps_type: shared
-          - try_static_deps: 'ON'
-            deps_type: static
-            
+          - os: macos-13
+            arch: x64
+          - os: macos-14
+            arch: arm64
+
     steps:
-    - name: Checkout Git Repo
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
+      - name: Checkout Git Repo
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
 
-    - name: Install dependencies
-      run: |
-        set -e
-        brew install cmake ninja gettext libarchive glib libusb libiconv intltool expat bzip2 zlib
+      - name: Install dependencies
+        run: |
+          brew install automake autoconf libtool python-setuptools
+          pip install -U setuptools
 
-    # Workaround!
-    # libarchive.pc now has (lib)iconv in Requires.private, which doesn't work here
-    # See https://github.com/libarchive/libarchive/pull/1813 and other issues
-    - name: Fix libarchive pkg-config file
-      run: |
-        sudo sed -i '' -E '/^Requires.private: (lib)?iconv/d' /usr/local/opt/libarchive/lib/pkgconfig/libarchive.pc
+      - name: Install latest CMake
+        uses: lukka/get-cmake@a70f1cfa1857a3eecfe0d34962269e1b1e8be56c # latest as of 2024-08-08
 
-    - name: Build tilibs
-      run: |
-        set -e
-        mkdir prefix
-        prefixpath="$(pwd)/prefix"
-        mkdir build && cd build
-        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DTRY_STATIC_LIBS=${{ matrix.try_static_deps }} -DCMAKE_INSTALL_PREFIX=${prefixpath} ..
-        cmake --build . --target all
+      - name: Restore artifacts, or setup vcpkg (do not install any package)
+        uses: lukka/run-vcpkg@d87e7fac99f22776a4973d7e413921ea254c1fc9 # latest as of 2024-08-08
 
-    - name: Test tilibs
-      run: |
-        cd build
-        cmake --build . --target check
+      - name: create install folder
+        run: |
+          mkdir -p "${{ github.workspace }}/tilibs.build/Mac-${{ matrix.arch }}/prefix"
 
-    - name: Install tilibs
-      run: |
-        cd build
-        cmake --build . --target install
+      - name: Build and install tilibs ${{ matrix.config }} on Mac ${{ matrix.arch }}
+        uses: lukka/run-cmake@4b1adc1944be8367be9f4e08303ce49918db8e3c # latest as of 2024-08-08
+        with:
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          configurePreset: 'Mac-${{ matrix.arch }}'
+          configurePresetAdditionalArgs: "['-DDEPS_RELEASE_ONLY=ON']"
+          buildPreset: 'Mac-${{ matrix.arch }}-${{ matrix.config }}'
+          buildPresetAdditionalArgs: "['--target', 'check', 'install']"
+        env:
+          CMAKE_INSTALL_PREFIX_OVERRIDE: ${{ github.workspace }}/tilibs.build/Mac-${{ matrix.arch }}/prefix
+          VCPKG_DEFAULT_HOST_TRIPLET: ${{ matrix.arch }}-osx-release
+          VCPKG_FORCE_SYSTEM_BINARIES: 1
 
-    - name: Prepare install folder for upload
-      run: mv prefix tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps
-
-    - name: Upload install folder
-      uses: actions/upload-artifact@v3
-      with:
-        name: tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps
-        path: tilibs_${{ matrix.os }}_${{ matrix.deps_type }}Deps/
+      - name: Upload install folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: tilibs_${{ matrix.os }}-${{ matrix.arch }}
+          path: ${{ github.workspace }}/tilibs.build/Mac-${{ matrix.arch }}/prefix
