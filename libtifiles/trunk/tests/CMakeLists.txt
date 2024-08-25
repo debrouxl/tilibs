@@ -24,7 +24,7 @@ foreach(tar torture_tifiles test_tifiles_2)
         ${PROJECT_SOURCE_DIR}/../src)
 
     target_link_directories(${tar} PRIVATE ${PROJECT_BINARY_DIR}/..)
-    target_link_libraries(${tar} PRIVATE PkgConfig::glib LibArchive::LibArchive ticonv_objlib tifiles2_objlib)
+    target_link_libraries(${tar} PRIVATE PkgConfig::glib LibArchive::LibArchive ticonv tifiles2)
 endforeach()
 
 add_custom_target(tifiles2_check

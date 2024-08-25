@@ -16,7 +16,7 @@ foreach(tar torture_ticables test_ticables_2)
     endif()
     target_include_directories(${tar} PRIVATE ${PROJECT_SOURCE_DIR}/../src)
     target_link_directories(${tar} PRIVATE ${PROJECT_BINARY_DIR}/..)
-    target_link_libraries(${tar} PRIVATE PkgConfig::glib ticables2_objlib)
+    target_link_libraries(${tar} PRIVATE PkgConfig::glib ticables2)
 endforeach()
 
 add_custom_target(ticables2_check

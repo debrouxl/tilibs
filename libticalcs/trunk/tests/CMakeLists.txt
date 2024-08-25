@@ -55,7 +55,7 @@ foreach(tar torture_ticalcs test_ticalcs_2)
         ${PROJECT_SOURCE_DIR}/../src)
 
     target_link_directories(${tar} PRIVATE ${PROJECT_BINARY_DIR}/..)
-    target_link_libraries(${tar} PRIVATE ticonv_objlib tifiles2_objlib ticables2_objlib ticalcs2_objlib)
+    target_link_libraries(${tar} PRIVATE ticonv tifiles2 ticables2 ticalcs2)
 endforeach()
 
 add_custom_target(ticalcs2_check

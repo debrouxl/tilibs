@@ -61,6 +61,9 @@ endif()
 
 project(tilibs C CXX)
 
+option(BUILD_TESTS "Whether to build tests" ON)
+option(BUILD_SHARED_LIBS "Whether to build shared libs instead of static ones" ON)
+
 # Our modules
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.cmake)
 file(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/.cmake/*.cmake")
@@ -166,7 +169,8 @@ endif()
 if(HAVE_STRTOK_S)
     add_definitions(-DHAVE_STRTOK_S=1)
 endif()
-if (VCPKG_TARGET_TRIPLET MATCHES "-static")
+
+if (NOT BUILD_SHARED_LIBS OR VCPKG_TARGET_TRIPLET MATCHES "-static" OR NOT VCPKG_TARGET_TRIPLET MATCHES "-dynamic")
     # When we link statically, we don't want the dllimport stuff, so let's workaround that here
     add_compile_definitions(TICALCS_EXPORTS TIFILES_EXPORTS TICONV_EXPORTS TICABLES_EXPORTS)
 endif()
@@ -194,8 +198,16 @@ add_subdirectory(libtifiles/trunk)
 add_subdirectory(libticables/trunk)
 add_subdirectory(libticalcs/trunk)
 
-add_custom_target(check
-    DEPENDS ticonv_check tifiles2_check ticables2_check ticalcs2_check
-    COMMENT "Run all torture tests"
-    EXCLUDE_FROM_ALL
-)
+if (BUILD_TESTS)
+    add_custom_target(check
+            DEPENDS ticonv_check tifiles2_check ticables2_check ticalcs2_check
+            COMMENT "Run all torture tests"
+            EXCLUDE_FROM_ALL
+    )
+else()
+    add_custom_target(check
+            COMMAND ${CMAKE_COMMAND} -E echo "BUILD_TESTS was OFF, so no tests to run"
+            COMMENT "Run all torture tests"
+            EXCLUDE_FROM_ALL
+    )
+endif()

@@ -48,44 +48,40 @@ if(NOT WIN32)
 endif()
 
 # auto-creation of all targets with flags etc.
-create_targets_both_lib_types(ticables2)
+create_lib_target_with_deps(ticables2)
 
 if(APPLE)
     find_library(IOKitFramework IOKit REQUIRED)
     find_library(SecurityFramework Security REQUIRED)
-    target_link_libraries(ticables2_objlib PRIVATE ${IOKitFramework} ${SecurityFramework})
-    target_link_libraries(ticables2_shared PRIVATE ${IOKitFramework} ${SecurityFramework})
+    target_link_libraries(ticables2 PRIVATE ${IOKitFramework} ${SecurityFramework})
 endif()
 
 if(LINUX)
-    target_link_libraries(ticables2_objlib PRIVATE Threads::Threads)
+    target_link_libraries(ticables2 PRIVATE Threads::Threads)
 endif()
 
 # external deps lookup
 if(WIN32)
     find_library(LIBUSB0 NAMES libusb0.lib usb0 REQUIRED)
-    target_link_libraries(ticables2_objlib PRIVATE ${LIBUSB0})
-    target_link_libraries(ticables2_shared PRIVATE ${LIBUSB0})
+    target_link_libraries(ticables2 PRIVATE ${LIBUSB0})
 else()
     pkg_check_modules(libusb REQUIRED IMPORTED_TARGET libusb-1.0>=1.0.16)
-    target_link_libraries(ticables2_objlib PRIVATE PkgConfig::libusb)
-    target_link_libraries(ticables2_shared PRIVATE PkgConfig::libusb)
+    target_link_libraries(ticables2 PRIVATE PkgConfig::libusb)
 endif()
 pkg_check_modules(glib REQUIRED IMPORTED_TARGET glib-2.0)
-target_link_libraries(ticables2_objlib PRIVATE PkgConfig::glib)
-target_link_libraries(ticables2_shared PRIVATE PkgConfig::glib)
+target_link_libraries(ticables2 PRIVATE PkgConfig::glib)
 
 if(NOT WIN32)
     # additional internal defines
-    target_compile_definitions(ticables2_objlib PUBLIC HAVE_LIBUSB_1_0=1 HAVE_LIBUSB10_STRERROR=1 HAVE_TERMIOS_H=1)
+    target_compile_definitions(ticables2 PUBLIC HAVE_LIBUSB_1_0=1 HAVE_LIBUSB10_STRERROR=1 HAVE_TERMIOS_H=1)
 endif()
 
-set_target_properties(ticables2_shared PROPERTIES VERSION 8.0.0 SOVERSION 8)
+set_target_properties(ticables2 PROPERTIES VERSION 8.0.0 SOVERSION 8)
 
 # Takes care of the i18n po/pot/gmo/mo files
 if(ENABLE_NLS)
     i18n_mo_from_po_pot()
-    add_dependencies(ticables2_objlib potfiles_2)
+    add_dependencies(ticables2 potfiles_2)
 endif()
 
 # check includes for parallel and serial support
@@ -94,22 +90,24 @@ if(LINUX)
     CHECK_INCLUDE_FILE(linux/parport.h HAVE_LINUX_PARPORT_H)
     CHECK_INCLUDE_FILE(linux/serial.h HAVE_LINUX_SERIAL_H)
     if (HAVE_LINUX_PARPORT_H)
-        target_compile_definitions(ticables2_objlib PUBLIC HAVE_LINUX_PARPORT_H=1)
+        target_compile_definitions(ticables2 PUBLIC HAVE_LINUX_PARPORT_H=1)
     endif()
     if (HAVE_LINUX_SERIAL_H)
-        target_compile_definitions(ticables2_objlib PUBLIC HAVE_LINUX_SERIAL_H=1)
+        target_compile_definitions(ticables2 PUBLIC HAVE_LINUX_SERIAL_H=1)
     endif()
 endif()
 
 # public export define
-target_compile_definitions(ticables2_objlib PUBLIC TICABLES_EXPORTS)
+target_compile_definitions(ticables2 PUBLIC TICABLES_EXPORTS)
 
 option(ENABLE_LOGGING "Whether to build with cables logging enabled (default ON)" ON)
 if(ENABLE_LOGGING)
-    target_compile_definitions(ticables2_objlib PUBLIC ENABLE_LOGGING=1)
+    target_compile_definitions(ticables2 PUBLIC ENABLE_LOGGING=1)
 else()
     message("Building ${PROJECT_NAME} with logging disabled")
 endif()
 
 # tests
-add_subdirectory(tests)
+if (BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
