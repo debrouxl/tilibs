@@ -39,8 +39,8 @@ set(PUBLIC_HEADERS
         src/timeout.h)
 
 if(WIN32)
-    list(APPEND HEADER_FILES "src/win64/rwp.h")
-    list(APPEND SRC_FILES "src/win64/rwp.c")
+    list(APPEND HEADER_FILES "src/win64/rwp.h" "src/win32/dha.h")
+    list(APPEND SRC_FILES "src/win64/rwp.c" "src/win32/dha.c")
 endif()
 
 # external deps lookup
