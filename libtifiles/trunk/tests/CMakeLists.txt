@@ -27,10 +27,8 @@ foreach(tar torture_tifiles test_tifiles_2)
     target_link_libraries(${tar} PRIVATE PkgConfig::glib LibArchive::LibArchive ticonv_objlib tifiles2_objlib)
 endforeach()
 
-set(builddirlibpaths "${PROJECT_BINARY_DIR}/../../../libticonv/trunk:${PROJECT_BINARY_DIR}/..")
-
 add_custom_target(tifiles2_check
-    COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH="${builddirlibpaths}" ${CMAKE_CURRENT_BINARY_DIR}/torture_tifiles
+    COMMAND "$<TARGET_FILE:torture_tifiles>"
     DEPENDS torture_tifiles
     COMMENT "Run the tifiles2 torture tests"
     EXCLUDE_FROM_ALL

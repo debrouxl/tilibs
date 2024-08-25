@@ -19,10 +19,8 @@ foreach(tar torture_ticables test_ticables_2)
     target_link_libraries(${tar} PRIVATE PkgConfig::glib ticables2_objlib)
 endforeach()
 
-set(builddirlibpaths "${PROJECT_BINARY_DIR}")
-
 add_custom_target(ticables2_check
-    COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH="${builddirlibpaths}" ${CMAKE_CURRENT_BINARY_DIR}/torture_ticables
+    COMMAND "$<TARGET_FILE:torture_ticables>"
     DEPENDS torture_ticables
     COMMENT "Run the ticables2 torture tests"
     EXCLUDE_FROM_ALL
