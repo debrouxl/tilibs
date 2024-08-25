@@ -22,9 +22,18 @@
 #ifndef __DHA_H__
 #define __DHA_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 int dha_detect(int* result);
 
 int dha_enable(void);
 int dha_disable(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
