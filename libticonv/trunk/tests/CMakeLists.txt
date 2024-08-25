@@ -22,7 +22,7 @@ foreach(tar torture_ticonv test_ticonv)
         ${PROJECT_SOURCE_DIR}/../src)
 
     target_link_directories(${tar} PRIVATE ${PROJECT_BINARY_DIR}/..)
-    target_link_libraries(${tar} PRIVATE PkgConfig::glib ticonv_objlib)
+    target_link_libraries(${tar} PRIVATE PkgConfig::glib ticonv)
 endforeach()
 
 add_custom_target(ticonv_check

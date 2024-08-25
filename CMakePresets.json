@@ -93,6 +93,10 @@
         "VCPKG_TARGET_TRIPLET": {
           "type": "STRING",
           "value": "x64-windows-static"
+        },
+        "BUILD_SHARED_LIBS": {
+          "type": "BOOL",
+          "value": "OFF"
         }
       }
     },
@@ -103,6 +107,10 @@
         "VCPKG_TARGET_TRIPLET": {
           "type": "STRING",
           "value": "x86-windows-static"
+        },
+        "BUILD_SHARED_LIBS": {
+          "type": "BOOL",
+          "value": "OFF"
         }
       }
     },
@@ -113,6 +121,10 @@
         "VCPKG_TARGET_TRIPLET": {
           "type": "STRING",
           "value": "x64-osx"
+        },
+        "BUILD_SHARED_LIBS": {
+          "type": "BOOL",
+          "value": "OFF"
         }
       }
     },
@@ -123,6 +135,10 @@
         "VCPKG_TARGET_TRIPLET": {
           "type": "STRING",
           "value": "arm64-osx"
+        },
+        "BUILD_SHARED_LIBS": {
+          "type": "BOOL",
+          "value": "OFF"
         }
       }
     },
@@ -133,6 +149,10 @@
         "VCPKG_TARGET_TRIPLET": {
           "type": "STRING",
           "value": "x64-linux"
+        },
+        "BUILD_SHARED_LIBS": {
+          "type": "BOOL",
+          "value": "OFF"
         }
       }
     },
@@ -143,6 +163,10 @@
         "VCPKG_TARGET_TRIPLET": {
           "type": "STRING",
           "value": "x64-linux-dynamic"
+        },
+        "BUILD_SHARED_LIBS": {
+          "type": "BOOL",
+          "value": "ON"
         }
       }
     }

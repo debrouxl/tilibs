@@ -55,24 +55,23 @@ find_package(LibArchive REQUIRED)
 pkg_check_modules(glib REQUIRED IMPORTED_TARGET glib-2.0)
 
 # auto-creation of all targets with flags etc., alongside with internal deps
-create_targets_both_lib_types(tifiles2 ticonv)
+create_lib_target_with_deps(tifiles2 ticonv)
 
 if(LINUX)
-    target_link_libraries(tifiles2_objlib PRIVATE Threads::Threads)
+    target_link_libraries(tifiles2 PRIVATE Threads::Threads)
 endif()
-target_link_libraries(tifiles2_objlib PRIVATE PkgConfig::glib ZLIB::ZLIB LibArchive::LibArchive)
-target_link_libraries(tifiles2_shared PRIVATE PkgConfig::glib ZLIB::ZLIB LibArchive::LibArchive)
+target_link_libraries(tifiles2 PRIVATE PkgConfig::glib ZLIB::ZLIB LibArchive::LibArchive)
 
-set_target_properties(tifiles2_shared PROPERTIES VERSION 11.0.2 SOVERSION 11)
+set_target_properties(tifiles2 PROPERTIES VERSION 11.0.2 SOVERSION 11)
 
 # Takes care of the i18n po/pot/gmo/mo files
 if(ENABLE_NLS)
     i18n_mo_from_po_pot()
-    add_dependencies(tifiles2_objlib potfiles_1)
+    add_dependencies(tifiles2 potfiles_1)
 endif()
 
 # public export define
-target_compile_definitions(tifiles2_objlib PUBLIC TIFILES_EXPORTS)
+target_compile_definitions(tifiles2 PUBLIC TIFILES_EXPORTS)
 
 # tests
 add_subdirectory(tests)

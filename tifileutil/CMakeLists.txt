@@ -35,11 +35,11 @@ target_include_directories(tifileutil PRIVATE
         ${CMAKE_SOURCE_DIR}/libticonv/trunk/src
         ${CMAKE_SOURCE_DIR}/libtifiles/trunk/src)
 
-add_dependencies(tifileutil ticonv_shared tifiles2_shared)
+add_dependencies(tifileutil ticonv tifiles2)
 target_link_directories(tifileutil PRIVATE
         ${CMAKE_BINARY_DIR}/libticonv/trunk
         ${CMAKE_BINARY_DIR}/libtifiles/trunk)
-target_link_libraries(tifileutil PRIVATE PkgConfig::glib LibArchive::LibArchive ticonv_objlib tifiles2_objlib)
+target_link_libraries(tifileutil PRIVATE PkgConfig::glib LibArchive::LibArchive ticonv tifiles2)
 
 # Takes care of the i18n po/pot/gmo/mo files
 if(ENABLE_NLS)

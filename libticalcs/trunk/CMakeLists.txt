@@ -65,38 +65,35 @@ set(PUBLIC_HEADERS
         src/calclabequipmentdata.h)
 
 # auto-creation of all targets with flags etc., alongside with internal deps
-create_targets_both_lib_types(ticalcs2 tifiles2 ticables2 ticonv)
+create_lib_target_with_deps(ticalcs2 tifiles2 ticables2 ticonv)
 
 if(LINUX)
-    target_link_libraries(ticalcs2_objlib PRIVATE Threads::Threads)
+    target_link_libraries(ticalcs2 PRIVATE Threads::Threads)
 endif()
 
 # external deps lookup
 if(WIN32)
     find_library(LIBUSB0 NAMES libusb0.lib usb0 REQUIRED)
-    target_link_libraries(ticalcs2_objlib PRIVATE ${LIBUSB0})
-    target_link_libraries(ticalcs2_shared PRIVATE ${LIBUSB0})
+    target_link_libraries(ticalcs2 PRIVATE ${LIBUSB0})
 else()
     pkg_check_modules(libusb REQUIRED IMPORTED_TARGET libusb-1.0>=1.0.16)
-    target_link_libraries(ticalcs2_objlib PRIVATE PkgConfig::libusb)
-    target_link_libraries(ticalcs2_shared PRIVATE PkgConfig::libusb)
+    target_link_libraries(ticalcs2 PRIVATE PkgConfig::libusb)
 endif()
 pkg_check_modules(glib REQUIRED IMPORTED_TARGET glib-2.0)
 find_package(ZLIB REQUIRED) # for libtifiles
 find_package(LibArchive REQUIRED) # for libticables
-target_link_libraries(ticalcs2_objlib PRIVATE ZLIB::ZLIB PkgConfig::glib LibArchive::LibArchive)
-target_link_libraries(ticalcs2_shared PRIVATE ZLIB::ZLIB PkgConfig::glib LibArchive::LibArchive)
+target_link_libraries(ticalcs2 PRIVATE ZLIB::ZLIB PkgConfig::glib LibArchive::LibArchive)
 
-set_target_properties(ticalcs2_shared PROPERTIES VERSION 13.0.3 SOVERSION 13)
+set_target_properties(ticalcs2 PROPERTIES VERSION 13.0.3 SOVERSION 13)
 
 # Takes care of the i18n po/pot/gmo/mo files
 if(ENABLE_NLS)
     i18n_mo_from_po_pot()
-    add_dependencies(ticalcs2_objlib potfiles_3)
+    add_dependencies(ticalcs2 potfiles_3)
 endif()
 
 # public export define
-target_compile_definitions(ticalcs2_objlib PUBLIC TICALCS_EXPORTS)
+target_compile_definitions(ticalcs2 PUBLIC TICALCS_EXPORTS)
 
 # tests
 add_subdirectory(tests)
