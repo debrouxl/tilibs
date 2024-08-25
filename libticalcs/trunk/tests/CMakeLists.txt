@@ -58,10 +58,8 @@ foreach(tar torture_ticalcs test_ticalcs_2)
     target_link_libraries(${tar} PRIVATE ticonv_objlib tifiles2_objlib ticables2_objlib ticalcs2_objlib)
 endforeach()
 
-set(builddirlibpaths "${PROJECT_BINARY_DIR}/../../../libticonv/trunk:${PROJECT_BINARY_DIR}/../../../libtifiles/trunk:${PROJECT_BINARY_DIR}/../../../libticables/trunk:${PROJECT_BINARY_DIR}/..")
-
 add_custom_target(ticalcs2_check
-    COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH="${builddirlibpaths}" ${CMAKE_CURRENT_BINARY_DIR}/torture_ticalcs
+    COMMAND "$<TARGET_FILE:torture_ticalcs>"
     DEPENDS torture_ticalcs
     COMMENT "Run the ticalcs2 torture tests"
     EXCLUDE_FROM_ALL
