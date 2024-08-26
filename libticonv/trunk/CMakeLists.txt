@@ -52,4 +52,6 @@ endif()
 target_compile_definitions(ticonv PUBLIC TICONV_EXPORTS)
 
 # tests
-add_subdirectory(tests)
+if (BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

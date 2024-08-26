@@ -61,6 +61,7 @@ endif()
 
 project(tilibs C CXX)
 
+option(BUILD_TESTS "Whether to build tests" ON)
 option(BUILD_SHARED_LIBS "Whether to build shared libs instead of static ones" ON)
 
 # Our modules
@@ -183,8 +184,16 @@ add_subdirectory(libticables/trunk)
 add_subdirectory(libticalcs/trunk)
 add_subdirectory(tifileutil)
 
-add_custom_target(check
-    DEPENDS ticonv_check tifiles2_check ticables2_check ticalcs2_check
-    COMMENT "Run all torture tests"
-    EXCLUDE_FROM_ALL
-)
+if (BUILD_TESTS)
+    add_custom_target(check
+            DEPENDS ticonv_check tifiles2_check ticables2_check ticalcs2_check
+            COMMENT "Run all torture tests"
+            EXCLUDE_FROM_ALL
+    )
+else()
+    add_custom_target(check
+            COMMAND ${CMAKE_COMMAND} -E echo "BUILD_TESTS was OFF, so no tests to run"
+            COMMENT "Run all torture tests"
+            EXCLUDE_FROM_ALL
+    )
+endif()

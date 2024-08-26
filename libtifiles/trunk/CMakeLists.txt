@@ -74,4 +74,6 @@ endif()
 target_compile_definitions(tifiles2 PUBLIC TIFILES_EXPORTS)
 
 # tests
-add_subdirectory(tests)
+if (BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

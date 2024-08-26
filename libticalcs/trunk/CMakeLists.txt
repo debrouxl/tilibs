@@ -96,4 +96,6 @@ endif()
 target_compile_definitions(ticalcs2 PUBLIC TICALCS_EXPORTS)
 
 # tests
-add_subdirectory(tests)
+if (BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
