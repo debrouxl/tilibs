@@ -436,6 +436,27 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	return ret;
 }
 
+// Normally, this should depend on the "Owner PID" field from the file header.
+// But this way works fine too.
+static uint8_t get_var_type_attr_header_byte(CalcModel model)
+{
+	switch (model)
+	{
+	case CALC_TI83PCE_USB:
+	case CALC_TI84PCE_USB:
+		return 0x0F;
+
+	case CALC_TI84P_USB:
+	case CALC_TI82A_USB:
+	case CALC_TI84PT_USB:
+	case CALC_TI84PC_USB:
+		return 0x0B;
+
+	default:
+		return 0x07;
+	}
+}
+
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	unsigned int i;
@@ -465,7 +486,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 		attrs = dusb_ca_new_array(handle, nattrs);
 		attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
-		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
+		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = get_var_type_attr_header_byte(handle->model);
 		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = entry->type;
 		attrs[1] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
 		attrs[1]->data[0] = entry->attr == ATTRB_ARCHIVED ? 1 : 0;
