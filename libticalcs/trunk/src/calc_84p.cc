@@ -1429,7 +1429,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 				ref.tm_hour = 0;
 				ref.tm_min = 0;
 				ref.tm_sec = 0;
-				//ref.tm_isdst = 1;
+				//ref.tm_isdst = -1;
 				r = mktime(&ref);
 
 				cur.tm_year = _clock->year - 1900;
@@ -1438,7 +1438,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 				cur.tm_hour = _clock->hours;
 				cur.tm_min = _clock->minutes;
 				cur.tm_sec = _clock->seconds;
-				cur.tm_isdst = 1;
+				cur.tm_isdst = -1;
 				c = mktime(&cur);
 
 				calc_time = (uint32_t)difftime(c, r);
@@ -1583,7 +1583,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 					ref.tm_hour = 0;
 					ref.tm_min = 0;
 					ref.tm_sec = 0;
-					//ref.tm_isdst = 1;
+					//ref.tm_isdst = -1;
 					r = mktime(&ref);
 
 					c = r + calc_time;

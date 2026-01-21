@@ -1250,7 +1250,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	ref.tm_hour = 0;
 	ref.tm_min = 0;
 	ref.tm_sec = 0;
-	//ref.tm_isdst = 1;
+	//ref.tm_isdst = -1;
 	r = mktime(&ref);
 	//printf("%s\n", asctime(&ref));
 
@@ -1260,7 +1260,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	cur.tm_hour = _clock->hours;
 	cur.tm_min = _clock->minutes;
 	cur.tm_sec = _clock->seconds;
-	cur.tm_isdst = 1;
+	cur.tm_isdst = -1;
 	c = mktime(&cur);
 	//printf("%s\n", asctime(&cur));
 
@@ -1374,7 +1374,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 		ref.tm_hour = 0;
 		ref.tm_min = 0;
 		ref.tm_sec = 0;
-		//ref.tm_isdst = 1;
+		//ref.tm_isdst = -1;
 		r = mktime(&ref);
 		//printf("%s\n", asctime(&ref));
 
