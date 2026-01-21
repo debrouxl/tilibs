@@ -146,36 +146,45 @@ msgstr ""
 "correspondent pas ?"
 
 #: src/calc_84p.cc:2031 src/calc_84p.cc:2040 src/calc_84p.cc:2049
-#: src/calc_84p.cc:2065 src/calc_84p.cc:2074 src/calc_84p.cc:2082
+#: src/calc_84p.cc:2065 src/calc_84p.cc:2074 src/calc_84p.cc:2135
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr "Membre inconnu de la famille 84+ avec product_id=%d hw_version=%d"
 
-#: src/calc_84p.cc:2100
+#: src/calc_84p.cc:2129
+#, c-format
+msgid ""
+"Couldn't fully determine 84+ family member with product_id=%d hw_version=%d "
+"but heuristically it is a %s"
+msgstr ""
+"N'a pas pu pleinement déterminer le membre de la famille 84+ avec "
+"product_id=%d hw_version=%d mais de façon heuristique, c'est une %s"
+
+#: src/calc_84p.cc:2154
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus via DirectLink"
 
-#: src/calc_84p.cc:2171
+#: src/calc_84p.cc:2225
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr "TI-84 Plus C Silver Edition via DirectLink"
 
-#: src/calc_84p.cc:2242
+#: src/calc_84p.cc:2296
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr "TI-83 Premium CE via DirectLink"
 
-#: src/calc_84p.cc:2313
+#: src/calc_84p.cc:2367
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr "TI-84 Plus CE via DirectLink"
 
-#: src/calc_84p.cc:2384
+#: src/calc_84p.cc:2438
 msgid "TI-82 Advanced thru DirectLink"
 msgstr "TI-82 Advanced via DirectLink"
 
-#: src/calc_84p.cc:2455
+#: src/calc_84p.cc:2509
 msgid "TI-84 Plus T thru DirectLink"
 msgstr "TI-84 Plus T via DirectLink"
 
-#: src/calc_84p.cc:2526
+#: src/calc_84p.cc:2580
 msgid "TI-82 Advanced Edition Python thru DirectLink"
 msgstr "TI-82 Advanced Edition Python via DirectLink"
 

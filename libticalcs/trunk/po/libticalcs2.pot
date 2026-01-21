@@ -140,36 +140,43 @@ msgid "That's odd, product ID and calc ID do not match ?"
 msgstr ""
 
 #: src/calc_84p.cc:2031 src/calc_84p.cc:2040 src/calc_84p.cc:2049
-#: src/calc_84p.cc:2065 src/calc_84p.cc:2074 src/calc_84p.cc:2082
+#: src/calc_84p.cc:2065 src/calc_84p.cc:2074 src/calc_84p.cc:2135
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr ""
 
-#: src/calc_84p.cc:2100
+#: src/calc_84p.cc:2129
+#, c-format
+msgid ""
+"Couldn't fully determine 84+ family member with product_id=%d hw_version=%d "
+"but heuristically it is a %s"
+msgstr ""
+
+#: src/calc_84p.cc:2154
 msgid "TI-84 Plus thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.cc:2171
+#: src/calc_84p.cc:2225
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.cc:2242
+#: src/calc_84p.cc:2296
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.cc:2313
+#: src/calc_84p.cc:2367
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.cc:2384
+#: src/calc_84p.cc:2438
 msgid "TI-82 Advanced thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.cc:2455
+#: src/calc_84p.cc:2509
 msgid "TI-84 Plus T thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.cc:2526
+#: src/calc_84p.cc:2580
 msgid "TI-82 Advanced Edition Python thru DirectLink"
 msgstr ""
 

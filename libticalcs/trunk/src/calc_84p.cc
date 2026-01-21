@@ -2075,11 +2075,65 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 					}
 					break;
 				}
+				case PRODUCT_ID_TI84PT:
+				{
+					infos->model = CALC_TI84PT_USB;
+					break;
+				}
 				default:
 				{
-					// Default to generic 84+(SE).
-					infos->model = CALC_TI84P_USB;
-					ticalcs_warning(_("Unhandled 84+ family member with product_id=%d hw_version=%d"), product_id, infos->hw_version);
+					if (infos->product_name[0])
+					{
+						CalcModel model = ticonv_string_to_model(infos->product_name);
+						if (model != CALC_NONE)
+						{
+							infos->model = ticalcs_remap_model_to_usb(CABLE_USB, model);
+						}
+					}
+					else if (infos->device_type == DEVICE_TYPE_83P)
+					{
+						if (infos->color_screen)
+						{
+							if (infos->exact_math)
+							{
+								if (infos->hw_version >= 8)
+								{
+									infos->model = CALC_TI82AEP_USB;
+								}
+								else
+								{
+									infos->model = CALC_TI83PCE_USB;
+								}
+							}
+							else if (infos->hw_version >= 6)
+							{
+								infos->model = CALC_TI84PCE_USB;
+							}
+							else
+							{
+								infos->model = CALC_TI84PC_USB;
+							}
+						}
+						else
+						{
+							infos->model = CALC_TI84P_USB;
+						}
+					}
+					else
+					{
+						infos->model = CALC_NONE;
+					}
+
+					if (infos->model != CALC_NONE)
+					{
+						ticalcs_warning(_("Couldn't fully determine 84+ family member with product_id=%d hw_version=%d but heuristically it is a %s"), product_id, infos->hw_version, ticonv_model_to_string(infos->model));
+					}
+					else
+					{
+						// Default to generic 84+(SE).
+						infos->model = CALC_TI84P_USB;
+						ticalcs_warning(_("Unhandled 84+ family member with product_id=%d hw_version=%d"), product_id, infos->hw_version);
+					}
 					break;
 				}
 			}
