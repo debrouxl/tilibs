@@ -597,32 +597,122 @@ static void byteswap(uint8_t *data, uint32_t len)
 
 /////////////----------------
 
-static const uint16_t usb_errors[] = {
-	0x0004, 0x0006, 0x0008, 0x0009, 0x000c, 0x000d, 0x000e, 0x0011, // 01-08 (decimal)
-	0x0012, 0x001b, 0x001c, 0x001d, 0x0021, 0x0022, 0x0023, 0x0027, // 09-16 (decimal)
-	0x0029, 0x002b, 0x002c, 0x002d, 0x002e, 0x002f, 0x0030, 0x0034  // 17-24 (decimal)
+typedef struct
+{
+	uint16_t   code;
+	const char *name;
+} DUSBErrorCodeInfo;
+
+static const DUSBErrorCodeInfo usb_errors[] =
+{
+	{ 0x0001, "UnknownPacket" },
+	{ 0x0002, "CannotReceiveOS" },
+	{ 0x0003, "Timeout" },
+	{ 0x0004, "UnknownAttribute" },
+	{ 0x0005, "PathDoesNotExist" },
+	{ 0x0006, "FileDoesNotExist" },
+	{ 0x0007, "InvalidPacketLength" },
+	{ 0x0008, "UnexpectedPacket" },
+	{ 0x0009, "UnknownProtocolID" },
+	{ 0x000A, "CannotCreateDirectory" },
+	{ 0x000B, "CannotCreateNullFile" },
+	{ 0x000C, "InsufficientMemory" },
+	{ 0x000D, "InvalidPath" },
+	{ 0x000E, "InvalidFilename" },
+	{ 0x000F, "ArchivedFile" },
+	{ 0x0010, "LockedFile" },
+	{ 0x0011, "Forbidden" },
+	{ 0x0012, "FileAlreadyExists" },
+	{ 0x0013, "FileCannotBeArchived" },
+	{ 0x0014, "UnsupportedFilter" },
+	{ 0x0015, "FilterNotApplicable" },
+	{ 0x0016, "UnknownFilter" },
+	{ 0x0017, "ListElementOutOfRange" },
+	{ 0x0018, "ListElementNotApplicable" },
+	{ 0x0019, "DowngradeNotAllowed" },
+	{ 0x001A, "MulipleFilesMatched" },
+	{ 0x001B, "FileSizeExceedsMaximumAcceptableSize" },
+	{ 0x001C, "TimeoutTooShort" },
+	{ 0x001D, "TimeoutTooLong" },
+	{ 0x001E, "UnsupportedProtocolVersion" },
+	{ 0x001F, "UnsupportedStringCharacter" },
+	{ 0x0020, "AttributeCountDoesntMatchRequest" },
+	{ 0x0021, "AttributeDoesntMatchRequest" },
+	{ 0x0022, "InvalidAttributeValue" },
+	{ 0x0023, "UnsupportedAttribute" },
+	{ 0x0024, "UnknownOption" },
+	{ 0x0025, "UnsupportedOption" },
+	{ 0x0026, "InvalidOption" },
+	{ 0x0027, "InvalidFilterValue" },
+	{ 0x0028, "InsufficientInfoForWrite" },
+	{ 0x0029, "InvalidPacketField" },
+	{ 0x002A, "WaitTimeExceeded" },
+	{ 0x002B, "BatteryTooLow" },
+	{ 0x002C, "InvalidCertificate" },
+	{ 0x002D, "NoCertificatePresent" },
+	{ 0x002E, "BadSignature" },
+	{ 0x002F, "ExpiredCertificate" },
+	{ 0x0030, "CertificateCannotBeReplaced" },
+	{ 0x0031, "UnsupportedVersion" },
+	{ 0x0032, "NoDataForVariable" },
+	{ 0x0033, "BadLoadAddress" },
+	{ 0x0034, "FileMustBeArchived" },
+	{ 0x0035, "CannotSendOS" },
+	{ 0x0036, "CalculatorBusy" },
+
+	{ 0xCCCC, "Cancel" },
+	{ 0xCCCD, "CancelAll" },
+
+	{ 0xF001, "MissingDirectoryInfo" },
+	{ 0xF002, "MissingDataInfo" },
+	{ 0xF003, "UnableToAllocatePacket" },
+	{ 0xF004, "ShortSendReceive" },
+	{ 0xF005, "FailedToCommunicate" },
+	{ 0xF006, "DeviceHasBeenDisconnected" }
 };
 
 static int err_code(uint16_t code)
 {
-	unsigned int i;
-
-	for (i = 0; i < sizeof(usb_errors) / sizeof(usb_errors[0]); i++)
+	for (unsigned int i = 0; i < sizeof(usb_errors) / sizeof(usb_errors[0]); i++)
 	{
-		if (usb_errors[i] == code)
+		if (usb_errors[i].code == code)
 		{
-			return i + 1;
+			return (int)i + 1;
 		}
 	}
 
-	ticalcs_warning("USB error code 0x%02x not found in list. Please report it at <tilp-devel@lists.sf.net>.", code);
+	ticalcs_warning("USB error code 0x%04x not found in list. Please report it at <tilp-devel@lists.sf.net>.", (unsigned int)code);
 
 	return 0;
 }
 
-static int err_code_pkt(DUSBVirtualPacket *pkt)
+static const char* dusb_error_code_to_name(uint16_t code)
 {
-	return err_code((((uint16_t)pkt->data[0]) << 8) | pkt->data[1]);
+	for (unsigned int i = 0; i < sizeof(usb_errors) / sizeof(usb_errors[0]); i++)
+	{
+		if (usb_errors[i].code == code)
+		{
+			return usb_errors[i].name;
+		}
+	}
+
+	return "Unknown";
+}
+
+static int dusb_handle_error_packet(CalcHandle *handle, const DUSBVirtualPacket *pkt, const char *context)
+{
+	const uint16_t raw = (((uint16_t)pkt->data[0]) << 8) | pkt->data[1];
+
+	if (raw == 0xCCCC || raw == 0xCCCD)
+	{
+		ticalcs_warning("%s: DUSB cancel packet received?! code=0x%04X", context, raw);
+	}
+	else
+	{
+		ticalcs_warning("%s: DUSB error packet: code=0x%04X (%s)", context, raw, dusb_error_code_to_name(raw));
+	}
+
+	return ERR_CALC_ERROR2 + err_code(raw);
 }
 
 /////////////----------------
@@ -961,8 +1051,8 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 
 		case DUSB_VPKT_ERROR:
 		{
-			int err = err_code((((uint16_t)data[0]) << 8) | (((uint32_t)data[1]) << 0));
-			fprintf(f, "Error code: %u (%04X)\n", err, err);
+			const uint16_t raw = (((uint16_t)data[0]) << 8) | (((uint16_t)data[1]) << 0);
+			fprintf(f, "Error code: 0x%04X (%s)\n", raw, dusb_error_code_to_name(raw));
 		}
 		break;
 
@@ -1103,7 +1193,7 @@ int TICALL dusb_cmd_r_os_ack(CalcHandle *handle, uint32_t *size)
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
+			retval = dusb_handle_error_packet(handle, pkt, __FUNCTION__);
 			goto end;
 		}
 		else if (pkt->type != DUSB_VPKT_OS_ACK)
@@ -1242,7 +1332,7 @@ int TICALL dusb_cmd_r_eot_ack(CalcHandle *handle)
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
+			retval = dusb_handle_error_packet(handle, pkt, __FUNCTION__);
 		}
 		else if (pkt->type != DUSB_VPKT_EOT_ACK)
 		{
@@ -1305,7 +1395,7 @@ int TICALL dusb_cmd_r_param_data(CalcHandle *handle, unsigned int nparams, DUSBC
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
+			retval = dusb_handle_error_packet(handle, pkt, __FUNCTION__);
 			goto end;
 		}
 		else if (pkt->type != DUSB_VPKT_PARM_DATA)
@@ -1385,7 +1475,7 @@ int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, uint8_t **d
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
+			retval = dusb_handle_error_packet(handle, pkt, __FUNCTION__);
 			goto end;
 		}
 		else if (pkt->type != DUSB_VPKT_PARM_DATA)
@@ -1482,7 +1572,7 @@ int TICALL dusb_cmd_r_var_header(CalcHandle *handle, char *folder, char *name, D
 		}
 		else if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
+			retval = dusb_handle_error_packet(handle, pkt, __FUNCTION__);
 			goto end;
 		}
 		else if (pkt->type != DUSB_VPKT_VAR_HDR)
@@ -1707,7 +1797,7 @@ int TICALL dusb_cmd_r_var_content(CalcHandle *handle, uint32_t *size, uint8_t **
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
+			retval = dusb_handle_error_packet(handle, pkt, __FUNCTION__);
 			goto end;
 		}
 		else if (pkt->type != DUSB_VPKT_VAR_CNTS)
@@ -2023,7 +2113,7 @@ int TICALL dusb_cmd_r_mode_ack(CalcHandle *handle)
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
+			retval = dusb_handle_error_packet(handle, pkt, __FUNCTION__);
 		}
 		else if (pkt->type != DUSB_VPKT_MODE_SET)
 		{
@@ -2055,7 +2145,7 @@ int TICALL dusb_cmd_r_data_ack(CalcHandle *handle)
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
+			retval = dusb_handle_error_packet(handle, pkt, __FUNCTION__);
 		}
 		else if (pkt->type != DUSB_VPKT_DATA_ACK)
 		{
@@ -2086,7 +2176,7 @@ int TICALL dusb_cmd_r_delay_ack(CalcHandle *handle)
 	{
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
+			retval = dusb_handle_error_packet(handle, pkt, __FUNCTION__);
 		}
 		else if (pkt->type != DUSB_VPKT_DELAY_ACK)
 		{
@@ -2137,7 +2227,7 @@ int TICALL dusb_cmd_r_eot(CalcHandle *handle)
 
 		if (pkt->type == DUSB_VPKT_ERROR)
 		{
-			retval = ERR_CALC_ERROR2 + err_code_pkt(pkt);
+			retval = dusb_handle_error_packet(handle, pkt, __FUNCTION__);
 			goto end;
 		}
 		else if (pkt->type != DUSB_VPKT_EOT)
@@ -2168,7 +2258,7 @@ int TICALL dusb_cmd_s_error(CalcHandle *handle, uint16_t code)
 	retval = dusb_send_data(handle, pkt);
 
 	dusb_vtl_pkt_del(handle, pkt);
-	ticalcs_info("   code = %04x", code);
+	ticalcs_info("   code = %04x (%s)", code, dusb_error_code_to_name(code));
 
 	return retval;
 }

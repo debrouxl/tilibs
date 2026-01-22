@@ -38,6 +38,72 @@
 
 extern int nsp_reset;
 
+// must be synchronized with dusb_cmd.cc (DUSBErrorCodeInfo usb_errors)
+static const char *dusb_error_messages[] = {
+	_("Msg: unknown packet."),
+	_("Msg: cannot receive OS."),
+	_("Msg: timeout."),
+	_("Msg: unknown attribute."),
+	_("Msg: path does not exist."),
+	_("Msg: file does not exist."),
+	_("Msg: invalid packet length."),
+	_("Msg: unexpected packet."),
+	_("Msg: protocol ID unknown."),
+	_("Msg: cannot create directory."),
+	_("Msg: cannot create null file."),
+	_("Msg: insufficient memory."),
+	_("Msg: invalid path."),
+	_("Msg: invalid filename."),
+	_("Msg: file is archived."),
+	_("Msg: file is locked."),
+	_("Msg: forbidden."),
+	_("Msg: file already exists."),
+	_("Msg: file cannot be archived."),
+	_("Msg: unsupported filter."),
+	_("Msg: filter not applicable."),
+	_("Msg: unknown filter."),
+	_("Msg: list element out of range."),
+	_("Msg: list element not applicable."),
+	_("Msg: anti-downgrade protection refuses this OS version."),
+	_("Msg: multiple files matched."),
+	_("Msg: file size exceeds maximum acceptable size."),
+	_("Msg: timeout too short."),
+	_("Msg: timeout too long."),
+	_("Msg: unsupported protocol version."),
+	_("Msg: unsupported string character."),
+	_("Msg: attribute count does not match request."),
+	_("Msg: attribute does not match request."),
+	_("Msg: invalid attribute value."),
+	_("Msg: unsupported attribute."),
+	_("Msg: unknown option."),
+	_("Msg: unsupported option."),
+	_("Msg: invalid option."),
+	_("Msg: invalid filter value."),
+	_("Msg: insufficient information for write."),
+	_("Msg: invalid packet field."),
+	_("Msg: wait time exceeded."),
+	_("Msg: battery too low."),
+	_("Msg: invalid certificate."),
+	_("Msg: no certificate present."),
+	_("Msg: bad signature."),
+	_("Msg: certificate expired."),
+	_("Msg: certificate cannot be replaced."),
+	_("Msg: unsupported version."),
+	_("Msg: no data for variable."),
+	_("Msg: bad load address."),
+	_("Msg: file must be archived."),
+	_("Msg: cannot send OS."),
+	_("Msg: hand-held is busy (set your calculator to HOME screen)."),
+	_("Msg: canceled."),
+	_("Msg: canceled all."),
+	_("Msg: missing directory information."),
+	_("Msg: missing data information."),
+	_("Msg: unable to allocate packet."),
+	_("Msg: short send/receive."),
+	_("Msg: failed to communicate."),
+	_("Msg: device has been disconnected.")
+};
+
 /**
  * ticalcs_error_get:
  * @number: error number (see error.h for list).
@@ -63,6 +129,13 @@ int TICALL ticalcs_error_get(int number, char **message)
 	{
 		ticalcs_critical("ticalcs_error_get(NULL)\n");
 		return number;
+	}
+
+	if (number > ERR_CALC_ERROR2 &&
+	    number <= ERR_CALC_ERROR2 + (int)(sizeof(dusb_error_messages)/sizeof(dusb_error_messages[0])))
+	{
+		*message = g_strdup(dusb_error_messages[number - ERR_CALC_ERROR2 - 1]);
+		return 0;
 	}
 
 	switch(number)
@@ -264,13 +337,16 @@ int TICALL ticalcs_error_get(int number, char **message)
 		NULL);
 		break;
 
-	case ERR_CALC_ERROR1:	// must be synchronized with cmd68k.c (static uint8_t dbus_errors[])
+	case ERR_CALC_ERROR1:	// must be synchronized with cmd68k.cc (static uint8_t dbus_errors[])
+	case ERR_CALC_ERROR2:	// see also dusb_cmd.cc's usb_errors
+	case ERR_CALC_ERROR3:	// must be synchronized with nsp_cmd.cc (static uint8_t usb_errors[])
 		*message = g_strconcat(
 		_("Msg: hand-held returned an error."),
 		"\n",
 		_("Cause: hand-held returned an uncaught error. Please report log."),
 		NULL);
 		break;
+
 	case ERR_CALC_ERROR1+1:
 		*message = g_strdup(
 		_("Msg: cannot delete application."));
@@ -300,117 +376,6 @@ int TICALL ticalcs_error_get(int number, char **message)
 		_("Msg: FLASH application rejected (signature does not match)."));
 		break;
 
-	case ERR_CALC_ERROR2:	// must be synchronized with dusb_cmd.c (static uint16_t usb_errors[])
-		*message = g_strconcat(
-		_("Msg: hand-held returned an error (not caught)."),
-		"\n",
-		_("Cause: hand-held returned an uncaught error. Please report log."),
-		NULL);
-		break;
-	case ERR_CALC_ERROR2+1:
-		*message = g_strdup(
-		_("Msg: invalid argument or name."));
-		break;
-	case ERR_CALC_ERROR2+2:
-		*message = g_strdup(
-		_("Msg: cannot delete var/app from archive."));
-		break;
-	case ERR_CALC_ERROR2+3:
-		*message = g_strdup(
-		_("Msg: transmission error."));
-		break;
-	case ERR_CALC_ERROR2+4:
-		*message = g_strdup(
-		_("Msg: using basic mode while being in boot mode."));
-		break;
-	case ERR_CALC_ERROR2+5:
-		*message = g_strdup(
-		_("Msg: out of memory."));
-		break;
-	case ERR_CALC_ERROR2+6:
-		*message = g_strdup(
-		_("Msg: invalid name."));
-		break;
-	case ERR_CALC_ERROR2+7:
-		*message = g_strdup(
-		_("Msg: invalid name."));
-		break;
-	case ERR_CALC_ERROR2+8:
-		*message = g_strdup(
-		_("Msg: busy?"));
-		break;
-	case ERR_CALC_ERROR2+9:
-		*message = g_strdup(
-		_("Msg: can't overwrite, variable is locked."));
-		break;
-	case ERR_CALC_ERROR2+10:
-		*message = g_strdup(
-		_("Msg: variable too large."));
-		break;
-	case ERR_CALC_ERROR2+11:
-		*message = g_strdup(
-		_("Msg: mode token too small."));
-		break;
-	case ERR_CALC_ERROR2+12:
-		*message = g_strdup(
-		_("Msg: mode token too large."));
-		break;
-	case ERR_CALC_ERROR2+13:
-		*message = g_strdup(
-		_("Msg: wrong size for parameter."));
-		break;
-	case ERR_CALC_ERROR2+14:
-		*message = g_strdup(
-		_("Msg: invalid parameter ID."));
-		break;
-	case ERR_CALC_ERROR2+15:
-		*message = g_strdup(
-		_("Msg: read-only parameter."));
-		break;
-	case ERR_CALC_ERROR2+16:
-		*message = g_strdup(
-		_("Msg: wrong modify request?"));
-		break;
-	case ERR_CALC_ERROR2+17:
-		*message = g_strdup(
-		_("Msg: remote control?"));
-		break;
-	case ERR_CALC_ERROR2+18:
-		*message = g_strdup(
-		_("Msg: battery low."));
-		break;
-	case ERR_CALC_ERROR2+19:
-		*message = g_strdup(
-		_("Msg: FLASH application rejected (e.g. TI-68k FL_addCert 6)."));
-		break;
-	case ERR_CALC_ERROR2+20:
-		*message = g_strdup(
-		_("Msg: FLASH application rejected (e.g. TI-68k FL_addCert 7)."));
-		break;
-	case ERR_CALC_ERROR2+21:
-		*message = g_strdup(
-		_("Msg: FLASH application rejected (signature does not match)."));
-		break;
-	case ERR_CALC_ERROR2+22:
-		*message = g_strdup(
-		_("Msg: FLASH application rejected (e.g. TI-68k FL_addCert 9)."));
-		break;
-	case ERR_CALC_ERROR2+23:
-		*message = g_strdup(
-		_("Msg: FLASH application rejected (e.g. TI-68k FL_addCert A)."));
-		break;
-	case ERR_CALC_ERROR2+24:
-		*message = g_strdup(
-		_("Msg: hand-held is busy (set your calculator to HOME screen)."));
-		break;
-
-	case ERR_CALC_ERROR3+0:	// must be synchronized with nsp_cmd.c (static uint8_t usb_errors[])
-		*message = g_strconcat(
-		_("Msg: hand-held returned an error (not caught)."),
-		"\n",
-		_("Cause: hand-held returned an uncaught error. Please report log."),
-		NULL);
-		break;
 	case ERR_CALC_ERROR3+1:
 		*message = g_strdup(
 		_("Msg: out of memory."));
