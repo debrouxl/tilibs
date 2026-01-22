@@ -924,7 +924,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	{
 		uint32_t size;
 		uint8_t cmd, *data;
-		unsigned int infos_mask = 0;
+		InfosMask infos_mask = 0;
 
 		ret = nsp_cmd_s_dev_infos(handle, NSP_CMD_DI_MODEL);
 		if (ret)
@@ -1098,7 +1098,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->model = CALC_NSPIRE;
 		}
 
-		infos->mask = (InfosMask)infos_mask;
+		infos->mask = infos_mask;
 
 		g_free(data);
 	} while (0);
