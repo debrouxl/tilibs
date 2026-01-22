@@ -28,6 +28,23 @@
 #include "logging.h"
 #include "error.h"
 
+#define bytes_to_hex(data, data_len, out, out_len) \
+	static_assert(out_len >= (data_len * 2 + 1), "Fix the buffer sizes"); \
+	bytes_to_hex_(data, data_len, out, out_len)
+
+static void bytes_to_hex_(const uint8_t* data, size_t data_len, char* out, size_t out_len)
+{
+	static const char hex[] = "0123456789ABCDEF";
+
+	char * ptr = out;
+	for (size_t i = 0; i < data_len; i++)
+	{
+		*ptr++ = hex[data[i] >> 4];
+		*ptr++ = hex[data[i] & 0x0F];
+	}
+	*ptr++ = 0;
+}
+
 /**
  * ticalcs_model_to_string:
  * @model: a calculator model.
@@ -164,6 +181,16 @@ int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen)
 		char flash_phys[30];
 		char flash_user[30];
 		char flash_free[30];
+		char battery_level[20];
+		char color_depth[20];
+		char user_pages[20];
+		char free_pages[20];
+		char clock_tz[20];
+		char clock_date_format[20];
+		char clock_time_format[20];
+		char last_error_code[20];
+		char boot_hash[65];
+		char os_hash[65];
 
 		language_ids[0] = 0;
 		if (infos->mask & INFOS_LANG_ID)
@@ -239,6 +266,56 @@ int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen)
 		{
 			sprintf(flash_free, "%lu B (%lu KB)", (unsigned long)infos->flash_free, (unsigned long)((infos->flash_free + 512) >> 10));
 		}
+		battery_level[0] = 0;
+		if (infos->mask & INFOS_BATTERY_LEVEL)
+		{
+			sprintf(battery_level, "%u%%", infos->battery_level);
+		}
+		color_depth[0] = 0;
+		if (infos->mask & INFOS_COLOR_DEPTH)
+		{
+			sprintf(color_depth, "%u", infos->color_depth);
+		}
+		user_pages[0] = 0;
+		if (infos->mask & INFOS_USER_PAGES)
+		{
+			sprintf(user_pages, "%u", infos->user_pages);
+		}
+		free_pages[0] = 0;
+		if (infos->mask & INFOS_FREE_PAGES)
+		{
+			sprintf(free_pages, "%u", infos->free_pages);
+		}
+		clock_tz[0] = 0;
+		if (infos->mask & INFOS_CLOCK_TZ)
+		{
+			sprintf(clock_tz, "%d", infos->clock_tz);
+		}
+		clock_date_format[0] = 0;
+		if (infos->mask & INFOS_CLOCK_DATE_FMT)
+		{
+			sprintf(clock_date_format, "%u", infos->clock_date_format);
+		}
+		clock_time_format[0] = 0;
+		if (infos->mask & INFOS_CLOCK_TIME_FMT)
+		{
+			sprintf(clock_time_format, "%u", infos->clock_time_format);
+		}
+		last_error_code[0] = 0;
+		if (infos->mask & INFOS_LAST_ERROR_CODE)
+		{
+			sprintf(last_error_code, "%u", infos->last_error_code);
+		}
+		boot_hash[0] = 0;
+		if (infos->mask & INFOS_BOOT_HASH)
+		{
+			bytes_to_hex(infos->boot_hash, sizeof(infos->boot_hash), boot_hash, sizeof(boot_hash));
+		}
+		os_hash[0] = 0;
+		if (infos->mask & INFOS_OS_HASH)
+		{
+			bytes_to_hex(infos->os_hash, sizeof(infos->os_hash), os_hash, sizeof(os_hash));
+		}
 
 		ticalcs_slprintf(str, maxlen,
 			"%s"   // INFOS_PRODUCT_NAME
@@ -277,6 +354,14 @@ int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen)
 			"%s\n"
 			"%s"   // INFOS_COLOR_SCREEN
 			"%s\n"
+			"%s"   // INFOS_HAS_SCREEN
+			"%s\n"
+			"%s"   // INFOS_COLOR_DEPTH
+			"%s\n"
+			"%s"   // INFOS_USER_PAGES
+			"%s\n"
+			"%s"   // INFOS_FREE_PAGES
+			"%s\n"
 			"\n"
 			"%s"   // INFOS_RAM_PHYS
 			"%s\n"
@@ -292,6 +377,27 @@ int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen)
 			"%s\n"
 			"\n"
 			"%s"   // INFOS_BATTERY_ENOUGH
+			"%s\n"
+			"%s"   // INFOS_BATTERY_LEVEL
+			"%s\n"
+			"%s"   // INFOS_EXTERNAL_POWER
+			"%s\n"
+			"\n"
+			"%s"   // INFOS_HOME_SCREEN
+			"%s\n"
+			"%s"   // INFOS_SCREEN_SPLIT
+			"%s\n"
+			"%s"   // INFOS_CLOCK_TZ
+			"%s\n"
+			"%s"   // INFOS_CLOCK_DATE_FMT
+			"%s\n"
+			"%s"   // INFOS_CLOCK_TIME_FMT
+			"%s\n"
+			"%s"   // INFOS_LAST_ERROR_CODE
+			"%s\n"
+			"%s"   // INFOS_BOOT_HASH
+			"%s\n"
+			"%s"   // INFOS_OS_HASH
 			"%s\n",
 
 			(infos->mask & INFOS_PRODUCT_NAME) ? _("Product Name: ") : "",
@@ -331,6 +437,14 @@ int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen)
 			bpp,
 			(infos->mask & INFOS_COLOR_SCREEN) ? _("Color screen: ") : "",
 			color_screen,
+			(infos->mask & INFOS_HAS_SCREEN) ? _("Has screen: ") : "",
+			(infos->mask & INFOS_HAS_SCREEN) ? (infos->has_screen ? _("Yes") : _("No")) : "",
+			(infos->mask & INFOS_COLOR_DEPTH) ? _("Color depth: ") : "",
+			color_depth,
+			(infos->mask & INFOS_USER_PAGES) ? _("User pages: ") : "",
+			user_pages,
+			(infos->mask & INFOS_FREE_PAGES) ? _("Free pages: ") : "",
+			free_pages,
 
 			(infos->mask & INFOS_RAM_PHYS) ? _("Physical RAM: ") : "",
 			ram_phys,
@@ -346,7 +460,28 @@ int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen)
 			flash_free,
 
 			(infos->mask & INFOS_BATTERY_ENOUGH) ? _("Battery: ") : "",
-			(infos->mask & INFOS_BATTERY_ENOUGH) ? (infos->battery ? _("good") : _("low")) : "");
+			(infos->mask & INFOS_BATTERY_ENOUGH) ? (infos->battery ? _("good") : _("low")) : "",
+			(infos->mask & INFOS_BATTERY_LEVEL) ? _("Battery level: ") : "",
+			battery_level,
+			(infos->mask & INFOS_EXTERNAL_POWER) ? _("External power: ") : "",
+			(infos->mask & INFOS_EXTERNAL_POWER) ? (infos->external_power ? _("Yes") : _("No")) : "",
+			(infos->mask & INFOS_HOME_SCREEN) ? _("On home screen: ") : "",
+			(infos->mask & INFOS_HOME_SCREEN) ? (infos->on_home_screen ? _("Yes") : _("No")) : "",
+			(infos->mask & INFOS_SCREEN_SPLIT) ? _("Screen split: ") : "",
+			(infos->mask & INFOS_SCREEN_SPLIT) ? (infos->screen_split ? _("Yes") : _("No")) : "",
+			(infos->mask & INFOS_CLOCK_TZ) ? _("Clock timezone: ") : "",
+			clock_tz,
+			(infos->mask & INFOS_CLOCK_DATE_FMT) ? _("Clock date format: ") : "",
+			clock_date_format,
+			(infos->mask & INFOS_CLOCK_TIME_FMT) ? _("Clock time format: ") : "",
+			clock_time_format,
+			(infos->mask & INFOS_LAST_ERROR_CODE) ? _("Last error code: ") : "",
+			last_error_code,
+			(infos->mask & INFOS_BOOT_HASH) ? _("Boot hash: ") : "",
+			boot_hash,
+			(infos->mask & INFOS_OS_HASH) ? _("OS hash: ") : "",
+			os_hash);
+
 		return 0;
 	}
 	else

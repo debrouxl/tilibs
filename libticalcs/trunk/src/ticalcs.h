@@ -227,44 +227,57 @@ typedef enum
 /**
  * InfosMask:
  *
- * An enumeration which contains the different flags supported by CalcInfos:
+ * A 64-bit field which contains the different flags supported by CalcInfos.
  **/
-typedef enum
-{
-	INFOS_PRODUCT_NUMBER    = (1 << 0), /* obsolete (never used) */
-	INFOS_PRODUCT_NAME      = (1 << 1),
-	INFOS_MAIN_CALC_ID      = (1 << 2), /* obsolete, replaced by INFOS_PRODUCT_ID */
-	INFOS_HW_VERSION        = (1 << 3),
-	INFOS_LANG_ID           = (1 << 4),
-	INFOS_SUB_LANG_ID       = (1 << 5),
-	INFOS_DEVICE_TYPE       = (1 << 6),
-	INFOS_BOOT_VERSION      = (1 << 7),
-	INFOS_OS_VERSION        = (1 << 8),
-	INFOS_RAM_PHYS          = (1 << 9),
-	INFOS_RAM_USER          = (1 << 10),
-	INFOS_RAM_FREE          = (1 << 11),
-	INFOS_FLASH_PHYS        = (1 << 12),
-	INFOS_FLASH_USER        = (1 << 13),
-	INFOS_FLASH_FREE        = (1 << 14),
-	INFOS_LCD_WIDTH         = (1 << 15),
-	INFOS_LCD_HEIGHT        = (1 << 16),
-	INFOS_BATTERY_ENOUGH    = (1 << 17),
-	INFOS_BATTERY           = INFOS_BATTERY_ENOUGH, /* For compatibility */
-	INFOS_BOOT2_VERSION     = (1 << 18),
-	INFOS_RUN_LEVEL         = (1 << 19),
-	INFOS_BPP               = (1 << 20),
-	INFOS_CLOCK_SPEED       = (1 << 21),
-	INFOS_PRODUCT_ID        = (1 << 22),
-	INFOS_MATH_CAPABILITIES = (1 << 23),
-	INFOS_EXACT_MATH        = INFOS_MATH_CAPABILITIES, /* For compatibility */
-	INFOS_CLOCK_SUPPORT     = (1 << 24),
-	INFOS_COLOR_SCREEN      = (1 << 25),
-	INFOS_PYTHON_ON_BOARD   = (1 << 26),
-	INFOS_USER_DEFINED_ID   = (1 << 27),
+typedef uint64_t InfosMask;
 
-	// INFOS_MORE_INFOS     = (1 << 30), /* Some day ? Reserved value for signaling more bits are available elsewhere */
-	INFOS_CALC_MODEL     = 0x80000000
-} InfosMask;
+#define INFOS_PRODUCT_NUMBER    ((uint64_t)1 << 0) /* obsolete (never used) */
+#define INFOS_PRODUCT_NAME      ((uint64_t)1 << 1)
+#define INFOS_MAIN_CALC_ID      ((uint64_t)1 << 2) /* obsolete, replaced by INFOS_PRODUCT_ID */
+#define INFOS_HW_VERSION        ((uint64_t)1 << 3)
+#define INFOS_LANG_ID           ((uint64_t)1 << 4)
+#define INFOS_SUB_LANG_ID       ((uint64_t)1 << 5)
+#define INFOS_DEVICE_TYPE       ((uint64_t)1 << 6)
+#define INFOS_BOOT_VERSION      ((uint64_t)1 << 7)
+#define INFOS_OS_VERSION        ((uint64_t)1 << 8)
+#define INFOS_RAM_PHYS          ((uint64_t)1 << 9)
+#define INFOS_RAM_USER          ((uint64_t)1 << 10)
+#define INFOS_RAM_FREE          ((uint64_t)1 << 11)
+#define INFOS_FLASH_PHYS        ((uint64_t)1 << 12)
+#define INFOS_FLASH_USER        ((uint64_t)1 << 13)
+#define INFOS_FLASH_FREE        ((uint64_t)1 << 14)
+#define INFOS_LCD_WIDTH         ((uint64_t)1 << 15)
+#define INFOS_LCD_HEIGHT        ((uint64_t)1 << 16)
+#define INFOS_BATTERY_ENOUGH    ((uint64_t)1 << 17)
+#define INFOS_BATTERY           INFOS_BATTERY_ENOUGH /* For compatibility */
+#define INFOS_BOOT2_VERSION     ((uint64_t)1 << 18)
+#define INFOS_RUN_LEVEL         ((uint64_t)1 << 19)
+#define INFOS_BPP               ((uint64_t)1 << 20)
+#define INFOS_CLOCK_SPEED       ((uint64_t)1 << 21)
+#define INFOS_PRODUCT_ID        ((uint64_t)1 << 22)
+#define INFOS_MATH_CAPABILITIES ((uint64_t)1 << 23)
+#define INFOS_EXACT_MATH        INFOS_MATH_CAPABILITIES /* For compatibility */
+#define INFOS_CLOCK_SUPPORT     ((uint64_t)1 << 24)
+#define INFOS_COLOR_SCREEN      ((uint64_t)1 << 25)
+#define INFOS_PYTHON_ON_BOARD   ((uint64_t)1 << 26)
+#define INFOS_USER_DEFINED_ID   ((uint64_t)1 << 27)
+#define INFOS_HAS_SCREEN        ((uint64_t)1 << 28)
+#define INFOS_COLOR_DEPTH       ((uint64_t)1 << 29)
+#define INFOS_USER_PAGES        ((uint64_t)1 << 30)
+#define INFOS_CALC_MODEL        ((uint64_t)1 << 31)
+#define INFOS_FREE_PAGES        ((uint64_t)1 << 32)
+#define INFOS_BATTERY_LEVEL     ((uint64_t)1 << 33)
+#define INFOS_EXTERNAL_POWER    ((uint64_t)1 << 34)
+#define INFOS_HOME_SCREEN       ((uint64_t)1 << 35)
+#define INFOS_BUSY              ((uint64_t)1 << 36)
+#define INFOS_SCREEN_SPLIT      ((uint64_t)1 << 37)
+#define INFOS_CLOCK_TZ          ((uint64_t)1 << 38)
+#define INFOS_CLOCK_DATE_FMT    ((uint64_t)1 << 39)
+#define INFOS_CLOCK_TIME_FMT    ((uint64_t)1 << 40)
+#define INFOS_LAST_ERROR_CODE   ((uint64_t)1 << 41)
+#define INFOS_BOOT_HASH         ((uint64_t)1 << 42)
+#define INFOS_OS_HASH           ((uint64_t)1 << 43)
+// TODO INFOS_PTT_MODE, based on DUSB_PID_PTT_MODE_STATE for the TI-eZ80 series, and whichever NavNet equivalent, if any.
 
 /**
  * CalcFnctsIdx:
@@ -658,6 +671,21 @@ typedef struct
 	uint8_t		clock_support;
 	uint8_t		color_screen;
 	uint8_t		python_on_board;
+	uint8_t		has_screen;
+	uint8_t		color_depth;
+	uint16_t	user_pages;
+	uint16_t	free_pages;
+	uint8_t		battery_level;
+	uint8_t		external_power;
+	uint8_t		on_home_screen;
+	uint8_t		busy;
+	uint8_t		screen_split;
+	int16_t		clock_tz;
+	uint8_t		clock_date_format;
+	uint8_t		clock_time_format;
+	uint16_t	last_error_code;
+	uint8_t		boot_hash[32];
+	uint8_t		os_hash[32];
 	char		user_defined_id[32];
 } CalcInfos;
 
