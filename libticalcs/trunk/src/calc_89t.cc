@@ -1157,7 +1157,10 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		DUSB_PID_LCD_WIDTH, DUSB_PID_LCD_HEIGHT,
 	};
 	static const uint16_t pids2[] = {
-		DUSB_PID_BITS_PER_PIXEL, DUSB_PID_BATTERY_ENOUGH, DUSB_PID_OS_MODE, DUSB_PID_CLASSIC_CLK_SUPPORT
+		DUSB_PID_BITS_PER_PIXEL, DUSB_PID_BATTERY_ENOUGH, DUSB_PID_BATTERY_LEVEL, DUSB_PID_OS_MODE,
+		DUSB_PID_CLASSIC_CLK_SUPPORT, DUSB_PID_USER_PAGES, DUSB_PID_FREE_PAGES,
+		DUSB_PID_CLK_TZ, DUSB_PID_CLK_DATE_FMT, DUSB_PID_CLK_TIME_FMT,
+		DUSB_PID_HOMESCREEN, DUSB_PID_SCREEN_SPLIT, DUSB_PID_HAS_SCREEN
 	};	// Titanium can't manage more than 16 parameters at a time
 	const int size1 = sizeof(pids1) / sizeof(uint16_t);
 	const int size2 = sizeof(pids2) / sizeof(uint16_t);
@@ -1175,7 +1178,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 	do
 	{
-		unsigned int infos_mask = 0;
+		InfosMask infos_mask = 0;
 		ret = dusb_cmd_s_param_request(handle, size1, pids1);
 		if (!ret)
 		{
@@ -1369,6 +1372,13 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 		if (params2[i]->ok && params2[i]->size == 1)
 		{
+			infos->battery_level = params2[i]->data[0];
+			infos_mask |= INFOS_BATTERY_LEVEL;
+		}
+		i++;
+
+		if (params2[i]->ok && params2[i]->size == 1)
+		{
 			infos->run_level = params2[i]->data[0];
 			infos_mask |= INFOS_RUN_LEVEL;
 		}
@@ -1381,9 +1391,67 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		}
 		i++;
 
+		if (params2[i]->ok && params2[i]->size == 2)
+		{
+			infos->user_pages = (  (((uint16_t)(params2[i]->data[0])) << 8)
+			                     | (((uint16_t)(params2[i]->data[1]))      ));
+			infos_mask |= INFOS_USER_PAGES;
+		}
+		i++;
+
+		if (params2[i]->ok && params2[i]->size == 2)
+		{
+			infos->free_pages = (  (((uint16_t)(params2[i]->data[0])) << 8)
+			                     | (((uint16_t)(params2[i]->data[1]))      ));
+			infos_mask |= INFOS_FREE_PAGES;
+		}
+		i++;
+
+		if (params2[i]->ok && params2[i]->size == 2)
+		{
+			infos->clock_tz = (int16_t)((((uint16_t)params2[i]->data[0]) << 8)
+			                 | ((uint16_t)params2[i]->data[1]));
+			infos_mask |= INFOS_CLOCK_TZ;
+		}
+		i++;
+
+		if (params2[i]->ok && params2[i]->size == 1)
+		{
+			infos->clock_date_format = params2[i]->data[0];
+			infos_mask |= INFOS_CLOCK_DATE_FMT;
+		}
+		i++;
+
+		if (params2[i]->ok && params2[i]->size == 1)
+		{
+			infos->clock_time_format = params2[i]->data[0];
+			infos_mask |= INFOS_CLOCK_TIME_FMT;
+		}
+		i++;
+
+		if (params2[i]->ok && params2[i]->size == 1)
+		{
+			infos->on_home_screen = params2[i]->data[0];
+			infos_mask |= INFOS_HOME_SCREEN;
+		}
+		i++;
+
+		if (params2[i]->ok && params2[i]->size == 1)
+		{
+			infos->screen_split = params2[i]->data[0];
+			infos_mask |= INFOS_SCREEN_SPLIT;
+		}
+		i++;
+
+		if (params2[i]->ok && params2[i]->size == 1)
+		{
+			infos->has_screen = params2[i]->data[0];
+			infos_mask |= INFOS_HAS_SCREEN;
+		}
+
 		infos->model = CALC_TI89T;
 		infos_mask |= INFOS_CALC_MODEL;
-		infos->mask = (InfosMask)infos_mask;
+		infos->mask = infos_mask;
 	} while (0);
 
 	dusb_cp_del_array(handle, params2, size2);

@@ -1748,13 +1748,18 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		DUSB_PID_OS_MODE, DUSB_PID_DEVICE_TYPE, DUSB_PID_PRODUCT_NUMBER, DUSB_PID_PRODUCT_NAME, DUSB_PID_MAIN_PART_ID,
 		DUSB_PID_HW_VERSION, DUSB_PID_LANGUAGE_ID, DUSB_PID_SUBLANG_ID,
 		DUSB_PID_BOOT_BUILD_NUMBER, DUSB_PID_BOOT_VERSION, DUSB_PID_OS_BUILD_NUMBER, DUSB_PID_OS_VERSION,
-		DUSB_PID_COLOR_AVAILABLE, DUSB_PID_MATH_CAPABILITIES
+		DUSB_PID_COLOR_AVAILABLE, DUSB_PID_MATH_CAPABILITIES,
+		DUSB_PID_BATTERY_LEVEL, DUSB_PID_HAS_EXTERNAL_POWER,
+		DUSB_PID_HAS_SCREEN, DUSB_PID_COLOR_DEPTH, DUSB_PID_USER_PAGES, DUSB_PID_FREE_PAGES,
+		DUSB_PID_CLK_TZ, DUSB_PID_CLK_DATE_FMT, DUSB_PID_CLK_TIME_FMT
 	};
 	static const uint16_t extra_pids[] = {
 		DUSB_PID_PHYS_RAM, DUSB_PID_USER_RAM, DUSB_PID_FREE_RAM,
 		DUSB_PID_PHYS_FLASH, DUSB_PID_USER_FLASH, DUSB_PID_FREE_FLASH,
 		DUSB_PID_LCD_WIDTH, DUSB_PID_LCD_HEIGHT, DUSB_PID_BITS_PER_PIXEL,
-		DUSB_PID_BATTERY_ENOUGH, DUSB_PID_PYTHON_ON_BOARD, DUSB_PID_CLASSIC_CLK_SUPPORT
+		DUSB_PID_BATTERY_ENOUGH, DUSB_PID_PYTHON_ON_BOARD, DUSB_PID_CLASSIC_CLK_SUPPORT,
+		DUSB_PID_HOMESCREEN, DUSB_PID_SCREEN_SPLIT,
+		DUSB_PID_BOOT_HASH, DUSB_PID_OS_HASH
 	};
 	const unsigned int core_size = sizeof(core_pids) / sizeof(uint16_t);
 	const unsigned int extra_size = sizeof(extra_pids) / sizeof(uint16_t);
@@ -1776,7 +1781,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			uint16_t os_build_number = 0;
 			uint8_t has_boot_build_number = 0;
 			uint8_t has_os_build_number = 0;
-			unsigned int infos_mask = 0;
+			InfosMask infos_mask = 0;
 			unsigned int i = 0;
 
 			if (core_params[i]->ok && core_params[i]->size == 1)
@@ -1910,6 +1915,72 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			}
 			i++;
 
+			if (core_params[i]->ok && core_params[i]->size == 1)
+			{
+				infos->battery_level = core_params[i]->data[0];
+				infos_mask |= INFOS_BATTERY_LEVEL;
+			}
+			i++;
+
+			if (core_params[i]->ok && core_params[i]->size == 1)
+			{
+				infos->external_power = core_params[i]->data[0];
+				infos_mask |= INFOS_EXTERNAL_POWER;
+			}
+			i++;
+
+			if (core_params[i]->ok && core_params[i]->size == 1)
+			{
+				infos->has_screen = core_params[i]->data[0];
+				infos_mask |= INFOS_HAS_SCREEN;
+			}
+			i++;
+
+			if (core_params[i]->ok && core_params[i]->size == 1)
+			{
+				infos->color_depth = core_params[i]->data[0];
+				infos_mask |= INFOS_COLOR_DEPTH;
+			}
+			i++;
+
+			if (core_params[i]->ok && core_params[i]->size == 2)
+			{
+				infos->user_pages = (  (((uint16_t)(core_params[i]->data[0])) << 8)
+				                     | (((uint16_t)(core_params[i]->data[1]))      ));
+				infos_mask |= INFOS_USER_PAGES;
+			}
+			i++;
+
+			if (core_params[i]->ok && core_params[i]->size == 2)
+			{
+				infos->free_pages = (  (((uint16_t)(core_params[i]->data[0])) << 8)
+				                     | (((uint16_t)(core_params[i]->data[1]))      ));
+				infos_mask |= INFOS_FREE_PAGES;
+			}
+			i++;
+
+			if (core_params[i]->ok && core_params[i]->size == 2)
+			{
+				infos->clock_tz = (int16_t)((((uint16_t)core_params[i]->data[0]) << 8)
+				                 | ((uint16_t)core_params[i]->data[1]));
+				infos_mask |= INFOS_CLOCK_TZ;
+			}
+			i++;
+
+			if (core_params[i]->ok && core_params[i]->size == 1)
+			{
+				infos->clock_date_format = core_params[i]->data[0];
+				infos_mask |= INFOS_CLOCK_DATE_FMT;
+			}
+			i++;
+
+			if (core_params[i]->ok && core_params[i]->size == 1)
+			{
+				infos->clock_time_format = core_params[i]->data[0];
+				infos_mask |= INFOS_CLOCK_TIME_FMT;
+			}
+			i++;
+
 			DUSBCalcParam ** extra_params = dusb_cp_new_array(handle, extra_size);
 			ret = dusb_cmd_s_param_request(handle, extra_size, extra_pids);
 			if (!ret)
@@ -2038,6 +2109,34 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 						infos->clock_support = extra_params[i]->data[0];
 						infos_mask |= INFOS_CLOCK_SUPPORT;
 					}
+					i++;
+
+					if (extra_params[i]->ok && extra_params[i]->size == 1)
+					{
+						infos->on_home_screen = extra_params[i]->data[0];
+						infos_mask |= INFOS_HOME_SCREEN;
+					}
+					i++;
+
+					if (extra_params[i]->ok && extra_params[i]->size == 1)
+					{
+						infos->screen_split = extra_params[i]->data[0];
+						infos_mask |= INFOS_SCREEN_SPLIT;
+					}
+					i++;
+
+					if (extra_params[i]->ok && extra_params[i]->size == sizeof(infos->boot_hash))
+					{
+						memcpy(infos->boot_hash, extra_params[i]->data, sizeof(infos->boot_hash));
+						infos_mask |= INFOS_BOOT_HASH;
+					}
+					i++;
+
+					if (extra_params[i]->ok && extra_params[i]->size == sizeof(infos->os_hash))
+					{
+						memcpy(infos->os_hash, extra_params[i]->data, sizeof(infos->os_hash));
+						infos_mask |= INFOS_OS_HASH;
+					}
 				}
 				else
 				{
@@ -2163,7 +2262,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 				}
 			}
 			infos_mask |= INFOS_CALC_MODEL;
-			infos->mask = (InfosMask)infos_mask;
+			infos->mask = infos_mask;
 		}
 	}
 	dusb_cp_del_array(handle, core_params, core_size);
