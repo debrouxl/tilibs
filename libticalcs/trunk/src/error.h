@@ -67,17 +67,17 @@ typedef enum
 	ERR_INVALID_SCREENSHOT,
 	ERR_VAR_VERSION,		// Variable rejected due to version code
 
-// --- 300 to 349 are reserved for hand-held status (DUSB)
+// --- 300 to 379 are reserved for hand-held status (DUSB)
 
 	ERR_CALC_ERROR2 = 300,	// Hand-held returned an error code
 
-// --- 350 to 399 are reserved for hand-held status (DBUS)
+// --- 380 to 429 are reserved for hand-held status (DBUS)
 
-	ERR_CALC_ERROR1 = 350,	// Hand-held returned an error code
+	ERR_CALC_ERROR1 = 380,	// Hand-held returned an error code
 
-// --- 400 to 459 are reserved for hand-held status (NSpire)
+// --- 430 to 509 are reserved for hand-held status (NSpire)
 
-	ERR_CALC_ERROR3 = 400,
+	ERR_CALC_ERROR3 = 430,
 
 // ---
 

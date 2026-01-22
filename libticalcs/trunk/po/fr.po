@@ -83,11 +83,11 @@ msgstr "  HW: %i"
 msgid "  Battery: %s"
 msgstr " Batterie: %s"
 
-#: src/calc_73.cc:1486 src/type2str.cc:349
+#: src/calc_73.cc:1486 src/type2str.cc:463
 msgid "good"
 msgstr "bon"
 
-#: src/calc_73.cc:1486 src/type2str.cc:349
+#: src/calc_73.cc:1486 src/type2str.cc:463
 msgid "low"
 msgstr "bas"
 
@@ -135,23 +135,30 @@ msgstr ""
 "Trouvé une horloge de type nouveau mais impossible de récupérer ses "
 "paramètres: %u %u %u %u %u %u"
 
-#: src/calc_84p.cc:1761 src/calc_89t.cc:1169
+#: src/calc_84p.cc:1767 src/calc_89t.cc:1172
 msgid "Getting version..."
 msgstr "Récupération de la version..."
 
-#: src/calc_84p.cc:1813
+#: src/calc_84p.cc:1821
 msgid "That's odd, product ID and calc ID do not match ?"
 msgstr ""
 "C'est bizarre, le numéro de produit et le numéro de calculatrice ne "
 "correspondent pas ?"
 
-#: src/calc_84p.cc:2031 src/calc_84p.cc:2040 src/calc_84p.cc:2049
-#: src/calc_84p.cc:2065 src/calc_84p.cc:2074 src/calc_84p.cc:2135
+#: src/calc_84p.cc:2143
+#, c-format
+msgid "Optional device info query failed (error %d)"
+msgstr ""
+"La requête pour les informations optionnelles sur le périphérique a échoué "
+"(erreur %d)"
+
+#: src/calc_84p.cc:2155 src/calc_84p.cc:2164 src/calc_84p.cc:2173
+#: src/calc_84p.cc:2189 src/calc_84p.cc:2198 src/calc_84p.cc:2259
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr "Membre inconnu de la famille 84+ avec product_id=%d hw_version=%d"
 
-#: src/calc_84p.cc:2129
+#: src/calc_84p.cc:2253
 #, c-format
 msgid ""
 "Couldn't fully determine 84+ family member with product_id=%d hw_version=%d "
@@ -160,31 +167,31 @@ msgstr ""
 "N'a pas pu pleinement déterminer le membre de la famille 84+ avec "
 "product_id=%d hw_version=%d mais de façon heuristique, c'est une %s"
 
-#: src/calc_84p.cc:2154
+#: src/calc_84p.cc:2278
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus via DirectLink"
 
-#: src/calc_84p.cc:2225
+#: src/calc_84p.cc:2349
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr "TI-84 Plus C Silver Edition via DirectLink"
 
-#: src/calc_84p.cc:2296
+#: src/calc_84p.cc:2420
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr "TI-83 Premium CE via DirectLink"
 
-#: src/calc_84p.cc:2367
+#: src/calc_84p.cc:2491
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr "TI-84 Plus CE via DirectLink"
 
-#: src/calc_84p.cc:2438
+#: src/calc_84p.cc:2562
 msgid "TI-82 Advanced thru DirectLink"
 msgstr "TI-82 Advanced via DirectLink"
 
-#: src/calc_84p.cc:2509
+#: src/calc_84p.cc:2633
 msgid "TI-84 Plus T thru DirectLink"
 msgstr "TI-84 Plus T via DirectLink"
 
-#: src/calc_84p.cc:2580
+#: src/calc_84p.cc:2704
 msgid "TI-82 Advanced Edition Python thru DirectLink"
 msgstr "TI-82 Advanced Edition Python via DirectLink"
 
@@ -239,7 +246,7 @@ msgstr "Renommage de %s en %s..."
 msgid "Changing attributes of %s..."
 msgstr "Changement des attributs de %s..."
 
-#: src/calc_89t.cc:1400
+#: src/calc_89t.cc:1468
 msgid "TI-89 Titanium thru DirectLink"
 msgstr "TI-89 Titanium via DirectLink"
 
@@ -459,38 +466,286 @@ msgstr "| Pas de variable  |\n"
 msgid "| No applications  |\n"
 msgstr "| Pas d'application|\n"
 
+#: src/error.cc:43
+msgid "Msg: unknown packet."
+msgstr "Msg: paquet inconnu."
+
+#: src/error.cc:44
+msgid "Msg: cannot receive OS."
+msgstr "Msg: ne peut pas recevoir l'OS."
+
+#: src/error.cc:45
+msgid "Msg: timeout."
+msgstr "Msg: temps dépassé."
+
+#: src/error.cc:46
+msgid "Msg: unknown attribute."
+msgstr "Msg: attribut inconnu."
+
+#: src/error.cc:47
+msgid "Msg: path does not exist."
+msgstr "Msg: le chemin n'existe pas."
+
+#: src/error.cc:48
+msgid "Msg: file does not exist."
+msgstr "Msg: la variable n'existe pas."
+
+#: src/error.cc:49
+msgid "Msg: invalid packet length."
+msgstr "Msg: longueur de paquet invalide."
+
+#: src/error.cc:50
+msgid "Msg: unexpected packet."
+msgstr "Msg: paquet inattendu."
+
+#: src/error.cc:51
+msgid "Msg: protocol ID unknown."
+msgstr "Msg: ID de protocole inconnu"
+
+#: src/error.cc:52
+msgid "Msg: cannot create directory."
+msgstr "Msg: impossible de créer le répertoire."
+
+#: src/error.cc:53
+msgid "Msg: cannot create null file."
+msgstr "Msg: ne peut pas créer un fichier nul."
+
+#: src/error.cc:54
+msgid "Msg: insufficient memory."
+msgstr "Msg: mémoire insuffisante."
+
+#: src/error.cc:55
+msgid "Msg: invalid path."
+msgstr "Msg: chemin invalide."
+
+#: src/error.cc:56
+msgid "Msg: invalid filename."
+msgstr "Msg: nom de fichier invalide."
+
+#: src/error.cc:57
+msgid "Msg: file is archived."
+msgstr "Msg: le fichier est archivé."
+
+#: src/error.cc:58
+msgid "Msg: file is locked."
+msgstr "Msg: le fichier est verrouillé."
+
+#: src/error.cc:59
+msgid "Msg: forbidden."
+msgstr "Msg: interdit."
+
+#: src/error.cc:60
+msgid "Msg: file already exists."
+msgstr "Msg: le fichier existe déjà."
+
+#: src/error.cc:61
+msgid "Msg: file cannot be archived."
+msgstr "Msg: le fichier ne peut pas être archivé."
+
+#: src/error.cc:62
+msgid "Msg: unsupported filter."
+msgstr "Msg: filtre non géré"
+
+#: src/error.cc:63
+msgid "Msg: filter not applicable."
+msgstr "Msg: filtre non applicable."
+
+#: src/error.cc:64
+msgid "Msg: unknown filter."
+msgstr "Msg: filtre inconnu."
+
+#: src/error.cc:65
+msgid "Msg: list element out of range."
+msgstr "Msg: élément de liste hors des limites"
+
+#: src/error.cc:66
+msgid "Msg: list element not applicable."
+msgstr "Msg: élément de liste non applicable."
+
+#: src/error.cc:67 src/error.cc:441
+msgid "Msg: anti-downgrade protection refuses this OS version."
+msgstr "Msg: la protection anti-retour refuse cette version d'OS."
+
+#: src/error.cc:68
+msgid "Msg: multiple files matched."
+msgstr "Msg: plusieurs fichiers correspondent."
+
+#: src/error.cc:69
+msgid "Msg: file size exceeds maximum acceptable size."
+msgstr "Msg: la taille du fichier dépasse le maximum acceptable."
+
+#: src/error.cc:70
+msgid "Msg: timeout too short."
+msgstr "Msg: timeout trop court."
+
+#: src/error.cc:71
+msgid "Msg: timeout too long."
+msgstr "Msg: timeout trop long."
+
 #: src/error.cc:72
+msgid "Msg: unsupported protocol version."
+msgstr "Msg: version du protocole non gérée."
+
+#: src/error.cc:73
+msgid "Msg: unsupported string character."
+msgstr "Msg: chaîne de caractères non gérée."
+
+#: src/error.cc:74
+msgid "Msg: attribute count does not match request."
+msgstr "Msg: le nombre d'attributs ne correspond pas à la requête."
+
+#: src/error.cc:75
+msgid "Msg: attribute does not match request."
+msgstr "Msg: l'attribut ne correspond pas à la requête."
+
+#: src/error.cc:76
+msgid "Msg: invalid attribute value."
+msgstr "Msg: valeur d'attribut invalide."
+
+#: src/error.cc:77
+msgid "Msg: unsupported attribute."
+msgstr "Msg: attribut non géré."
+
+#: src/error.cc:78
+msgid "Msg: unknown option."
+msgstr "Msg: option inconnue."
+
+#: src/error.cc:79
+msgid "Msg: unsupported option."
+msgstr "Msg: option non gérée."
+
+#: src/error.cc:80
+msgid "Msg: invalid option."
+msgstr "Msg: option invalide."
+
+#: src/error.cc:81
+msgid "Msg: invalid filter value."
+msgstr "Msg: valeur de filtre invalide."
+
+#: src/error.cc:82
+msgid "Msg: insufficient information for write."
+msgstr "Msg: informations insuffisantes pour l'écriture."
+
+#: src/error.cc:83
+msgid "Msg: invalid packet field."
+msgstr "Msg: champ de paquet invalide."
+
+#: src/error.cc:84
+msgid "Msg: wait time exceeded."
+msgstr "Msg: temps d'attente dépassé."
+
+#: src/error.cc:85
+msgid "Msg: battery too low."
+msgstr "Msg: batterie trop faible."
+
+#: src/error.cc:86
+msgid "Msg: invalid certificate."
+msgstr "Msg: certificat invalide."
+
+#: src/error.cc:87
+msgid "Msg: no certificate present."
+msgstr "Msg: pas de cértificat présent."
+
+#: src/error.cc:88
+msgid "Msg: bad signature."
+msgstr "Msg: mauvaise signature."
+
+#: src/error.cc:89
+msgid "Msg: certificate expired."
+msgstr "Msg: certificat expiré."
+
+#: src/error.cc:90
+msgid "Msg: certificate cannot be replaced."
+msgstr "Msg: le certificat ne peut pas être remplacé"
+
+#: src/error.cc:91
+msgid "Msg: unsupported version."
+msgstr "Msg: version non gérée."
+
+#: src/error.cc:92
+msgid "Msg: no data for variable."
+msgstr "Msg: pas de données pour la variable."
+
+#: src/error.cc:93
+msgid "Msg: bad load address."
+msgstr "Msg: mauvaise adresse de chargement."
+
+#: src/error.cc:94
+msgid "Msg: file must be archived."
+msgstr "Msg: le fichier doit être archivé."
+
+#: src/error.cc:95
+msgid "Msg: cannot send OS."
+msgstr "Msg: ne peut pas envoyer l'OS."
+
+#: src/error.cc:96
+msgid "Msg: hand-held is busy (set your calculator to HOME screen)."
+msgstr "Msg: calculatrice occupée (mettez la calculatrice sur HOME)."
+
+#: src/error.cc:97
+msgid "Msg: canceled."
+msgstr "Msg: annulé."
+
+#: src/error.cc:98
+msgid "Msg: canceled all."
+msgstr "Msg: tout annulé."
+
+#: src/error.cc:99
+msgid "Msg: missing directory information."
+msgstr "Msg: information de répertoire manquante."
+
+#: src/error.cc:100
+msgid "Msg: missing data information."
+msgstr "Msg: information de données manquante."
+
+#: src/error.cc:101
+msgid "Msg: unable to allocate packet."
+msgstr "Msg: incapable d'allouer le paquet."
+
+#: src/error.cc:102
+msgid "Msg: short send/receive."
+msgstr "Msg: envoi/réception trop court."
+
+#: src/error.cc:103
+msgid "Msg: failed to communicate."
+msgstr "Msg: échec de communication."
+
+#: src/error.cc:104
+msgid "Msg: device has been disconnected."
+msgstr "Msg: le périphérique a été déconnecté."
+
+#: src/error.cc:145
 msgid "Msg: transfer aborted."
 msgstr "Msg: Transfert avorté."
 
-#: src/error.cc:74
+#: src/error.cc:147
 msgid "Cause: the user!"
 msgstr "Cause: l'utilisateur !"
 
-#: src/error.cc:80
+#: src/error.cc:153
 msgid "Msg: calculator is not ready."
 msgstr "Msg: la calculatrice n'est pas prête."
 
-#: src/error.cc:82
+#: src/error.cc:155
 msgid ""
 "Cause: the calculator is busy (Var-Link menu, Window, ...). Press HOME..."
 msgstr ""
 "Cause: la calculatrice est occupée (menu Var-Link, Window, ...). Presser la "
 "touche HOME."
 
-#: src/error.cc:88
+#: src/error.cc:161
 msgid "Msg: checksum error."
 msgstr "Msg: erreur de somme de contrôle (checksum)."
 
-#: src/error.cc:90
+#: src/error.cc:163
 msgid "Cause: a transmission error. Try again."
 msgstr "Cause: une erreur de transmission. Essayez encore."
 
-#: src/error.cc:96
+#: src/error.cc:169
 msgid "Msg: invalid host ID."
 msgstr "Msg: identifiant hôte invalide."
 
-#: src/error.cc:98
+#: src/error.cc:171
 msgid ""
 "Cause: received an unexpected Machine ID from calculator, probably due to a "
 "transmission error."
@@ -498,11 +753,11 @@ msgstr ""
 "Cause: reçu un mauvais identifiant machine depuis la calculatrice, "
 "certainement causé par une erreur de transmission."
 
-#: src/error.cc:104
+#: src/error.cc:177
 msgid "Msg: invalid target ID."
 msgstr "Msg: identifiant cible invalide."
 
-#: src/error.cc:106
+#: src/error.cc:179
 msgid ""
 "Cause: received an unexpected Target ID from calculator, probably due to a "
 "transmission error."
@@ -510,11 +765,11 @@ msgstr ""
 "Cause: reçu un identifiant cible invalide depuis la calculatrice, "
 "certainement causé par une erreur de transmission."
 
-#: src/error.cc:112
+#: src/error.cc:185
 msgid "Msg: invalid command ID."
 msgstr "Msg: identifiant de commande invalide."
 
-#: src/error.cc:114
+#: src/error.cc:187
 msgid ""
 "Cause: received an unexpected Command ID from calculator, probably due to a "
 "transmission error."
@@ -522,20 +777,20 @@ msgstr ""
 "Cause: reçu un identifiant de commande invalide depuis la calculatrice, "
 "certainement causé par une erreur de transmission."
 
-#: src/error.cc:120
+#: src/error.cc:193
 msgid "Msg: not really an error, should not appear!"
 msgstr "Msg: Pas vraiment une erreur, ne devrait pas apparaître !"
 
-#: src/error.cc:122
+#: src/error.cc:195
 msgid "Cause: a bug. Drop us an email!"
 msgstr "Cause: un bug. Envoyez-nous un e-mail !"
 
-#: src/error.cc:128
+#: src/error.cc:201
 msgid "Msg: program or variable is incompatible with this OS version."
 msgstr ""
 "Msg: le programme ou la variable est incompatible avec cette version de l'OS."
 
-#: src/error.cc:130
+#: src/error.cc:203
 msgid ""
 "Cause: this variable type may not be supported by the target calculator, or "
 "you may need to upgrade your calculator OS."
@@ -544,11 +799,11 @@ msgstr ""
 "cible, ou vous avez peut-être besoin de mettre à jour l'OS de la "
 "calculatrice."
 
-#: src/error.cc:136
+#: src/error.cc:209
 msgid "Msg: contents has been refused."
 msgstr "Msg: contenu refusé."
 
-#: src/error.cc:138
+#: src/error.cc:211
 msgid ""
 "Cause: you attempted to send a variable which is locked/archived on the "
 "target calculator. The calculator may be out of memory. The certificate may "
@@ -557,82 +812,82 @@ msgstr ""
 "Cause: vous avez tenté d'envoyer une variable verrouillée/archivée sur la "
 "calculatrice. La calculatrice manque peut-être de mémoire."
 
-#: src/error.cc:144
+#: src/error.cc:217
 msgid "Invalid CTS packet."
 msgstr "Paquet CTS non valide."
 
-#: src/error.cc:146 src/error.cc:162
+#: src/error.cc:219 src/error.cc:235
 msgid "Cause: a transmission error."
 msgstr "Cause: une erreur de transmission."
 
-#: src/error.cc:152
+#: src/error.cc:225
 msgid "NACK received."
 msgstr "NACK (refus) reçu."
 
-#: src/error.cc:154
+#: src/error.cc:227
 msgid "Cause: the command has been refused."
 msgstr "Cause: la commande a été refusée."
 
-#: src/error.cc:160
+#: src/error.cc:233
 msgid "Invalid packet."
 msgstr "Paquet invalide."
 
-#: src/error.cc:171
+#: src/error.cc:244
 msgid "The cable cannot be used."
 msgstr "Le cable ne peut pas être utilisé."
 
-#: src/error.cc:173
+#: src/error.cc:246
 msgid ""
 "Cause: the cable has not been initialized due to a previous/current error."
 msgstr "Cause: le cable n'a pas été initialisé à cause d'une erreur."
 
-#: src/error.cc:186
+#: src/error.cc:259
 msgid "Msg: this function does not exist for this calculator."
 msgstr "Msg: Cette fonction n'existe pas pour votre calculatrice."
 
-#: src/error.cc:188
+#: src/error.cc:261
 msgid ""
 "Cause: the operation you attempted is not supported by your calculator model."
 msgstr ""
 "Cause: cette opération n'est pas gérée par votre modèle de calculatrice."
 
-#: src/error.cc:194
+#: src/error.cc:267
 msgid "Msg: calculator out of memory."
 msgstr "Msg: la calculatrice n'a plus de mémoire libre."
 
-#: src/error.cc:196
+#: src/error.cc:269
 msgid ""
 "Cause: the calculator does not have memory enough for doing the operation."
 msgstr ""
 "Cause: la calculatrice n'a pas assez de mémoire pour effectuer l'opération."
 
-#: src/error.cc:202
+#: src/error.cc:275
 msgid "Msg: unable to open (reading) the file."
 msgstr "Msg: Impossible d'ouvrir (en lecture) le fichier."
 
-#: src/error.cc:204 src/error.cc:212
+#: src/error.cc:277 src/error.cc:285
 msgid "Cause: disk space or permissions."
 msgstr "Cause: espace disque ou permissions incorrectes."
 
-#: src/error.cc:210
+#: src/error.cc:283
 msgid "Msg: unable to open (writing) the file."
 msgstr "Msg: Impossible d'ouvrir (en écriture) le fichier."
 
-#: src/error.cc:218
+#: src/error.cc:291
 msgid "A transfer is in progress. You cannot start a new one."
 msgstr "Un transfert est en cours. Vous ne pouvez pas en démarrer un autre."
 
-#: src/error.cc:220
+#: src/error.cc:293
 msgid "Cause: this should not happen. Probably a bug: drop us an email!"
 msgstr ""
 "Cause: ceci ne devrait pas arriver. C'est probablement un bug: envoyez-nous "
 "un email !"
 
-#: src/error.cc:229
+#: src/error.cc:302
 msgid "The requested var does not exist."
 msgstr "La variable demandée n'existe pas."
 
-#: src/error.cc:231
+#: src/error.cc:304
 msgid ""
 "Cause: you attempted to download a variable which does not exist on the "
 "calculator any longer. Maybe you have manually deleted it ?"
@@ -640,27 +895,27 @@ msgstr ""
 "Cause: vous avez tenté de télécharger une variable qui n'existe plus sur la "
 "calculatrice. Vous l'avez peut-être effacée manuellement ?"
 
-#: src/error.cc:237
+#: src/error.cc:310
 msgid "There is nothing to backup."
 msgstr "Il n'y a rien à sauvegarder."
 
-#: src/error.cc:239
+#: src/error.cc:312
 msgid "Cause: 0 variables stored onto your calculator."
 msgstr "Cause: aucune variable n'est stockée sur votre calculatrice."
 
-#: src/error.cc:245
+#: src/error.cc:318
 msgid "Invalid ticalcs handle."
 msgstr "Descripteur ticalcs invalide."
 
-#: src/error.cc:247
+#: src/error.cc:320
 msgid "Cause: bad cable or calc model."
 msgstr "Cause: mauvais cable ou mauvaise calculatrice"
 
-#: src/error.cc:253
+#: src/error.cc:326
 msgid "Invalid parameter."
 msgstr "Paramètre invalide."
 
-#: src/error.cc:255
+#: src/error.cc:328
 msgid ""
 "Cause: if you see this in normal usage, a bug: drop us an email ! Otherwise, "
 "check the arguments you're passing to the function."
@@ -668,201 +923,105 @@ msgstr ""
 "Cause: si vous voyez ceci dans le cadre d'une utilisation normale: envoyez-"
 "nous un e-mail ! Sinon, vérifiez les arguments que vous passez à lafonction."
 
-#: src/error.cc:261
+#: src/error.cc:334
 msgid "Unknown screenshot format."
 msgstr "Format de capture d'écran inconnu"
 
-#: src/error.cc:263
+#: src/error.cc:336
 msgid "Cause: a transmission error, or unsupported calculator version."
 msgstr ""
 "Cause: une erreur de transmission, ou une version de calculatrice non gérée."
 
-#: src/error.cc:269
+#: src/error.cc:344
 msgid "Msg: hand-held returned an error."
 msgstr "Msg: la calculatrice a retourné une erreur."
 
-#: src/error.cc:271 src/error.cc:307 src/error.cc:411
+#: src/error.cc:346
 msgid "Cause: hand-held returned an uncaught error. Please report log."
 msgstr ""
 "Cause: la calculatrice a retourné une erreur non prise en charge. Veuillez "
 "rapporter le log d'erreur."
 
-#: src/error.cc:276
+#: src/error.cc:352
 msgid "Msg: cannot delete application."
 msgstr "Msg: ne peut pas effacer l'application."
 
-#: src/error.cc:280
+#: src/error.cc:356
 msgid "Msg: invalid variable name."
 msgstr "Msg: nom de variable invalide."
 
-#: src/error.cc:284
+#: src/error.cc:360
 msgid "Msg: cannot overwrite variable (locked/archived)."
 msgstr "Msg: ne peut pas écraser la variable (verrouillée/archivée)."
 
-#: src/error.cc:288
+#: src/error.cc:364
 msgid "Msg: cannot delete variable (locked/archived)."
 msgstr "Msg: ne peut pas effacer la variable (verrouillée/archivée)."
 
-#: src/error.cc:292
+#: src/error.cc:368
 msgid "Msg: FLASH application rejected (bad target model)."
 msgstr "Msg: application rejetée (mauvaise calculatrice)."
 
-#: src/error.cc:296
+#: src/error.cc:372
 msgid "Msg: malformed RTS packet (AMS version conflict)."
 msgstr "Msg: paquet RTS incorrect (conflit de version sur AMS)."
 
-#: src/error.cc:300 src/error.cc:392
+#: src/error.cc:376
 msgid "Msg: FLASH application rejected (signature does not match)."
 msgstr "Msg: application rejetée (la signature ne correspond pas)."
 
-#: src/error.cc:305 src/error.cc:409
-msgid "Msg: hand-held returned an error (not caught)."
-msgstr "Msg: la calculatrice a retourné une erreur (non prise en charge)."
-
-#: src/error.cc:312
-msgid "Msg: invalid argument or name."
-msgstr "Msg: argument ou nom invalide."
-
-#: src/error.cc:316
-msgid "Msg: cannot delete var/app from archive."
-msgstr ""
-"Msg: ne peut pas effacer la variable ou l'application depuis la mémoire "
-"archive."
-
-#: src/error.cc:320
-msgid "Msg: transmission error."
-msgstr "Msg: erreur de transmission."
-
-#: src/error.cc:324
-msgid "Msg: using basic mode while being in boot mode."
-msgstr ""
-"Msg: utilisation du mode de base alors que la calculatrice est en mode boot "
-"(dégradé)."
-
-#: src/error.cc:328 src/error.cc:416
+#: src/error.cc:381
 msgid "Msg: out of memory."
 msgstr "Msg: plus de mémoire."
 
-#: src/error.cc:332 src/error.cc:336
-msgid "Msg: invalid name."
-msgstr "Msg: nom invalide."
-
-#: src/error.cc:340
-msgid "Msg: busy?"
-msgstr "Msg: occupé ?"
-
-#: src/error.cc:344
-msgid "Msg: can't overwrite, variable is locked."
-msgstr "Msg: ne peut pas écraser la variable (verrouillée)."
-
-#: src/error.cc:348
-msgid "Msg: variable too large."
-msgstr "Msg: variable trop grande."
-
-#: src/error.cc:352
-msgid "Msg: mode token too small."
-msgstr "Msg: valeur du mode trop petite."
-
-#: src/error.cc:356
-msgid "Msg: mode token too large."
-msgstr "Msg: valeur du mode trop grande."
-
-#: src/error.cc:360
-msgid "Msg: wrong size for parameter."
-msgstr "Msg: taille incorrecte pour le paramètre."
-
-#: src/error.cc:364
-msgid "Msg: invalid parameter ID."
-msgstr "Msg: identifiant de paramètre invalide."
-
-#: src/error.cc:368
-msgid "Msg: read-only parameter."
-msgstr "Msg: paramètre en lecture seule."
-
-#: src/error.cc:372
-msgid "Msg: wrong modify request?"
-msgstr "Msg: requête de modification incorrecte?"
-
-#: src/error.cc:376
-msgid "Msg: remote control?"
-msgstr "Msg: contrôle à distance ?"
-
-#: src/error.cc:380
-msgid "Msg: battery low."
-msgstr "Msg: batterie faible."
-
-#: src/error.cc:384
-msgid "Msg: FLASH application rejected (e.g. TI-68k FL_addCert 6)."
-msgstr "Msg: application rejetée (p.e. TI-68k FL_addCert 6)."
-
-#: src/error.cc:388
-msgid "Msg: FLASH application rejected (e.g. TI-68k FL_addCert 7)."
-msgstr "Msg: application rejetée (p.e. TI-68k FL_addCert 7)."
-
-#: src/error.cc:396
-msgid "Msg: FLASH application rejected (e.g. TI-68k FL_addCert 9)."
-msgstr "Msg: application rejetée (p.e. TI-68k FL_addCert 9)."
-
-#: src/error.cc:400
-msgid "Msg: FLASH application rejected (e.g. TI-68k FL_addCert A)."
-msgstr "Msg: application rejetée (p.e. TI-68k FL_addCert A)."
-
-#: src/error.cc:404
-msgid "Msg: hand-held is busy (set your calculator to HOME screen)."
-msgstr "Msg: calculatrice occupée (mettez la calculatrice sur HOME)."
-
-#: src/error.cc:420
+#: src/error.cc:385
 msgid "Msg: OS installation failed. File is corrupted/wrong."
 msgstr ""
 "Msg: l'installation de l'OS a échoué. Le fichier est corrompu ou invalide."
 
-#: src/error.cc:425
+#: src/error.cc:390
 msgid "Msg: packet too large."
 msgstr "Msg: paquet trop grand."
 
-#: src/error.cc:429
+#: src/error.cc:394
 msgid "Msg: the variable or directory does not exist."
 msgstr "Msg: la variable ou le répertoire n'existe pas."
 
-#: src/error.cc:433
+#: src/error.cc:398
 msgid "Msg: the directory name is invalid."
 msgstr "Msg: le nom de répertoire est invalide."
 
-#: src/error.cc:437
+#: src/error.cc:402
 msgid "Msg: not currently listing a directory."
 msgstr "Msg: pas en train de lister un répertoire."
 
-#: src/error.cc:441
+#: src/error.cc:406
 msgid "Msg: no more files to list."
 msgstr "Msg: valeur du mode trop petite."
 
-#: src/error.cc:445
+#: src/error.cc:410
 msgid "Msg: the directory name already exists."
 msgstr "Msg: le nom de répertoire existe déjà."
 
-#: src/error.cc:450
+#: src/error.cc:415
 msgid "Msg: the destination (folder or file) path is too long."
 msgstr "Msg: le chemin de destination (répertoire ou fichier) est invalide."
 
-#: src/error.cc:454
+#: src/error.cc:419
 msgid "Msg: the file name is invalid."
 msgstr "Msg: le nom de fichier est invalide."
 
-#: src/error.cc:458
+#: src/error.cc:423
 msgid "Msg: no file extension."
 msgstr "Msg: pas d'extension de fichier."
 
-#: src/error.cc:462
+#: src/error.cc:427
 msgid "Msg: forbidden characters in folder name."
 msgstr "Msg: caractères interdits dans le nom de dossier."
 
-#: src/error.cc:472
+#: src/error.cc:437
 msgid "Msg: OS upgrade type not recognized."
 msgstr "Msg: type de mise à jour de l'OS non reconnu."
-
-#: src/error.cc:476
-msgid "Msg: anti-downgrade protection refuses this OS version."
-msgstr "Msg: la protection anti-retour refuse cette version d'OS"
 
 #: src/probe.cc:91
 msgid "Probing calculator...\n"
@@ -932,130 +1091,189 @@ msgstr "Détails du descripteur de calculatrice:"
 msgid "  model   : %s"
 msgstr "  modèle  : %s"
 
-#: src/type2str.cc:62 src/type2str.cc:72 src/type2str.cc:94 src/type2str.cc:104
+#: src/type2str.cc:79 src/type2str.cc:89 src/type2str.cc:111
+#: src/type2str.cc:121
 msgid "full"
 msgstr "plein"
 
-#: src/type2str.cc:63 src/type2str.cc:76
+#: src/type2str.cc:80 src/type2str.cc:93
 msgid "clipped"
 msgstr "tronqué"
 
-#: src/type2str.cc:64 src/type2str.cc:96 src/type2str.cc:128
+#: src/type2str.cc:81 src/type2str.cc:113 src/type2str.cc:145
 msgid "unknown"
 msgstr "inconnu"
 
-#: src/type2str.cc:95 src/type2str.cc:108
+#: src/type2str.cc:112 src/type2str.cc:125
 msgid "local"
 msgstr "local"
 
-#: src/type2str.cc:126 src/type2str.cc:136
+#: src/type2str.cc:143 src/type2str.cc:153
 msgid "free"
 msgstr "libre"
 
-#: src/type2str.cc:127 src/type2str.cc:140
+#: src/type2str.cc:144 src/type2str.cc:157
 msgid "used"
 msgstr "utilisé"
 
-#: src/type2str.cc:297
+#: src/type2str.cc:403
 msgid "Product Name: "
 msgstr "Nom du Produit: "
 
-#: src/type2str.cc:299
+#: src/type2str.cc:405
 msgid "Product ID: "
 msgstr "ID Produit: "
 
-#: src/type2str.cc:301
+#: src/type2str.cc:407
 msgid "Language ID: "
 msgstr "N° langue: "
 
-#: src/type2str.cc:303
+#: src/type2str.cc:409
 msgid "User-defined ID: "
 msgstr "ID défini par l'utilisateur"
 
-#: src/type2str.cc:306
+#: src/type2str.cc:412
 msgid "Device Type: "
 msgstr "Type de calc: "
 
-#: src/type2str.cc:308
+#: src/type2str.cc:414
 msgid "Hardware Version: "
 msgstr "Version du Matériel: "
 
-#: src/type2str.cc:311
+#: src/type2str.cc:417
 msgid "Boot Version: "
 msgstr "Version du Boot: "
 
-#: src/type2str.cc:313
+#: src/type2str.cc:419
 msgid "Boot2 Version: "
 msgstr "Version du Boot2: "
 
-#: src/type2str.cc:315
+#: src/type2str.cc:421
 msgid "OS Version: "
 msgstr "Version de l'OS: "
 
-#: src/type2str.cc:317
+#: src/type2str.cc:423
 msgid "Run level: "
 msgstr "Niveau: "
 
-#: src/type2str.cc:319
+#: src/type2str.cc:425
 msgid "Clock speed: "
 msgstr "Vitesse d'horloge: "
 
-#: src/type2str.cc:321
+#: src/type2str.cc:427
 msgid "Math capabilities (exact math engine): "
 msgstr "Capacités mathématiques (moteur de calcul exact): "
 
-#: src/type2str.cc:322 src/type2str.cc:324
+#: src/type2str.cc:428 src/type2str.cc:430 src/type2str.cc:441
+#: src/type2str.cc:467 src/type2str.cc:469 src/type2str.cc:471
 msgid "Yes"
 msgstr "Oui"
 
-#: src/type2str.cc:322 src/type2str.cc:324
+#: src/type2str.cc:428 src/type2str.cc:430 src/type2str.cc:441
+#: src/type2str.cc:467 src/type2str.cc:469 src/type2str.cc:471
 msgid "No"
 msgstr "Non"
 
-#: src/type2str.cc:323
+#: src/type2str.cc:429
 msgid "Python on board: "
 msgstr "Python embarqué: "
 
-#: src/type2str.cc:326
+#: src/type2str.cc:432
 msgid "LCD width: "
 msgstr "Largeur écran: "
 
-#: src/type2str.cc:328
+#: src/type2str.cc:434
 msgid "LCD height: "
 msgstr "Hauteur écran: "
 
-#: src/type2str.cc:330
+#: src/type2str.cc:436
 msgid "Bits per pixel: "
 msgstr "Bits par pixel: "
 
-#: src/type2str.cc:332
+#: src/type2str.cc:438
 msgid "Color screen: "
 msgstr "Ecran couleur: "
 
-#: src/type2str.cc:335
+#: src/type2str.cc:440
+msgid "Has screen: "
+msgstr "A un écran: "
+
+#: src/type2str.cc:442
+msgid "Color depth: "
+msgstr "Profondeur de couleur: "
+
+#: src/type2str.cc:444
+msgid "User pages: "
+msgstr "Pages utilisateur: "
+
+#: src/type2str.cc:446
+msgid "Free pages: "
+msgstr "Pages libres: "
+
+#: src/type2str.cc:449
 msgid "Physical RAM: "
 msgstr "RAM physique: "
 
-#: src/type2str.cc:337
+#: src/type2str.cc:451
 msgid "User RAM: "
 msgstr "RAM utilisateur: "
 
-#: src/type2str.cc:339
+#: src/type2str.cc:453
 msgid "Free RAM: "
 msgstr "RAM libre: "
 
-#: src/type2str.cc:341
+#: src/type2str.cc:455
 msgid "Physical Flash: "
 msgstr "Flash physique: "
 
-#: src/type2str.cc:343
+#: src/type2str.cc:457
 msgid "User Flash: "
 msgstr "Flash utilisateur: "
 
-#: src/type2str.cc:345
+#: src/type2str.cc:459
 msgid "Free Flash: "
 msgstr "Flash libre: "
 
-#: src/type2str.cc:348
+#: src/type2str.cc:462
 msgid "Battery: "
 msgstr "Batterie: "
+
+#: src/type2str.cc:464
+msgid "Battery level: "
+msgstr "Niveau de batterie: "
+
+#: src/type2str.cc:466
+msgid "External power: "
+msgstr "Alimentation externe: "
+
+#: src/type2str.cc:468
+msgid "On home screen: "
+msgstr "Dans l'écran home: "
+
+#: src/type2str.cc:470
+msgid "Screen split: "
+msgstr "Partage d'écran: "
+
+#: src/type2str.cc:472
+msgid "Clock timezone: "
+msgstr "Zone de temps: "
+
+#: src/type2str.cc:474
+msgid "Clock date format: "
+msgstr "Format de date de l'horloge: "
+
+#: src/type2str.cc:476
+msgid "Clock time format: "
+msgstr "Format d'heure de l'horloge: "
+
+#: src/type2str.cc:478
+msgid "Last error code: "
+msgstr "Dernier code d'erreur: "
+
+#: src/type2str.cc:480
+msgid "Boot hash: "
+msgstr "Hash du boot: "
+
+#: src/type2str.cc:482
+msgid "OS hash: "
+msgstr "Hash de l'OS: "
