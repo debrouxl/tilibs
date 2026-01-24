@@ -201,7 +201,7 @@ int TICALL ticalcs_infos_to_string(CalcInfos *infos, char *str, uint32_t maxlen)
 		bpp[0] = 0;
 		if (infos->mask & INFOS_BPP)
 		{
-			sprintf(bpp, "%d pixels", infos->bits_per_pixel);
+			sprintf(bpp, "%d", infos->bits_per_pixel);
 		}
 		color_screen[0] = 0;
 		if (infos->mask & INFOS_COLOR_SCREEN)
