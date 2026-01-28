@@ -699,6 +699,24 @@ static const char* dusb_error_code_to_name(uint16_t code)
 	return "Unknown";
 }
 
+static bool dusb_error_code_is_protocol(uint16_t code)
+{
+	switch (code)
+	{
+		case 0x0001: // Unknown packet
+		case 0x0007: // Bad packet length
+		case 0x0008: // Unexpected packet
+		case 0x0009: // Protocol ID unknown
+		case 0x0029: // Invalid packet field?
+		case 0xCCCC: // Cancel
+		case 0xCCCD: // CancelAll
+		case 0xEFF0: // Violation in protocol handling
+			return true;
+		default:
+			return false;
+	}
+}
+
 static int dusb_handle_error_packet(CalcHandle *handle, const DUSBVirtualPacket *pkt, const char *context)
 {
 	const uint16_t raw = (((uint16_t)pkt->data[0]) << 8) | pkt->data[1];
@@ -709,10 +727,48 @@ static int dusb_handle_error_packet(CalcHandle *handle, const DUSBVirtualPacket 
 	}
 	else
 	{
-		ticalcs_warning("%s: DUSB error packet: code=0x%04X (%s)", context, raw, dusb_error_code_to_name(raw));
+		const char * name = dusb_error_code_to_name(raw);
+		ticalcs_warning("%s: DUSB error packet: code=0x%04X (%s)", context, raw, name);
+		if (dusb_error_code_is_protocol(raw))
+		{
+			ticalcs_warning("%s: DUSB protocol error: code=0x%04X (%s), forcing DUSB mode renegotiation on next command", context, raw, name);
+			handle->priv.dusb_needs_mode_set = 1;
+		}
 	}
 
 	return ERR_CALC_ERROR2 + err_code(raw);
+}
+
+static int dusb_cmd_resync_if_needed(CalcHandle *handle)
+{
+	int retval = 0;
+
+	if (!handle->priv.dusb_needs_mode_set)
+	{
+		return 0;
+	}
+
+	ticalcs_info("    renegotiating DUSB mode (using NORMAL) after protocol error");
+	retval = dusb_cmd_s_mode_set(handle, DUSB_MODE_NORMAL);
+	if (!retval)
+	{
+		retval = dusb_cmd_r_mode_ack(handle);
+	}
+	if (retval)
+	{
+		ticalcs_info("    normal mode failed, retrying with BASIC mode");
+		retval = dusb_cmd_s_mode_set(handle, DUSB_MODE_BASIC);
+		if (!retval)
+		{
+			retval = dusb_cmd_r_mode_ack(handle);
+		}
+	}
+	if (!retval)
+	{
+		handle->priv.dusb_needs_mode_set = 0;
+	}
+
+	return retval;
 }
 
 /////////////----------------
@@ -1159,6 +1215,7 @@ int TICALL dusb_cmd_s_os_begin(CalcHandle *handle, uint32_t size)
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
+	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
 	pkt = dusb_vtl_pkt_new_ex(handle, 11, DUSB_VPKT_OS_BEGIN, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, 11));
 
@@ -1258,6 +1315,7 @@ int TICALL dusb_cmd_s_os_header_89(CalcHandle *handle, uint32_t size, uint8_t *d
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
+	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
 	pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_OS_HEADER, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, size));
 
@@ -1278,6 +1336,7 @@ int TICALL dusb_cmd_s_os_data_89(CalcHandle *handle, uint32_t size, uint8_t *dat
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
+	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
 	pkt = dusb_vtl_pkt_new_ex(handle, size, DUSB_VPKT_OS_DATA, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, size));
 
@@ -1298,6 +1357,7 @@ int TICALL dusb_cmd_s_os_data_834pce(CalcHandle *handle, uint32_t addr, uint32_t
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(data);
+	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
 	pkt = dusb_vtl_pkt_new_ex(handle, 4 + size, DUSB_VPKT_OS_DATA, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, 4 + size));
 
@@ -1355,6 +1415,7 @@ int TICALL dusb_cmd_s_param_request(CalcHandle *handle, unsigned int npids, cons
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_ATTRS(npids, pids);
+	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
 	pkt = dusb_vtl_pkt_new_ex(handle, 2 + npids * sizeof(uint16_t), DUSB_VPKT_PARM_REQ, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, 2 + npids * sizeof(uint16_t)));
 
@@ -1512,6 +1573,7 @@ int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, unsigned int naids, co
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_ATTRS(naids, aids);
+	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
 	pkt = dusb_vtl_pkt_new_ex(handle, 4 + 2 * naids + 7, DUSB_VPKT_DIR_REQ, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, 4 + 2 * naids + 7));
 
@@ -1634,6 +1696,7 @@ static int dusb_cmd_s_rts2(CalcHandle *handle, const char *folder, const char *n
 	VALIDATE_NONNULL(folder);
 	VALIDATE_NONNULL(name);
 	VALIDATE_ATTRS(nattrs, attrs);
+	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
 	pks = 2 + strlen(name) + 1 + 5 + 2;
 	if (strlen(folder))
@@ -1715,6 +1778,7 @@ int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const 
 	VALIDATE_NONNULL(name);
 	VALIDATE_ATTRS(naids, aids);
 	VALIDATE_ATTRS(nattrs, attrs);
+	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
 	pks = 2 + strlen(name) + 1 + 5 + 2 + 2 * naids + 2;
 	if (strlen(folder))
@@ -1857,6 +1921,7 @@ int TICALL dusb_cmd_s_param_set(CalcHandle *handle, const DUSBCalcParam *param)
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(param);
+	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
 	pkt = dusb_vtl_pkt_new_ex(handle, 2 + 2 + param->size, DUSB_VPKT_PARM_SET, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, 2 + 2 + param->size));
 
@@ -1894,6 +1959,7 @@ int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 	VALIDATE_NONNULL(dst_folder);
 	VALIDATE_NONNULL(dst_name);
 	VALIDATE_ATTRS(n_dst_attrs, dst_attrs);
+	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
 	pks = 2 + strlen(src_name)+1 + 2;
 	if (strlen(src_folder))
@@ -2020,6 +2086,7 @@ int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, const char
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(folder);
 	VALIDATE_NONNULL(name);
+	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
 	pks = 3;
 	if (handle->model == CALC_TI89T_USB && folder[0] != 0)
@@ -2119,6 +2186,10 @@ int TICALL dusb_cmd_r_mode_ack(CalcHandle *handle)
 		{
 			retval = ERR_INVALID_PACKET;
 		}
+		else
+		{
+			handle->priv.dusb_needs_mode_set = 0;
+		}
 	}
 
 end:
@@ -2199,6 +2270,7 @@ int TICALL dusb_cmd_s_eot(CalcHandle *handle)
 	int retval = 0;
 
 	VALIDATE_HANDLE(handle);
+	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
 	pkt = dusb_vtl_pkt_new_ex(handle, 0, DUSB_VPKT_EOT, NULL);
 

@@ -967,6 +967,7 @@ struct _CalcHandle
 		uint8_t nsp_seq;
 		uint16_t nsp_src_port;
 		uint16_t nsp_dst_port;
+		uint8_t dusb_needs_mode_set; // DUSB protocol resync requested
 	} priv;
 };
 
