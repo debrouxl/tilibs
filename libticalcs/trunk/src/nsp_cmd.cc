@@ -41,6 +41,21 @@ static const uint8_t usb_errors[] = {
 	0x02, 0x04, 0x07, 0x0a, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x20, 0x80
 };
 
+uint8_t ticalcs_nsp_error_code_from_index(unsigned int index)
+{
+	if (index >= (sizeof(usb_errors) / sizeof(usb_errors[0])))
+	{
+		return 0;
+	}
+
+	return usb_errors[index];
+}
+
+unsigned int ticalcs_nsp_error_count(void)
+{
+	return (unsigned int)(sizeof(usb_errors) / sizeof(usb_errors[0]));
+}
+
 static int err_code(uint8_t code)
 {
 	int i;

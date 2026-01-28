@@ -453,7 +453,7 @@ int TICALL ticalcs_error_get(int number, char **message)
  * ticalcs_error_free:
  * @message: a message previously allocated by ticalcs_error_get()
  *
- * Free the given message string allocated by ticalcs_error_get();
+ * Free the given message string allocated by ticalcs_error_get().
  *
  * Return value: 0 if the argument was valid and the message was freed, nonzero otherwise.
  **/
@@ -466,4 +466,42 @@ int TICALL ticalcs_error_free(char *message)
 	}
 	g_free(message);
 	return 0;
+}
+
+/**
+ * ticalcs_error_get_raw_protocol_code:
+ * @number: error number (see error.h for list).
+ * @code: pointer for storing the raw protocol error code if known.
+ *
+ * Return the raw protocol error code if given a ticalcs error number.
+ *
+ * Return value: 0 if the argument was valid and the error code known, nonzero otherwise.
+ **/
+int TICALL ticalcs_error_get_raw_protocol_code(int number, uint16_t *code)
+{
+	VALIDATE_NONNULL(code);
+
+	uint16_t raw = 0;
+	if (number > ERR_CALC_ERROR2 && number <= ERR_CALC_ERROR2 + (int)ticalcs_dusb_error_count())
+	{
+		raw = (uint16_t)ticalcs_dusb_error_code_from_index((unsigned int)(number - ERR_CALC_ERROR2 - 1));
+	}
+	else if (number > ERR_CALC_ERROR1 && number <= ERR_CALC_ERROR1 + (int)ticalcs_dbus_error_count())
+	{
+		raw = (uint16_t)ticalcs_dbus_error_code_from_index((unsigned int)(number - ERR_CALC_ERROR1 - 1));
+	}
+	else if (number > ERR_CALC_ERROR3 && number <= ERR_CALC_ERROR3 + (int)ticalcs_nsp_error_count())
+	{
+		raw = (uint16_t)ticalcs_nsp_error_code_from_index((unsigned int)(number - ERR_CALC_ERROR3 - 1));
+	}
+
+	if (raw == 0)
+	{
+		return number;
+	}
+	else
+	{
+		*code = (uint16_t)raw;
+		return 0;
+	}
 }
