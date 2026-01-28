@@ -467,6 +467,12 @@ int ti82_send_asm_exec(CalcHandle*, VarEntry * var);
 int dusb_check_cmd_data(CalcModel model, const uint8_t * data, uint32_t len, uint32_t vtl_size, uint16_t vtl_type);
 int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32_t len, uint32_t vtl_size, uint16_t vtl_type);
 
+uint16_t ticalcs_dusb_error_code_from_index(unsigned int index);
+uint8_t ticalcs_dbus_error_code_from_index(unsigned int index);
+uint8_t ticalcs_nsp_error_code_from_index(unsigned int index);
+unsigned int ticalcs_dusb_error_count(void);
+unsigned int ticalcs_dbus_error_count(void);
+unsigned int ticalcs_nsp_error_count(void);
 
 // dusb_cmd.c
 
