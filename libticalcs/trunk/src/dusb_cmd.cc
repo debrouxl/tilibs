@@ -671,6 +671,21 @@ static const DUSBErrorCodeInfo usb_errors[] =
 	{ 0xF006, "DeviceHasBeenDisconnected" }
 };
 
+uint16_t ticalcs_dusb_error_code_from_index(unsigned int index)
+{
+	if (index >= (sizeof(usb_errors) / sizeof(usb_errors[0])))
+	{
+		return 0;
+	}
+
+	return usb_errors[index].code;
+}
+
+unsigned int ticalcs_dusb_error_count(void)
+{
+	return (unsigned int)(sizeof(usb_errors) / sizeof(usb_errors[0]));
+}
+
 static int err_code(uint16_t code)
 {
 	for (unsigned int i = 0; i < sizeof(usb_errors) / sizeof(usb_errors[0]); i++)

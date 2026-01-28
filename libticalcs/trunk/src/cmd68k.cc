@@ -74,6 +74,21 @@ static inline int ti68k_send_simple_cmd(CalcHandle * handle, uint8_t target, uin
 
 static const uint8_t dbus_errors[] = { 0x03, 0x25, 0x1e, 0x21, 0x07, 0x24, 0x08 };
 
+uint8_t ticalcs_dbus_error_code_from_index(unsigned int index)
+{
+	if (index >= (sizeof(dbus_errors) / sizeof(dbus_errors[0])))
+	{
+		return 0;
+	}
+
+	return dbus_errors[index];
+}
+
+unsigned int ticalcs_dbus_error_count(void)
+{
+	return (unsigned int)(sizeof(dbus_errors) / sizeof(dbus_errors[0]));
+}
+
 static int err_code(uint8_t *data)
 {
 	int i;

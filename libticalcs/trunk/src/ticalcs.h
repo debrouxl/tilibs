@@ -1037,6 +1037,7 @@ typedef struct
 	// error.c
 	TIEXPORT3 int         TICALL ticalcs_error_get (int number, char **message);
 	TIEXPORT3 int         TICALL ticalcs_error_free (char *message);
+	TIEXPORT3 int         TICALL ticalcs_error_get_raw_protocol_code(int number, uint16_t *code);
 
 	// calc_xx.c
 	TIEXPORT3 CalcFeatures TICALL ticalcs_calc_features(CalcHandle *handle);
