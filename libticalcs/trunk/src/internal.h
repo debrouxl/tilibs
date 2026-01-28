@@ -197,6 +197,13 @@
 		handle->busy = 0; \
 	}
 
+#define DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle) \
+	retval = dusb_cmd_resync_if_needed(handle); \
+	if (retval) \
+	{ \
+		return retval; \
+	}
+
 static inline int ticalcs_validate_handle(CalcHandle * handle)
 {
 	return handle != NULL;
