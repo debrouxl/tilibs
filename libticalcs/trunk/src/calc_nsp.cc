@@ -285,6 +285,12 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 					}
 					else
 					{
+						handle->updat->cnt1 = 0;
+						handle->updat->max1 = size;
+						ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Receiving screenshot..."));
+						ticalcs_update_label(handle);
+						handle->updat->pbar();
+
 						ret = nsp_cmd_r_screen_rle(handle, &cmd, &size, &data);
 						if (!ret)
 						{
@@ -325,6 +331,9 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 	int ret;
 
 	ticalcs_info("enumerate_folder<%s>\n", folder_name);
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Listing %s..."), folder_name);
+	ticalcs_update_label(handle);
+	handle->updat->pbar();
 
 	do
 	{
@@ -398,6 +407,9 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 				ret = ERR_MALLOC;
 				break;
 			}
+
+			handle->updat->cnt1 += 1;
+			handle->updat->pbar();
 
 			ticalcs_info(_("Name: %s | Type: %8s | Attr: %i  | Size: %08X"),
 				fe->name,
@@ -474,6 +486,12 @@ static int get_dirlist (CalcHandle* handle, GNode** vars, GNode** apps)
 	{
 		return ret;
 	}
+
+	handle->updat->cnt1 = 0;
+	handle->updat->max1 = 0;
+	ticalcs_slprintf(handle->updat->text, sizeof(handle->updat->text), _("Listing folders..."));
+	ticalcs_update_label(handle);
+	handle->updat->pbar();
 
 	root = g_node_new(NULL);
 	if (!root)
@@ -563,8 +581,10 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	int ret;
 	VarEntry * entry;
 
+	handle->updat->cnt1 = 0;
+	handle->updat->max1 = 0;
 	handle->updat->cnt2 = 0;
-	handle->updat->max2 = 1;
+	handle->updat->max2 = 0;
 	ticalcs_update_pbar(handle);
 
 	entry = content->entries[0];
@@ -603,6 +623,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		ret = nsp_cmd_r_put_file(handle);
 		if (!ret)
 		{
+			handle->updat->cnt1 = 0;
+			handle->updat->max1 = entry->size;
+			ticalcs_update_pbar(handle);
 			ret = nsp_cmd_s_file_contents(handle, entry->size, entry->data);
 			if (!ret)
 			{
@@ -645,6 +668,9 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 				if (vr->size)
 				{
+					handle->updat->cnt1 = 0;
+					handle->updat->max1 = vr->size;
+					ticalcs_update_pbar(handle);
 					ret = nsp_cmd_r_file_contents(handle, &(vr->size), &data);
 				}
 				if (!ret)

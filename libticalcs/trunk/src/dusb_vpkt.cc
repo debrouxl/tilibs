@@ -809,6 +809,9 @@ int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacket* vtl, ui
 					memcpy(vtl->data, &raw.data[DUSB_DH_SIZE], raw.size - DUSB_DH_SIZE);
 				}
 				vtl->size = raw.size - DUSB_DH_SIZE;
+				handle->updat->max1 = *declared_size ? *declared_size : vtl->size;
+				handle->updat->cnt1 = vtl->size;
+				handle->updat->pbar();
 #if (VPKT_DBG == 2)
 				ticalcs_info("  TI->PC: %s\n\t\t(size = %08x, type = %s)",
 					raw.type == DUSB_RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation",
@@ -860,6 +863,8 @@ int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacket* vtl, ui
 				{
 					handle->updat->max1 = vtl->size + raw.size;
 				}
+				handle->updat->cnt1 = vtl->size;
+				handle->updat->pbar();
 			}
 
 			workaround_recv(handle, &raw, vtl);
