@@ -151,21 +151,101 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	long cur_pos;
 	uint32_t file_size;
 	int ret = ERR_FILE_IO;
+	int is_zip = 0;
+	int allow_zip = 0;
+	CalcModel target_model = CALC_NSPIRE;
 
-	if (content == NULL)
+	if (filename == nullptr || content == nullptr)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
 	}
 
-	if (!tifiles_file_is_tno(filename))
+	gchar *basename = g_path_get_basename(filename);
+	const char *ext = tifiles_fext_get(basename ? basename : filename);
+	if (ext)
 	{
-		ret = ERR_INVALID_FILE;
-		goto tfrf2;
+		if (*ext == 't' || *ext == 'T')
+		{
+			ext++;
+			if (*ext == 'n' || *ext == 'N')
+			{
+				ext++;
+				/*if (*ext == 'o' || *ext == 'O')
+				{
+					target_model = CALC_NSPIRE;
+				}
+				else*/ if (*ext == 'c' || *ext == 'C')
+				{
+					// CALC_NSPIRE_TOUCHPAD_CAS would also be valid for sufficiently high version numbers.
+					target_model = CALC_NSPIRE_CLICKPAD_CAS;
+				}
+			}
+			else if (*ext == 'c' || *ext == 'C')
+			{
+				ext++;
+				if (*ext == 'o' || *ext == 'O')
+				{
+					ext++;
+					if (*ext == 0)
+					{
+						target_model = CALC_NSPIRE_CX;
+					}
+					else if (*ext == '2')
+					{
+						allow_zip = 1;
+						target_model = CALC_NSPIRE_CXII;
+					}
+				}
+				else if (*ext == 'c' || *ext == 'C')
+				{
+					ext++;
+					if (*ext == 0)
+					{
+						target_model = CALC_NSPIRE_CX_CAS;
+					}
+					else if (*ext == '2')
+					{
+						allow_zip = 1;
+						target_model = CALC_NSPIRE_CXII_CAS;
+					}
+				}
+				else if (*ext == 't' || *ext == 'T')
+				{
+					ext++;
+					if (*ext == '2')
+					{
+						allow_zip = 1;
+						target_model = CALC_NSPIRE_CXIIT;
+					}
+				}
+			}
+			else if (*ext == 'm' || *ext == 'M')
+			{
+				ext++;
+				if (*ext == 'o' || *ext == 'O')
+				{
+					target_model = CALC_NSPIRE_CMC;
+				}
+				else if (*ext == 'c' || *ext == 'C')
+				{
+					target_model = CALC_NSPIRE_CMC_CAS;
+				}
+			}
+			else if (*ext == 'l' || *ext == 'L')
+			{
+				ext++;
+				if (*ext == 'o' || *ext == 'O')
+				{
+					target_model = CALC_NSPIRE_CRADLE;
+				}
+			}
+		}
 	}
+	g_free(basename);
 
 	f = g_fopen(filename, "rb");
-	if (f == NULL)
+	if (f == nullptr)
 	{
 		tifiles_info("Unable to open this file: %s", filename);
 		ret = ERR_FILE_OPEN;
@@ -185,80 +265,116 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	}
 	file_size = (uint32_t)cur_pos;
 
-	// FIXME this does no longer hold true now that there are multiple calcs for Nspire series members.
-	content->model = CALC_NSPIRE;
-
-	// Skip chars.
-	c = 0;
-	while (c != ' ')
-	{
-		c = fgetc(f);
-		if (c == EOF)
-		{
-			goto tfrf;
-		}
-	}
-
-	// Read revision major.
-	c = fgetc(f);
-	if (c == EOF)
-	{
-		goto tfrf;
-	}
-	content->revision_major = c;
-
-	// Skip char.
-	c = fgetc(f);
-	if (c == EOF)
-	{
-		goto tfrf;
-	}
-
-	// Read revision minor.
-	c = fgetc(f);
-	if (c == EOF)
-	{
-		goto tfrf;
-	}
-	content->revision_minor = c;
-
-	// Skip chars.
-	c = fgetc(f);
-	if (c == EOF)
-	{
-		goto tfrf;
-	}
-
-	c = 0;
-	while (c != ' ')
-	{
-		c = fgetc(f);
-		if (c == EOF)
-		{
-			goto tfrf;
-		}
-	}
-	if (fscanf(f, "%i", &(content->data_length)) < 1)
-	{
-		goto tfrf;
-	}
-	if (content->data_length > file_size)
-	{
-		ret = ERR_INVALID_FILE;
-		goto tfrf;
-	}
 	if (fseek(f, 0, SEEK_SET) < 0) goto tfrf;
-
-	content->data_part = (uint8_t *)g_malloc0(content->data_length);
-	if (content->data_part == NULL) 
+	if (allow_zip)
 	{
-		fclose(f);
-		tifiles_content_delete_flash(content);
-		return ERR_MALLOC;
+		unsigned char sig[4];
+		if (fread(sig, 1, sizeof(sig), f) == sizeof(sig))
+		{
+			if (sig[0] == 'P' && sig[1] == 'K' && sig[2] == 3 && sig[3] == 4)
+			{
+				is_zip = 1;
+			}
+		}
+		if (fseek(f, 0, SEEK_SET) < 0) goto tfrf;
 	}
 
-	content->next = NULL;
-	if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
+	content->model = target_model;
+
+	if (!is_zip)
+	{
+		if (!tifiles_file_is_tno(filename))
+		{
+			ret = ERR_INVALID_FILE;
+			goto tfrf;
+		}
+
+		// Skip chars.
+		c = 0;
+		while (c != ' ')
+		{
+			c = fgetc(f);
+			if (c == EOF)
+			{
+				goto tfrf;
+			}
+		}
+
+		// Read revision major.
+		c = fgetc(f);
+		if (c == EOF)
+		{
+			goto tfrf;
+		}
+		content->revision_major = c;
+
+		// Skip char.
+		c = fgetc(f);
+		if (c == EOF)
+		{
+			goto tfrf;
+		}
+
+		// Read revision minor.
+		c = fgetc(f);
+		if (c == EOF)
+		{
+			goto tfrf;
+		}
+		content->revision_minor = c;
+
+		// Skip chars.
+		c = fgetc(f);
+		if (c == EOF)
+		{
+			goto tfrf;
+		}
+
+		c = 0;
+		while (c != ' ')
+		{
+			c = fgetc(f);
+			if (c == EOF)
+			{
+				goto tfrf;
+			}
+		}
+		if (fscanf(f, "%i", &(content->data_length)) < 1)
+		{
+			goto tfrf;
+		}
+		if (content->data_length > file_size)
+		{
+			ret = ERR_INVALID_FILE;
+			goto tfrf;
+		}
+		if (fseek(f, 0, SEEK_SET) < 0) goto tfrf;
+
+		content->data_part = (uint8_t *)g_malloc0(content->data_length);
+		if (content->data_part == nullptr)
+		{
+			ret = ERR_MALLOC;
+			goto tfrf;
+		}
+
+		content->next = nullptr;
+		if (fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
+	}
+	else
+	{
+		content->data_length = file_size;
+		content->data_part = (uint8_t *)g_malloc0(content->data_length);
+		if (content->data_part == nullptr)
+		{
+			ret = ERR_MALLOC;
+			goto tfrf;
+		}
+		content->next = nullptr;
+		if (fread(content->data_part, 1, content->data_length, f) < content->data_length)
+		{
+			goto tfrf;
+		}
+	}
 
 	fclose(f);
 	return 0;

@@ -721,19 +721,63 @@ int TICALL tifiles_file_has_tifl_header(const char *filename, uint8_t *dev_type,
 	return ret;
 }
 
-#define TNO_SIGNATURE           "TI-Nspire.tno "
-#define TNO_NOSAMPLES_SIGNATURE "TI-Nspire.nosamples.tno "
-#define TNC_SIGNATURE           "TI-Nspire.tnc "
-#define TCO_SIGNATURE           "TI-Nspire.tco "
-#define TCO2_SIGNATURE          "TI-Nspire.tco2 "
-#define TCC_SIGNATURE           "TI-Nspire.tcc "
-#define TCC2_SIGNATURE          "TI-Nspire.tcc2 "
-#define TCT2_SIGNATURE          "TI-Nspire.tct2 "
-#define TMO_SIGNATURE           "TI-Nspire.tmo "
-#define TMC_SIGNATURE           "TI-Nspire.tmc "
-#define TLO_SIGNATURE           "TI-Nspire.tlo "
-#define TLD_SIGNATURE           "TI-Nspire.tld "
-#define OSEXT1_SIGNATURE        "__OSEXT__1 "
+#define OS_SIGNATURE_PREFIX            "TI-Nspire."
+#define TNO_SIGNATURE_SUFFIX           "tno "
+#define TNO_NOSAMPLES_SIGNATURE_SUFFIX "nosamples.tno "
+#define TNC_SIGNATURE_SUFFIX           "tnc "
+#define TCO_SIGNATURE_SUFFIX           "tco "
+#define TCC_SIGNATURE_SUFFIX           "tcc "
+#define TMO_SIGNATURE_SUFFIX           "tmo "
+#define TMC_SIGNATURE_SUFFIX           "tmc "
+#define TLO_SIGNATURE_SUFFIX           "tlo "
+#define TLD_SIGNATURE_SUFFIX           "tld "
+#define TCX2_SIGNATURE_PREFIX          "TI-Nspire.tc"
+#define TCO2_SIGNATURE                 "TI-Nspire.tco2 "
+#define TCC2_SIGNATURE                 "TI-Nspire.tcc2 "
+#define TCT2_SIGNATURE                 "TI-Nspire.tct2 "
+#define OSEXT1_SIGNATURE               "__OSEXT__1 "
+
+static int check_for_Nspire_OS_file_extension(const char * ext)
+{
+	if (nullptr != ext)
+	{
+		if (ext[0] == 't' || ext[0] == 'T')
+		{
+			char c = ext[1];
+			if (c == 'n' || c == 'N')
+			{
+co:
+				c = ext[2];
+				if (c == 'o' || c == 'O' || c == 'c' || c == 'C')
+				{
+					return 1;
+				}
+			}
+			else if (c == 'c' || c == 'C')
+			{
+				c = ext[2];
+				if (c == 'o' || c == 'O' || c == 'c' || c == 'C')
+				{
+					return ext[3] == 0 || ext[3] == '2';
+				}
+				else if (c == 't' || c == 'T')
+				{
+					return ext[3] == '2';
+				}
+			}
+			else if (c == 'm' || c == 'M')
+			{
+				goto co;
+			}
+			else if (c == 'l' || c == 'L')
+			{
+				return ext[2] == 'o' || ext[2] == 'O';
+			}
+		}
+	}
+
+	return 0;
+}
 
 /**
  * tifiles_file_has_tno_header:
@@ -746,68 +790,69 @@ int TICALL tifiles_file_has_tifl_header(const char *filename, uint8_t *dev_type,
 int TICALL tifiles_file_has_tno_header(const char *filename)
 {
 	FILE *f;
-	char str[1025];
+	unsigned char str[1024];
 	int ret = 0;
 
-	if (filename != NULL)
+	if (filename != nullptr)
 	{
 #ifdef CHECK_FILE_EXTENSIONS
 		char *e = tifiles_fext_get(filename);
 
-		if (   e[0] == 0
-		    || (   g_ascii_strcasecmp(e, "tno")  && g_ascii_strcasecmp(e, "tnc")
-			&& g_ascii_strcasecmp(e, "tco")  && g_ascii_strcasecmp(e, "tcc")
-			&& g_ascii_strcasecmp(e, "tco2") && g_ascii_strcasecmp(e, "tcc2")
-			&& g_ascii_strcasecmp(e, "tct2") && g_ascii_strcasecmp(e, "tmo")
-			&& g_ascii_strcasecmp(e, "tmc")  && g_ascii_strcasecmp(e, "tlo")
-			&& g_ascii_strcasecmp(e, "tld")
-		       )
-		   )
+		if (!check_for_Nspire_OS_file_extension(e))
 		{
 			return 0;
 		}
 #endif
 
 		f = g_fopen(filename, "rb");
-		if (f != NULL)
+		if (f != nullptr)
 		{
-			if (fread_n_chars(f, sizeof(str) - 1, str) == 0)
+			const size_t read_len = fread(str, 1, sizeof(str), f);
+			if (read_len == sizeof(str) && !ferror(f))
 			{
-				str[sizeof(str) - 1] = 0;
-				if (   !strncmp(str, TNO_SIGNATURE,           sizeof(TNO_SIGNATURE) - 1)
-				    || !strncmp(str, TNC_SIGNATURE,           sizeof(TNC_SIGNATURE) - 1)
-				    || !strncmp(str, TNO_NOSAMPLES_SIGNATURE, sizeof(TNO_NOSAMPLES_SIGNATURE) - 1)
-				    || !strncmp(str, TCO_SIGNATURE,           sizeof(TCO_SIGNATURE) - 1)
-				    || !strncmp(str, TCC_SIGNATURE,           sizeof(TCC_SIGNATURE) - 1)
-				    || !strncmp(str, TMO_SIGNATURE,           sizeof(TMO_SIGNATURE) - 1)
-				    || !strncmp(str, TMC_SIGNATURE,           sizeof(TMC_SIGNATURE) - 1)
-				    || !strncmp(str, TLO_SIGNATURE,           sizeof(TLO_SIGNATURE) - 1)
-				    || !strncmp(str, TLD_SIGNATURE,           sizeof(TLD_SIGNATURE) - 1)
-				    || !strncmp(str, OSEXT1_SIGNATURE,        sizeof(OSEXT1_SIGNATURE) - 1)
-				   )
+				if (   !memcmp(str, OSEXT1_SIGNATURE, sizeof(OSEXT1_SIGNATURE) - 1))
 				{
 					ret = !0;
+				}
+				else if (!memcmp(str, OS_SIGNATURE_PREFIX, sizeof(OS_SIGNATURE_PREFIX) - 1))
+				{
+					if (   !memcmp(str + sizeof(OS_SIGNATURE_PREFIX) - 1, TNO_SIGNATURE_SUFFIX, sizeof(TNO_SIGNATURE_SUFFIX) - 1)
+					    || !memcmp(str + sizeof(OS_SIGNATURE_PREFIX) - 1, TNC_SIGNATURE_SUFFIX, sizeof(TNC_SIGNATURE_SUFFIX) - 1)
+					    || !memcmp(str + sizeof(OS_SIGNATURE_PREFIX) - 1, TNO_NOSAMPLES_SIGNATURE_SUFFIX, sizeof(TNO_NOSAMPLES_SIGNATURE_SUFFIX) - 1)
+					    || !memcmp(str + sizeof(OS_SIGNATURE_PREFIX) - 1, TCO_SIGNATURE_SUFFIX, sizeof(TCO_SIGNATURE_SUFFIX) - 1)
+					    || !memcmp(str + sizeof(OS_SIGNATURE_PREFIX) - 1, TCC_SIGNATURE_SUFFIX, sizeof(TCC_SIGNATURE_SUFFIX) - 1)
+					    || !memcmp(str + sizeof(OS_SIGNATURE_PREFIX) - 1, TMO_SIGNATURE_SUFFIX, sizeof(TMO_SIGNATURE_SUFFIX) - 1)
+					    || !memcmp(str + sizeof(OS_SIGNATURE_PREFIX) - 1, TMC_SIGNATURE_SUFFIX, sizeof(TMC_SIGNATURE_SUFFIX) - 1)
+					    || !memcmp(str + sizeof(OS_SIGNATURE_PREFIX) - 1, TLO_SIGNATURE_SUFFIX, sizeof(TLO_SIGNATURE_SUFFIX) - 1)
+					    || !memcmp(str + sizeof(OS_SIGNATURE_PREFIX) - 1, TLD_SIGNATURE_SUFFIX, sizeof(TLD_SIGNATURE_SUFFIX) - 1))
+					{
+						ret = !0;
+					}
 				}
 				else
 				{
 					// Look for a CX II signature, which isn't at the beginning of the file anymore. Sigh.
 					// Sadly, memmem() is not portable.
-					unsigned int remaining = sizeof(str) - 1 - sizeof(TCO2_SIGNATURE) - 1;
-					char * ptr1 = (char *)memchr(str, 'T', remaining);
-					char * ptr2 = str;
-					while (NULL != ptr1)
+					size_t remaining = read_len;
+					const unsigned char * ptr2 = str;
+					const unsigned char * ptr1 = (const unsigned char *)memchr(ptr2, 'T', remaining);
+					while (nullptr != ptr1)
 					{
-						remaining -= (ptr1 - ptr2 + 1);
-						if (   ptr1[ 1] == 'I' && ptr1[ 2] == '-' && ptr1[ 3] == 'N' && ptr1[ 4] == 's'
-						    && ptr1[ 5] == 'p' && ptr1[ 6] == 'i' && ptr1[ 7] == 'r' && ptr1[ 8] == 'e'
-						    && ptr1[ 9] == '.' && ptr1[10] == 't' && ptr1[11] == 'c' && (ptr1[12] == 'o' || ptr1[12] == 'c' || ptr1[12] == 't')
-						    && ptr1[13] == '2' && ptr1[14] == ' ')
+						if (   (size_t)(ptr1 - str) + sizeof(TCX2_SIGNATURE_PREFIX) - 1 + 3 <= read_len
+						    && !memcmp(ptr1, TCX2_SIGNATURE_PREFIX, sizeof(TCX2_SIGNATURE_PREFIX) - 1))
 						{
-							ret = !0;
-							break;
+							unsigned char c = *(ptr1 + sizeof(TCX2_SIGNATURE_PREFIX) - 1);
+							if (   (c == 'o' || c == 'c' || c == 't')
+							    && *(ptr1 + sizeof(TCX2_SIGNATURE_PREFIX)) == '2'
+							    && *(ptr1 + sizeof(TCX2_SIGNATURE_PREFIX) + 1) == ' ')
+							{
+								ret = !0;
+								break;
+							}
 						}
+						remaining -= (ptr1 - ptr2 + 1);
 						ptr2 = ptr1 + 1;
-						ptr1 = (char *)memchr(ptr2, 'T', remaining);
+						ptr1 = (const unsigned char *)memchr(ptr2, 'T', remaining);
 					}
 				}
 			}
@@ -1644,14 +1689,7 @@ const char *TICALL tifiles_file_get_type(const char *filename)
 		return "";
 	}
 
-	if (   !g_ascii_strcasecmp(e, "tib")
-	    || !g_ascii_strcasecmp(e, "tno")  || !g_ascii_strcasecmp(e, "tnc")
-	    || !g_ascii_strcasecmp(e, "tco")  || !g_ascii_strcasecmp(e, "tcc")
-	    || !g_ascii_strcasecmp(e, "tco2") || !g_ascii_strcasecmp(e, "tcc2")
-	    || !g_ascii_strcasecmp(e, "tct2") || !g_ascii_strcasecmp(e, "tmo")
-	    || !g_ascii_strcasecmp(e, "tmc")  || !g_ascii_strcasecmp(e, "tlo")
-	    || !g_ascii_strcasecmp(e, "tld")
-	  )
+	if (check_for_Nspire_OS_file_extension(e) || !g_ascii_strcasecmp(e, "tib"))
 	{
 		return _("OS upgrade");
 	}
@@ -1769,14 +1807,7 @@ const char *TICALL tifiles_file_get_icon(const char *filename)
 		return "";
 	}
 
-	if (   !g_ascii_strcasecmp(e, "tib")
-	    || !g_ascii_strcasecmp(e, "tno")  || !g_ascii_strcasecmp(e, "tnc")
-	    || !g_ascii_strcasecmp(e, "tco")  || !g_ascii_strcasecmp(e, "tcc")
-	    || !g_ascii_strcasecmp(e, "tco2") || !g_ascii_strcasecmp(e, "tcc2")
-	    || !g_ascii_strcasecmp(e, "tct2") || !g_ascii_strcasecmp(e, "tmo")
-	    || !g_ascii_strcasecmp(e, "tmc")  || !g_ascii_strcasecmp(e, "tlo")
-	    || !g_ascii_strcasecmp(e, "tld")
-	   )
+	if (check_for_Nspire_OS_file_extension(e) || !g_ascii_strcasecmp(e, "tib"))
 	{
 		return _("OS upgrade");
 	}
