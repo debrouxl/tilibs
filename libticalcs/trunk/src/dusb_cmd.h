@@ -165,14 +165,21 @@ extern "C" {
 #define DUSB_AID_VAR_SIZE               0x01
 #define DUSB_AID_VAR_TYPE               0x02
 #define DUSB_AID_ARCHIVED               0x03
-#define DUSB_AID_UNKNOWN_04             0x04
-#define DUSB_AID_4APPVAR                0x05
+#define DUSB_AID_IS_FILE                0x04
+#define DUSB_AID_APPVAR                 0x05
+#define DUSB_AID_OWNER                  0x06
+#define DUSB_AID_GROUP                  0x07
 #define DUSB_AID_VAR_VERSION            0x08
-#define DUSB_AID_VAR_TYPE2              0x11
+#define DUSB_AID_DATATYPE               0x11
 #define DUSB_AID_ARCHIVED2              0x13
 #define DUSB_AID_LOCKED                 0x41
-#define DUSB_AID_UNKNOWN_42             0x42
+#define DUSB_AID_ACCESS                 0x42
 #define DUSB_AID_BACKUP_HEADER          0xFFFE
+
+// DUSB_VPKT_MODIF_VAR file protection mode
+// IGNORE should be used for delete/move/overwrite
+#define DUSB_MODIF_VAR_PROT_HONOR       0x00
+#define DUSB_MODIF_VAR_PROT_IGNORE      0x01
 
 // Execute commands
 #define DUSB_EID_PRGM                   0x00

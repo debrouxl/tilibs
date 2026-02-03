@@ -551,7 +551,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ticalcs_update_label(handle);
 
 	attrs = dusb_ca_new_array(handle, nattrs);
-	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
+	attrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
@@ -799,7 +799,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	ticalcs_update_label(handle);
 
 	attrs = dusb_ca_new_array(handle, nattrs);
-	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
+	attrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
@@ -881,7 +881,7 @@ static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarReq
 	ticalcs_update_label(handle);
 
 	attrs = dusb_ca_new_array(handle, nattrs);
-	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
+	attrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0F;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
@@ -1261,7 +1261,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	ticalcs_update_label(handle);
 
 	attrs = dusb_ca_new_array(handle, nattrs);
-	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
+	attrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI83p_IDLIST;
 
@@ -1663,7 +1663,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	ticalcs_update_label(handle);
 
 	attr = dusb_ca_new_array(handle, size);
-	attr[0] = dusb_ca_new(handle, 0x0011, 4);
+	attr[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
 	attr[0]->data[0] = 0xF0; attr[0]->data[1] = 0x0B;
 	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
 
@@ -1684,7 +1684,7 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	int ret;
 
 	attrs = dusb_ca_new_array(handle, size);
-	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
+	attrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = oldname->type;
 
@@ -1705,7 +1705,7 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 	int ret;
 
 	srcattrs = dusb_ca_new_array(handle, 1);
-	srcattrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE2, 4);
+	srcattrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
 	srcattrs[0]->data[0] = 0xF0; srcattrs[0]->data[1] = 0x07;
 	srcattrs[0]->data[2] = 0x00; srcattrs[0]->data[3] = vr->type;
 

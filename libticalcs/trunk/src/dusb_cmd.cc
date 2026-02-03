@@ -1713,7 +1713,8 @@ int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 		j += src_attrs[i]->size;
 	}
 
-	pkt->data[j++] = 0x01; /* ??? */
+	// Bypass file protection
+	pkt->data[j++] = DUSB_MODIF_VAR_PROT_IGNORE;
 
 	if (strlen(dst_folder))
 	{
