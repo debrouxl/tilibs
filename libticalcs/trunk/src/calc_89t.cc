@@ -468,9 +468,11 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 		ret = dusb_cmd_r_var_header(handle, fldname, varname, attrs);
 		if (!ret)
 		{
-			ret = dusb_cmd_r_var_content(handle, NULL, &data);
+			uint32_t data_size = 0;
+			ret = dusb_cmd_r_var_content(handle, &data_size, &data);
 			if (!ret)
 			{
+				vr->size = data_size;
 				content->model = handle->model;
 				tifiles_comment_set_single_sn(content->comment, sizeof(content->comment));
 				content->num_entries = 1;
@@ -478,9 +480,13 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 				content->entries = tifiles_ve_create_array(1);
 				ve = content->entries[0] = tifiles_ve_create();
 				memcpy(ve, vr, sizeof(VarEntry));
+				ve->size = data_size;
 
 				ve->data = (uint8_t *)tifiles_ve_alloc_data(ve->size);
-				memcpy(ve->data, data, ve->size);
+				if (ve->data && data && ve->size)
+				{
+					memcpy(ve->data, data, ve->size);
+				}
 				g_free(data);
 			}
 		}

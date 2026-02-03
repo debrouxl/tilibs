@@ -880,6 +880,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 			ret = RECV_VAR(handle, &ve->size, &ve->type, ve->name);
 			if (!ret)
 			{
+				vr->size = ve->size;
 				ret = SEND_ACK(handle);
 				if (!ret)
 				{
