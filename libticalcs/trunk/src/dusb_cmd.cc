@@ -132,6 +132,30 @@ const char* TICALL dusb_cmd_param_type2name(uint16_t id)
 	return "unknown: not listed";
 }
 
+// This should depend on the "Owner PID" field from the file header; it works fine that way as well, though.
+DUSBCATypeModelMagicByte TICALL dusb_ca_type_model_magic_byte(CalcModel model)
+{
+	switch (model)
+	{
+	case CALC_TI83PCE_USB:
+	case CALC_TI84PCE_USB:
+	case CALC_TI82AEP_USB:
+		return DUSBCATYPEMAGIC_TIEZ80;
+
+	case CALC_TI89T_USB:
+		return DUSBCATYPEMAGIC_89T;
+
+	case CALC_TI84P_USB:
+	case CALC_TI84PC_USB: // Tests show that the 84+CSE needs to use the same value as the monochrome 84+ family.
+	case CALC_TI82A_USB:
+	case CALC_TI84PT_USB:
+		return DUSBCATYPEMAGIC_84P;
+
+	default: // Shouldn't happen, but anyway, let's keep the historical value...
+		return DUSBCATYPEMAGIC_FALLBACK;
+	}
+}
+
 // Helpers
 
 DUSBCalcParam* TICALL dusb_cp_new(CalcHandle * handle, uint16_t id, uint16_t size)

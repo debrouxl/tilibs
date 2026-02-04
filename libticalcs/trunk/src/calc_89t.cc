@@ -350,8 +350,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 		attrs = dusb_ca_new_array(handle, nattrs);
 		attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
-		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
-		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = entry->type;
+		dusb_ca_type_set_bytes(attrs[0], DUSBCATYPEMAGIC_89T, entry->type);
 		attrs[1] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
 		attrs[1]->data[0] = entry->attr == ATTRB_ARCHIVED ? 1 : 0;
 		attrs[2] = dusb_ca_new(handle, DUSB_AID_VAR_VERSION, 4);
@@ -457,8 +456,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
-	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
-	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
+	dusb_ca_type_set_bytes(attrs[0], DUSBCATYPEMAGIC_89T, vr->type);
 
 	ret = dusb_cmd_s_var_request(handle, vr->folder, vr->name, naids, aids, nattrs, CA(attrs));
 	dusb_ca_del_array(handle, attrs, nattrs);
@@ -525,8 +523,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 		attrs = dusb_ca_new_array(handle, nattrs);
 		attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
-		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
-		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ptr->data_type;
+		dusb_ca_type_set_bytes(attrs[0], DUSBCATYPEMAGIC_89T, ptr->data_type);
 		attrs[1] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
 		attrs[1]->data[0] = 0;
 		attrs[2] = dusb_ca_new(handle, DUSB_AID_VAR_VERSION, 4);
@@ -581,8 +578,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
-	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
-	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
+	dusb_ca_type_set_bytes(attrs[0], DUSBCATYPEMAGIC_89T, vr->type);
 
 	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
 	dusb_ca_del_array(handle, attrs, nattrs);
@@ -989,8 +985,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	attr = dusb_ca_new_array(handle, size);
 	attr[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
-	attr[0]->data[0] = 0xF0; attr[0]->data[1] = 0x0C;
-	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
+	dusb_ca_type_set_bytes(attr[0], DUSBCATYPEMAGIC_89T, vr->type);
 
 	ret = dusb_cmd_s_var_delete(handle, vr->folder, vr->name, size, CA(attr));
 	dusb_ca_del_array(handle, attr, size);
@@ -1021,8 +1016,7 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 
 	attrs = dusb_ca_new_array(handle, size);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
-	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
-	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = oldname->type;
+	dusb_ca_type_set_bytes(attrs[0], DUSBCATYPEMAGIC_89T, oldname->type);
 
 	ret = dusb_cmd_s_var_modify(handle, oldname->folder, oldname->name, 1, CA(attrs), newname->folder, newname->name, 0, NULL);
 	dusb_ca_del_array(handle, attrs, size);
@@ -1048,8 +1042,7 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 
 	srcattrs = dusb_ca_new_array(handle, 1);
 	srcattrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
-	srcattrs[0]->data[0] = 0xF0; srcattrs[0]->data[1] = 0x0C;
-	srcattrs[0]->data[2] = 0x00; srcattrs[0]->data[3] = vr->type;
+	dusb_ca_type_set_bytes(srcattrs[0], DUSBCATYPEMAGIC_89T, vr->type);
 
 	dstattrs = dusb_ca_new_array(handle, 2);
 	dstattrs[0] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
@@ -1086,8 +1079,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	// send empty expression in specified folder
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
-	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
-	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = 0x00;
+	dusb_ca_type_set_bytes(attrs[0], DUSBCATYPEMAGIC_89T, 0x00);
 	attrs[1] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
 	attrs[1]->data[0] = 0;
 	attrs[2] = dusb_ca_new(handle, DUSB_AID_VAR_VERSION, 4);
