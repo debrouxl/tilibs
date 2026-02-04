@@ -38,28 +38,28 @@ const char * TICALL ticonv_model_to_string(CalcModel model)
 	switch (model)
 	{
 	case CALC_NONE:  return "none";
-	case CALC_TI73:  return "TI73";
-	case CALC_TI82:  return "TI82";
-	case CALC_TI83:  return "TI83";
-	case CALC_TI83P: return "TI83+";
-	case CALC_TI84P: return "TI84+";
-	case CALC_TI85:  return "TI85";
-	case CALC_TI86:  return "TI86";
-	case CALC_TI89:  return "TI89";
-	case CALC_TI89T: return "TI89T";
-	case CALC_TI92:  return "TI92";
-	case CALC_TI92P: return "TI92+";
-	case CALC_V200:  return "V200";
-	case CALC_TI84P_USB: return "TI84+ USB";
-	case CALC_TI89T_USB: return "TI89T USB";
-	case CALC_NSPIRE: return "Nspire";
-	case CALC_TI80: return "TI80";
-	case CALC_TI84PC: return "TI84+CSE";
-	case CALC_TI84PC_USB: return "TI84+CSE USB";
-	case CALC_TI83PCE_USB: return "TI83PCE USB";
-	case CALC_TI84PCE_USB: return "TI84+CE USB";
-	case CALC_TI82A_USB: return "TI82A USB";
-	case CALC_TI84PT_USB: return "TI84+T USB";
+	case CALC_TI73:  return "TI-73";
+	case CALC_TI82:  return "TI-82";
+	case CALC_TI83:  return "TI-83";
+	case CALC_TI83P: return "TI-83 Plus";
+	case CALC_TI84P: return "TI-84 Plus";
+	case CALC_TI85:  return "TI-85";
+	case CALC_TI86:  return "TI-86";
+	case CALC_TI89:  return "TI-89";
+	case CALC_TI89T: return "TI-89 Titanium";
+	case CALC_TI92:  return "TI-92";
+	case CALC_TI92P: return "TI-92 Plus";
+	case CALC_V200:  return "TI Voyage 200";
+	case CALC_TI84P_USB: return "TI-84 Plus USB";
+	case CALC_TI89T_USB: return "TI-89 Titanium USB";
+	case CALC_NSPIRE: return "TI-Nspire";
+	case CALC_TI80: return "TI-80";
+	case CALC_TI84PC: return "TI-84 Plus C SE";
+	case CALC_TI84PC_USB: return "TI-84 Plus C SE USB";
+	case CALC_TI83PCE_USB: return "TI-83 Premium CE";
+	case CALC_TI84PCE_USB: return "TI-84 Plus CE";
+	case CALC_TI82A_USB: return "TI-82 Advanced";
+	case CALC_TI84PT_USB: return "TI-84 Plus T";
 	default: return "unknown";
 	}
 }
@@ -84,6 +84,7 @@ CalcModel TICALL ticonv_string_to_model(const char *str)
 		        )
 			return CALC_TI83;
 		else if (   !g_ascii_strcasecmp(str, "TI-83+")
+		         || !g_ascii_strcasecmp(str, "TI-83 Plus")
 		         || !g_ascii_strcasecmp(str, "TI-83p")
 		         || !g_ascii_strcasecmp(str, "TI83+")
 		         || !g_ascii_strcasecmp(str, "TI83p")
@@ -92,6 +93,7 @@ CalcModel TICALL ticonv_string_to_model(const char *str)
 		        )
 			return CALC_TI83P;
 		else if (   !g_ascii_strcasecmp(str, "TI-84+")
+		         || !g_ascii_strcasecmp(str, "TI-84 Plus")
 		         || !g_ascii_strcasecmp(str, "TI-84p")
 		         || !g_ascii_strcasecmp(str, "TI84+")
 		         || !g_ascii_strcasecmp(str, "TI84p")
@@ -115,12 +117,14 @@ CalcModel TICALL ticonv_string_to_model(const char *str)
 		        )
 			return CALC_TI89;
 		else if (   !g_ascii_strcasecmp(str, "TI-89T")
+		         || !g_ascii_strcasecmp(str, "TI-89 Titanium")
 		         || !g_ascii_strcasecmp(str, "TI89T")
 		         || !g_ascii_strcasecmp(str, "89T")
 		        )
 			return CALC_TI89T;
 		else if (   !g_ascii_strcasecmp(str, "TI-92")
 		         || !g_ascii_strcasecmp(str, "TI-92II")
+		         || !g_ascii_strcasecmp(str, "TI-92 II")
 		         || !g_ascii_strcasecmp(str, "TI92")
 		         || !g_ascii_strcasecmp(str, "TI92II")
 		         || !g_ascii_strcasecmp(str, "92")
@@ -128,6 +132,7 @@ CalcModel TICALL ticonv_string_to_model(const char *str)
 		        )
 			return CALC_TI92;
 		else if (   !g_ascii_strcasecmp(str, "TI-92+")
+		         || !g_ascii_strcasecmp(str, "TI-92 Plus")
 		         || !g_ascii_strcasecmp(str, "TI-92P")
 		         || !g_ascii_strcasecmp(str, "TI92+")
 		         || !g_ascii_strcasecmp(str, "TI92P")
@@ -136,11 +141,15 @@ CalcModel TICALL ticonv_string_to_model(const char *str)
 		        )
 			return CALC_TI92P;
 		else if (   !g_ascii_strcasecmp(str, "TI-V200")
+		         || !g_ascii_strcasecmp(str, "TI Voyage 200")
+		         || !g_ascii_strcasecmp(str, "TI Voyage200")
 		         || !g_ascii_strcasecmp(str, "TIV200")
 		         || !g_ascii_strcasecmp(str, "V200")
+		         || !g_ascii_strcasecmp(str, "Voyage200")
 		        )
 			return CALC_V200;
 		else if (   !g_ascii_strcasecmp(str, "TI-84+ USB")
+		         || !g_ascii_strcasecmp(str, "TI-84 Plus USB")
 		         || !g_ascii_strcasecmp(str, "TI-84p USB")
 		         || !g_ascii_strcasecmp(str, "TI84+ USB")
 		         || !g_ascii_strcasecmp(str, "TI84p USB")
@@ -149,6 +158,7 @@ CalcModel TICALL ticonv_string_to_model(const char *str)
 		        )
 			return CALC_TI84P_USB;
 		else if (   !g_ascii_strcasecmp(str, "TI-89T USB")
+		         || !g_ascii_strcasecmp(str, "TI-89 Titanium USB")
 		         || !g_ascii_strcasecmp(str, "TI89T USB")
 		         || !g_ascii_strcasecmp(str, "89T USB")
 		        )
@@ -165,6 +175,8 @@ CalcModel TICALL ticonv_string_to_model(const char *str)
 		        )
 			return CALC_TI80;
 		else if (   !g_ascii_strcasecmp(str, "TI-84+CSE")
+		         || !g_ascii_strcasecmp(str, "TI-84 Plus C SE")
+		         || !g_ascii_strcasecmp(str, "TI-84 Plus CSE")
 		         || !g_ascii_strcasecmp(str, "TI-84PCSE")
 		         || !g_ascii_strcasecmp(str, "TI84+CSE")
 		         || !g_ascii_strcasecmp(str, "TI84PCSE")
@@ -173,6 +185,9 @@ CalcModel TICALL ticonv_string_to_model(const char *str)
 		        )
 			return CALC_TI84PC;
 		else if (   !g_ascii_strcasecmp(str, "TI-84+CSE USB")
+		         || !g_ascii_strcasecmp(str, "TI-84 Plus C SE USB")
+		         || !g_ascii_strcasecmp(str, "TI-84 Plus CSE USB")
+		         || !g_ascii_strcasecmp(str, "TI-84PCSE USB")
 		         || !g_ascii_strcasecmp(str, "TI-84PCSE USB")
 		         || !g_ascii_strcasecmp(str, "TI84+CSE USB")
 		         || !g_ascii_strcasecmp(str, "TI84PCSE USB")
