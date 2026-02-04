@@ -219,6 +219,16 @@ typedef struct
 	uint8_t*	data;
 } DUSBCalcAttr;
 
+// Enumerations
+typedef enum
+{
+	DUSBCATYPEMAGIC_FALLBACK = 0x07,
+	DUSBCATYPEMAGIC_84P = 0x0B,
+	DUSBCATYPEMAGIC_89T = 0x0C,
+	DUSBCATYPEMAGIC_TIEZ80 = 0x0F,
+} DUSBCATypeModelMagicByte;
+
+
 // Type to string
 TIEXPORT3 const char* TICALL dusb_cmd_param_type2name(uint16_t id);
 
@@ -248,6 +258,15 @@ TIEXPORT3 void *           TICALL dusb_ca_alloc_data(CalcHandle * handle, uint16
 TIEXPORT3 DUSBCalcAttr  *  TICALL dusb_ca_realloc_data(CalcHandle * handle, DUSBCalcAttr * cp, uint16_t size);
 TIEXPORT3 void             TICALL dusb_ca_free_data(CalcHandle * handle, void * data);
 TIEXPORT3 void             TICALL dusb_ca_free_array_data(CalcHandle * handle, DUSBCalcAttr * attrs, unsigned int size);
+
+TIEXPORT3 DUSBCATypeModelMagicByte TICALL dusb_ca_type_model_magic_byte(CalcModel model);
+static inline void dusb_ca_type_set_bytes(const DUSBCalcAttr* attr, DUSBCATypeModelMagicByte magic_byte, uint8_t var_type)
+{
+	attr->data[0] = 0xF0;
+	attr->data[1] = (uint8_t)magic_byte;
+	attr->data[2] = 0x00;
+	attr->data[3] = var_type;
+}
 
 // Command wrappers
 TIEXPORT3 int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, const DUSBModeSet mode);

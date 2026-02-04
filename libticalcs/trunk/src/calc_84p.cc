@@ -54,6 +54,11 @@
 #define TI84PC_ROWS 240
 #define TI84PC_COLS 320
 
+static inline void dusb_ca_type_set_bytes_from_model(const DUSBCalcAttr* attr, CalcModel model, uint8_t var_type)
+{
+	dusb_ca_type_set_bytes(attr, dusb_ca_type_model_magic_byte(model), var_type);
+}
+
 static int		is_ready	(CalcHandle* handle)
 {
 	int ret;
@@ -352,8 +357,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
-	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
-	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI84p_BKUP;
+	dusb_ca_type_set_bytes_from_model(attrs[0], handle->model, TI84p_BKUP);
 
 	attrs[1] = dusb_ca_new(handle, DUSB_AID_VAR_VERSION, 4);
 	attrs[1]->data[0] = 0x00; attrs[1]->data[1] = 0x00;
@@ -438,28 +442,6 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	return ret;
 }
 
-// Normally, this should depend on the "Owner PID" field from the file header.
-// But this way works fine too.
-static uint8_t get_var_type_attr_header_byte(CalcModel model)
-{
-	switch (model)
-	{
-	case CALC_TI83PCE_USB:
-	case CALC_TI84PCE_USB:
-	case CALC_TI82AEP_USB:
-		return 0x0F;
-
-	case CALC_TI84P_USB:
-	case CALC_TI82A_USB:
-	case CALC_TI84PT_USB:
-	case CALC_TI84PC_USB:
-		return 0x0B;
-
-	default:
-		return 0x07;
-	}
-}
-
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	unsigned int i;
@@ -489,8 +471,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 		attrs = dusb_ca_new_array(handle, nattrs);
 		attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
-		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = get_var_type_attr_header_byte(handle->model);
-		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = entry->type;
+		dusb_ca_type_set_bytes_from_model(attrs[0], handle->model, entry->type);
 		attrs[1] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
 		attrs[1]->data[0] = entry->attr == ATTRB_ARCHIVED ? 1 : 0;
 		attrs[2] = dusb_ca_new(handle, DUSB_AID_VAR_VERSION, 4);
@@ -555,8 +536,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
-	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
-	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
+	dusb_ca_type_set_bytes_from_model(attrs[0], handle->model, vr->type);
 
 	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
 	dusb_ca_del_array(handle, attrs, nattrs);
@@ -690,8 +670,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
-	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
-	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ptr->data_type;
+	dusb_ca_type_set_bytes_from_model(attrs[0], handle->model, ptr->data_type);
 	attrs[1] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
 	attrs[1]->data[0] = 0;
 
@@ -756,8 +735,7 @@ static int		send_flash_834pce	(CalcHandle* handle, FlashContent* content)
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_VAR_TYPE, 4);
-	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0F;
-	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ptr->data_type;
+	dusb_ca_type_set_bytes_from_model(attrs[0], handle->model, ptr->data_type);
 	attrs[1] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
 	attrs[1]->data[0] = 1;
 
@@ -803,8 +781,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
-	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
-	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
+	dusb_ca_type_set_bytes_from_model(attrs[0], handle->model, vr->type);
 
 	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
 	dusb_ca_del_array(handle, attrs, nattrs);
@@ -885,8 +862,7 @@ static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarReq
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
-	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0F;
-	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
+	dusb_ca_type_set_bytes_from_model(attrs[0], handle->model, vr->type);
 
 	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
 	dusb_ca_del_array(handle, attrs, nattrs);
@@ -1265,8 +1241,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 
 	attrs = dusb_ca_new_array(handle, nattrs);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
-	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
-	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI83p_IDLIST;
+	dusb_ca_type_set_bytes_from_model(attrs[0], handle->model, TI83p_IDLIST);
 
 	ret = dusb_cmd_s_var_request(handle, "", "IDList", naids, aids, nattrs, CA(attrs));
 	dusb_ca_del_array(handle, attrs, nattrs);
@@ -1681,8 +1656,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	attr = dusb_ca_new_array(handle, size);
 	attr[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
-	attr[0]->data[0] = 0xF0; attr[0]->data[1] = 0x0B;
-	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
+	dusb_ca_type_set_bytes_from_model(attr[0], handle->model, vr->type);
 
 	ret = dusb_cmd_s_var_delete(handle, "", vr->name, size, CA(attr));
 	dusb_ca_del_array(handle, attr, size);
@@ -1702,8 +1676,7 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 
 	attrs = dusb_ca_new_array(handle, size);
 	attrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
-	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
-	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = oldname->type;
+	dusb_ca_type_set_bytes_from_model(attrs[0], handle->model, oldname->type);
 
 	ret = dusb_cmd_s_var_modify(handle, "", oldname->name, 1, CA(attrs), "", newname->name, 0, NULL);
 	dusb_ca_del_array(handle, attrs, size);
@@ -1723,8 +1696,7 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 
 	srcattrs = dusb_ca_new_array(handle, 1);
 	srcattrs[0] = dusb_ca_new(handle, DUSB_AID_DATATYPE, 4);
-	srcattrs[0]->data[0] = 0xF0; srcattrs[0]->data[1] = 0x07;
-	srcattrs[0]->data[2] = 0x00; srcattrs[0]->data[3] = vr->type;
+	dusb_ca_type_set_bytes_from_model(srcattrs[0], handle->model, vr->type);
 
 	dstattrs = dusb_ca_new_array(handle, 1);
 	dstattrs[0] = dusb_ca_new(handle, DUSB_AID_ARCHIVED, 1);
