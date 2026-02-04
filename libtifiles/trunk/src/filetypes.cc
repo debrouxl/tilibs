@@ -1605,6 +1605,14 @@ FileClass TICALL tifiles_file_get_class(const char *filename)
 	{
 		return TIFILE_BACKUP;
 	}
+	else if (tifiles_file_is_os(filename))
+	{
+		return TIFILE_OS;
+	}
+	else if (tifiles_file_is_app(filename))
+	{
+		return TIFILE_APP;
+	}
 	else if (tifiles_file_is_flash(filename))
 	{
 		return TIFILE_FLASH;
