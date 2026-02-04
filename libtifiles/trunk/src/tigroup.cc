@@ -76,7 +76,7 @@ TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type, CalcMod
 			entry->filename = g_path_get_basename(filename);
 			entry->type = type;
 
-			if (type == TIFILE_FLASH)
+			if (type == TIFILE_FLASH || type == TIFILE_APP)
 			{
 				entry->content.flash = tifiles_content_create_flash(model);
 			}
@@ -118,7 +118,7 @@ int TICALL tifiles_te_delete(TigEntry* entry)
 	{
 		g_free(entry->filename);
 
-		if (entry->type == TIFILE_FLASH)
+		if (entry->type == TIFILE_FLASH || entry->type == TIFILE_APP)
 		{
 			tifiles_content_delete_flash(entry->content.flash);
 		}
@@ -156,7 +156,7 @@ int TICALL tifiles_te_display(TigEntry* entry)
 	tifiles_info("Filename:          %s", entry->filename);
 	tifiles_info("File class:        %04X (%u)", entry->type, entry->type);
 
-	if (entry->type == TIFILE_FLASH)
+	if (entry->type == TIFILE_FLASH || entry->type == TIFILE_APP)
 	{
 		tifiles_file_display_flash(entry->content.flash);
 	}
@@ -283,7 +283,7 @@ int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
 		return 0;
 	}
 
-	if (te->type == TIFILE_FLASH)
+	if (te->type == TIFILE_FLASH || te->type == TIFILE_APP)
 	{
 		int n = content->n_apps;
 
@@ -347,7 +347,7 @@ int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 		}
 	}
 
-	for (j = 0; j < content->n_apps && (te->type & TIFILE_FLASH); j++)
+	for (j = 0; j < content->n_apps && (te->type & (TIFILE_FLASH | TIFILE_APP); j++)
 	{
 		TigEntry *s = content->app_entries[i];
 
@@ -461,7 +461,7 @@ int TICALL tifiles_tigroup_add_file(const char *src_filename, const char *dst_fi
 		ret = ERR_BAD_FILE;
 		goto ttaf;
 	}
-	if (type == TIFILE_FLASH)
+	if (type == TIFILE_FLASH || type == TIFILE_APP)
 	{ 
 		ret = tifiles_file_read_flash(src_filename, te->content.flash);
 		if (ret)
