@@ -336,24 +336,32 @@ int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 	tifiles_te_display(te);
 #endif
 
-	// Search for entry
-	for (i = 0; i < content->n_vars && (te->type & TIFILE_REGULAR); i++)
+	// Search for entry.
+	i = content->n_vars;
+	j = content->n_apps;
+	if (te->type & TIFILE_REGULAR)
 	{
-		TigEntry *s = content->var_entries[i];
-
-		if (!strcmp(s->filename, te->filename))
+		for (i = 0; i < content->n_vars; i++)
 		{
-			break;
+			const TigEntry *s = content->var_entries[i];
+
+			if (!strcmp(s->filename, te->filename))
+			{
+				break;
+			}
 		}
 	}
 
-	for (j = 0; j < content->n_apps && (te->type & (TIFILE_FLASH | TIFILE_APP); j++)
+	if (te->type & (TIFILE_FLASH | TIFILE_APP))
 	{
-		TigEntry *s = content->app_entries[i];
-
-		if (!strcmp(s->filename, te->filename))
+		for (j = 0; j < content->n_apps; j++)
 		{
-			break;
+			const TigEntry *s = content->app_entries[j];
+
+			if (!strcmp(s->filename, te->filename))
+			{
+				break;
+			}
 		}
 	}
 
