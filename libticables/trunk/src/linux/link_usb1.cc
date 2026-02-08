@@ -250,7 +250,11 @@ static int tigl_open(int id, libusb_device_handle ** udh)
 {
 	int ret;
 
-	tigl_enum();
+	ret = tigl_enum();
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (tigl_devices[id].dev == NULL)
 	{
