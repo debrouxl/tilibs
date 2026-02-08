@@ -636,7 +636,7 @@ int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **
 			ve.name[sizeof(ve.name) - 1] = 0;
 			ve.type = ptr->data_type;
 			te->filename = tifiles_build_filename(model, &ve);
-			te->type = TIFILE_FLASH;
+			te->type = (ptr->data_type == TI83p_APPL ? TIFILE_APP : TIFILE_FLASH); // all the *_APPL are 0x24...
 			te->content.flash = tifiles_content_dup_flash(src_contents2[i]);
 			tifiles_content_add_te(content, te);
 		}
