@@ -1609,6 +1609,51 @@ int TICALL ticalcs_calc_del_fld(CalcHandle* handle, VarRequest* vr)
 	return ret;
 }
 
+/**
+ * ticalcs_calc_recv_os:
+ * @handle: a previously allocated handle
+ * @content: content to receive
+ *
+ * Receive a FLASH os.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+int TICALL ticalcs_calc_recv_os(CalcHandle* handle, FlashContent* content)
+{
+	const CalcFncts *calc;
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_FLASHCONTENT(content);
+
+	calc = handle->calc;
+	VALIDATE_CALCFNCTS(calc);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	ticalcs_info("%s", _("Receiving FLASH os:"));
+	handle->busy = 1;
+	if (calc->fncts.recv_os)
+	{
+		CalcEventData event;
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_OS);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
+		if (!ret)
+		{
+			ret = calc->fncts.recv_os(handle, content);
+		}
+		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_OS);
+		event.data.ptrval = (void *)content;
+		ret = ticalcs_event_send(handle, &event);
+	}
+	handle->busy = 0;
+
+	return ret;
+}
+
 // ---
 
 /**
@@ -2201,6 +2246,40 @@ int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* filename)
 	} while (0);
 
 	// content is not destroyed by the functions behind ticalcs_calc_recv_cert() if an error occurs.
+	tifiles_content_delete_flash(content);
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_recv_os2:
+ * @handle: a previously allocated handle
+ * @filename: name of file
+ *
+ * Request OS.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+int TICALL ticalcs_calc_recv_os2(CalcHandle* handle, const char* filename)
+{
+	FlashContent *content = NULL;
+	int ret;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	content = tifiles_content_create_flash(handle->model);
+	ret = ticalcs_calc_recv_os(handle, content);
+	if (!ret)
+	{
+		ret = tifiles_file_write_flash(filename, content);
+	}
+
+	// content is not destroyed by the functions behind ticalcs_calc_recv_os2() if an error occurs.
 	tifiles_content_delete_flash(content);
 
 	return ret;

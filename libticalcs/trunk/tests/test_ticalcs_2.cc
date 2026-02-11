@@ -1481,6 +1481,23 @@ static int del_folder(CalcHandle * h, int, char *)
 	return ret;
 }
 
+static int recv_os(CalcHandle * h, int, char *)
+{
+	int ret;
+	char filename[FILENAME_DATA_SIZE + 1];
+	VarEntry ve;
+
+	ret = read_filename(filename, " for OS");
+	if (ret < 1)
+	{
+		return 1;
+	}
+
+	ret = ticalcs_calc_recv_os2(h, filename);
+
+	return ret;
+}
+
 static int buffer_set_data(CalcHandle * h, int, char * input)
 {
 	int ret;
@@ -2550,7 +2567,6 @@ static menu_entry fnct_menu[] =
 	DEFINE_MENU_ENTRY("FNCT Do a screenshot", recv_screen),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("FNCT Get directory listing", get_dirlist),
-	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("FNCT Get available memory", get_memfree),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("FNCT Send backup", send_backup),
@@ -2564,95 +2580,96 @@ static menu_entry fnct_menu[] =
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("FNCT Send app", send_app),                                              // 20
 	DEFINE_MENU_ENTRY("FNCT Recv app", recv_app),
+	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("FNCT Send OS", send_os),
+	DEFINE_MENU_ENTRY("FNCT Recv OS", recv_os),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("FNCT Get ID-LIST", recv_idlist),
 	NULL_ENTRY,
-	DEFINE_MENU_ENTRY("FNCT Dump ROM", dump_rom),
+	DEFINE_MENU_ENTRY("FNCT Dump ROM", dump_rom),                                              // 25
 	NULL_ENTRY,
-	DEFINE_MENU_ENTRY("FNCT Set clock", set_clock),                                            // 25
+	DEFINE_MENU_ENTRY("FNCT Set clock", set_clock),
 	DEFINE_MENU_ENTRY("FNCT Get clock", get_clock),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("FNCT Delete var", del_var),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("FNCT New folder", new_folder),
+	DEFINE_MENU_ENTRY("FNCT Del folder", del_folder),                                          // 30
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("FNCT Get version", get_version),
 	NULL_ENTRY,
-	DEFINE_MENU_ENTRY("FNCT Send certificate stuff", send_cert),                               // 30
+	DEFINE_MENU_ENTRY("FNCT Send certificate stuff", send_cert),
 	DEFINE_MENU_ENTRY("FNCT Recv certificate stuff", recv_cert),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("FNCT Rename var", rename_var),
 	// These three functions wrap ticalcs_calc_change_attr()
-	DEFINE_MENU_ENTRY("FNCT Archive var", archive_var),
+	DEFINE_MENU_ENTRY("FNCT Archive var", archive_var),                                        // 35
 	DEFINE_MENU_ENTRY("FNCT Unarchive var", unarchive_var),
-	DEFINE_MENU_ENTRY("FNCT Lock var", lock_var),                                              // 35
+	DEFINE_MENU_ENTRY("FNCT Lock var", lock_var),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("FNCT Send all variables backup", send_all_vars_backup),
 	DEFINE_MENU_ENTRY("FNCT Recv all variables backup", recv_all_vars_backup),
 	NULL_ENTRY,
-	DEFINE_MENU_ENTRY("FNCT Control lab equipment", control_lab_equipment),
+	DEFINE_MENU_ENTRY("FNCT Control lab equipment", control_lab_equipment),                    // 40
 	DEFINE_MENU_ENTRY("FNCT Send({...}) (send list data)", send_lab_equipment_data),
-	DEFINE_MENU_ENTRY("FNCT Get (get list data)", get_lab_equipment_data),                     // 40
+	DEFINE_MENU_ENTRY("FNCT Get (get list data)", get_lab_equipment_data),
 	DEFINE_MENU_ENTRY("FNCT Send raw lab equipment data", send_lab_equipment_data_raw),
 	DEFINE_MENU_ENTRY("FNCT Get raw lab equipment data", get_lab_equipment_data_raw),
 	NULL_ENTRY,
-	DEFINE_MENU_ENTRY("FNCT Del folder", del_folder),
-	NULL_ENTRY,
 	// Front-ends for raw packet sending / receiving / manipulation functions.
-	DEFINE_MENU_ENTRY("BUF  Enter data bytes into packet buffer", buffer_set_data),
-	DEFINE_MENU_ENTRY("BUF  Dump data bytes from packet buffer", buffer_get_data),             // 45
+	DEFINE_MENU_ENTRY("BUF  Enter data bytes into packet buffer", buffer_set_data),            // 45
+	DEFINE_MENU_ENTRY("BUF  Dump data bytes from packet buffer", buffer_get_data),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("BUF  Peek data in the packet buffer", buffer_peek_data),
 	DEFINE_MENU_ENTRY("BUF  Poke data in the packet buffer", buffer_poke_data),
 	DEFINE_MENU_ENTRY("BUF  Clear packet buffer", buffer_clear_data),
 	NULL_ENTRY,
-	DEFINE_MENU_ENTRY("BUF  MOV register/value to register", reg_mov),
-	DEFINE_MENU_ENTRY("BUF  ADD register/value to register", reg_add),                         // 50
+	DEFINE_MENU_ENTRY("BUF  MOV register/value to register", reg_mov),                         // 50
+	DEFINE_MENU_ENTRY("BUF  ADD register/value to register", reg_add),
 	DEFINE_MENU_ENTRY("BUF  SUB register/value to register", reg_sub),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("BUF  AND register/value to register", reg_and),
 	DEFINE_MENU_ENTRY("BUF  OR register/value to register", reg_or),
-	DEFINE_MENU_ENTRY("BUF  XOR register/value to register", reg_xor),
+	DEFINE_MENU_ENTRY("BUF  XOR register/value to register", reg_xor),                         // 55
 	NULL_ENTRY,
-	DEFINE_MENU_ENTRY("RAW  Send raw data bytes (interactive)", raw_send_data),                // 55
+	DEFINE_MENU_ENTRY("RAW  Send raw data bytes (interactive)", raw_send_data),
 	DEFINE_MENU_ENTRY("RAW  Send raw data bytes from packet buffer", raw_send_data_from_buffer),
 	DEFINE_MENU_ENTRY("RAW  Recv raw data bytes", raw_recv_data),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("DBUS Send packet", dbus_send_pkt),
-	DEFINE_MENU_ENTRY("DBUS Recv header", dbus_recv_header),
-	DEFINE_MENU_ENTRY("DBUS Recv data", dbus_recv_data),                                       // 60
+	DEFINE_MENU_ENTRY("DBUS Recv header", dbus_recv_header),                                   // 60
+	DEFINE_MENU_ENTRY("DBUS Recv data", dbus_recv_data),
 	DEFINE_MENU_ENTRY("DBUS Recv header+data", dbus_recv),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("DUSB Send raw packet", dusb_send_rpkt),
 	DEFINE_MENU_ENTRY("DUSB Recv raw packet", dusb_recv_rpkt),
 	NULL_ENTRY,
-	DEFINE_MENU_ENTRY("NSP  Send raw packet", nsp_send_rpkt),
-	DEFINE_MENU_ENTRY("NSP  Recv raw packet", nsp_recv_rpkt),                                  // 65
+	DEFINE_MENU_ENTRY("NSP  Send raw packet", nsp_send_rpkt),                                  // 65
+	DEFINE_MENU_ENTRY("NSP  Recv raw packet", nsp_recv_rpkt),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("RDMP Send ROM dumper", rdmp_send_dumper),
 	DEFINE_MENU_ENTRY("RDMP Check whether ready", rdmp_is_ready),
 	DEFINE_MENU_ENTRY("RDMP Read ROM dump", rdmp_read_dump),
 	NULL_ENTRY,
 	// Front-ends for dissection functions.
-	DEFINE_MENU_ENTRY("DIS  Dissect DBUS raw packet", dbus_dissect_pkt),
-	DEFINE_MENU_ENTRY("DIS  Dissect DUSB raw packet", dusb_dissect_rpkt),                      // 70
+	DEFINE_MENU_ENTRY("DIS  Dissect DBUS raw packet", dbus_dissect_pkt),                       // 70
+	DEFINE_MENU_ENTRY("DIS  Dissect DUSB raw packet", dusb_dissect_rpkt),
 	DEFINE_MENU_ENTRY("DIS  Dissect NSP raw packet", nsp_dissect_rpkt),
 	NULL_ENTRY,
 	// Front-ends for protocol-specific capabilities.
 	DEFINE_MENU_ENTRY("DBUS 83+ Memory dump", ti83p_dump),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("DBUS 83+ Enable key echo", ti83p_eke),
-	DEFINE_MENU_ENTRY("DBUS 83+ Disable key echo", ti83p_dke),
+	DEFINE_MENU_ENTRY("DBUS 83+ Disable key echo", ti83p_dke),                                 // 75
 	NULL_ENTRY,
-	DEFINE_MENU_ENTRY("DBUS 83+ Enable lockdown", ti83p_eld),                                  // 75
+	DEFINE_MENU_ENTRY("DBUS 83+ Enable lockdown", ti83p_eld),
 	DEFINE_MENU_ENTRY("DBUS 83+ Disable lockdown", ti83p_dld),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("DBUS 83+ Get standard calculator ID", ti83p_gid),
 	DEFINE_MENU_ENTRY("DBUS 83+ Get some 32-byte memory area", ti83p_rid),
-	DEFINE_MENU_ENTRY("DBUS 83+ Set some 32-byte memory area", ti83p_sid),
+	DEFINE_MENU_ENTRY("DBUS 83+ Set some 32-byte memory area", ti83p_sid),                     // 80
 	NULL_ENTRY,
-	DEFINE_MENU_ENTRY("DUSB Get parameter IDs", dusb_get_param_ids),                           // 80
+	DEFINE_MENU_ENTRY("DUSB Get parameter IDs", dusb_get_param_ids),
 	DEFINE_MENU_ENTRY("DUSB Set parameter ID", dusb_set_param_id),
 	NULL_ENTRY,
 	DEFINE_MENU_ENTRY("NSP  Send key (specific and generic)", nsp_send_key),
