@@ -320,6 +320,7 @@ typedef enum
 	FNCT_SEND_LAB_EQUIPMENT_DATA,
 	FNCT_GET_LAB_EQUIPMENT_DATA,
 	FNCT_DEL_FOLDER,
+	FNCT_RECV_OS,
 	CALC_FNCT_LAST // Keep this one last
 } CalcFnctsIdx;
 
@@ -775,14 +776,16 @@ typedef struct
  * @execute: remotely execute a program or application
  * @recv_screen: request a screendump
  * @get_dirlist: request a listing of variables, folders (if any) and apps (if any)
+ * @get_memfree: request information about available memory
  * @send_backup: send a backup
  * @recv_backup: request a backup
  * @send_var: send a variable (silent mode)
  * @recv_var: request a variable silent mode)
  * @send_var_ns: send a variable (non-silent mode)
  * @recv_var_ns: receive a variable (non-silent mode)
- * @send_flash: send a FLASH app/os
- * @recv_flash: request a FLASH app/os
+ * @send_app: send a FLASH app
+ * @recv_app: request a FLASH app
+ * @send_os: send a FLASH os
  * @recv_idlist: request hand-held IDLIST
  * @dump_rom_1: dump the hand-held ROM: send dumper (if any)
  * @dump_rom_2: dump the hand-held ROM: launch dumper
@@ -801,6 +804,7 @@ typedef struct
  * @send_lab_equipment_data: send data in a format suitable for lab equipment
  * @get_lab_equipment_data: get data from a piece of lab equipment
  * @del_fld: delete folder (if supported)
+ * @recv_os: request a FLASH os (if supported)
  *
  * A structure containing pointers to functions implementing the various operations (potentially) supported by a hand-held.
  * !!! This structure is for private use !!!
@@ -857,6 +861,8 @@ struct _CalcFnctPtrs
 	int		(*get_lab_equipment_data)	(CalcHandle*, CalcModel, CalcLabEquipmentData *);
 
 	int		(*del_fld)		(CalcHandle*, VarRequest*);
+
+	int		(*recv_os)		(CalcHandle*, FlashContent*);
 };
 
 /**
@@ -1162,6 +1168,8 @@ typedef struct
 
 	TIEXPORT3 int TICALL ticalcs_calc_del_fld(CalcHandle *handle, VarRequest*);
 
+	TIEXPORT3 int TICALL ticalcs_calc_recv_os(CalcHandle *handle, FlashContent*);
+
 	TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle *handle, TigContent*, TigMode);
 	TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle *handle, TigContent*, TigMode);
 
@@ -1182,6 +1190,7 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle *handle, const char*);
 
 	TIEXPORT3 int TICALL ticalcs_calc_send_os2(CalcHandle *handle, const char*);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_os2(CalcHandle *handle, const char*);
 
 	TIEXPORT3 int TICALL ticalcs_calc_send_lab_equipment_datastr(CalcHandle *handle, CalcModel, uint8_t, const char *);
 	TIEXPORT3 int TICALL ticalcs_calc_get_lab_equipment_datastr(CalcHandle *handle, CalcModel, uint8_t, const char **);
