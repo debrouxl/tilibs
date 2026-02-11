@@ -1843,7 +1843,8 @@ extern const CalcFncts calc_89 =
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
 	 "",     /* get_lab_equipment_data */
-	 "",     /* del_folder */ },
+	 "",     /* del_folder */
+	 "",     /* recv_os */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1877,6 +1878,7 @@ extern const CalcFncts calc_89 =
 	&tixx_send_lab_equipment_data_legacy,
 	&tixx_get_lab_equipment_data_legacy
 	&noop_del_folder,
+	&noop_recv_os,
 };
 
 extern const CalcFncts calc_92p =
@@ -1922,7 +1924,8 @@ extern const CalcFncts calc_92p =
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
 	 "",     /* get_lab_equipment_data */
-	 "",     /* del_folder */ },
+	 "",     /* del_folder */
+	 "",     /* recv_os */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1956,6 +1959,7 @@ extern const CalcFncts calc_92p =
 	&tixx_send_lab_equipment_data_legacy,
 	&tixx_get_lab_equipment_data_legacy
 	&noop_del_folder,
+	&noop_recv_os,
 };
 
 extern const CalcFncts calc_89t =
@@ -2001,7 +2005,8 @@ extern const CalcFncts calc_89t =
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
 	 "",     /* get_lab_equipment_data */
-	 "",     /* del_folder */ },
+	 "",     /* del_folder */
+	 "",     /* recv_os */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2035,6 +2040,7 @@ extern const CalcFncts calc_89t =
 	&tixx_send_lab_equipment_data_legacy,
 	&tixx_get_lab_equipment_data_legacy
 	&noop_del_folder,
+	&noop_recv_os,
 };
 
 extern const CalcFncts calc_v2 =
@@ -2080,7 +2086,8 @@ extern const CalcFncts calc_v2 =
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
 	 "",     /* get_lab_equipment_data */
-	 "",     /* del_folder */ },
+	 "",     /* del_folder */
+	 "",     /* recv_os */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2114,6 +2121,7 @@ extern const CalcFncts calc_v2 =
 	&tixx_send_lab_equipment_data_legacy,
 	&tixx_get_lab_equipment_data_legacy
 	&noop_del_folder,
+	&noop_recv_os,
 };
 
 extern const CalcFncts calc_92 =
@@ -2158,7 +2166,8 @@ extern const CalcFncts calc_92 =
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
 	 "",     /* get_lab_equipment_data */
-	 "",     /* del_folder */ },
+	 "",     /* del_folder */
+	 "",     /* recv_os */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -2192,6 +2201,7 @@ extern const CalcFncts calc_92 =
 	&tixx_send_lab_equipment_data_legacy,
 	&tixx_get_lab_equipment_data_legacy
 	&noop_del_folder,
+	&noop_recv_os,
 };
 
 extern const CalcFncts calc_cbl2 =
@@ -2236,7 +2246,8 @@ extern const CalcFncts calc_cbl2 =
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
 	 "",     /* get_lab_equipment_data */
-	 "",     /* del_folder */ },
+	 "",     /* del_folder */
+	 "",     /* recv_os */ },
 	&is_ready,
 	&noop_send_key,
 	&noop_execute,
@@ -2270,6 +2281,7 @@ extern const CalcFncts calc_cbl2 =
 	&tixx_send_lab_equipment_data_legacy,
 	&tixx_get_lab_equipment_data_legacy
 	&noop_del_folder,
+	&noop_recv_os,
 };
 
 extern const CalcFncts calc_labpro =
@@ -2314,7 +2326,8 @@ extern const CalcFncts calc_labpro =
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
 	 "",     /* get_lab_equipment_data */
-	 "",     /* del_folder */ },
+	 "",     /* del_folder */
+	 "",     /* recv_os */ },
 	&is_ready,
 	&noop_send_key,
 	&noop_execute,
@@ -2348,6 +2361,7 @@ extern const CalcFncts calc_labpro =
 	&tixx_send_lab_equipment_data_legacy,
 	&tixx_get_lab_equipment_data_legacy
 	&noop_del_folder,
+	&noop_recv_os,
 };
 
 extern const CalcFncts calc_tipresenter =
@@ -2391,7 +2405,8 @@ extern const CalcFncts calc_tipresenter =
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
 	 "",     /* get_lab_equipment_data */
-	 "",     /* del_folder */ },
+	 "",     /* del_folder */
+	 "",     /* recv_os */ },
 	&is_ready,
 	&noop_send_key,
 	&noop_execute,
@@ -2425,4 +2440,5 @@ extern const CalcFncts calc_tipresenter =
 	&noop_send_lab_equipment_data,
 	&noop_get_lab_equipment_data,
 	&noop_del_folder,
+	&noop_recv_os,
 };

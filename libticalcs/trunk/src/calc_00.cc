@@ -230,6 +230,12 @@ int noop_del_folder (CalcHandle* handle, VarRequest* vr)
 	return 0;
 }
 
+int noop_recv_os (CalcHandle* handle, FlashContent* content)
+{
+	(void)handle, (void)content;
+	return 0;
+}
+
 extern const CalcFncts calc_00 = 
 {
 	CALC_NONE,
@@ -270,7 +276,8 @@ extern const CalcFncts calc_00 =
 	 "",     /* control_lab_equipment */
 	 "",     /* send_lab_equipment_data */
 	 "",     /* get_lab_equipment_data */
-	 "",     /* del_folder */ },
+	 "",     /* del_folder */
+	 "",     /* recv_os */ },
 	&noop_is_ready,
 	&noop_send_key,
 	&noop_execute,
@@ -304,4 +311,5 @@ extern const CalcFncts calc_00 =
 	&noop_send_lab_equipment_data,
 	&noop_get_lab_equipment_data,
 	&noop_del_folder,
+	&noop_recv_os,
 };

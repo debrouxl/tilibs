@@ -463,6 +463,7 @@ int noop_control_lab_equipment (CalcHandle* handle, CalcModel model, CalcLabEqui
 int noop_send_lab_equipment_data (CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
 int noop_get_lab_equipment_data (CalcHandle* handle, CalcModel model, CalcLabEquipmentData * data);
 int noop_del_folder (CalcHandle* handle, VarRequest* vr);
+int noop_recv_os (CalcHandle* handle, FlashContent* content);
 
 
 // calc_xx.c

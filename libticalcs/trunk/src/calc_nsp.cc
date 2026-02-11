@@ -1198,6 +1198,11 @@ static int		del_folder  (CalcHandle* handle, VarRequest* vr)
 	return ret;
 }
 
+static int		recv_os    (CalcHandle* handle, FlashContent* content)
+{
+	return ERR_UNSUPPORTED;
+}
+
 #define CALC_NSP_COMMON_COUNTERS \
 { \
 	"",     /* is_ready */ \
@@ -1230,6 +1235,7 @@ static int		del_folder  (CalcHandle* handle, VarRequest* vr)
 	"2P1L", /* send_all_vars_backup */ \
 	"2P1L", /* recv_all_vars_backup */ \
 	"1L",   /* del_folder */ \
+	"2P",   /* recv_os */ \
 }
 
 #define CALC_NSP_COMMON_FPTRS \
@@ -1267,6 +1273,7 @@ static int		del_folder  (CalcHandle* handle, VarRequest* vr)
 	&noop_send_lab_equipment_data, \
 	&noop_get_lab_equipment_data, \
 	&del_folder, \
+	&recv_os, \
 }
 
 extern const CalcFncts calc_nsp = 
