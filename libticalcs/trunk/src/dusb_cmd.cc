@@ -156,6 +156,47 @@ DUSBCATypeModelMagicByte TICALL dusb_ca_type_model_magic_byte(CalcModel model)
 	}
 }
 
+// A glyph normalization from U+22BA to U+F038 (a private use area character)
+// is required on TI-Z80 and TI-eZ80 USB calculators.
+static int dusb_model_needs_transpose_pua(CalcModel model)
+{
+	switch (model)
+	{
+	case CALC_TI84P_USB:
+	case CALC_TI84PC_USB:
+	case CALC_TI83PCE_USB:
+	case CALC_TI84PCE_USB:
+	case CALC_TI82A_USB:
+	case CALC_TI84PT_USB:
+	case CALC_TI82AEP_USB:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
+static char * dusb_normalize_name_for_send(CalcHandle * handle, const char * text)
+{
+	static const char kDisplayTranspose[] = "\xE2\x8A\xBA"; // U+22BA
+	static const char kWireTranspose[] = "\xEF\x80\xB8";    // U+F038
+
+	char * out = strdup(text);
+	if (out != nullptr)
+	{
+		if (dusb_model_needs_transpose_pua(handle->model))
+		{
+			char * p = out;
+			while ((p = strstr(p, kDisplayTranspose)) != nullptr)
+			{
+				p[0] = kWireTranspose[0], p[1] = kWireTranspose[1], p[2] = kWireTranspose[2];
+				p += sizeof(kWireTranspose) - 1;
+			}
+		}
+	}
+
+	return out;
+}
+
 // Helpers
 
 DUSBCalcParam* TICALL dusb_cp_new(CalcHandle * handle, uint16_t id, uint16_t size)
@@ -1730,6 +1771,8 @@ static int dusb_cmd_s_rts2(CalcHandle *handle, const char *folder, const char *n
 	unsigned int i;
 	unsigned int j = 0;
 	int retval = 0;
+	char* wire_folder = nullptr;
+	char* wire_name = nullptr;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(folder);
@@ -1737,10 +1780,19 @@ static int dusb_cmd_s_rts2(CalcHandle *handle, const char *folder, const char *n
 	VALIDATE_ATTRS(nattrs, attrs);
 	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
-	pks = 2 + strlen(name) + 1 + 5 + 2;
-	if (strlen(folder))
+	wire_folder = dusb_normalize_name_for_send(handle, folder);
+	wire_name = dusb_normalize_name_for_send(handle, name);
+	if (wire_folder == nullptr || wire_name == nullptr)
 	{
-		pks += strlen(folder)+1;
+		free(wire_folder);
+		free(wire_name);
+		return ERR_MALLOC;
+	}
+
+	pks = 2 + strlen(wire_name) + 1 + 5 + 2;
+	if (wire_folder[0] != 0)
+	{
+		pks += strlen(wire_folder) + 1;
 	}
 	for (i = 0; i < nattrs; i++)
 	{
@@ -1749,20 +1801,23 @@ static int dusb_cmd_s_rts2(CalcHandle *handle, const char *folder, const char *n
 
 	pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_RTS, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, pks));
 
-	if (strlen(folder))
+	if (wire_folder[0] != 0)
 	{
-		pkt->data[j++] = strlen(folder);
-		memcpy(pkt->data + j, folder, strlen(folder)+1);
-		j += strlen(folder)+1;
+		pkt->data[j++] = strlen(wire_folder);
+		memcpy(pkt->data + j, folder, strlen(wire_folder) + 1);
+		j += strlen(wire_folder) + 1;
 	}
 	else
 	{
 		pkt->data[j++] = 0;
 	}
 
-	pkt->data[j++] = strlen(name);
-	memcpy(pkt->data + j, name, strlen(name)+1);
-	j += strlen(name)+1;
+	pkt->data[j++] = strlen(wire_name);
+	memcpy(pkt->data + j, name, strlen(wire_name) + 1);
+	j += strlen(wire_name) + 1;
+
+	free(wire_folder);
+	free(wire_name);
 
 	pkt->data[j++] = MSB(MSW(size));
 	pkt->data[j++] = LSB(MSW(size));
