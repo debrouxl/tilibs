@@ -1,0 +1,435 @@
+# Georgian translation for libtifiles2.
+# Copyright (C) 2026 Free Software Foundation, Inc.
+# This file is distributed under the same license as the libtifiles2 package.
+# Ekaterine Papava <papava.e@gtu.ge>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libtifiles2 1.1.8\n"
+"Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
+"POT-Creation-Date: 2018-10-21 21:38+0200\n"
+"PO-Revision-Date: 2026-03-01 16:36+0100\n"
+"Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
+"Language-Team: Georgian <(nothing)>\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+#: src/error.cc:58
+msgid "Msg: unable to allocate memory (malloc)."
+msgstr "შეტყ: მეხსიერების გამოყოფის შეცდომა (malloc)."
+
+#: src/error.cc:60
+msgid "Cause: memory too low ?"
+msgstr "მიზეზი: მეხსიერება ცოტაღაა ?"
+
+#: src/error.cc:66
+msgid "Msg: unable to open file."
+msgstr "შეტყ: ფაილის გახსნა შეუძლებელია."
+
+#: src/error.cc:68 src/error.cc:76
+msgid "Cause: either the file does not exist, either there is no room."
+msgstr "მიზეზი: ან ფაილი არ არსებობს, ან ადგილი არაა."
+
+#: src/error.cc:74
+msgid "Msg: unable to close file."
+msgstr "შეტყ: ფაილის დახურვა შეუძლებელია."
+
+#: src/error.cc:82
+msgid "Msg: the size of a group file cannot exceed 64 KB."
+msgstr "შეტყ: ჯგუფის ფაილის ზომა არ შეიძლება, 64კბ-ს აჭარბებდეს."
+
+#: src/error.cc:84
+msgid "Cause: too many variables/data."
+msgstr "მიზეზი: მეტისმეტად ბევრი ცვლადი/მონაცემები."
+
+#: src/error.cc:90
+msgid "Msg: unknown calculator type."
+msgstr "შეტყ: უცნობი კალკულატორის ტიპი."
+
+#: src/error.cc:92
+msgid "Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."
+msgstr "მიზეზი: ალბათ შეცდომის გამო. მოგვწერეთ: tilp-users@lists.sf.net."
+
+#: src/error.cc:99
+msgid "Msg: invalid file."
+msgstr "შეტყ: არასწორი ფაილი."
+
+#: src/error.cc:101
+msgid "Cause: it's probably not a TI formatted file."
+msgstr "მიზეზი: ეს ფაილი, ალბათ, TI-ის ფორმატში არაა."
+
+#: src/error.cc:107
+msgid "Msg: checksum error."
+msgstr "შეტყ: საკონტროლო ჯამის შეცდომა."
+
+#: src/error.cc:109
+msgid "Cause: the file has an incorrect checksum and may be corrupted."
+msgstr "მიზეზი: ფაილის საკონტროლო ჯამი არასწორია და შეიძლება, ის დაზიანებულია."
+
+#: src/error.cc:115
+msgid "Msg: (Un)Zip error."
+msgstr "შეტყ: Zip-ში ჩადების/ამოღების შეცდომა."
+
+#: src/error.cc:117
+msgid "Cause: unknown..."
+msgstr "მიზეზი: უცნობია..."
+
+#: src/error.cc:123
+msgid "Msg: unsupported function."
+msgstr "შეტყ: მხარდაუჭერელი ფუნქცია."
+
+#: src/error.cc:125
+msgid "Cause: the function you attempted to use is not available."
+msgstr "მიზეზი: ფუნქცია, რომლის გამოყენებაც სცადეთ, ხელმისაწვდომი არაა."
+
+#: src/error.cc:131
+msgid "Msg: I/O file error."
+msgstr "შეტყ: შეტანა/გამოტანის შეცდომა."
+
+#: src/error.cc:133
+msgid "Cause: file is corrupted or invalid."
+msgstr "მიზეზი: ფაილი დაზიანებული, ან არასწორია."
+
+#: src/error.cc:139
+msgid "Msg: invalid parameter."
+msgstr "შეტყ: არასწორი პარამეტრი."
+
+#: src/error.cc:141
+msgid "Cause: the program which uses this library is buggy. Fire-up the developer!"
+msgstr "მიზეზი: პროგრამა, რომელიც ამ ბიბლიოთეკას იყენებს, შეცდომებს შეიცავს. პროგრამისტი გამაიყვანეთ!"
+
+#: src/filetypes.cc:1426 src/filetypes.cc:1530 src/types68k.cc:74
+#: src/types83p.cc:70 src/typesoldz80.cc:75
+msgid "OS upgrade"
+msgstr "ოს-ის განახლება"
+
+#: src/filetypes.cc:1436 src/filetypes.cc:1540
+msgid "TIGroup"
+msgstr "TIGroup"
+
+#: src/filetypes.cc:1448 src/filetypes.cc:1552
+msgid "Group/Backup"
+msgstr "დაჯგუფება/მარქაფი"
+
+#: src/filetypes.cc:1450 src/filetypes.cc:1554
+msgid "Group"
+msgstr "ჯგუფი"
+
+#: src/tifiles.cc:88
+#, c-format
+msgid "tifiles library version %s"
+msgstr "tifiles ბიბლიოთეკის ვერსია %s"
+
+#: src/type2str.cc:66 src/type2str.cc:86
+msgid "none     "
+msgstr "არცერთი     "
+
+#: src/type2str.cc:67 src/type2str.cc:88
+msgid "locked   "
+msgstr "დაბლოკილია   "
+
+#: src/type2str.cc:68 src/type2str.cc:90
+msgid "archived "
+msgstr "დაარქივებულია "
+
+#: src/type2str.cc:69 src/type2str.cc:92
+msgid "protected"
+msgstr "დაცული"
+
+#: src/type2str.cc:111 src/type2str.cc:135
+msgid "single"
+msgstr "ერთი"
+
+#: src/type2str.cc:112 src/type2str.cc:137
+msgid "group"
+msgstr "ჯგუფი"
+
+#: src/type2str.cc:113 src/type2str.cc:139
+msgid "regular"
+msgstr "ჩვეულებრივი"
+
+#: src/type2str.cc:114 src/type2str.cc:141
+msgid "backup"
+msgstr "მარქაფი"
+
+#: src/type2str.cc:115 src/type2str.cc:149
+msgid "tigroup"
+msgstr "tigroup"
+
+#: src/type2str.cc:116 src/type2str.cc:143
+msgid "os"
+msgstr "ოპერაციული სისტემა"
+
+#: src/type2str.cc:117 src/type2str.cc:145
+msgid "application"
+msgstr "აპლიკაცია"
+
+#: src/type2str.cc:118 src/type2str.cc:147
+msgid "flash"
+msgstr "ფლეში"
+
+#: src/type2str.cc:119
+msgid "unknown"
+msgstr "უცნობი"
+
+#: src/types68k.cc:39
+msgid "Expression"
+msgstr "გამოსახულება"
+
+#: src/types68k.cc:40 src/types68k.cc:41 src/types68k.cc:42 src/types68k.cc:44
+#: src/types68k.cc:46 src/types68k.cc:47 src/types68k.cc:48 src/types68k.cc:54
+#: src/types68k.cc:56 src/types68k.cc:60 src/types68k.cc:61 src/types68k.cc:62
+#: src/types68k.cc:63 src/types68k.cc:64 src/types68k.cc:65 src/types68k.cc:66
+#: src/types68k.cc:69 src/types68k.cc:70 src/types68k.cc:71 src/types68k.cc:77
+#: src/types68k.cc:78 src/types68k.cc:79 src/types68k.cc:80 src/types68k.cc:81
+#: src/types68k.cc:82 src/types68k.cc:83 src/types68k.cc:84 src/types68k.cc:85
+#: src/types68k.cc:86 src/types83p.cc:44 src/types83p.cc:45 src/types83p.cc:49
+#: src/types83p.cc:53 src/types83p.cc:55 src/types83p.cc:60 src/types83p.cc:69
+#: src/types83p.cc:73 src/types83p.cc:74 src/types83p.cc:75 src/types83p.cc:76
+#: src/types83p.cc:77 src/types83p.cc:78 src/types83p.cc:79 src/types83p.cc:80
+#: src/types83p.cc:81 src/types83p.cc:82 src/typesoldz80.cc:49
+#: src/typesoldz80.cc:50 src/typesoldz80.cc:53 src/typesoldz80.cc:54
+#: src/typesoldz80.cc:58 src/typesoldz80.cc:60 src/typesoldz80.cc:61
+#: src/typesoldz80.cc:62 src/typesoldz80.cc:63 src/typesoldz80.cc:64
+#: src/typesoldz80.cc:65 src/typesoldz80.cc:67 src/typesoldz80.cc:68
+#: src/typesoldz80.cc:69 src/typesoldz80.cc:70 src/typesoldz80.cc:71
+#: src/typesoldz80.cc:72 src/typesoldz80.cc:73 src/typesoldz80.cc:74
+#: src/typesoldz80.cc:78 src/typesoldz80.cc:79 src/typesoldz80.cc:80
+#: src/typesoldz80.cc:81 src/typesoldz80.cc:82 src/typesoldz80.cc:83
+#: src/typesoldz80.cc:84 src/typesoldz80.cc:85 src/typesoldz80.cc:86
+#: src/typesoldz80.cc:87 src/typesoldz80.cc:97 src/typesoldz80.cc:102
+#: src/typesoldz80.cc:103 src/typesoldz80.cc:109 src/typesoldz80.cc:110
+#: src/typesoldz80.cc:111 src/typesoldz80.cc:112 src/typesoldz80.cc:113
+#: src/typesoldz80.cc:114 src/typesoldz80.cc:115 src/typesoldz80.cc:116
+#: src/typesoldz80.cc:117 src/typesoldz80.cc:118 src/typesoldz80.cc:119
+#: src/typesoldz80.cc:120 src/typesoldz80.cc:121 src/typesoldz80.cc:122
+#: src/typesoldz80.cc:123 src/typesoldz80.cc:124 src/typesoldz80.cc:125
+#: src/typesoldz80.cc:126 src/typesoldz80.cc:127 src/typesoldz80.cc:128
+#: src/typesoldz80.cc:129 src/typesoldz80.cc:130 src/typesoldz80.cc:131
+#: src/typesoldz80.cc:132 src/typesoldz80.cc:133 src/typesoldz80.cc:134
+#: src/typesoldz80.cc:135 src/typesoldz80.cc:136 src/typesoldz80.cc:137
+#: src/typesoldz80.cc:138 src/typesoldz80.cc:139 src/typesoldz80.cc:140
+#: src/typesoldz80.cc:155 src/typesoldz80.cc:156 src/typesoldz80.cc:157
+#: src/typesoldz80.cc:159 src/typesoldz80.cc:160 src/typesoldz80.cc:164
+#: src/typesoldz80.cc:166 src/typesoldz80.cc:167 src/typesoldz80.cc:168
+#: src/typesoldz80.cc:169 src/typesoldz80.cc:170 src/typesoldz80.cc:171
+#: src/typesoldz80.cc:172 src/typesoldz80.cc:173 src/typesoldz80.cc:174
+#: src/typesoldz80.cc:175 src/typesoldz80.cc:176 src/typesoldz80.cc:177
+#: src/typesoldz80.cc:178 src/typesoldz80.cc:179 src/typesoldz80.cc:180
+#: src/typesoldz80.cc:181 src/typesoldz80.cc:182 src/typesoldz80.cc:183
+#: src/typesoldz80.cc:184 src/typesoldz80.cc:185 src/typesoldz80.cc:186
+#: src/typesoldz80.cc:187 src/typesoldz80.cc:188 src/typesoldz80.cc:189
+#: src/typesoldz80.cc:190 src/typesoldz80.cc:191 src/typesoldz80.cc:192
+#: src/typesoldz80.cc:193 src/typesoldz80.cc:210 src/typesoldz80.cc:221
+#: src/typesoldz80.cc:227 src/typesoldz80.cc:229 src/typesoldz80.cc:230
+#: src/typesoldz80.cc:231 src/typesoldz80.cc:232 src/typesoldz80.cc:233
+#: src/typesoldz80.cc:234 src/typesoldz80.cc:235 src/typesoldz80.cc:236
+#: src/typesoldz80.cc:237 src/typesoldz80.cc:238 src/typesoldz80.cc:239
+#: src/typesoldz80.cc:240 src/typesoldz80.cc:242 src/typesoldz80.cc:243
+#: src/typesoldz80.cc:244 src/typesoldz80.cc:245 src/typesoldz80.cc:246
+#: src/typesoldz80.cc:263 src/typesoldz80.cc:274 src/typesoldz80.cc:280
+#: src/typesoldz80.cc:282 src/typesoldz80.cc:283 src/typesoldz80.cc:284
+#: src/typesoldz80.cc:285 src/typesoldz80.cc:286 src/typesoldz80.cc:287
+#: src/typesoldz80.cc:288 src/typesoldz80.cc:289 src/typesoldz80.cc:290
+#: src/typesoldz80.cc:291 src/typesoldz80.cc:292 src/typesoldz80.cc:293
+#: src/typesoldz80.cc:294 src/typesoldz80.cc:295 src/typesoldz80.cc:296
+#: src/typesoldz80.cc:297 src/typesoldz80.cc:298 src/typesoldz80.cc:299
+msgid "Unknown"
+msgstr "უცნობი"
+
+#: src/types68k.cc:43 src/types83p.cc:36 src/types83p.cc:48
+#: src/typesoldz80.cc:41 src/typesoldz80.cc:94 src/typesoldz80.cc:147
+#: src/typesoldz80.cc:203 src/typesoldz80.cc:256
+msgid "List"
+msgstr "ჩამონათვალი"
+
+#: src/types68k.cc:45 src/types83p.cc:37 src/typesoldz80.cc:42
+#: src/typesoldz80.cc:95 src/typesoldz80.cc:148 src/typesoldz80.cc:205
+#: src/typesoldz80.cc:258
+msgid "Matrix"
+msgstr "მატრიცა"
+
+#: src/types68k.cc:49
+msgid "Data"
+msgstr "მონაცემები"
+
+#: src/types68k.cc:50
+msgid "Text"
+msgstr "ტექსტი"
+
+#: src/types68k.cc:51 src/types83p.cc:39 src/typesoldz80.cc:44
+#: src/typesoldz80.cc:150 src/typesoldz80.cc:211 src/typesoldz80.cc:264
+msgid "String"
+msgstr "სტრიქონი"
+
+#: src/types68k.cc:52 src/types83p.cc:43 src/typesoldz80.cc:48
+#: src/typesoldz80.cc:101 src/typesoldz80.cc:154 src/typesoldz80.cc:212
+#: src/typesoldz80.cc:213 src/typesoldz80.cc:214 src/typesoldz80.cc:215
+#: src/typesoldz80.cc:265 src/typesoldz80.cc:266 src/typesoldz80.cc:267
+#: src/typesoldz80.cc:268
+msgid "GDB"
+msgstr "GDB"
+
+#: src/types68k.cc:53
+msgid "Figure"
+msgstr "ფიგურა"
+
+#: src/types68k.cc:55 src/types83p.cc:42 src/typesoldz80.cc:47
+#: src/typesoldz80.cc:100 src/typesoldz80.cc:153 src/typesoldz80.cc:216
+#: src/typesoldz80.cc:269
+msgid "Picture"
+msgstr "სურათი"
+
+#: src/types68k.cc:57 src/types83p.cc:40 src/types83p.cc:57
+#: src/typesoldz80.cc:45 src/typesoldz80.cc:98 src/typesoldz80.cc:151
+#: src/typesoldz80.cc:217 src/typesoldz80.cc:270
+msgid "Program"
+msgstr "პროგრამა"
+
+#: src/types68k.cc:58
+msgid "Function"
+msgstr "ფუნქცია"
+
+#: src/types68k.cc:59
+msgid "Macro"
+msgstr "მაკრო"
+
+#: src/types68k.cc:67
+msgid "Other (Zipped, etc.)"
+msgstr "სხვა (Zip-ში და ა.შ.)"
+
+#: src/types68k.cc:68 src/types83p.cc:54 src/typesoldz80.cc:59
+#: src/typesoldz80.cc:108 src/typesoldz80.cc:165 src/typesoldz80.cc:228
+#: src/typesoldz80.cc:281
+msgid "Backup"
+msgstr "მარქაფი"
+
+#: src/types68k.cc:72 src/types83p.cc:41 src/typesoldz80.cc:46
+#: src/typesoldz80.cc:152
+msgid "Asm Program"
+msgstr "ასემბლერის პროგრამა"
+
+#: src/types68k.cc:73
+msgid "ID-LIST"
+msgstr "ID-LIST"
+
+#: src/types68k.cc:75 src/types83p.cc:71 src/typesoldz80.cc:76
+msgid "Application"
+msgstr "აპლიკაცია"
+
+#: src/types68k.cc:76 src/types83p.cc:72 src/typesoldz80.cc:77
+msgid "Certificate"
+msgstr "სერტიფიკატი"
+
+#: src/types83p.cc:35 src/types83p.cc:59 src/types83p.cc:63 src/types83p.cc:67
+#: src/types83p.cc:68 src/typesoldz80.cc:40 src/typesoldz80.cc:93
+#: src/typesoldz80.cc:146 src/typesoldz80.cc:199 src/typesoldz80.cc:252
+msgid "Real"
+msgstr "ნამდვილი"
+
+#: src/types83p.cc:38 src/types83p.cc:46 src/typesoldz80.cc:43
+#: src/typesoldz80.cc:209 src/typesoldz80.cc:262
+msgid "Equation"
+msgstr "განტოლება"
+
+#: src/types83p.cc:47 src/types83p.cc:62 src/types83p.cc:64 src/types83p.cc:65
+#: src/types83p.cc:66 src/typesoldz80.cc:52 src/typesoldz80.cc:158
+#: src/typesoldz80.cc:200 src/typesoldz80.cc:253
+msgid "Complex"
+msgstr "რთული"
+
+#: src/types83p.cc:50 src/typesoldz80.cc:51 src/typesoldz80.cc:55
+#: src/typesoldz80.cc:104 src/typesoldz80.cc:161 src/typesoldz80.cc:222
+#: src/typesoldz80.cc:275 src/typesoldz80.cc:276 src/typesoldz80.cc:277
+#: src/typesoldz80.cc:278 src/typesoldz80.cc:279
+msgid "Window Setup"
+msgstr "ფანჯრის მორგება"
+
+#: src/types83p.cc:51 src/typesoldz80.cc:56 src/typesoldz80.cc:105
+#: src/typesoldz80.cc:162 src/typesoldz80.cc:226
+msgid "Zoom"
+msgstr "მასშტაბი"
+
+#: src/types83p.cc:52 src/typesoldz80.cc:57 src/typesoldz80.cc:106
+#: src/typesoldz80.cc:163
+msgid "Table Setup"
+msgstr "ცხრილის მორგება"
+
+#: src/types83p.cc:56 src/typesoldz80.cc:66
+msgid "App Var"
+msgstr "აპის ცვლადი"
+
+#: src/types83p.cc:58
+msgid "Group Var"
+msgstr "ჯგუფური ცვლადი"
+
+#: src/types83p.cc:61
+msgid "Image"
+msgstr "გამოსახულება"
+
+#: src/typesnsp.cc:33
+msgid "Document"
+msgstr "დოკუმენტი"
+
+#: src/typesnsp.cc:34 src/typesoldz80.cc:220 src/typesoldz80.cc:273
+msgid "Directory"
+msgstr "საქაღალდე"
+
+#: src/typesoldz80.cc:96 src/typesoldz80.cc:149 src/typesoldz80.cc:241
+msgid "Y-Var"
+msgstr "Y-Var"
+
+#: src/typesoldz80.cc:99
+msgid "Protected Program"
+msgstr "დაცული პროგრამა"
+
+#: src/typesoldz80.cc:107
+msgid "LCD"
+msgstr "LCD"
+
+#: src/typesoldz80.cc:201 src/typesoldz80.cc:254
+msgid "Vector"
+msgstr "ვექტორი"
+
+#: src/typesoldz80.cc:202 src/typesoldz80.cc:255
+msgid "Complex Vector"
+msgstr "რთული ვექტორი"
+
+#: src/typesoldz80.cc:204 src/typesoldz80.cc:257
+msgid "Complex List"
+msgstr "რთული სია"
+
+#: src/typesoldz80.cc:206 src/typesoldz80.cc:259
+msgid "Complex Matrix"
+msgstr "რთული მატრიცა"
+
+#: src/typesoldz80.cc:207 src/typesoldz80.cc:260
+msgid "Constant"
+msgstr "მუდმივა"
+
+#: src/typesoldz80.cc:208 src/typesoldz80.cc:261
+msgid "Complex Constant"
+msgstr "რთული კონსტანტა"
+
+#: src/typesoldz80.cc:218 src/typesoldz80.cc:271
+msgid "Range"
+msgstr "შუალედი"
+
+#: src/typesoldz80.cc:219 src/typesoldz80.cc:272
+msgid "Screen"
+msgstr "ეკრანი"
+
+#: src/typesoldz80.cc:223
+msgid "Polar"
+msgstr "პოლარული"
+
+#: src/typesoldz80.cc:224
+msgid "Parametric"
+msgstr "პარამეტრული"
+
+#: src/typesoldz80.cc:225
+msgid "Diff Equ"
+msgstr "დიფ. განტ"
