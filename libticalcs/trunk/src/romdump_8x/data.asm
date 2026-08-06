@@ -21,34 +21,34 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-DumpingROMString:	db "Dumping ROM...", 0
+DumpingROMString:	.asciz "Dumping ROM..."
 			EXIT_KEY_STR
-			db " to cancel", 0
+			.asciz " to cancel"
 
-ErrorString:		db "Errors:", 0
+ErrorString:		.asciz "Errors:"
 
-KString:		db "0K of "
+KString:		.ascii "0K of "
 
- if CALC_ROM_SIZE = 4096
-			db "4096K"
-ROMSize:		dw 0000h, 0040h
- endif
+.if CALC_ROM_SIZE == 4096
+			.ascii "4096K"
+ROMSize:		.word 0x0000, 0x0040
+ .endif
 
- if CALC_ROM_SIZE = 512
-			db "512K"
-ROMSize:		dw 0000h, 0008h
- endif
+.if CALC_ROM_SIZE == 512
+			.ascii "512K"
+ROMSize:		.word 0x0000, 0x0008
+ .endif
 
- if CALC_ROM_SIZE = 128
-			db "128K"
-ROMSize:		dw 0000h, 0002h
- endif
+.if CALC_ROM_SIZE == 128
+			.ascii "128K"
+ROMSize:		.word 0x0000, 0x0002
+ .endif
 
- if CALC_ROM_SIZE = 256
-			db "256K"
-ROMSize:		dw 0000h, 0004h
- endif
+.if CALC_ROM_SIZE == 256
+			.ascii "256K"
+ROMSize:		.word 0x0000, 0x0004
+ .endif
 
- if CALC_ROM_SIZE = 0
-ROMSize:		dw 0000h, 0008h
- endif
+.if CALC_ROM_SIZE == 0
+ROMSize:		.word 0x0000, 0x0008
+ .endif

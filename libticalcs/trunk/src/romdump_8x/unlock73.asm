@@ -21,7 +21,7 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-MAX_OS_VERSION equ 0191h	; last supported version: 1.91 (BCD)
+MAX_OS_VERSION = 0x0191	; last supported version: 1.91 (BCD)
 
 ;; Unlock:
 ;;
@@ -48,13 +48,13 @@ Unlock:
 	ret c
 
 	di
-	ld a, 1Ch
+	ld a, 0x1C
 	out (6), a
-	ld hl, 4000h
+	ld hl, 0x4000
 	ld b, h
 	ld c, l
 Unlock_FindTargetLoop:
-	ld a, 0F5h
+	ld a, 0x0F5
 	cpir
 	scf
 	ret nz
@@ -107,7 +107,7 @@ Unlock_Data:
     nop
     im 1
     di
-    out (14h), a
+    out (0x14), a
     di
     ;; ...
     pop af

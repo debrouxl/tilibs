@@ -25,46 +25,46 @@ Main:
 	res apdRunning, (iy + apdFlags)
 	in a, (memPort)
 	ld (defaultMemPage), a
- if defined TI83
+.ifdef TI83
 	in a, (linkPort)
-	and 10h
+	and 0x10
 	or LINK_RESET
 	ld (defaultLinkState), a
- endif
- if defined TI84PC
+ .endif
+.ifdef TI84PC
 	in a, (memExtPort)
 	ld (defaultMemExt), a
- endif
+ .endif
 
- if defined TI82
+.ifdef TI82
 	call InitializeLink
- endif
+ .endif
 
- if defined CALC_USB
+.ifdef CALC_USB
 	call InitializeUSB
- endif
+ .endif
 
- if defined CALC_FLASH
+.ifdef CALC_FLASH
 	call Unlock
 	ld a, (defaultMemPage)
 	out (memPort), a
- endif
+ .endif
 
- if defined TI83P
+.ifdef TI83P
 	in a, (2)
 	add a, a
 	jr nc, Main_83PlusBE
 	ld a, 1
-	out (20h), a
-	in a, (21h)
+	out (0x20), a
+	in a, (0x21)
 	and 3
-	ld a, 10h
+	ld a, 0x10
 	jr z, Main_84PlusBE
 	add a, a
 Main_84PlusBE:
 	ld (ROMSize + 2), a
 Main_83PlusBE:
- endif
+ .endif
 
 	ld hl, 0
 	ld (errorCount), hl
@@ -92,7 +92,7 @@ MainLoop:
 	ei
 	halt
 	GET_CSC
-	cp 37h
+	cp 0x37
 	jr z, Quit
 
 	call CheckLinkActivity
@@ -144,18 +144,18 @@ Received_3:
 	ld hl, CMD_SIZE
 	call SendPacket
 
-	ld hl, 0402h
+	ld hl, 0x0402
 	ld (curRow), hl
 	ld hl, KString
 	PUT_STRING
- if defined TI83P
+.ifdef TI83P
 	ld hl, (ROMSize + 1)
 	srl h
 	srl h
 	PUT_DECIMAL
 	ld a, 'K'
 	PUT_CHAR
- endif
+ .endif
 MainLoop_:
 	jr MainLoop
 
@@ -171,9 +171,9 @@ Main_Error:
 	inc hl
 	ld (errorCount), hl
 	PUT_DECIMAL
- if ! defined USB
+.ifndef USB
 	call LinkError
- endif
+ .endif
 MainLoop__:
 	jr MainLoop_
 
@@ -189,7 +189,7 @@ Received_5:
 	sla h
 	rla
 	SET_ROM_PAGE
-	;; HL = (addr & 3FFFh) | 4000h
+	;; HL = (addr & 0x3FFF) | 0x4000
 	scf
 	rr h
 	srl h
@@ -220,14 +220,14 @@ BlockRequest_SetPacket:
 	call SendPacket
 
 	;; Restore original memory page
- if defined TI83
+.ifdef TI83
 	ld a, (defaultLinkState)
 	out (linkPort), a
- endif
- if defined TI84PC
+ .endif
+.ifdef TI84PC
 	ld a,(defaultMemExt)
 	out (memExtPort), a
- endif
+ .endif
 	ld a, (defaultMemPage)
 	out (memPort), a
 

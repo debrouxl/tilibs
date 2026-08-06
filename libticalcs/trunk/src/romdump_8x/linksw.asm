@@ -21,38 +21,38 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-BIT_TIMEOUT equ 65535
+BIT_TIMEOUT = 65535
 
-if ! defined TI82
+.ifndef TI82
 
-macro LD_A_LINK_D0L
+.macro LD_A_LINK_D0L
     ld a, LINK_D0L
-endm
-macro LD_A_LINK_D1L
+.endm
+.macro LD_A_LINK_D1L
     ld a, LINK_D1L
-endm
-macro AND_LINK_STATUS_MASK
+.endm
+.macro AND_LINK_STATUS_MASK
     and LINK_STATUS_MASK
-endm
+.endm
 
-else ; TI82
+.else ; TI82
 
-macro LD_A_LINK_D0L
+.macro LD_A_LINK_D0L
     ld a, (linkD0L)
-endm
-macro LD_A_LINK_D1L
+.endm
+.macro LD_A_LINK_D1L
     ld a, (linkD1L)
-endm
-macro AND_LINK_STATUS_MASK
+.endm
+.macro AND_LINK_STATUS_MASK
     call AndLinkStatusMask
-endm
+.endm
 
-LINK_STATUS_MASK equ 0
+LINK_STATUS_MASK = 0
 
 ;; InitializeLink:
 ;;
 ;; Set the link port status mask and control values based on the
-;; hardware version.  Note that the LINK_RESET value is C0h for both
+;; hardware version.  Note that the LINK_RESET value is 0xC0 for both
 ;; hardware versions.
 ;;
 ;; Destroys:
@@ -64,13 +64,13 @@ InitializeLink:
 	ld a, LINK_RESET
 	out (linkPort), a
 
-	ld bc, 0FE03h
-	ld hl, 0E8D4h
+	ld bc, 0x0FE03
+	ld hl, 0x0E8D4
 	in a, (linkPort)
-	and 0Ch
+	and 0x0C
 	jr z, InitializeLink_Old
-	ld bc, 0F80Ch
-	ld hl, 0C2C1h
+	ld bc, 0x0F80C
+	ld hl, 0x0C2C1
 InitializeLink_Old:
 	ld a, c
 	ld (AndLinkStatusMask + 1), a
@@ -79,7 +79,7 @@ InitializeLink_Old:
 	ld (linkD0L), hl
 	ret
 
-endif ; TI82
+.endif ; TI82
 
 ;; CheckLinkActivity:
 ;;
@@ -119,12 +119,12 @@ LinkGetByte:
 
 	ld b, 8
 LinkGetByte_Loop:
-	ld d, 0FFh
+	ld d, 0x0FF
 	call LinkWaitEither
 	ret c
 
 LinkGetByte_CheckStatus:
-	add a, -(LINK_STATUS_MASK & 0AAh)
+	add a, -(LINK_STATUS_MASK & 0x0AA)
 	;; NC, NZ if "D0" bit set
 	;; C, Z if "D1" bit set
 	;; C, NZ if both bits set
@@ -206,7 +206,7 @@ LinkPutByte_0:
 	djnz LinkPutByte_Loop
 LinkSetWaitBothHigh:
 	ld a, LINK_RESET
-	ld d, 0FFh
+	ld d, 0x0FF
 	;; fall through
 
 ;; LinkSetWaitBoth:

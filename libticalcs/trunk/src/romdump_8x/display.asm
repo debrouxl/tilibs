@@ -50,7 +50,7 @@ DispHL_PadLoop:
 DispHL_Loop:
 	 dec (hl)
 	 ex de, hl
-	 ld bc, 100Ah
+	 ld bc, 0x100A
 	 xor a
 DispHL_DivLoop:
 	 add hl, hl
