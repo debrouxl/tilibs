@@ -203,18 +203,21 @@ AC_ARG_ENABLE([builtin-rom-dumpers],
   [], [enable_builtin_rom_dumpers=yes])
 
 AC_ARG_VAR([SPASM], [SPASM Z80 assembler])
-AC_ARG_VAR([PASMO], [PASMO Z80 assembler])
+AC_ARG_VAR([Z80_AS], [GNU Z80 assembler])
+AC_ARG_VAR([Z80_LD], [GNU Z80 linker])
 AC_ARG_VAR([M68K_AS], [GNU m68k assembler])
 AC_ARG_VAR([M68K_LD], [GNU m68k linker])
 AC_ARG_VAR([M68K_OBJCOPY], [GNU m68k objcopy])
 AC_ARG_VAR([TIFILEUTIL], [Tool for creating TI variable files])
 have_spasm=no
-have_pasmo=no
+have_z80as=no
+have_z80ld=no
 have_tifileutil=no
 have_tigcc=no
 have_m68klinuxgnu=no
 : ${SPASM=spasm}
-: ${PASMO=pasmo}
+: ${Z80_AS=z80-unknown-coff-as}
+: ${Z80_LD=z80-unknown-coff-ld}
 : ${M68K_AS=m68k-linux-gnu-as}
 : ${M68K_LD=m68k-linux-gnu-ld}
 : ${M68K_OBJCOPY=m68k-linux-gnu-objcopy}
@@ -233,26 +236,35 @@ EOF
   fi
   AC_MSG_RESULT([$have_spasm])
 
+  AC_MSG_CHECKING([whether $Z80_AS works])
+  cat >conftest.asm <<EOF
+	.globl __load_addr
+__load_addr = 0x9D93
+	.byte 0xBB, 0x6D
+	ret
+EOF
+  cat >conftest.ld <<EOF
+SECTIONS {
+	. = __load_addr;
+	.text : { *(.text) }
+}
+EOF
+  if "$Z80_AS" -o conftest.o conftest.asm >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
+    have_z80as=yes
+  fi
+  AC_MSG_RESULT([$have_z80as])
+
+  AC_MSG_CHECKING([whether $Z80_LD works])
+  if "$Z80_LD" -T conftest.ld --oformat=binary -o conftest.bin conftest.o >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
+    have_z80ld=yes
+  fi
+  AC_MSG_RESULT([$have_z80ld])
+
   AC_MSG_CHECKING([whether $TIFILEUTIL works])
   if "$TIFILEUTIL" wrap conftest.bin -p -o conftest.8xp >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
     have_tifileutil=yes
   fi
   AC_MSG_RESULT([$have_tifileutil])
-
-  AC_MSG_CHECKING([whether $PASMO works])
-  cat >conftest.asm <<EOF
-    macro B_CALL, arg
-        db 0EFh
-        dw arg
-    endm
-    org 9d95h
-    B_CALL 4972h
-    ret
-EOF
-  if "$PASMO" conftest.asm conftest.bin >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
-    have_pasmo=yes
-  fi
-  AC_MSG_RESULT([$have_pasmo])
 
   AC_MSG_CHECKING([whether tigcc works])
   cat >conftest.c <<EOF
@@ -286,12 +298,12 @@ EOF
   AC_MSG_RESULT([$have_m68klinuxgnu])
 fi
 
-if test "x$have_spasm$have_pasmo$have_tifileutil" = "xyesyesyes" ; then
+if test "x$have_spasm$have_z80as$have_z80ld$have_tifileutil" = "xyesyesyesyes" ; then
   build_z80_rom_dumpers=yes
 else
   build_z80_rom_dumpers=no
   if test "x$enable_builtin_rom_dumpers" = "xno" ; then
-    AC_MSG_FAILURE([spasm, pasmo and/or tifileutil are not installed or are not usable.])
+    AC_MSG_FAILURE([spasm, z80-unknown-coff-as, z80-unknown-coff-ld and/or tifileutil are not installed or are not usable.])
   fi
 fi
 

@@ -29,7 +29,7 @@
 ;; - AF, BC, DE, HL
 
 ClearLCD:
-	ld a, 20h
+	ld a, 0x20
 ClearLCD_Loop:
 	ld c, a
 	call LCDCommand
@@ -37,11 +37,11 @@ ClearLCD_Loop:
 ClearLCD_ColumnLoop:
 	call LCDBusy
 	xor a
-	out (11h), a
+	out (0x11), a
 	djnz ClearLCD_ColumnLoop
 	ld a, c
 	inc a
-	cp 2Ch
+	cp 0x2C
 	jr c, ClearLCD_Loop
 	ret
 
@@ -64,7 +64,7 @@ PutC:
 	push hl
 	 push de
 	  push bc
-fontTable equ $ + 1
+fontTable = . + 1
 	   ld hl, 0
 	   ld bc, 8
 PutC_FindBitmapLoop:
@@ -83,7 +83,7 @@ PutC_FoundBitmap:
 	   inc a
 	   ld (de), a
 	   dec a
-	   or 20h
+	   or 0x20
 	   call LCDCommand
 
 	   dec de
@@ -91,14 +91,14 @@ PutC_FoundBitmap:
 	   add a, a
 	   add a, a
 	   add a, a
-	   or 80h
+	   or 0x80
 	   call LCDCommand
 
 	   ld b, 7
 PutC_Loop:
 	   call LCDBusy
 	   ld a, (hl)
-	   out (11h), a
+	   out (0x11), a
 	   inc hl
 	   djnz PutC_Loop
 
@@ -121,7 +121,7 @@ LCDCommand:
 	push af
 	 call LCDBusy
 	 pop af
-	out (10h), a
+	out (0x10), a
 	ret
 
 ;; LCDBusy:
@@ -132,7 +132,7 @@ LCDCommand:
 ;; - AF
 
 LCDBusy:
-	in a, (10h)
+	in a, (0x10)
 	add a, a
 	jr c, LCDBusy
 	ret

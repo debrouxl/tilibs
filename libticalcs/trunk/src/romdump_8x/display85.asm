@@ -29,10 +29,10 @@
 ;; - AF, BC, DE, HL
 
 ClearLCD:
-	ld hl, 0FC00h
+	ld hl, 0x0FC00
 	ld (hl), l
-	ld de, 0FC01h
-	ld bc, 03FFh
+	ld de, 0x0FC01
+	ld bc, 0x03FF
 	ldir
 	ret
 
@@ -55,7 +55,7 @@ PutC:
 	push hl
 	 push de
 	  push bc
-fontTable equ $ + 1
+fontTable = . + 1
 	   ld hl, 0
 	   ld bc, 8
 PutC_FindBitmapLoop:
@@ -70,7 +70,7 @@ PutC_FoundBitmap:
 	   ld a, (bc)
 	   rrca
 	   ld e, a
-	   or 0FCh
+	   or 0x0FC
 	   ld d, a
 
 	   inc bc
@@ -84,7 +84,7 @@ PutC_FoundBitmap:
 	   rrca
 	   rrca
 	   xor e
-	   and 1Fh
+	   and 0x1F
 	   xor e
 	   ld e, a
 
@@ -105,19 +105,19 @@ PutC_Loop:
 	   inc e
 	   ld a, (de)
 	   xor c
-	   and 03Fh
+	   and 0x03F
 	   xor c
 	   ld (de), a
 	   dec e
 	   ld a, (de)
 	   xor c
-	   and 0F0h
+	   and 0x0F0
 	   xor c
 	   jr PutC_Next
 
 PutC_0:
 	   ld a, (de)
-	   and 0C0h
+	   and 0x0C0
 	   or (hl)
 	   jr PutC_Next
 
@@ -138,13 +138,13 @@ PutC_2:
 	   inc e
 	   ld a, (de)
 	   xor c
-	   and 0Fh
+	   and 0x0F
 	   xor c
 	   ld (de), a
 	   dec e
 	   ld a, (de)
 	   xor c
-	   and 0FCh
+	   and 0x0FC
 	   xor c
 PutC_Next:
 	   ld (de), a

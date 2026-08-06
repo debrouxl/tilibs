@@ -23,11 +23,11 @@
 
 ;;; Table of supported OS and boot code versions
 VersionTable:
-	db 1,19, 1,01		; TI-83 Plus
-	db 1,19, 1,00		; TI-83 Plus SE
-	db 2,55, 1,03		; TI-84 Plus
-	db 2,55, 1,03		; TI-84 Plus SE (odd versions)
-	db 2,56, 1,03		; Nspire (even versions)
+	.byte 1,19, 1,01		; TI-83 Plus
+	.byte 1,19, 1,00		; TI-83 Plus SE
+	.byte 2,55, 1,03		; TI-84 Plus
+	.byte 2,55, 1,03		; TI-84 Plus SE (odd versions)
+	.byte 2,56, 1,03		; Nspire (even versions)
 
 ;; Unlock:
 ;;
@@ -71,7 +71,7 @@ Unlock_NotNspire:
 
 	di
 	push	iy
-	 ld	de, 7B09h
+	 ld	de, 0x7B09
 	 ld	a, e
 	 ld	(arcInfo), a
 	 out	(6), a
@@ -97,11 +97,11 @@ Unlock_Main:
 	ld	hl, ramCode
 	ld	bc, 304
 Unlock_Loop1:
-	ld	a, 0EDh
+	ld	a, 0x0ED
 	cpir
 	ret	nz
 	ld	a, (hl)
-	sub	0A0h
+	sub	0x0A0
 	jr	nz, Unlock_Loop1
 	ld	c, (hl)
 	ld	b, a
@@ -114,7 +114,7 @@ Unlock_Data:
 	or	a
 	call	nz, SetFlashPageD
 Unlock_Loop2:
-	ld	a, 3Ah
+	ld	a, 0x3A
 	cpir
 	ret	nz
 	ld	de, Unlock_Data + 1
@@ -124,10 +124,10 @@ Unlock_Loop3:
 	jr	nz, Unlock_Loop2
 	inc	hl
 	inc	de
-	cp	0C4h
+	cp	0x0C4
 	jr	nz, Unlock_Loop3
 	B_CALL	_LdHLind
-	ld	iy, 56h - 25h
+	ld	iy, 0x56 - 0x25
 Unlock_Recover:
 	jp	(hl)
 	   ld	sp, 0
@@ -137,7 +137,7 @@ Unlock_Recover:
 Unlock_WriteByte:
 	 cp	(hl)
 	 jr	nz, Unlock_WriteByte
-	 ld	(hl), 0F0h
+	 ld	(hl), 0x0F0
 Unlock_Done:
 	 pop	iy
 	ret
@@ -145,11 +145,11 @@ Unlock_Done:
 SetFlashPageD:
 	in a, (2)
 	add a, a
-	ld a, 1Fh
+	ld a, 0x1F
 	jr nc, SetFlashPage_Mask
-	in a, (21h)
+	in a, (0x21)
 	and 3
-	ld a, 7Fh
+	ld a, 0x7F
 	jr nz, SetFlashPage_Mask
 	rra
 SetFlashPage_Mask:

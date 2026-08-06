@@ -23,89 +23,89 @@
 
 ;;; Memory mapping
 
-memPort equ 6
+memPort = 6
 
 ;;; Link port
 
-linkPort          equ 0
-LINK_STATUS_MASK  equ 3
-LINK_RESET        equ 0
-LINK_D0L          equ 1
-LINK_D1L          equ 2
+linkPort = 0
+LINK_STATUS_MASK = 3
+LINK_RESET = 0
+LINK_D0L = 1
+LINK_D1L = 2
 
 ;;; RAM addresses
 
-ramCode      equ 8100h
-arcInfo      equ 83EEh
-pagedCount   equ 9834h
-pagedBuf     equ 983Ah
-curRow       equ 844Bh
-curCol       equ 844Ch
-iMathPtr5    equ 84DBh
-saveSScreen  equ 86ECh
+ramCode = 0x8100
+arcInfo = 0x83EE
+pagedCount = 0x9834
+pagedBuf = 0x983A
+curRow = 0x844B
+curCol = 0x844C
+iMathPtr5 = 0x84DB
+saveSScreen = 0x86EC
 
 ;;; Flags
 
-apdFlags       equ 08h
-apdRunning     equ 3
+apdFlags = 0x08
+apdRunning = 3
 
-remoteKeyFlag  equ 1Fh
-remoteKeyPress equ 5
+remoteKeyFlag = 0x1F
+remoteKeyPress = 5
 
 ;;; System calls
 
-APP_PUSH_ERRORH equ 59h
-APP_POP_ERRORH  equ 5Ch
+APP_PUSH_ERRORH = 0x59
+APP_POP_ERRORH = 0x5C
 
-_ClrScrnFull      equ 4546h
-_DispHL           equ 4507h
-_GetBaseVer       equ 4C6Fh
-_GetBootVer       equ 80B7h
-_GetHWVer         equ 80BAh
-_GetCSC           equ 4018h
-_GetVariableData  equ 5092h
-_LdHLind          equ 4009h
-_Mov18B		  equ 47DAh
-_PutC             equ 4504h
-_PutS             equ 450Ah
-_RecAByteIO       equ 4F03h
-_RunIndicOff      equ 4570h
-_SendAByte        equ 4EE5h
-_WriteAByteSafe   equ 80C6h
+_ClrScrnFull = 0x4546
+_DispHL = 0x4507
+_GetBaseVer = 0x4C6F
+_GetBootVer = 0x80B7
+_GetHWVer = 0x80BA
+_GetCSC = 0x4018
+_GetVariableData = 0x5092
+_LdHLind = 0x4009
+_Mov18B = 0x47DA
+_PutC = 0x4504
+_PutS = 0x450A
+_RecAByteIO = 0x4F03
+_RunIndicOff = 0x4570
+_SendAByte = 0x4EE5
+_WriteAByteSafe = 0x80C6
 
 ;;; Macros
 
-macro B_CALL, arg
-    db 0EFh
-    dw arg
-endm
+.macro B_CALL arg
+    .byte 0x0EF
+    .word \arg
+.endm
 
-macro CLEAR_LCD
+.macro CLEAR_LCD
     B_CALL _ClrScrnFull
-endm
-macro GET_CSC
+.endm
+.macro GET_CSC
     B_CALL _GetCSC
-endm
-macro PUT_CHAR
+.endm
+.macro PUT_CHAR
     B_CALL _PutC
-endm
-macro PUT_DECIMAL
+.endm
+.macro PUT_DECIMAL
     B_CALL _DispHL
-endm
-macro PUT_STRING
+.endm
+.macro PUT_STRING
     B_CALL _PutS
-endm
-macro RUN_INDIC_OFF
+.endm
+.macro RUN_INDIC_OFF
     B_CALL _RunIndicOff
-endm
-macro SET_ROM_PAGE
+.endm
+.macro SET_ROM_PAGE
     out (memPort), a
-endm
+.endm
 
-macro EXIT_KEY_STR
-    db 0C1h, "MODE]"
-endm
-
+.macro EXIT_KEY_STR
+    .byte 0x0C1
+    .ascii "MODE]"
+    .endm
 ;;; Miscellaneous
 
-CALC_ROM_SIZE equ 0
+CALC_ROM_SIZE = 0
