@@ -23,58 +23,58 @@
 
 ;;; Memory mapping
 
-memPort equ 2
+memPort = 2
 
 ;;; Link port
 
-linkPort          equ 0
-LINK_STATUS_MASK  equ 0Ch
-LINK_RESET        equ 0C0h
-LINK_D0L          equ 0C1h
-LINK_D1L          equ 0C2h
+linkPort = 0
+LINK_STATUS_MASK = 0x0C
+LINK_RESET = 0x0C0
+LINK_D0L = 0x0C1
+LINK_D1L = 0x0C2
 
 ;;; RAM addresses
 
-curRow       equ 800Ch
-curCol       equ 800Dh
-saveSScreen  equ 8265h
+curRow = 0x800C
+curCol = 0x800D
+saveSScreen = 0x8265
 
 ;;; Flags
 
-apdFlags    equ 08h
-apdRunning  equ 3
+apdFlags = 0x08
+apdRunning = 3
 
 ;;; System calls
 
-_ClrScrnFull  equ 475Dh
-_DispHL       equ 4709h
-_GetCSC       equ 4014h
-_PutC         equ 4705h
-_PutS         equ 470Dh
-_RunIndicOff  equ 4795h
+_ClrScrnFull = 0x475D
+_DispHL = 0x4709
+_GetCSC = 0x4014
+_PutC = 0x4705
+_PutS = 0x470D
+_RunIndicOff = 0x4795
 
 ;;; Macros
 
-macro CLEAR_LCD
+.macro CLEAR_LCD
     call _ClrScrnFull
-endm
-macro GET_CSC
+.endm
+.macro GET_CSC
     call _GetCSC
-endm
-macro PUT_CHAR
+.endm
+.macro PUT_CHAR
     call _PutC
-endm
-macro PUT_DECIMAL
+.endm
+.macro PUT_DECIMAL
     call _DispHL
-endm
-macro PUT_STRING
+.endm
+.macro PUT_STRING
     call _PutS
-endm
-macro RUN_INDIC_OFF
+.endm
+.macro RUN_INDIC_OFF
     call _RunIndicOff
-endm
+.endm
 
-macro SET_ROM_PAGE
+.macro SET_ROM_PAGE
     push af
     and 8
     rlca
@@ -82,14 +82,14 @@ macro SET_ROM_PAGE
     out (linkPort), a
     pop af
     and 7
-    or 88h
+    or 0x88
     out (2), a
-endm
+.endm
 
-macro EXIT_KEY_STR
-    db 0C1h, "MODE]"
-endm
-
+.macro EXIT_KEY_STR
+    .byte 0x0C1
+    .ascii "MODE]"
+    .endm
 ;;; Miscellaneous
 
-CALC_ROM_SIZE equ 256
+CALC_ROM_SIZE = 256

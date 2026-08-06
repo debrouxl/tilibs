@@ -37,13 +37,13 @@ CheckLinkActivity:
 	cpl
 	and 3
 	ret nz
- if ! defined TI84PC
+.ifndef TI84PC
 	in a, (2)
-	and 80h
+	and 0x80
 	ret z
- endif
+ .endif
 	in a, (9)
-	and 18h
+	and 0x18
 	ret
 
 ;; LinkGetByte:

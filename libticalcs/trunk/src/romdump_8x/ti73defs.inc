@@ -23,77 +23,77 @@
 
 ;;; Memory mapping
 
-memPort equ 6
+memPort = 6
 
 ;;; Link port
 
-linkPort          equ 0
-LINK_STATUS_MASK  equ 3
-LINK_RESET        equ 0
-LINK_D0L          equ 1
-LINK_D1L          equ 2
+linkPort = 0
+LINK_STATUS_MASK = 3
+LINK_RESET = 0
+LINK_D0L = 1
+LINK_D1L = 2
 
 ;;; RAM addresses
 
-curRow           equ 83E2h
-curCol           equ 83E3h
-appBackUpScreen  equ 8613h
-saveSScreen      equ 8A52h
-curPC            equ 9A5Dh
+curRow = 0x83E2
+curCol = 0x83E3
+appBackUpScreen = 0x8613
+saveSScreen = 0x8A52
+curPC = 0x9A5D
 
 ;;; Flags
 
-apdFlags       equ 08h
-apdRunning     equ 3
+apdFlags = 0x08
+apdRunning = 3
 
-remoteKeyFlag  equ 1Fh
-remoteKeyPress equ 5
+remoteKeyFlag = 0x1F
+remoteKeyPress = 5
 
 ;;; System calls
 
-_ClrScrnFull  equ 44ADh
-_DispHL       equ 446Eh
-_FlashToRAM2  equ 8054h
-_GetBaseVer   equ 4B8Eh
-_GetCSC       equ 400Fh
-_Mov18B       equ 46FCh
-_PutC         equ 446Bh
-_PutS         equ 4471h
-_RunIndicOff  equ 44D7h
+_ClrScrnFull = 0x44AD
+_DispHL = 0x446E
+_FlashToRAM2 = 0x8054
+_GetBaseVer = 0x4B8E
+_GetCSC = 0x400F
+_Mov18B = 0x46FC
+_PutC = 0x446B
+_PutS = 0x4471
+_RunIndicOff = 0x44D7
 
 ;;; Macros
 
-macro B_CALL, arg
-    db 0EFh
-    dw arg
-endm
+.macro B_CALL arg
+    .byte 0x0EF
+    .word \arg
+.endm
 
-macro CLEAR_LCD
+.macro CLEAR_LCD
     B_CALL _ClrScrnFull
-endm
-macro GET_CSC
+.endm
+.macro GET_CSC
     B_CALL _GetCSC
-endm
-macro PUT_CHAR
+.endm
+.macro PUT_CHAR
     B_CALL _PutC
-endm
-macro PUT_DECIMAL
+.endm
+.macro PUT_DECIMAL
     B_CALL _DispHL
-endm
-macro PUT_STRING
+.endm
+.macro PUT_STRING
     B_CALL _PutS
-endm
-macro RUN_INDIC_OFF
+.endm
+.macro RUN_INDIC_OFF
     B_CALL _RunIndicOff
-endm
-macro SET_ROM_PAGE
+.endm
+.macro SET_ROM_PAGE
     out (memPort), a
-endm
+.endm
 
-macro EXIT_KEY_STR
-    db 0C1h, "MODE]"
-endm
-
+.macro EXIT_KEY_STR
+    .byte 0x0C1
+    .ascii "MODE]"
+    .endm
 ;;; Miscellaneous
 
-CALC_ROM_SIZE equ 512
+CALC_ROM_SIZE = 512

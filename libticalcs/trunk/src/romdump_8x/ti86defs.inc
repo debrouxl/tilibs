@@ -23,69 +23,68 @@
 
 ;;; Memory mapping
 
-memPort equ 5
+memPort = 5
 
 ;;; Link port
 
-linkPort equ 7
-LINK_STATUS_MASK equ 03h
-LINK_RESET equ 0C0h
-LINK_D0L equ 0D4h
-LINK_D1L equ 0E8h
+linkPort = 7
+LINK_STATUS_MASK = 0x03
+LINK_RESET = 0x0C0
+LINK_D0L = 0x0D4
+LINK_D1L = 0x0E8
 
 ;;; RAM addresses
 
-curRow equ 0C00Fh
-curCol equ 0C010h
+curRow = 0x0C00F
+curCol = 0x0C010
 
 ;;; Flags
 
-apdFlags       equ 08h
-apdRunning     equ 3
+apdFlags = 0x08
+apdRunning = 3
 
-remoteKeyFlag  equ 15h
-remoteKeyPress equ 7
+remoteKeyFlag = 0x15
+remoteKeyPress = 7
 
 ;;; System calls
 
-_clrScrn     equ 4A82h
-_dispAHL     equ 4A33h
-_get_key     equ 4068h
-_putc        equ 4A2Bh
-_puts        equ 4A37h
-_runindicoff equ 4AB1h
+_clrScrn = 0x4A82
+_dispAHL = 0x4A33
+_get_key = 0x4068
+_putc = 0x4A2B
+_puts = 0x4A37
+_runindicoff = 0x4AB1
 
 ;;; Macros
 
-macro CLEAR_LCD
+.macro CLEAR_LCD
     call _clrScrn
-endm
-macro GET_CSC
+.endm
+.macro GET_CSC
     call _get_key
-endm
-macro PUT_CHAR
+.endm
+.macro PUT_CHAR
     call _putc
-endm
-macro PUT_DECIMAL
+.endm
+.macro PUT_DECIMAL
     xor a
     call _dispAHL
-endm
-macro PUT_STRING
+.endm
+.macro PUT_STRING
     call _puts
-endm
-macro RUN_INDIC_OFF
+.endm
+.macro RUN_INDIC_OFF
     call _runindicoff
-endm
+.endm
 
-macro SET_ROM_PAGE
+.macro SET_ROM_PAGE
     out (memPort), a
-endm
+.endm
 
-macro EXIT_KEY_STR
-    db "[EXIT]"
-endm
-
+.macro EXIT_KEY_STR
+    .ascii "[EXIT]"
+    .endm
 ;;; Miscellaneous
 
-CALC_ROM_SIZE equ 256
+CALC_ROM_SIZE = 256
 

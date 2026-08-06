@@ -23,73 +23,72 @@
 
 ;;; Memory mapping
 
-memPort equ 2
+memPort = 2
 
 ;;; Link port
 
-linkPort    equ 0
-LINK_RESET  equ 0C0h
+linkPort = 0
+LINK_RESET = 0x0C0
 
 ;;; RAM addresses
 
-kbdScanCode  equ 8000h
-curRow       equ 800Ch
-curCol       equ 800Dh
-errNo        equ 8219h
-errSP        equ 821Ah
-saveSScreen  equ 8228h
-fpBase       equ 8D0Ch
-FPS          equ 8D0Eh
-OPBase       equ 8D10h
-OPS          equ 8D12h
+kbdScanCode = 0x8000
+curRow = 0x800C
+curCol = 0x800D
+errNo = 0x8219
+errSP = 0x821A
+saveSScreen = 0x8228
+fpBase = 0x8D0C
+FPS = 0x8D0E
+OPBase = 0x8D10
+OPS = 0x8D12
 
 ;;; Flags
 
-apdFlags    equ 08h
-apdRunning  equ 3
+apdFlags = 0x08
+apdRunning = 3
 
-indicFlags  equ 12h
-indicRun    equ 0
+indicFlags = 0x12
+indicRun = 0
 
 ;;; Constants
 
-cxCmd equ 40h
-cxError equ 52h
+cxCmd = 0x40
+cxError = 0x52
 
 ;;; Macros
 
-macro CLEAR_LCD
+.macro CLEAR_LCD
     call ClearLCD
-endm
-macro PUT_CHAR
+.endm
+.macro PUT_CHAR
     call PutC
-endm
-macro PUT_DECIMAL
+.endm
+.macro PUT_DECIMAL
     call DispHL
-endm
-macro PUT_STRING
+.endm
+.macro PUT_STRING
     call PutS
-endm
+.endm
 
-macro GET_CSC
+.macro GET_CSC
     di
     ld hl, kbdScanCode
     ld a, (hl)
     ld (hl), 0
-endm
-macro RUN_INDIC_OFF
+.endm
+.macro RUN_INDIC_OFF
     res indicRun, (iy + indicFlags)
-endm
-macro SET_ROM_PAGE
+.endm
+.macro SET_ROM_PAGE
     and 7
-    or 88h
+    or 0x88
     out (memPort), a
-endm
+.endm
 
-macro EXIT_KEY_STR
-    db "[MODE]"
-endm
-
+.macro EXIT_KEY_STR
+    .ascii "[MODE]"
+    .endm
 ;;; Miscellaneous
 
-CALC_ROM_SIZE equ 128
+CALC_ROM_SIZE = 128

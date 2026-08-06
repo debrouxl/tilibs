@@ -21,21 +21,21 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-defaultMemPage    equ safe_mem			; 1  Original ROM page
-defaultLinkState  equ defaultMemPage + 1	; 1  Original link port value (83)
-defaultMemExt     equ defaultLinkState		; 1  Original ROM bank (84PC)
-linkD0L	          equ defaultLinkState		; 1  Link port value for a 0 (82)
-linkD1L           equ linkD0L + 1		; 1  Link port value for a 1 (82)
+defaultMemPage = safe_mem			; 1  Original ROM page
+defaultLinkState = defaultMemPage + 1	; 1  Original link port value (83)
+defaultMemExt = defaultLinkState		; 1  Original ROM bank (84PC)
+linkD0L = defaultLinkState		; 1  Link port value for a 0 (82)
+linkD1L = linkD0L + 1		; 1  Link port value for a 1 (82)
 
-errorCount        equ linkD1L + 1		; 2  Count of errors
-blockCount        equ errorCount + 2		; 2  Count of blocks transferred
+errorCount = linkD1L + 1		; 2  Count of errors
+blockCount = errorCount + 2		; 2  Count of blocks transferred
 
-sendPacketCmd     equ blockCount + 2		; 2  Command to send
-sendPacketLength  equ sendPacketCmd + 2		; 2  Length of packet to send
-sendPacketDataPtr equ sendPacketLength + 2	; 2  Pointer to data to send
-sendPacketData    equ sendPacketDataPtr + 2	; 4  Buffer for data to send
+sendPacketCmd = blockCount + 2		; 2  Command to send
+sendPacketLength = sendPacketCmd + 2		; 2  Length of packet to send
+sendPacketDataPtr = sendPacketLength + 2	; 2  Pointer to data to send
+sendPacketData = sendPacketDataPtr + 2	; 4  Buffer for data to send
 
-packetChecksum    equ sendPacketData + 4	; 2  Checksum of packet
-recPacketCmd      equ packetChecksum + 2	; 2  Last command received
-recPacketLength   equ recPacketCmd + 2		; 2  Length of last packet received
-recPacketData	  equ recPacketLength + 2	; 64 Data received in last packet
+packetChecksum = sendPacketData + 4	; 2  Checksum of packet
+recPacketCmd = packetChecksum + 2	; 2  Last command received
+recPacketLength = recPacketCmd + 2		; 2  Length of last packet received
+recPacketData = recPacketLength + 2	; 64 Data received in last packet
