@@ -202,20 +202,17 @@ AC_ARG_ENABLE([builtin-rom-dumpers],
   AS_HELP_STRING([--disable-builtin-rom-dumpers], [do recompile ROM dumping utilities]),
   [], [enable_builtin_rom_dumpers=yes])
 
-AC_ARG_VAR([SPASM], [SPASM Z80 assembler])
 AC_ARG_VAR([Z80_AS], [GNU Z80 assembler])
 AC_ARG_VAR([Z80_LD], [GNU Z80 linker])
 AC_ARG_VAR([M68K_AS], [GNU m68k assembler])
 AC_ARG_VAR([M68K_LD], [GNU m68k linker])
 AC_ARG_VAR([M68K_OBJCOPY], [GNU m68k objcopy])
 AC_ARG_VAR([TIFILEUTIL], [Tool for creating TI variable files])
-have_spasm=no
 have_z80as=no
 have_z80ld=no
 have_tifileutil=no
 have_tigcc=no
 have_m68klinuxgnu=no
-: ${SPASM=spasm}
 : ${Z80_AS=z80-unknown-coff-as}
 : ${Z80_LD=z80-unknown-coff-ld}
 : ${M68K_AS=m68k-linux-gnu-as}
@@ -224,18 +221,6 @@ have_m68klinuxgnu=no
 : ${TIFILEUTIL=tifileutil}
 
 if test "x$enable_builtin_rom_dumpers" != "xyes" ; then
-  AC_MSG_CHECKING([whether $SPASM works])
-  cat >conftest.asm <<EOF
-    .addinstr B_CALL * EF 3 NOP 1
-    .org 9d95h
-    B_CALL 4972h
-    ret
-EOF
-  if "$SPASM" conftest.asm conftest.bin >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
-    have_spasm=yes
-  fi
-  AC_MSG_RESULT([$have_spasm])
-
   AC_MSG_CHECKING([whether $Z80_AS works])
   cat >conftest.asm <<EOF
 	.globl __load_addr
@@ -298,12 +283,12 @@ EOF
   AC_MSG_RESULT([$have_m68klinuxgnu])
 fi
 
-if test "x$have_spasm$have_z80as$have_z80ld$have_tifileutil" = "xyesyesyesyes" ; then
+if test "x$have_z80as$have_z80ld$have_tifileutil" = "xyesyesyes" ; then
   build_z80_rom_dumpers=yes
 else
   build_z80_rom_dumpers=no
   if test "x$enable_builtin_rom_dumpers" = "xno" ; then
-    AC_MSG_FAILURE([spasm, z80-unknown-coff-as, z80-unknown-coff-ld and/or tifileutil are not installed or are not usable.])
+    AC_MSG_FAILURE([z80-unknown-coff-as, z80-unknown-coff-ld and/or tifileutil are not installed or are not usable.])
   fi
 fi
 
