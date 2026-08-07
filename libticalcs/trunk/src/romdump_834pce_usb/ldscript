@@ -1,0 +1,11 @@
+/*  Linker script for the TI-Z80 ROM dumpers.
+ *
+ *  The load address is provided by the __load_addr symbol, defined in
+ *  romdump.asm on a per-calculator basis (the execution address of the
+ *  ROM dumping code on the calculator).  The code is emitted as a raw
+ *  binary without the gap preceding the load address.
+ */
+SECTIONS {
+	. = __load_addr;
+	.text : { *(.text) }
+}
