@@ -64,6 +64,12 @@ set(PUBLIC_HEADERS
 
 # auto-creation of all targets with flags etc., alongside with internal deps
 create_lib_target_with_deps(ticalcs2 tifiles2 ticables2 ticonv)
+target_include_directories(ticalcs2 PRIVATE src)
+
+if(BUILD_ROM_DUMPERS)
+    include(cmake/BuildRomDumpers.cmake)
+    ticalcs_add_rom_dumpers(ticalcs2)
+endif()
 
 if(LINUX)
     target_link_libraries(ticalcs2 PRIVATE Threads::Threads)

@@ -38,7 +38,9 @@ jobs:
           sudo sed -i 's/azure\.//' /etc/apt/sources.list
 
       - name: Install dependencies
-        run: sudo apt update; sudo apt install -y libudev-dev
+        run: |
+          sudo apt update
+          sudo apt install -y binutils-m68k-linux-gnu binutils-z80 libudev-dev
 
       - name: Install latest CMake
         uses: lukka/get-cmake@9388b6042e1c7b834f01bbd0c06739bc321414e5 # latest as of 2025-06-25
@@ -55,7 +57,7 @@ jobs:
         with:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           configurePreset: 'Linux-${{ matrix.arch }}${{ matrix.preset_suffix }}'
-          configurePresetAdditionalArgs: "['-DDEPS_RELEASE_ONLY=ON']"
+          configurePresetAdditionalArgs: "['-DDEPS_RELEASE_ONLY=ON', '-DBUILD_ROM_DUMPERS=ON']"
           buildPreset: 'Linux-${{ matrix.arch }}${{ matrix.preset_suffix }}-${{ matrix.config }}'
           buildPresetAdditionalArgs: "['--target', 'check', 'install']"
         env:

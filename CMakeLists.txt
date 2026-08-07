@@ -15,7 +15,6 @@ cmake_minimum_required(VERSION 3.12)
 #   - configures and installs the .pc files for pkg-config
 #
 # Caveats:
-#   - no support for the ROM dumpers subdirectories
 #   - not all the autotools/configure options are available
 #   - no updatepot/updatepo targets are available, but simply executing intltool-update does the job...
 #   - probably doesn't work very well with ancient toolchains or on uncommon OSes
@@ -24,7 +23,6 @@ cmake_minimum_required(VERSION 3.12)
 #   - this has been succesfully tested on recent macOS, Linux, and Windows (with vcpkg).
 #
 # In the future...:
-#   - TODO: add support to build the ROM dumpers (will end up just launching the external tools...)
 #   - WISH: do not hardcode the (auto-generated...) potfiles_* target names
 #   - WISH: better expose each lib's generated install target (NTS: look at cmake's components feature?)
 #   - WISH: provide Find* CMake modules for the libs themselves?
@@ -64,6 +62,11 @@ project(tilibs C CXX)
 option(BUILD_TESTS "Whether to build tests" ON)
 option(BUILD_TIFILEUTIL "Whether to build the tifileutil tool" ON)
 option(BUILD_SHARED_LIBS "Whether to build shared libs instead of static ones" ON)
+option(BUILD_ROM_DUMPERS "Whether to rebuild libticalcs ROM dumpers with cross-binutils" OFF)
+
+if(BUILD_ROM_DUMPERS AND NOT BUILD_TIFILEUTIL)
+    message(FATAL_ERROR "BUILD_ROM_DUMPERS requires BUILD_TIFILEUTIL=ON")
+endif()
 
 # Our modules
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.cmake)
@@ -197,11 +200,12 @@ find_package(PkgConfig)
 add_subdirectory(libticonv/trunk)
 add_subdirectory(libtifiles/trunk)
 add_subdirectory(libticables/trunk)
-add_subdirectory(libticalcs/trunk)
 
 if(BUILD_TIFILEUTIL)
     add_subdirectory(tifileutil)
 endif()
+
+add_subdirectory(libticalcs/trunk)
 
 if(BUILD_TESTS)
     add_custom_target(check
