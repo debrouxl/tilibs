@@ -26,7 +26,7 @@
     rst 0x28
     .word \arg
     .endm
-.ifdef TI84P
+.if !TI84PC
 _LdHLind = 0x4009
 _cphlde = 0x400C
 _PutC = 0x4504
@@ -81,7 +81,7 @@ usbQueuedCount = 0x9C27
 .endm
 .endif
 
-.ifdef TI84PC
+.if TI84PC
 _LdHLind = 0x4009
 _cphlde = 0x400C
 _PutC = 0x44FB
@@ -156,19 +156,25 @@ outputBuffer = appBackUpScreen+2
 	.globl __load_addr
 __load_addr = userMem - 2
 
-.ifdef TI84P
+.if TI84P
         .byte 0x0BB,0x6D
+        B_CALL _runIndicOff
 .endif
-.ifdef TI84PC
+.if TI84PC
         .byte 0x0EF,0x69
         res appTextSave,(iy+appFlags)
         ld a,1
         out (0x20),a
-.endif
         B_CALL _runIndicOff
+.endif
+.if TI82A
+; ION-style header for CalcUtil
+        xor a
+        .byte 0,0
+.endif
 ; Unlock Flash, if possible.
 ; The purpose is to get an accurate dump of the certificate page (page 0x3E/0x7E).
-.ifdef TI84P
+.if TI84P || TI82A
         in a,(6)
         push af
         call Unlock
@@ -232,7 +238,7 @@ sizeRequested:
         inc hl
         ld (hl),0
         inc hl
-.ifdef TI84PC
+.if TI84PC
         ld (hl),0x40
 .else
         in a,(0x21)
@@ -352,7 +358,7 @@ sError:
         .ascii "Press any key to"
         .asciz "quit."
 SendFlashPacket:
-.ifdef TI84PC
+.if TI84PC
         rlca
         srl a
 .endif
@@ -368,7 +374,7 @@ SendPacket:
         push bc
         ld (outPageNum),a
         SAVE_MEM_PAGE
-.ifdef TI84PC
+.if TI84PC
         sbc a,a
         out (0x0E),a
 .endif
@@ -879,7 +885,7 @@ endReceive:
 
 ;----------------------------------------------------------------------------
 
-.ifdef TI84P
+.if TI84P || TI82A
 
 ;;; Table of supported OS and boot code versions
 VersionTable:
