@@ -207,6 +207,8 @@ int tifiles_file_read_regular(const char *filename, FileContent *content)
 	}
 	else
 	{
+		tifiles_critical("tifiles_file_read_regular: unable to determine the calculator model", __FUNCTION__);
+		tifiles_content_delete_regular(content);
 		return ERR_BAD_CALC;
 	}
 }
@@ -419,7 +421,7 @@ int TICALL tifiles_content_delete_backup(BackupContent *content)
  * Load the backup file into a BackupContent structure.
  *
  * Structure content must be freed with #tifiles_content_delete_backup when
- * no longer used.
+ * no longer used. If an error occurs, the structure content is released for you.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -445,6 +447,8 @@ int tifiles_file_read_backup(const char *filename, BackupContent *content)
 	}
 	else
 #endif
+	tifiles_critical("tifiles_file_read_backup: unable to determine the calculator model", __FUNCTION__);
+	tifiles_content_delete_backup(content);
 	return ERR_BAD_CALC;
 }
 
@@ -583,27 +587,23 @@ int TICALL tifiles_content_delete_flash(FlashContent *content)
 		FlashContent *ptr;
 		unsigned int i;
 
-		g_free(content->data_part);
-
-		ptr = content->next;
+		// Free the whole chain, including the head's own pages.
+		ptr = content;
 		while (ptr != NULL)
 		{
 			FlashContent *next = ptr->next;
 
 			g_free(ptr->data_part);
-			g_free(ptr);
-
-			for (i = 0; i < content->num_pages; i++)
+			for (i = 0; i < ptr->num_pages; i++)
 			{
-				g_free(content->pages[i]->data);
-				g_free(content->pages[i]);
+				g_free(ptr->pages[i]->data);
+				g_free(ptr->pages[i]);
 			}
-			g_free(content->pages);
+			g_free(ptr->pages);
+			g_free(ptr);
 
 			ptr = next;
 		}
-
-		g_free(content);
 #else
 		return ERR_BAD_CALC;
 #endif
@@ -692,7 +692,7 @@ FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
  * Load the FLASH file into a FlashContent structure.
  *
  * Structure content must be freed with #tifiles_content_delete_flash when
- * no longer used.
+ * no longer used. If an error occurs, the structure content is released for you.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -724,6 +724,8 @@ int tifiles_file_read_flash(const char *filename, FlashContent *content)
 	}
 	else
 	{
+		tifiles_critical("tifiles_file_read_flash: unable to determine the calculator model", __FUNCTION__);
+		tifiles_content_delete_flash(content);
 		return ERR_BAD_CALC;
 	}
 }

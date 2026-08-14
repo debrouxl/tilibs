@@ -128,20 +128,25 @@ int TICALL tifiles_group_contents(FileContent **src_contents, FileContent **dst_
 		memcpy(dst, src_contents[0], sizeof(FileContent));
 	}
 
-	dst->num_entries = n;
-	dst->entries = (VarEntry **)g_malloc0((n + 1) * sizeof(VarEntry*));
+	dst->num_entries = 0;
+	for (i = 0; i < n; i++)
+	{
+		dst->num_entries += src_contents[i]->num_entries;
+	}
+	dst->entries = (VarEntry **)g_malloc0((dst->num_entries + 1) * sizeof(VarEntry*));
 	if (dst->entries == NULL)
 	{
 		g_free(dst);
 		return ERR_MALLOC;
 	}
 
-	for (i = 0; i < n; i++)
+	for (i = 0, j = 0; i < n; i++)
 	{
 		FileContent *src = src_contents[i];
+		unsigned int k;
 
-		for (j = 0; j < src->num_entries; j++)
-			dst->entries[i] = tifiles_ve_dup(src->entries[j]);
+		for (k = 0; k < src->num_entries; k++, j++)
+			dst->entries[j] = tifiles_ve_dup(src->entries[k]);
 	}
 
 	*dst_content = dst;
