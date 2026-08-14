@@ -326,7 +326,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 		}
 		if (fread_word(f, NULL) < 0) goto tfrr;
 
-		entry->data = (uint8_t *) g_malloc0(entry->size);
+		entry->data = (uint8_t *) g_malloc0(entry->size ? entry->size : 1);
 		if (entry->data == NULL) 
 		{
 			ret = ERR_MALLOC;
@@ -733,7 +733,16 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 					uint16_t page;
 					uint8_t flag = 0x80;
 					uint8_t data[FLASH_PAGE_SIZE];
-					FlashPage* fp = content->pages[i] = (FlashPage *)g_malloc0(sizeof(FlashPage));
+					FlashPage* fp;
+
+					if (i > 256)
+					{
+						// More than 256 Flash pages in a TI-Z80 OS / FlashApp: this looks wrong.
+						content->num_pages = i;
+						ret = ERR_INVALID_FILE;
+						goto tfrf;
+					}
+					fp = content->pages[i] = (FlashPage *)g_malloc0(sizeof(FlashPage));
 
 					ret = hex_block_read(f, &size, &addr, &flag, data, &page);
 

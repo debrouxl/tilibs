@@ -185,7 +185,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 				ret = ERR_INVALID_FILE;
 				goto tfrr;
 			}
-			entry->data = (uint8_t *)g_malloc0(entry->size);
+			entry->data = (uint8_t *)g_malloc0(entry->size ? entry->size : 1);
 			if (entry->data == NULL) 
 			{
 				ret = ERR_MALLOC;
