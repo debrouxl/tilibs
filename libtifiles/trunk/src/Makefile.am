@@ -6,7 +6,7 @@ AM_CFLAGS = -Wall
 lib_LTLIBRARIES = libtifiles2.la
 libtifilesincludedir = $(includedir)/tilp2
 libtifilesinclude_HEADERS = \
-	tifiles.h export2.h \
+	tifiles.h export2.h memreader.h \
 	files8x.h files9x.h filesnsp.h \
 	types73.h types82.h types83.h types83p.h types84p.h types85.h types86.h \
 	types89.h types89t.h types92.h types92p.h \
@@ -25,6 +25,7 @@ libtifiles2_la_SOURCES = *.h \
 	error.cc \
 	files8x.cc files9x.cc filesnsp.cc filesxx.cc \
 	filetypes.cc \
+	memreader.cc \
 	grouped.cc \
 	intelhex.cc \
 	metadata.cc \

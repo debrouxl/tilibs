@@ -31,6 +31,7 @@
 #include "export2.h"
 #include <stdint.h>
 #include "typesxx.h"
+#include "memreader.h"
 
 	/***********************/
 	/* Types & Definitions */
@@ -396,6 +397,19 @@ typedef struct
 	TIEXPORT2 int TICALL tifiles_model_to_dev_type(CalcModel model);
 
 	TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target);
+
+	TIEXPORT2 int TICALL tifiles_buffer_has_ti_header  (const uint8_t *data, size_t size);
+	TIEXPORT2 int TICALL tifiles_buffer_has_tib_header (const uint8_t *data, size_t size);
+	TIEXPORT2 int TICALL tifiles_buffer_has_tig_header (const uint8_t *data, size_t size);
+	TIEXPORT2 int TICALL tifiles_buffer_has_tifl_header(const uint8_t *data, size_t size, uint8_t *dev_type, uint8_t *data_type);
+	TIEXPORT2 int TICALL tifiles_buffer_has_tno_header (const uint8_t *data, size_t size);
+
+	TIEXPORT2 int TICALL tifiles_buffer_is_ti     (const uint8_t *data, size_t size);
+	TIEXPORT2 int TICALL tifiles_buffer_is_os     (const uint8_t *data, size_t size);
+	TIEXPORT2 int TICALL tifiles_buffer_is_app    (const uint8_t *data, size_t size);
+	TIEXPORT2 int TICALL tifiles_buffer_is_flash  (const uint8_t *data, size_t size);
+
+	TIEXPORT2 int TICALL tifiles_buffer_test(const uint8_t *data, size_t size, FileClass type, CalcModel target);
 
 	TIEXPORT2 CalcModel TICALL tifiles_fext_to_model(const char *ext);
 
