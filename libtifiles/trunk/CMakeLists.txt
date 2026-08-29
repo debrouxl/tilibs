@@ -15,6 +15,7 @@ set(SRC_FILES
         src/filesnsp.cc
         src/filesxx.cc
         src/filetypes.cc
+        src/memreader.cc
         src/grouped.cc
         src/intelhex.cc
         src/metadata.cc
@@ -48,7 +49,8 @@ set(PUBLIC_HEADERS
         src/types92p.h
         src/typesnsp.h
         src/typesv2.h
-        src/typesxx.h)
+        src/typesxx.h
+        src/memreader.h)
 
 # external deps lookup
 find_package(ZLIB REQUIRED)
