@@ -86,7 +86,17 @@ void TICALL ticalcs_dirlist_destroy(GNode** tree)
 
 		if ((*tree)->children != NULL)
 		{
-			g_node_traverse(*tree, G_IN_ORDER, G_TRAVERSE_LEAVES, -1, free_varentry, NULL);
+			GNode * child;
+
+			// Free the data attached to every node below the root: the variables
+			// hanging off leaves as well as the folder entries attached to
+			// intermediate nodes on TI-8x/9x and Nspire models (including nested
+			// folders). The TreeInfo stored in the root is released separately
+			// below, hence the traversal starts at the root's children.
+			for (child = g_node_first_child(*tree); child != NULL; child = g_node_next_sibling(child))
+			{
+				g_node_traverse(child, G_IN_ORDER, G_TRAVERSE_ALL, -1, free_varentry, NULL);
+			}
 		}
 
 		ti = (TreeInfo *)((*tree)->data);
