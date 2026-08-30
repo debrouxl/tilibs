@@ -63,6 +63,8 @@ static int ser_prepare(CableHandle *h)
 		case PORT_2: h->address = 0x2f8; device = "/dev/" DEVNAME "1"; break;
 		case PORT_3: h->address = 0x3e8; device = "/dev/" DEVNAME "2"; break;
 		case PORT_4: h->address = 0x3e8; device = "/dev/" DEVNAME "3"; break;
+		case PORT_0:
+		case PORT_MAX:
 		default: return ERR_ILLEGAL_ARG;
 	}
 

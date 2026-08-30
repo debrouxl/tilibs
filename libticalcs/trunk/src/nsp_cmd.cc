@@ -955,7 +955,7 @@ int TICALL nsp_cmd_r_progress(CalcHandle *handle, uint8_t *value)
 
 /////////////----------------
 
-int TICALL nsp_cmd_s_generic_data(CalcHandle *handle, uint32_t size, uint8_t *data, uint16_t sid, uint8_t cmd)
+int TICALL nsp_cmd_s_generic_data(CalcHandle *handle, uint32_t size, const uint8_t *data, uint16_t sid, uint8_t cmd)
 {
 	int retval = 0;
 
@@ -1013,7 +1013,7 @@ int TICALL nsp_cmd_r_generic_data(CalcHandle *handle, uint32_t *size, uint8_t **
 
 /////////////----------------
 
-int TICALL nsp_cmd_s_echo(CalcHandle *handle, uint32_t size, uint8_t *data)
+int TICALL nsp_cmd_s_echo(CalcHandle *handle, uint32_t size, const uint8_t *data)
 {
 	ticalcs_info("  sending echo:");
 	return nsp_cmd_s_generic_data(handle, size, data, NSP_PORT_ECHO, 0);

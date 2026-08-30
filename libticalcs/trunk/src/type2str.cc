@@ -142,6 +142,7 @@ const char *TICALL ticalcs_memtype_to_string(CalcMemType type)
 	{
 	case MEMORY_FREE: return _("free");
 	case MEMORY_USED: return _("used");
+	case MEMORY_NONE:
 	default: return _("unknown");
 	}
 }

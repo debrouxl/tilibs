@@ -241,7 +241,7 @@ int TICALL dusb_send_buf_size_request(CalcHandle* handle, uint32_t size)
 	const int ret = dusb_send(handle, &raw);
 	if (!ret)
 	{
-		ticalcs_info("  PC->TI: Buffer Size Request (%i bytes)", size);
+		ticalcs_info("  PC->TI: Buffer Size Request (%u bytes)", size);
 	}
 
 	return ret;
@@ -290,7 +290,7 @@ int TICALL dusb_recv_buf_size_alloc(CalcHandle* handle, uint32_t *size)
 		{
 			*size = tmp;
 		}
-		ticalcs_info("  TI->PC: Buffer Size Allocation (%i bytes)", tmp);
+		ticalcs_info("  TI->PC: Buffer Size Allocation (%u bytes)", tmp);
 
 		handle->priv.dusb_rpkt_maxlen = tmp;
 	} while(0);
@@ -328,7 +328,7 @@ int TICALL dusb_recv_buf_size_request(CalcHandle* handle, uint32_t *size)
 		{
 			*size = tmp;
 		}
-		ticalcs_info("  TI->PC: Buffer Size Request (%i bytes)", tmp);
+		ticalcs_info("  TI->PC: Buffer Size Request (%u bytes)", tmp);
 	} while(0);
 
 	return ret;
@@ -359,7 +359,7 @@ int TICALL dusb_send_buf_size_alloc(CalcHandle* handle, uint32_t size)
 	const int ret = dusb_send(handle, &raw);
 	if (!ret)
 	{
-		ticalcs_info("  PC->TI: Buffer Size Allocation (%i bytes)", size);
+		ticalcs_info("  PC->TI: Buffer Size Allocation (%u bytes)", size);
 	}
 
 	handle->priv.dusb_rpkt_maxlen = size;
@@ -455,7 +455,7 @@ int TICALL dusb_recv_acknowledge(CalcHandle *handle)
 
 			const uint32_t size = (((uint32_t)raw.data[0]) << 24) | (((uint32_t)raw.data[1]) << 16) | (((uint32_t)raw.data[2]) << 8) | (((uint32_t)raw.data[3])
 			                                                                                                                            << 0);
-			ticalcs_info("  TI->PC: Buffer Size Request (%i bytes)", size);
+			ticalcs_info("  TI->PC: Buffer Size Request (%u bytes)", size);
 
 			ret = dusb_send_buf_size_alloc(handle, size);
 			if (ret)
@@ -494,14 +494,14 @@ static void workaround_send(CalcHandle *handle, DUSBRawPacket *raw, DUSBVirtualP
 {
 	uint8_t buf[64];
 
-	ticalcs_info("workaround_send: vtl->size=%d\traw->size=%d", vtl->size, raw->size);
+	ticalcs_info("workaround_send: vtl->size=%u\traw->size=%u", vtl->size, raw->size);
 
 	if (handle->model == CALC_TI89T_USB)
 	{
 		// A 1076-byte (string) variable doesn't require this workaround, but bigger (string) variables do.
 		if (vtl->size > 1076 && ((raw->size + 5) % 64) == 0)
 		{
-			ticalcs_info("XXX triggering an extra bulk write\n\tvtl->size=%d\traw->size=%d", vtl->size, raw->size);
+			ticalcs_info("XXX triggering an extra bulk write\n\tvtl->size=%u\traw->size=%u", vtl->size, raw->size);
 			ticables_cable_send(handle->cable, buf, 0);
 		}
 	}
@@ -510,7 +510,7 @@ static void workaround_send(CalcHandle *handle, DUSBRawPacket *raw, DUSBVirtualP
 		// A 244-byte (program) variable doesn't require this workaround, but bigger (program) variables do.
 		if (raw->type == DUSB_RPKT_VIRT_DATA_LAST && vtl->size > 244 && (vtl->size % 250) == 244)
 		{
-			ticalcs_info("XXX triggering an extra bulk write\n\tvtl->size=%d\traw->size=%d", vtl->size, raw->size);
+			ticalcs_info("XXX triggering an extra bulk write\n\tvtl->size=%u\traw->size=%u", vtl->size, raw->size);
 			ticables_cable_send(handle->cable, buf, 0);
 		}
 	}
@@ -518,7 +518,7 @@ static void workaround_send(CalcHandle *handle, DUSBRawPacket *raw, DUSBVirtualP
 	{
 		if (raw->type == DUSB_RPKT_VIRT_DATA_LAST && ((((raw->size + 5) % 64) == 0)/* || (vtl->size > 1018 && ((vtl->size + 6) % 1018) == 0)*/))
 		{
-			ticalcs_info("XXX triggering an extra bulk write\n\tvtl->size=%d\traw->size=%d", vtl->size, raw->size);
+			ticalcs_info("XXX triggering an extra bulk write\n\tvtl->size=%u\traw->size=%u", vtl->size, raw->size);
 			ticables_cable_send(handle->cable, buf, 0);
 		}
 	}
@@ -704,13 +704,13 @@ static void workaround_recv(CalcHandle *handle, DUSBRawPacket * raw, DUSBVirtual
 {
 	uint8_t buf[64];
 
-	ticalcs_info("workaround_recv: vtl->size=%d\traw->size=%d", vtl->size, raw->size);
+	ticalcs_info("workaround_recv: vtl->size=%u\traw->size=%u", vtl->size, raw->size);
 
 	if (handle->model == CALC_TI89T_USB)
 	{
 		if ((raw->size % 64) == 0)
 		{
-			ticalcs_info("XXX triggering an extra bulk read\n\tvtl->size=%d\traw->size=%d", vtl->size, raw->size);
+			ticalcs_info("XXX triggering an extra bulk read\n\tvtl->size=%u\traw->size=%u", vtl->size, raw->size);
 			ticables_cable_recv(handle->cable, buf, 0);
 		}
 	}
@@ -718,7 +718,7 @@ static void workaround_recv(CalcHandle *handle, DUSBRawPacket * raw, DUSBVirtual
 	{
 		if (((raw->size + 5) % 64) == 0)
 		{
-			ticalcs_info("XXX triggering an extra bulk read\n\tvtl->size=%d\traw->size=%d", vtl->size, raw->size);
+			ticalcs_info("XXX triggering an extra bulk read\n\tvtl->size=%u\traw->size=%u", vtl->size, raw->size);
 			ticables_cable_recv(handle->cable, buf, 0);
 		}
 	}
@@ -814,7 +814,7 @@ int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacket* vtl, ui
 #endif
 				if (vtl->data != nullptr && vtl->type == 0xEE00)
 				{
-					ticalcs_info("    Error Code : %04x\n", (((int)vtl->data[0]) << 8) | vtl->data[1]);
+					ticalcs_info("    Error Code : %04x\n", (((unsigned int)vtl->data[0]) << 8) | vtl->data[1]);
 				}
 			}
 			else
@@ -895,7 +895,7 @@ int TICALL dusb_recv_data(CalcHandle* handle, DUSBVirtualPacket* vtl)
 	{
 		if (declared_size != vtl->size)
 		{
-			ticalcs_warning("invalid packet (declared size = %d, actual size = %d)", declared_size, vtl->size);
+			ticalcs_warning("invalid packet (declared size = %u, actual size = %u)", declared_size, vtl->size);
 			ret = ERR_INVALID_PACKET;
 		}
 	}

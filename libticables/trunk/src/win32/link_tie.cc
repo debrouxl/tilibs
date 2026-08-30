@@ -102,6 +102,7 @@ static int tie_prepare(CableHandle *h)
 		h->address = 1; h->device = strdup("1->0"); 
 		break;
 
+	case PORT_MAX:
 	default: return ERR_ILLEGAL_ARG;
 	}
 

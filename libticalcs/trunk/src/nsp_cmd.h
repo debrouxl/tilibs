@@ -101,10 +101,10 @@ TIEXPORT3 int TICALL nsp_cmd_r_login(CalcHandle *handle);
 TIEXPORT3 int TICALL nsp_cmd_s_status(CalcHandle *handle, uint8_t status);
 TIEXPORT3 int TICALL nsp_cmd_r_status(CalcHandle *handle, uint8_t *status);
 
-TIEXPORT3 int TICALL nsp_cmd_s_generic_data(CalcHandle *handle, uint32_t size, uint8_t *data, uint16_t sid, uint8_t cmd);
+TIEXPORT3 int TICALL nsp_cmd_s_generic_data(CalcHandle *handle, uint32_t size, const uint8_t *data, uint16_t sid, uint8_t cmd);
 TIEXPORT3 int TICALL nsp_cmd_r_generic_data(CalcHandle *handle, uint32_t *size, uint8_t **data);
 
-TIEXPORT3 int TICALL nsp_cmd_s_echo(CalcHandle *handle, uint32_t size, uint8_t *data);
+TIEXPORT3 int TICALL nsp_cmd_s_echo(CalcHandle *handle, uint32_t size, const uint8_t *data);
 TIEXPORT3 int TICALL nsp_cmd_r_echo(CalcHandle *handle, uint32_t *size, uint8_t **data);
 
 TIEXPORT3 int TICALL nsp_cmd_s_dev_infos(CalcHandle *handle, uint8_t cmd);

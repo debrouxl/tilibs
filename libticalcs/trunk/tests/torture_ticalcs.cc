@@ -206,7 +206,7 @@ static void torture_ticalcs()
     PRINTF(ticalcs_dirlist_ram_used, INT, nullptr);
     PRINTF(ticalcs_dirlist_flash_used, INT, nullptr, (GNode*)0x12345678);
     PRINTF(ticalcs_dirlist_flash_used, INT, (GNode*)0x12345678, nullptr);
-    PRINTF(ticalcs_dirlist_ve_count, INT, nullptr);
+    PRINTF(ticalcs_dirlist_ve_count, UINT, nullptr);
     PRINTF(ticalcs_dirlist_ve_exist, PTR, nullptr, (VarEntry*)0x12345678);
     PRINTF(ticalcs_dirlist_ve_exist, PTR, (GNode*)0x12345678, nullptr);
     PRINTFVOID(ticalcs_dirlist_ve_add, nullptr, (VarEntry*)0x12345678);

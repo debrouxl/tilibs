@@ -69,6 +69,8 @@ static int gry_prepare(CableHandle *h)
 		case PORT_2: h->address = 0x2f8; device = "/dev/" DEVNAME "1"; break;
 		case PORT_3: h->address = 0x3e8; device = "/dev/" DEVNAME "2"; break;
 		case PORT_4: h->address = 0x3e8; device = "/dev/" DEVNAME "3"; break;
+		case PORT_0:
+		case PORT_MAX:
 		default: return ERR_ILLEGAL_ARG;
 	}
 
@@ -136,7 +138,7 @@ static int gry_open(CableHandle *h)
 	termset->c_lflag = 0;
 #endif
 	termset->c_cc[VMIN] = 0;
-	termset->c_cc[VTIME] = h->timeout;
+	termset->c_cc[VTIME] = (cc_t)h->timeout;
 
 	if (h->options_ex.parameters.parameters_gry.quirk_enable_rtscts)
 	{
@@ -184,9 +186,9 @@ static int gry_put(CableHandle* h, uint8_t *data, uint32_t len)
 		return ERR_WRITE_ERROR;
 	case 0:		// timeout
 		return ERR_WRITE_TIMEOUT;
+	default:
+		return 0;
 	}
-
-	return 0;
 }
 
 static int gry_get(CableHandle* h, uint8_t *data, uint32_t len)
@@ -209,6 +211,7 @@ static int gry_get(CableHandle* h, uint8_t *data, uint32_t len)
 			return ERR_READ_ERROR;
 		case 0:		// timeout
 			return ERR_READ_TIMEOUT;
+		default: break;
 		}
 
 		i += ret;
@@ -304,7 +307,7 @@ static int gry_check(CableHandle *h, int *status)
 
 static int gry_timeout(CableHandle *h)
 {
-	termset->c_cc[VTIME] = h->timeout;
+	termset->c_cc[VTIME] = (cc_t)h->timeout;
 	tcsetattr(dev_fd, TCSANOW, termset);
 
 	return 0;

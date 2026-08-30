@@ -48,6 +48,9 @@ static int par_prepare(CableHandle *h)
 	case PORT_1: h->address = 0x378; device = "/dev/parport0"; break;
 	case PORT_2: h->address = 0x278; device = "/dev/parport1"; break;
 	case PORT_3: h->address = 0x3bc; device = "/dev/parport2"; break;
+	case PORT_0:
+	case PORT_4:
+	case PORT_MAX:
 	default: return ERR_ILLEGAL_ARG;
 	}
 

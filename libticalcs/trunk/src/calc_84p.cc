@@ -188,6 +188,44 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 				}
 				// else fall through.
 			}
+			case CALC_NONE:
+			case CALC_TI73:
+			case CALC_TI82:
+			case CALC_TI83:
+			case CALC_TI83P:
+			case CALC_TI84P:
+			case CALC_TI85:
+			case CALC_TI86:
+			case CALC_TI89:
+			case CALC_TI89T:
+			case CALC_TI92:
+			case CALC_TI92P:
+			case CALC_V200:
+			case CALC_TI89T_USB:
+			case CALC_NSPIRE:
+			case CALC_TI80:
+			case CALC_TI84PC:
+			case CALC_TI84PT_USB:
+			case CALC_NSPIRE_CRADLE:
+			case CALC_NSPIRE_CLICKPAD:
+			case CALC_NSPIRE_CLICKPAD_CAS:
+			case CALC_NSPIRE_TOUCHPAD:
+			case CALC_NSPIRE_TOUCHPAD_CAS:
+			case CALC_NSPIRE_CX:
+			case CALC_NSPIRE_CX_CAS:
+			case CALC_NSPIRE_CMC:
+			case CALC_NSPIRE_CMC_CAS:
+			case CALC_NSPIRE_CXII:
+			case CALC_NSPIRE_CXII_CAS:
+			case CALC_NSPIRE_CXIIT:
+			case CALC_NSPIRE_CXIIT_CAS:
+			case CALC_CBL:
+			case CALC_CBR:
+			case CALC_CBL2:
+			case CALC_CBR2:
+			case CALC_LABPRO:
+			case CALC_TIPRESENTER:
+			case CALC_MAX:
 			default:
 			{
 				g_free(data);
@@ -797,7 +835,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 					fp->addr = data_addr;
 					fp->page = data_page++;
 					fp->flag = 0x80;
-					fp->size = r;
+					fp->size = (uint16_t)r;
 					fp->data = (uint8_t *)tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 					memcpy(fp->data, data + FLASH_PAGE_SIZE*page, r);
 
@@ -918,9 +956,9 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 			os_size += 4*(fp->size / 260);
 		}
 	}
-	ticalcs_debug("os_size overhead = %i", os_size);
+	ticalcs_debug("os_size overhead = %u", os_size);
 	os_size += ptr->data_length;
-	ticalcs_debug("os_size new = %i", os_size);
+	ticalcs_debug("os_size new = %u", os_size);
 
 	do
 	{
@@ -1218,7 +1256,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 			ret = dusb_cmd_r_var_content(handle, &varsize, &data);
 			if (!ret)
 			{
-				uint32_t i = data[9];
+				uint8_t i = data[9];
 				data[9] = data[10];
 				data[10] = i;
 
@@ -1271,6 +1309,44 @@ static int		dump_rom_1	(CalcHandle* handle)
 			ret = rd_send_dumper(handle, "romdump.8Xp", romDumpSize834pceu, romDump834pceu);
 			break;
 		}
+		case CALC_NONE:
+		case CALC_TI73:
+		case CALC_TI82:
+		case CALC_TI83:
+		case CALC_TI83P:
+		case CALC_TI84P:
+		case CALC_TI85:
+		case CALC_TI86:
+		case CALC_TI89:
+		case CALC_TI89T:
+		case CALC_TI92:
+		case CALC_TI92P:
+		case CALC_V200:
+		case CALC_TI89T_USB:
+		case CALC_NSPIRE:
+		case CALC_TI80:
+		case CALC_TI84PC:
+		case CALC_TI84PT_USB:
+		case CALC_NSPIRE_CRADLE:
+		case CALC_NSPIRE_CLICKPAD:
+		case CALC_NSPIRE_CLICKPAD_CAS:
+		case CALC_NSPIRE_TOUCHPAD:
+		case CALC_NSPIRE_TOUCHPAD_CAS:
+		case CALC_NSPIRE_CX:
+		case CALC_NSPIRE_CX_CAS:
+		case CALC_NSPIRE_CMC:
+		case CALC_NSPIRE_CMC_CAS:
+		case CALC_NSPIRE_CXII:
+		case CALC_NSPIRE_CXII_CAS:
+		case CALC_NSPIRE_CXIIT:
+		case CALC_NSPIRE_CXIIT_CAS:
+		case CALC_CBL:
+		case CALC_CBR:
+		case CALC_CBL2:
+		case CALC_CBR2:
+		case CALC_LABPRO:
+		case CALC_TIPRESENTER:
+		case CALC_MAX:
 		default:
 		{
 			ret = 0;
@@ -1412,7 +1488,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 						ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_TIME_FMT, 1, data);
 						if (!ret)
 						{
-							data[0] = _clock->state;
+							data[0] = (uint8_t)_clock->state;
 							ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_ON, 1, data);
 						}
 					}
@@ -1436,7 +1512,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 					if (!ret)
 					{
 						data[0] = (uint8_t)(_clock->year >> 8);
-						data[1] = _clock->year & 0xFF;
+						data[1] = (uint8_t)(_clock->year & 0xFF);
 						ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_YEAR, 2, data);
 						if (!ret)
 						{
@@ -1460,7 +1536,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 											ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_SECONDS, 1, data);
 											if (!ret)
 											{
-												data[0] = _clock->state;
+												data[0] = (uint8_t)_clock->state;
 												ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_ON, 1, data);
 											}
 										}
@@ -1542,12 +1618,12 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 					memcpy(&cur, localtime(&c), sizeof(struct tm));
 #endif
 
-					_clock->year = cur.tm_year + 1900;
-					_clock->month = cur.tm_mon + 1;
-					_clock->day = cur.tm_mday;
-					_clock->hours = cur.tm_hour;
-					_clock->minutes = cur.tm_min;
-					_clock->seconds = cur.tm_sec;
+					_clock->year = (uint16_t)(cur.tm_year + 1900);
+					_clock->month = (uint8_t)(cur.tm_mon + 1);
+					_clock->day = (uint8_t)(cur.tm_mday);
+					_clock->hours = (uint8_t)(cur.tm_hour);
+					_clock->minutes = (uint8_t)(cur.tm_min);
+					_clock->seconds = (uint8_t)(cur.tm_sec);
 
 					_clock->date_format = params[4]->data[0] == 0 ? 3 : params[4]->data[0];
 					_clock->time_format = params[5]->data[0] ? 24 : 12;

@@ -239,19 +239,12 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		sc->clipped_width = TI83_COLS;
 		sc->clipped_height = TI83_ROWS;
 	}
-	else if (handle->model == CALC_TI85)
+	else // if (handle->model == CALC_TI85 || handle->model == CALC_TI86)
 	{
-		sc->width = TI85_COLS;
-		sc->height = TI85_ROWS;
-		sc->clipped_width = TI85_COLS;
-		sc->clipped_height = TI85_ROWS;
-	}
-	else
-	{
-		sc->width = TI86_COLS;
-		sc->height = TI86_ROWS;
-		sc->clipped_width = TI86_COLS;
-		sc->clipped_height = TI86_ROWS;
+		sc->width = TI85_COLS; // Same as TI86_COLS
+		sc->height = TI85_ROWS; // Same as TI86_ROWS
+		sc->clipped_width = TI85_COLS; // Same as TI86_COLS
+		sc->clipped_height = TI85_ROWS; // Same as TI86_ROWS
 	}
 	sc->pixel_format = CALC_PIXFMT_MONO;
 
@@ -458,7 +451,6 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	uint8_t rej_code;
 	uint16_t status;
 
-	uint16_t length = content->data_length1;
 	varname[0] = LSB(content->data_length2);
 	varname[1] = MSB(content->data_length2);
 	varname[2] = LSB(content->data_length3);
@@ -477,7 +469,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 		}
 		else
 		{
-			ret = SEND_VAR(handle, content->data_length1, (handle->model == CALC_TI82) ? TI82_BKUP : ((handle->model == CALC_TI85) ? TI85_BKUP : TI86_BKUP), varname);
+			ret = SEND_VAR(handle, content->data_length1, (handle->model == CALC_TI82) ? TI82_BKUP : /*((handle->model == CALC_TI85) ?*/ TI85_BKUP /*: TI86_BKUP*/, varname);
 		}
 		if (!ret)
 		{
@@ -1263,7 +1255,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	for (i = 0; !ret && i < strlen(vr->name); i++)
 	{
-		const char c = toupper(vr->name[i]);
+		const char c = (char)toupper(vr->name[i]);
 
 		if (isdigit(c))
 		{

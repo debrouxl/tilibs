@@ -1155,7 +1155,7 @@ int dusb_dissect_cmd_data(CalcModel model, FILE *f, const uint8_t * data, uint32
 			}
 			else if (model != CALC_TI89T_USB)
 			{
-				const uint16_t addr = (((uint16_t)data[0]) << 8) | (((uint32_t)data[1]) << 0);
+				const uint16_t addr = (((uint16_t)data[0]) << 8) | (((uint16_t)data[1]) << 0);
 				fprintf(f, "Address: %04X\tPage: %02X\tFlag: %02X\n", addr, data[2], data[3]);
 			}
 			// else do nothing.
@@ -1289,7 +1289,7 @@ int TICALL dusb_cmd_s_os_begin(CalcHandle *handle, uint32_t size)
 
 	dusb_vtl_pkt_del(handle, pkt);
 
-	ticalcs_info("   size = %08x (%i)", size, size);
+	ticalcs_info("   size = %08X (%u)", size, size);
 
 	return retval;
 }
@@ -1323,7 +1323,7 @@ int TICALL dusb_cmd_r_os_ack(CalcHandle *handle, uint32_t *size)
 		if (size != nullptr)
 		{
 			*size = (((uint32_t)pkt->data[0]) << 24) | (((uint32_t)pkt->data[1]) << 16) | (((uint32_t)pkt->data[2]) << 8) | (((uint32_t)pkt->data[3]) << 0);
-			ticalcs_info("   chunk size = %08x (%i)", *size, *size);
+			ticalcs_info("   chunk size = %08X (%u)", *size, *size);
 		}
 	}
 
@@ -1382,7 +1382,7 @@ int TICALL dusb_cmd_s_os_header_89(CalcHandle *handle, uint32_t size, uint8_t *d
 	retval = dusb_send_data(handle, pkt);
 
 	dusb_vtl_pkt_del(handle, pkt);
-	ticalcs_info("   size = %08x (%i)", size, size);
+	ticalcs_info("   size = %08X (%u)", size, size);
 
 	return retval;
 }
@@ -1402,7 +1402,7 @@ int TICALL dusb_cmd_s_os_data_89(CalcHandle *handle, uint32_t size, uint8_t *dat
 	retval = dusb_send_data(handle, pkt);
 
 	dusb_vtl_pkt_del(handle, pkt);
-	ticalcs_info("   size = %08x (%i)", size, size);
+	ticalcs_info("   size = %08X (%u)", size, size);
 
 	return retval;
 }
@@ -1471,7 +1471,7 @@ int TICALL dusb_cmd_s_param_request(CalcHandle *handle, unsigned int npids, cons
 	VALIDATE_ATTRS(npids, pids);
 	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
-	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 2 + npids * sizeof(uint16_t), DUSB_VPKT_PARM_REQ,
+	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, 2 + npids * (unsigned int)sizeof(uint16_t), DUSB_VPKT_PARM_REQ,
 	                                             (uint8_t*)dusb_vtl_pkt_alloc_data(handle, 2 + npids * sizeof(uint16_t)));
 
 	pkt->data[0] = MSB(npids);
@@ -1486,7 +1486,7 @@ int TICALL dusb_cmd_s_param_request(CalcHandle *handle, unsigned int npids, cons
 	retval = dusb_send_data(handle, pkt);
 
 	dusb_vtl_pkt_del(handle, pkt);
-	ticalcs_info("   npids=%i", npids);
+	ticalcs_info("   npids=%u", npids);
 
 	return retval;
 }
@@ -1564,7 +1564,7 @@ int TICALL dusb_cmd_r_param_data(CalcHandle *handle, unsigned int nparams, DUSBC
 
 end:
 	dusb_vtl_pkt_del(handle, pkt);
-	ticalcs_info("   nparams=%i", nparams);
+	ticalcs_info("   nparams=%u", nparams);
 
 	return retval;
 }
@@ -1648,7 +1648,7 @@ int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, unsigned int naids, co
 	retval = dusb_send_data(handle, pkt);
 
 	dusb_vtl_pkt_del(handle, pkt);
-	ticalcs_info("   naids=%i", naids);
+	ticalcs_info("   naids=%u", naids);
 
 	return retval;
 }
@@ -1754,32 +1754,32 @@ static int dusb_cmd_s_rts2(CalcHandle *handle, const char *folder, const char *n
 		return ERR_MALLOC;
 	}
 
-	int pks = 2 + strlen(wire_name) + 1 + 5 + 2;
+	unsigned int pks = 2U + (unsigned int)strlen(wire_name) + 1U + 5U + 2U;
 	if (wire_folder[0] != 0)
 	{
-		pks += strlen(wire_folder) + 1;
+		pks += (unsigned int)strlen(wire_folder) + 1U;
 	}
 	for (i = 0; i < nattrs; i++)
 	{
-		pks += 4 + attrs[i]->size;
+		pks += 4U + attrs[i]->size;
 	}
 
-	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_RTS, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, pks));
+	DUSBVirtualPacket * pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_RTS, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, pks));
 
 	if (wire_folder[0] != 0)
 	{
-		pkt->data[j++] = strlen(wire_folder);
-		memcpy(pkt->data + j, folder, strlen(wire_folder) + 1);
-		j += strlen(wire_folder) + 1;
+		pkt->data[j++] = (uint8_t)strlen(wire_folder);
+		memcpy(pkt->data + j, folder, strlen(wire_folder) + 1U);
+		j += (unsigned int)strlen(wire_folder) + 1U;
 	}
 	else
 	{
 		pkt->data[j++] = 0;
 	}
 
-	pkt->data[j++] = strlen(wire_name);
-	memcpy(pkt->data + j, name, strlen(wire_name) + 1);
-	j += strlen(wire_name) + 1;
+	pkt->data[j++] = (uint8_t)strlen(wire_name);
+	memcpy(pkt->data + j, name, strlen(wire_name) + 1U);
+	j += (unsigned int)strlen(wire_name) + 1U;
 
 	free(wire_folder);
 	free(wire_name);
@@ -1788,7 +1788,7 @@ static int dusb_cmd_s_rts2(CalcHandle *handle, const char *folder, const char *n
 	pkt->data[j++] = LSB(MSW(size));
 	pkt->data[j++] = MSB(LSW(size));
 	pkt->data[j++] = LSB(LSW(size));
-	pkt->data[j++] = modeflag;
+	pkt->data[j++] = (uint8_t)modeflag;
 
 	pkt->data[j++] = MSB(nattrs);
 	pkt->data[j++] = LSB(nattrs);
@@ -1806,7 +1806,7 @@ static int dusb_cmd_s_rts2(CalcHandle *handle, const char *folder, const char *n
 	retval = dusb_send_data(handle, pkt);
 
 	dusb_vtl_pkt_del(handle, pkt);
-	ticalcs_info("   folder=%s, name=%s, size=%i, nattrs=%i", folder, name, size, nattrs);
+	ticalcs_info("   folder=%s, name=%s, size=%u, nattrs=%u", folder, name, size, nattrs);
 
 	return retval;
 }
@@ -1837,33 +1837,33 @@ int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const 
 	VALIDATE_ATTRS(nattrs, attrs);
 	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
-	int pks = 2 + strlen(name) + 1 + 5 + 2 + 2 * naids + 2;
-	if (strlen(folder))
+	unsigned int pks = 2U + (unsigned int)strlen(name) + 1U + 5U + 2U + 2U * naids + 2U;
+	if (folder[0] != 0)
 	{
-		pks += strlen(folder)+1;
+		pks += (unsigned int)strlen(folder) + 1U;
 	}
 	for (i = 0; i < nattrs; i++)
 	{
-		pks += 4 + attrs[i]->size;
+		pks += 4U + attrs[i]->size;
 	}
-	pks += 2;
+	pks += 2U;
 
 	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_VAR_REQ, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, pks));
 
-	if (strlen(folder))
+	if (folder[0] != 0)
 	{
-		pkt->data[j++] = strlen(folder);
-		memcpy(pkt->data + j, folder, strlen(folder)+1);
-		j += strlen(folder)+1;
+		pkt->data[j++] = (uint8_t)strlen(folder);
+		memcpy(pkt->data + j, folder, strlen(folder) + 1);
+		j += (unsigned int)strlen(folder) + 1;
 	}
 	else
 	{
 		pkt->data[j++] = 0;
 	}
 
-	pkt->data[j++] = strlen(name);
-	memcpy(pkt->data + j, name, strlen(name)+1);
-	j += strlen(name)+1;
+	pkt->data[j++] = (uint8_t)strlen(name);
+	memcpy(pkt->data + j, name, strlen(name) + 1);
+	j += (unsigned int)strlen(name) + 1;
 
 	pkt->data[j++] = 0x01;
 	pkt->data[j++] = 0xFF; pkt->data[j++] = 0xFF;
@@ -1894,7 +1894,7 @@ int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const 
 	retval = dusb_send_data(handle, pkt);
 
 	dusb_vtl_pkt_del(handle, pkt);
-	ticalcs_info("   folder=%s, name=%s, naids=%i, nattrs=%i", folder, name, naids, nattrs);
+	ticalcs_info("   folder=%s, name=%s, naids=%u, nattrs=%u", folder, name, naids, nattrs);
 
 	return retval;
 }
@@ -1940,7 +1940,7 @@ int TICALL dusb_cmd_r_var_content(CalcHandle *handle, uint32_t *size, uint8_t **
 		{
 			retval = ERR_MALLOC;
 		}
-		ticalcs_info("   size=%i", pkt->size);
+		ticalcs_info("   size=%u", pkt->size);
 	}
 
 end:
@@ -1963,7 +1963,7 @@ int TICALL dusb_cmd_s_var_content(CalcHandle *handle, uint32_t size, uint8_t *da
 	retval = dusb_send_data(handle, pkt);
 
 	dusb_vtl_pkt_del(handle, pkt);
-	ticalcs_info("   size=%i", size);
+	ticalcs_info("   size=%u", size);
 
 	return retval;
 }
@@ -2014,47 +2014,47 @@ int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 	VALIDATE_ATTRS(n_dst_attrs, dst_attrs);
 	DUSB_CMD_RESYNC_IF_NEEDED_AND_RETURN_IF_ERROR(handle);
 
-	unsigned int pks = 2 + strlen(src_name) + 1 + 2;
-	if (strlen(src_folder))
+	unsigned int pks = 2U + (unsigned int)strlen(src_name) + 1U + 2U;
+	if (src_folder[0] != 0)
 	{
-		pks += strlen(src_folder)+1;
+		pks += (unsigned int)strlen(src_folder) + 1U;
 	}
 	for (i = 0; i < n_src_attrs; i++)
 	{
-		pks += 4 + src_attrs[i]->size;
+		pks += 4U + src_attrs[i]->size;
 	}
 
-	pks += 5;
+	pks += 5U;
 
-	if (strlen(dst_folder))
+	if (dst_folder[0] != 0)
 	{
-		pks += strlen(dst_folder)+1;
+		pks += (unsigned int)strlen(dst_folder) + 1;
 	}
-	if (strlen(dst_name))
+	if (dst_name[0] != 0)
 	{
-		pks += strlen(dst_name)+1;
+		pks += (unsigned int)strlen(dst_name) + 1;
 	}
 	for (i = 0; i < n_dst_attrs; i++)
 	{
-		pks += 4 + dst_attrs[i]->size;
+		pks += 4U + dst_attrs[i]->size;
 	}
 
 	DUSBVirtualPacket* pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_MODIF_VAR, (uint8_t*)dusb_vtl_pkt_alloc_data(handle, pks));
 
-	if (strlen(src_folder))
+	if (src_folder[0] != 0)
 	{
-		pkt->data[j++] = strlen(src_folder);
-		memcpy(pkt->data + j, src_folder, strlen(src_folder)+1);
-		j += strlen(src_folder)+1;
+		pkt->data[j++] = (uint8_t)strlen(src_folder);
+		memcpy(pkt->data + j, src_folder, strlen(src_folder) + 1);
+		j += (unsigned int)strlen(src_folder) + 1;
 	}
 	else
 	{
 		pkt->data[j++] = 0;
 	}
 
-	pkt->data[j++] = strlen(src_name);
-	memcpy(pkt->data + j, src_name, strlen(src_name)+1);
-	j += strlen(src_name)+1;
+	pkt->data[j++] = (uint8_t)strlen(src_name);
+	memcpy(pkt->data + j, src_name, strlen(src_name) + 1);
+	j += (unsigned int)strlen(src_name) + 1;
 
 	pkt->data[j++] = MSB(n_src_attrs);
 	pkt->data[j++] = LSB(n_src_attrs);
@@ -2071,22 +2071,22 @@ int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 	// Bypass file protection
 	pkt->data[j++] = DUSB_MODIF_VAR_PROT_IGNORE;
 
-	if (strlen(dst_folder))
+	if (dst_folder[0] != 0)
 	{
-		pkt->data[j++] = strlen(dst_folder);
-		memcpy(pkt->data + j, dst_folder, strlen(dst_folder)+1);
-		j += strlen(dst_folder)+1;
+		pkt->data[j++] = (uint8_t)strlen(dst_folder);
+		memcpy(pkt->data + j, dst_folder, strlen(dst_folder) + 1U);
+		j += (unsigned int)strlen(dst_folder) + 1U;
 	}
 	else
 	{
 		pkt->data[j++] = 0;
 	}
 
-	if (strlen(dst_name))
+	if (dst_name[0] != 0)
 	{
-		pkt->data[j++] = strlen(dst_name);
-		memcpy(pkt->data + j, dst_name, strlen(dst_name)+1);
-		j += strlen(dst_name)+1;
+		pkt->data[j++] = (uint8_t)strlen(dst_name);
+		memcpy(pkt->data + j, dst_name, strlen(dst_name) + 1);
+		j += (unsigned int)strlen(dst_name) + 1;
 	}
 	else
 	{
@@ -2116,8 +2116,8 @@ int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 		retval = ERR_INVALID_PACKET;
 	}
 
-	ticalcs_info("   src_folder=%s, name=%s, nattrs=%i", src_folder, src_name, n_src_attrs);
-	ticalcs_info("   dst_folder=%s, name=%s, nattrs=%i", dst_folder, dst_name, n_dst_attrs);
+	ticalcs_info("   src_folder=%s, name=%s, nattrs=%u", src_folder, src_name, n_src_attrs);
+	ticalcs_info("   dst_folder=%s, name=%s, nattrs=%u", dst_folder, dst_name, n_dst_attrs);
 
 	dusb_vtl_pkt_del(handle, pkt);
 	return retval;
@@ -2143,34 +2143,34 @@ int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, const char
 	int pks = 3;
 	if (handle->model == CALC_TI89T_USB && folder[0] != 0)
 	{
-		pks += strlen(folder) + 1;
+		pks += (unsigned int)strlen(folder) + 1U;
 	}
 	if (name[0] != 0)
 	{
-		pks += strlen(name) + 1;
+		pks += (unsigned int)strlen(name) + 1U;
 	}
 	if (args)
 	{
-		pks += strlen(args);
+		pks += (unsigned int)strlen(args);
 	}
 	if (action == DUSB_EID_KEY)
 	{
-		pks += 2;
+		pks += 2U;
 	}
 	pkt = dusb_vtl_pkt_new_ex(handle, pks, DUSB_VPKT_EXECUTE, (uint8_t *)dusb_vtl_pkt_alloc_data(handle, pks));
 
-	pkt->data[j++] = strlen(folder);
+	pkt->data[j++] = (uint8_t)strlen(folder);
 	if (handle->model == CALC_TI89T_USB && folder[0] != 0)
 	{
 		memcpy(pkt->data + j, folder, strlen(folder) + 1);
-		j += strlen(folder) + 1;
+		j += (unsigned int)strlen(folder) + 1;
 	}
 
-	pkt->data[j++] = strlen(name);
+	pkt->data[j++] = (uint8_t)strlen(name);
 	if (name[0] != 0)
 	{
 		memcpy(pkt->data + j, name, strlen(name) + 1);
-		j += strlen(name) + 1;
+		j += (unsigned int)strlen(name) + 1;
 	}
 
 	pkt->data[j++] = action;
@@ -2270,7 +2270,7 @@ int TICALL dusb_cmd_r_data_ack(CalcHandle *handle)
 		}
 		else if (pkt->type != DUSB_VPKT_DATA_ACK)
 		{
-			ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", DUSB_VPKT_DATA_ACK, pkt->type);
+			ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", (unsigned int)DUSB_VPKT_DATA_ACK, pkt->type);
 			retval = ERR_INVALID_PACKET;
 		}
 	}
@@ -2300,7 +2300,7 @@ int TICALL dusb_cmd_r_delay_ack(CalcHandle *handle)
 		}
 		else if (pkt->type != DUSB_VPKT_DELAY_ACK)
 		{
-			ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", DUSB_VPKT_DELAY_ACK, pkt->type);
+			ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", (unsigned int)DUSB_VPKT_DELAY_ACK, pkt->type);
 			retval = ERR_INVALID_PACKET;
 		}
 	}

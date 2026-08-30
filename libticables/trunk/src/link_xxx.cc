@@ -876,7 +876,7 @@ int TICALL ticables_progress_get(CableHandle* handle, int* count, int* msec, flo
 
 	if (msec)
 	{
-		*msec = handle->rate.current - handle->rate.start;
+		*msec = (int)(handle->rate.current - handle->rate.start);
 	}
 
 	if (rate)

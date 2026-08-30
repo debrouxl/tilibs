@@ -40,10 +40,13 @@ static int par_prepare(CableHandle *h)
 	const char * device;
 	switch(h->port)
 	{
-	case PORT_1: h->address = 0x378; device = "LPT1"; break;
-	case PORT_2: h->address = 0x278; device = "LPT2"; break;
-	case PORT_3: h->address = 0x3bc; device = "LPT3"; break;
-	default: return ERR_ILLEGAL_ARG;
+		case PORT_1: h->address = 0x378; device = "LPT1"; break;
+		case PORT_2: h->address = 0x278; device = "LPT2"; break;
+		case PORT_3: h->address = 0x3bc; device = "LPT3"; break;
+		case PORT_0:
+		case PORT_4:
+		case PORT_MAX:
+		default: return ERR_ILLEGAL_ARG;
 	}
 
 	if (h->device == NULL)

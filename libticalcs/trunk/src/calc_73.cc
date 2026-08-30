@@ -419,7 +419,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	uint8_t rej_code;
 	uint16_t status;
 
-	uint16_t length = content->data_length1;
+	//uint16_t length = content->data_length1;
 	varname[0] = LSB(content->data_length2);
 	varname[1] = MSB(content->data_length2);
 	varname[2] = LSB(content->data_length3);
@@ -836,7 +836,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	}
 
 	ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
-	ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
+	ticalcs_info(_("FLASH size: %u bytes."), ptr->data_length);
 
 	ticonv_varname_to_utf8_sn(handle->model, ptr->name, handle->updat->text, sizeof(handle->updat->text), ptr->data_type);
 	ticalcs_update_label(handle);
@@ -934,7 +934,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	uint8_t data_type;
 	uint32_t size;
 	int first_block;
-	int offset;
+	uint16_t offset;
 	uint8_t buffer[FLASH_PAGE_SIZE + 4];
 
 	ticonv_varname_to_utf8_sn(handle->model, vr->name, handle->updat->text, sizeof(handle->updat->text), vr->type);
@@ -1093,7 +1093,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 								ret = SEND_ACK(handle);
 								if (!ret)
 								{
-									int i = data[9];
+									uint8_t i = data[9];
 									data[9] = data[10];
 									data[10] = i;
 
@@ -1361,12 +1361,12 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 #endif
 		//printf("%s\n", asctime(cur));
 
-		_clock->year = cur.tm_year + 1900;
-		_clock->month = cur.tm_mon + 1;
-		_clock->day = cur.tm_mday;
-		_clock->hours = cur.tm_hour;
-		_clock->minutes = cur.tm_min;
-		_clock->seconds = cur.tm_sec;
+		_clock->year = (uint16_t)(cur.tm_year + 1900);
+		_clock->month = (uint8_t)(cur.tm_mon + 1);
+		_clock->day = (uint8_t)(cur.tm_mday);
+		_clock->hours = (uint8_t)(cur.tm_hour);
+		_clock->minutes = (uint8_t)(cur.tm_min);
+		_clock->seconds = (uint8_t)(cur.tm_sec);
 
 		_clock->date_format = buffer[6];
 		_clock->time_format = buffer[7];
@@ -1486,7 +1486,7 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 	{
 		// send content
 		ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
-		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
+		ticalcs_info(_("FLASH size: %u bytes."), ptr->data_length);
 
 		const int nblocks = ptr->data_length / size;
 		handle->updat->max2 = nblocks;

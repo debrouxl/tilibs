@@ -127,8 +127,8 @@ typedef struct
 	int      nBytesRead;
 	uint8_t  rBuf[512];
 	uint8_t* rBufPtr;
-	int      in_endpoint;
-	int      out_endpoint;
+	uint8_t  in_endpoint;
+	uint8_t  out_endpoint;
 	int      max_ps;
 	int      was_max_ps;
 } usb_struct;
@@ -171,7 +171,7 @@ static int is_gdx_style_device(uint16_t pid)
 	return pid == PID_GODIRECT;
 }
 
-static void tigl_get_product(char * string, size_t maxlen, struct libusb_device *dev)
+static void tigl_get_product(char * string, unsigned int maxlen, struct libusb_device *dev)
 {
 	libusb_device_handle *han;
 	libusb_error ret;
@@ -189,7 +189,7 @@ static void tigl_get_product(char * string, size_t maxlen, struct libusb_device 
 	{
 		if (!libusb_open(dev, &han))
 		{
-			ret = (libusb_error)libusb_get_string_descriptor_ascii(han, desc.iProduct, (unsigned char *) string, maxlen);
+			ret = (libusb_error)libusb_get_string_descriptor_ascii(han, desc.iProduct, (unsigned char *) string, (int)maxlen);
 			libusb_close(han);
 			if (ret <= 0)
 			{
@@ -236,7 +236,7 @@ static int tigl_find(void)
 					tigl_devices[j].vid = desc.idVendor;
 					tigl_devices[j].pid = desc.idProduct;
 					tigl_devices[j].version = desc.bcdDevice;
-					tigl_get_product(tigl_devices[j].product_str, sizeof(tigl_devices[j].product_str), device);
+					tigl_get_product(tigl_devices[j].product_str, (unsigned int)sizeof(tigl_devices[j].product_str), device);
 					ticables_info(_(" found %s on #%i, version <%x.%02x>\n"),
 						      tigl_devices[j].product_str, j+1,
 						      desc.bcdDevice >> 8,
@@ -441,10 +441,10 @@ static int slv_open(CableHandle *h)
 	interface = &(interface_->altsetting[0]);
 	endpoint = &(interface->endpoint[0]);
 	max_ps = endpoint->wMaxPacketSize;
-	if (max_ps > sizeof(rBuf))
+	if (max_ps > (int)sizeof(rBuf))
 	{
 		ticables_critical("Reducing max packet size to maximum supported by library, expect communication issues");
-		max_ps = sizeof(rBuf);
+		max_ps = (int)sizeof(rBuf);
 	}
 
 	// Enumerate endpoints.
@@ -749,6 +749,8 @@ static int slv_bulk_read(struct libusb_device_handle *dev_handle,
 		case LIBUSB_TRANSFER_NO_DEVICE:
 			r = LIBUSB_ERROR_NO_DEVICE;
 			break;
+		case LIBUSB_TRANSFER_ERROR:
+		case LIBUSB_TRANSFER_CANCELLED:
 		default:
 			ticables_warning("slv_bulk_read: unrecognized status code %d", transfer->status);
 			r = LIBUSB_ERROR_OTHER;

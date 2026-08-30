@@ -224,15 +224,15 @@ int TICALL tifiles_hexdump(const uint8_t * ptr, unsigned int len)
  *
  * Return value: varname as string. It should not be modified (static).
  **/
-char *TICALL tifiles_get_varname(const char *full_name)
+const char *TICALL tifiles_get_varname(const char *full_name)
 {
 	if (full_name != nullptr)
 	{
-		char *bs = (char *)strchr(full_name, '\\');
+		const char *bs = strchr(full_name, '\\');
 
 		if (bs == nullptr)
 		{
-			return (char *) full_name;
+			return full_name;
 		}
 		else
 		{
@@ -250,7 +250,7 @@ char *TICALL tifiles_get_varname(const char *full_name)
  *
  * Return value: a static string.
  **/
-char *TICALL tifiles_get_fldname(const char *full_name)
+const char *TICALL tifiles_get_fldname(const char *full_name)
 {
 	static char folder[FLDNAME_MAX];
 	return tifiles_get_fldname_s(full_name, folder);
@@ -265,18 +265,18 @@ char *TICALL tifiles_get_fldname(const char *full_name)
  *
  * Return value: the given buffer, dest_fldname.
  **/
-char *TICALL tifiles_get_fldname_s(const char *full_name, char * dest_fldname)
+const char *TICALL tifiles_get_fldname_s(const char *full_name, char * dest_fldname)
 {
 	if (full_name != nullptr && dest_fldname != nullptr)
 	{
-		const char *bs = (char *)strchr(full_name, '\\');
+		const char *bs = strchr(full_name, '\\');
 		if (bs == nullptr)
 		{
 			dest_fldname[0] = 0;
 		}
 		else
 		{
-			const int i = strlen(full_name) - strlen(bs);
+			const size_t i = strlen(full_name) - strlen(bs);
 			strncpy(dest_fldname, full_name, i);
 			dest_fldname[i] = '\0';
 		}

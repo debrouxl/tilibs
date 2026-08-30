@@ -74,6 +74,9 @@ static int vti_prepare(CableHandle *h)
 	case PORT_2:	// 
 		h->address = 1; h->device = strdup("TiLP"); 
 		break;
+	case PORT_3:
+	case PORT_4:
+	case PORT_MAX:
 	default: return ERR_ILLEGAL_ARG;
 	}
 

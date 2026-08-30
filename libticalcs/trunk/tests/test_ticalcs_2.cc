@@ -382,7 +382,7 @@ static int parse_check_uint32(const char * input, uint32_t * val, uint32_t maxva
 	int ret = sscanf(input, "r%u", &regno);
 	if (ret < 1)
 	{
-		ret = !sscanf(input, "%" SCNi32, val);
+		ret = !sscanf(input, "%" SCNu32, val);
 		/*if (!ret)
 		{
 			printf("Found valid value %" PRIu32, *val);
@@ -430,7 +430,7 @@ static int parse_check_uint64(const char * input, uint64_t * val)
 	int ret = sscanf(input, "r%u", &regno);
 	if (ret < 1)
 	{
-		ret = !sscanf(input, "%" SCNi64, val);
+		ret = !sscanf(input, "%" SCNu64, val);
 		/*if (!ret)
 		{
 			printf("Found valid value %" PRIu64, *val);
@@ -1550,7 +1550,7 @@ static int buffer_peek_data(CalcHandle * h, int, char * input)
 		return 1;
 	}
 
-	ret = parse_check_uint32(token, &offset, sizeof(pktdata) - bytes);
+	ret = parse_check_uint32(token, &offset, (uint32_t)(sizeof(pktdata) - bytes));
 	if (ret) return 1;
 
 	token = STRTOK(nullptr, " ", &saveptr);
@@ -1624,7 +1624,7 @@ static int buffer_poke_data(CalcHandle * h, int, char * input)
 		return 1;
 	}
 
-	ret = parse_check_uint32(token, &offset, sizeof(pktdata) - bytes);
+	ret = parse_check_uint32(token, &offset, (uint32_t)(sizeof(pktdata) - bytes));
 	if (ret) return 1;
 
 	token = STRTOK(nullptr, " ", &saveptr);
@@ -1798,7 +1798,7 @@ static int dbus_send_pkt(CalcHandle * h, int, char * input)
 
 	// Entering the length is necessary for e.g. the simple commands, see cmd68k.cc and cmdz80.cc.
 	printf("Enter target (mid), cmd and length: ");
-	int ret = scan_print_output_3(input, "%" SCNi8 " %" SCNi8 " %" SCNi16, "%" PRIu8 " %" PRIu8 " %" PRIu16, &target, &cmd, &slen, target, cmd,
+	int ret = scan_print_output_3(input, "%" SCNu8 " %" SCNu8 " %" SCNu16, "%" PRIu8 " %" PRIu8 " %" PRIu16, &target, &cmd, &slen, target, cmd,
 	                              slen);
 	if (ret < 3)
 	{
@@ -2344,7 +2344,7 @@ static int dusb_set_param_id(CalcHandle * h, int, char * input)
 	ret = get_hex_input(inbuf, sizeof(inbuf), pktdata2, sizeof(pktdata2), &length, "raw data", xstr(INBUF_DATA_SIZE));
 	if (!ret)
 	{
-		DUSBCalcParam* param = dusb_cp_new_ex(h, param_id, length, data);
+		DUSBCalcParam* param = dusb_cp_new_ex(h, (uint16_t)param_id, (uint16_t)length, data);
 		ret = dusb_cmd_s_param_set(h, param);
 		dusb_cp_del(h, param); // This frees data.
 
@@ -2742,7 +2742,7 @@ int main(int argc, char **argv)
 			{
 				if (nullptr != fnct_menu[i].desc)
 				{
-					printf("%2d. %-45s", j, fnct_menu[i].desc);
+					printf("%2u. %-45s", j, fnct_menu[i].desc);
 					j++;
 				}
 				else
@@ -2774,7 +2774,7 @@ int main(int argc, char **argv)
 			{
 				inbuf2[strlen(inbuf2) - 1] = 0;
 			}
-			printf("%02X\t\"%s\"\n", inbuf2[0], inbuf2);
+			printf("%02X\t\"%s\"\n", (unsigned int)inbuf2[0], inbuf2);
 
 			// Special handling for some commands.
 			if (first)
@@ -2784,7 +2784,7 @@ int main(int argc, char **argv)
 				{
 					if (!strncmp(inbuf2, "version ", sizeof("version ") - 1))
 					{
-						err = sscanf(inbuf2 + sizeof("version ") - 1, "%i", &version);
+						err = sscanf(inbuf2 + sizeof("version ") - 1, "%u", &version);
 						if (err < 1 || ((int32_t)version < 0))
 						{
 							fputs("Invalid version command\n", stderr);
@@ -2890,7 +2890,7 @@ int main(int argc, char **argv)
 			}
 			if (preverr)
 			{
-				fprintf(stderr, "Function %d returned %d\n", choice, preverr);
+				fprintf(stderr, "Function %u returned %d\n", choice, preverr);
 				if (cfg_exit_on_failure)
 				{
 					fputs("Function failed and exit on failure enabled, bailing out\n", stderr);

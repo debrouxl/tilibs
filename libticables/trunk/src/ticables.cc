@@ -301,6 +301,16 @@ static int default_event_hook(CableHandle * handle, uint32_t event_count, const 
 			LOG_N_DATA(handle, LOG_IN, event->data.data.data, event->data.data.len);
 			break;
 		}
+		case CABLE_EVENT_TYPE_UNKNOWN:
+		case CABLE_EVENT_TYPE_BEFORE_OPEN:
+		case CABLE_EVENT_TYPE_AFTER_OPEN:
+		case CABLE_EVENT_TYPE_BEFORE_CLOSE:
+		case CABLE_EVENT_TYPE_AFTER_CLOSE:
+		case CABLE_EVENT_TYPE_BEFORE_RESET:
+		case CABLE_EVENT_TYPE_AFTER_RESET:
+		case CABLE_EVENT_TYPE_BEFORE_GENERIC_OPERATION:
+		case CABLE_EVENT_TYPE_AFTER_GENERIC_OPERATION:
+		case CABLE_EVENT_TYPE_USER:
 		default: break;
 	}
 	return event->retval;
@@ -566,7 +576,7 @@ int TICALL ticables_handle_show(CableHandle* handle)
 		ticables_info(_("  model   : %s"), ticables_model_to_string(handle->model));
 		ticables_info(_("  port    : %s"), ticables_port_to_string(handle->port));
 		ticables_info(_("  timeout : %2.1fs"), (float)handle->timeout / 10);
-		ticables_info(_("  delay   : %i us"), handle->delay);
+		ticables_info(_("  delay   : %u us"), handle->delay);
 		if (handle->device)
 		{
 			ticables_info(_("  device  : %s"), handle->device);

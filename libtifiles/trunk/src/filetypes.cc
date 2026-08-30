@@ -156,6 +156,7 @@ const char * TICALL tifiles_fext_of_group (CalcModel model)
 		case CALC_CBR2_GOMOTION_USB:
 		case CALC_GODIRECT_USB:
 			return nullptr;
+		case CALC_MAX:
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
@@ -243,6 +244,7 @@ const char * TICALL tifiles_fext_of_backup (CalcModel model)
 		case CALC_CBR2_GOMOTION_USB:
 		case CALC_GODIRECT_USB:
 			return nullptr;
+		case CALC_MAX:
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
@@ -332,6 +334,7 @@ const char * TICALL tifiles_fext_of_flash_app (CalcModel model)
 		case CALC_CBR2_GOMOTION_USB:
 		case CALC_GODIRECT_USB:
 			return nullptr;
+		case CALC_MAX:
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
@@ -438,7 +441,8 @@ const char * TICALL tifiles_fext_of_flash_os(CalcModel model)
 		case CALC_EASYLINK_GOLINK_USB:
 		case CALC_CBR2_GOMOTION_USB:
 		case CALC_GODIRECT_USB:
-			return NULL;
+			return nullptr;
+		case CALC_MAX:
 		default:
 			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
@@ -528,6 +532,7 @@ const char * TICALL tifiles_fext_of_certif(CalcModel model)
 		case CALC_CBR2_GOMOTION_USB:
 		case CALC_GODIRECT_USB:
 			return nullptr;
+		case CALC_MAX:
 		default:
 			tifiles_critical("%s: invalid calc_type argument", __FUNCTION__);
 			break;
@@ -544,11 +549,11 @@ const char * TICALL tifiles_fext_of_certif(CalcModel model)
  *
  * Return value: a file extension without dot as string (like "89g").
  **/
-char * TICALL tifiles_fext_get(const char *filename)
+const char * TICALL tifiles_fext_get(const char *filename)
 {
 	if (filename != nullptr)
 	{
-		char * d = (char *)strrchr(filename, '.');
+		const char * d = strrchr(filename, '.');
 		if (d != nullptr)
 		{
 			return (++d);
@@ -559,7 +564,7 @@ char * TICALL tifiles_fext_get(const char *filename)
 		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 
-	return (char *)"";
+	return "";
 }
 
 /**
@@ -1210,6 +1215,31 @@ int TICALL tifiles_model_to_dev_type(CalcModel model)
 	case CALC_LABPRO:
 	case CALC_LABPRO_USB: // The LabPro's USB side accepts the same OS upgrades as its legacy I/O side.
 		return DEVICE_TYPE_CBL2;
+	case CALC_NONE:
+	case CALC_TI82:
+	case CALC_TI83:
+	case CALC_TI85:
+	case CALC_TI86:
+	case CALC_TI92:
+	case CALC_NSPIRE:
+	case CALC_TI80:
+	case CALC_NSPIRE_CRADLE:
+	case CALC_NSPIRE_CLICKPAD:
+	case CALC_NSPIRE_CLICKPAD_CAS:
+	case CALC_NSPIRE_TOUCHPAD:
+	case CALC_NSPIRE_TOUCHPAD_CAS:
+	case CALC_NSPIRE_CX:
+	case CALC_NSPIRE_CX_CAS:
+	case CALC_NSPIRE_CMC:
+	case CALC_NSPIRE_CMC_CAS:
+	case CALC_NSPIRE_CXII:
+	case CALC_NSPIRE_CXII_CAS:
+	case CALC_NSPIRE_CXIIT:
+	case CALC_NSPIRE_CXIIT_CAS:
+	case CALC_CBL:
+	case CALC_CBR:
+	case CALC_CBR2:
+	case CALC_MAX:
 	default:
 		return -1;
 	}
@@ -2192,6 +2222,45 @@ const char *TICALL tifiles_file_get_type(const char *filename)
 			case CALC_V200:
 				return _("Group/Backup");
 #endif
+			case CALC_NONE:
+			case CALC_TI73:
+			case CALC_TI82:
+			case CALC_TI83:
+			case CALC_TI83P:
+			case CALC_TI84P:
+			case CALC_TI85:
+			case CALC_TI86:
+			case CALC_TI92:
+			case CALC_TI84P_USB:
+			case CALC_NSPIRE:
+			case CALC_TI80:
+			case CALC_TI84PC:
+			case CALC_TI84PC_USB:
+			case CALC_TI83PCE_USB:
+			case CALC_TI84PCE_USB:
+			case CALC_TI82A_USB:
+			case CALC_TI84PT_USB:
+			case CALC_NSPIRE_CRADLE:
+			case CALC_NSPIRE_CLICKPAD:
+			case CALC_NSPIRE_CLICKPAD_CAS:
+			case CALC_NSPIRE_TOUCHPAD:
+			case CALC_NSPIRE_TOUCHPAD_CAS:
+			case CALC_NSPIRE_CX:
+			case CALC_NSPIRE_CX_CAS:
+			case CALC_NSPIRE_CMC:
+			case CALC_NSPIRE_CMC_CAS:
+			case CALC_NSPIRE_CXII:
+			case CALC_NSPIRE_CXII_CAS:
+			case CALC_NSPIRE_CXIIT:
+			case CALC_NSPIRE_CXIIT_CAS:
+			case CALC_TI82AEP_USB:
+			case CALC_CBL:
+			case CALC_CBR:
+			case CALC_CBL2:
+			case CALC_CBR2:
+			case CALC_LABPRO:
+			case CALC_TIPRESENTER:
+			case CALC_MAX:
 			default:
 				return _("Group");
 		}
@@ -2258,6 +2327,14 @@ const char *TICALL tifiles_file_get_type(const char *filename)
 		case CALC_NSPIRE_CXIIT_CAS:
 			return tixx_byte2desc(NSP_CONST, NSP_MAXTYPES, tixx_fext2byte(NSP_CONST, NSP_MAXTYPES, e));
 		case CALC_NONE:
+		case CALC_TI80:
+		case CALC_CBL:
+		case CALC_CBR:
+		case CALC_CBL2:
+		case CALC_CBR2:
+		case CALC_LABPRO:
+		case CALC_TIPRESENTER:
+		case CALC_MAX:
 		default:
 			return "";
 	}
@@ -2310,6 +2387,45 @@ const char *TICALL tifiles_file_get_icon(const char *filename)
 			case CALC_V200:
 				return _("Group/Backup");
 #endif
+			case CALC_NONE:
+			case CALC_TI73:
+			case CALC_TI82:
+			case CALC_TI83:
+			case CALC_TI83P:
+			case CALC_TI84P:
+			case CALC_TI85:
+			case CALC_TI86:
+			case CALC_TI92:
+			case CALC_TI84P_USB:
+			case CALC_NSPIRE:
+			case CALC_TI80:
+			case CALC_TI84PC:
+			case CALC_TI84PC_USB:
+			case CALC_TI83PCE_USB:
+			case CALC_TI84PCE_USB:
+			case CALC_TI82A_USB:
+			case CALC_TI84PT_USB:
+			case CALC_NSPIRE_CRADLE:
+			case CALC_NSPIRE_CLICKPAD:
+			case CALC_NSPIRE_CLICKPAD_CAS:
+			case CALC_NSPIRE_TOUCHPAD:
+			case CALC_NSPIRE_TOUCHPAD_CAS:
+			case CALC_NSPIRE_CX:
+			case CALC_NSPIRE_CX_CAS:
+			case CALC_NSPIRE_CMC:
+			case CALC_NSPIRE_CMC_CAS:
+			case CALC_NSPIRE_CXII:
+			case CALC_NSPIRE_CXII_CAS:
+			case CALC_NSPIRE_CXIIT:
+			case CALC_NSPIRE_CXIIT_CAS:
+			case CALC_TI82AEP_USB:
+			case CALC_CBL:
+			case CALC_CBR:
+			case CALC_CBL2:
+			case CALC_CBR2:
+			case CALC_LABPRO:
+			case CALC_TIPRESENTER:
+			case CALC_MAX:
 			default:
 				return _("Group");
 		}
@@ -2376,6 +2492,14 @@ const char *TICALL tifiles_file_get_icon(const char *filename)
 		case CALC_NSPIRE_CXIIT_CAS:
 			return tixx_byte2icon(NSP_CONST, NSP_MAXTYPES, tixx_fext2byte(NSP_CONST, NSP_MAXTYPES, e));
 		case CALC_NONE:
+		case CALC_TI80:
+		case CALC_CBL:
+		case CALC_CBR:
+		case CALC_CBL2:
+		case CALC_CBR2:
+		case CALC_LABPRO:
+		case CALC_TIPRESENTER:
+		case CALC_MAX:
 		default:
 			return "";
 	}

@@ -358,7 +358,7 @@ static inline void ticalcs_event_fill_nsp_rpkt(CalcEventData * event, uint16_t s
 	event->data.nsp_rpkt.dst_addr = dst_addr;
 	event->data.nsp_rpkt.dst_port = dst_port;
 	event->data.nsp_rpkt.data_sum = data_sum;
-	event->data.nsp_rpkt.data_size = data_sum;
+	event->data.nsp_rpkt.data_size = data_size;
 	event->data.nsp_rpkt.ack = ack;
 	event->data.nsp_rpkt.seq = seq;
 	event->data.nsp_rpkt.hdr_sum = hdr_sum;

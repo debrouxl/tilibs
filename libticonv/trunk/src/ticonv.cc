@@ -221,13 +221,15 @@ char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short 
 				return ti;
 			}
 			break;
+			case CALC_NONE:
 			case CALC_TIPRESENTER:
-			default:
 			{
 				ti[0] = 0;
 				return ti;
 			}
 			break;
+			case CALC_MAX:
+			default: return nullptr; break;
 		}
 	}
 	else
@@ -343,8 +345,10 @@ unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char 
 				return utf16;
 			}
 			break;
+			case CALC_NONE:
 			case CALC_TIPRESENTER:
 			default: utf16[0] = 0; return utf16;
+			case CALC_MAX: return nullptr; break;
 		}
 	}
 	else
@@ -1313,6 +1317,8 @@ CalcProductIDs TICALL ticonv_model_to_product_id(CalcModel model)
 		case CALC_EASYLINK_GOLINK_USB: return PRODUCT_ID_NONE;
 		case CALC_CBR2_GOMOTION_USB:   return PRODUCT_ID_NONE;
 		case CALC_GODIRECT_USB:        return PRODUCT_ID_NONE;
+		case CALC_NONE:
+		case CALC_MAX:
 		default:                       return PRODUCT_ID_NONE;
 	}
 }

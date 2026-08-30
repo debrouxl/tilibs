@@ -494,7 +494,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		}
 
 		ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
-		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
+		ticalcs_info(_("FLASH size: %u bytes."), ptr->data_length);
 
 		ticonv_varname_to_utf8_sn(handle->model, ptr->name, handle->updat->text, sizeof(handle->updat->text), ptr->data_type);
 		ticalcs_update_label(handle);
@@ -843,7 +843,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 			ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_TIME_FMT, 1, data);
 			if (!ret)
 			{
-				data[0] = _clock->state;
+				data[0] = (uint8_t)_clock->state;
 				ret = dusb_cmd_s_param_set_r_data_ack(handle, DUSB_PID_CLK_ON, 1, data);
 			}
 		}
@@ -912,12 +912,12 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 						memcpy(&cur, localtime(&c), sizeof(struct tm));
 #endif
 
-						_clock->year = cur.tm_year + 1900;
-						_clock->month = cur.tm_mon + 1;
-						_clock->day = cur.tm_mday;
-						_clock->hours = cur.tm_hour;
-						_clock->minutes = cur.tm_min;
-						_clock->seconds = cur.tm_sec;
+						_clock->year = (uint16_t)(cur.tm_year + 1900);
+						_clock->month = (uint8_t)(cur.tm_mon + 1);
+						_clock->day = (uint8_t)(cur.tm_mday);
+						_clock->hours = (uint8_t)(cur.tm_hour);
+						_clock->minutes = (uint8_t)(cur.tm_min);
+						_clock->seconds = (uint8_t)(cur.tm_sec);
 
 						_clock->date_format = params[3]->data[0] == 0 ? 3 : params[3]->data[0];
 						_clock->time_format = params[4]->data[0] ? 24 : 12;

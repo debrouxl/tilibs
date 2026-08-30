@@ -41,7 +41,6 @@ int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content)
 	GNode *vars, *apps;
 	int ivars = 0;
 	int b = 0;
-	FileContent *single;
 
 	VALIDATE_HANDLE(handle);
 	if (content == nullptr)

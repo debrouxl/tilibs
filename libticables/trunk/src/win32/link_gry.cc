@@ -45,11 +45,13 @@ static int gry_prepare(CableHandle *h)
 	const char * device;
 	switch(h->port)
 	{
-	case PORT_1: h->address = 0x3f8; device = "COM1"; break;
-	case PORT_2: h->address = 0x2f8; device = "COM2"; break;
-	case PORT_3: h->address = 0x3e8; device = "COM3"; break;
-	case PORT_4: h->address = 0x3e8; device = "COM4"; break;
-	default: return ERR_ILLEGAL_ARG;
+		case PORT_1: h->address = 0x3f8; device = "COM1"; break;
+		case PORT_2: h->address = 0x2f8; device = "COM2"; break;
+		case PORT_3: h->address = 0x3e8; device = "COM3"; break;
+		case PORT_4: h->address = 0x3e8; device = "COM4"; break;
+		case PORT_0:
+		case PORT_MAX:
+		default: return ERR_ILLEGAL_ARG;
 	}
 
 	if (h->device == NULL)

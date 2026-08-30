@@ -257,7 +257,7 @@ static FILE *logfile = nullptr;
 static int hex_read(unsigned char *data)
 {
 	static int idx = 0;
-	int data2;
+	unsigned int data2;
 
 	if (feof(hex))
 	{
@@ -269,7 +269,7 @@ static int hex_read(unsigned char *data)
 	{
 		return -1;
 	}
-	*data = data2 & 0xFF;
+	*data = (unsigned char)(data2 & 0xFF);
 	if (fgetc(hex) < 0)
 	{
 		return -1;

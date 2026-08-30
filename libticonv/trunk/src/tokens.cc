@@ -155,6 +155,7 @@ static char *detokenize_vartype(CalcModel model, const char *src, unsigned char 
 	case CALC_EASYLINK_GOLINK_USB:
 	case CALC_CBR2_GOMOTION_USB:
 	case CALC_GODIRECT_USB:
+	case CALC_MAX:
 	default:
 		break;
 	}
@@ -177,7 +178,7 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 		{
 			if (tok2 != 0x09)
 			{
-				dst = g_strdup_printf("Image%d", tok2 + 1);
+				dst = g_strdup_printf("Image%u", tok2 + 1);
 			}
 			else
 			{
@@ -340,11 +341,11 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 	case 0x60:			/* Pictures */
 		if (model == CALC_TI73)
 		{
-			dst = g_strdup_printf("Pic%d", tok2);
+			dst = g_strdup_printf("Pic%u", tok2);
 		}
 		else if (tok2 != 0x09)
 		{
-			dst = g_strdup_printf("Pic%d", tok2 + 1);
+			dst = g_strdup_printf("Pic%u", tok2 + 1);
 		}
 		else
 		{
@@ -355,11 +356,11 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 	case 0x61:			/* GDB */
 		if (model == CALC_TI73)
 		{
-			dst = g_strdup_printf("GDB%d", tok2);
+			dst = g_strdup_printf("GDB%u", tok2);
 		}
 		else if (tok2 != 0x09)
 		{
-			dst = g_strdup_printf("GDB%d", tok2 + 1);
+			dst = g_strdup_printf("GDB%u", tok2 + 1);
 		}
 		else
 		{
@@ -494,11 +495,11 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 	case 0xAA:
 		if (model == CALC_TI73)
 		{
-			dst = g_strdup_printf("Str%d", tok2);
+			dst = g_strdup_printf("Str%u", tok2);
 		}
 		else if (tok2 != 0x09)
 		{
-			dst = g_strdup_printf("Str%d", tok2 + 1);
+			dst = g_strdup_printf("Str%u", tok2 + 1);
 		}
 		else
 		{
@@ -560,6 +561,7 @@ char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigne
 		{
 			return dst;
 		}
+		return g_strdup(src);
 	case CALC_TI89:
 	case CALC_TI89T:
 	case CALC_TI92:
@@ -593,6 +595,7 @@ char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigne
 	case CALC_NONE:
 	case CALC_TI80:
 	case CALC_TIPRESENTER:
+	case CALC_MAX:
 	default:
 		return g_strdup("________");
 	}
@@ -730,6 +733,7 @@ char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_, unsigned
 		case CALC_EASYLINK_GOLINK_USB:
 		case CALC_CBR2_GOMOTION_USB:
 		case CALC_GODIRECT_USB:
+		case CALC_MAX:
 		default:
 		break;
 	}

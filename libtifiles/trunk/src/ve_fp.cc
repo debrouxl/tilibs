@@ -240,7 +240,9 @@ VarEntry* TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src)
 		{
 			dst->data = (uint8_t *)g_malloc0(dst->size);
 			if (dst->data == nullptr)
+			{
 				return nullptr;
+			}
 		}
 		memcpy(dst->data, src->data, src->size);
 	}
@@ -311,10 +313,11 @@ FlashPage* TICALL tifiles_fp_create(void)
  **/
 void * TICALL tifiles_fp_alloc_data(size_t size)
 {
-	uint8_t* data = (uint8_t*)g_malloc0((size + 1) * sizeof(uint8_t));
+	uint8_t* data = (uint8_t*)g_malloc((size + 1) * sizeof(uint8_t));
 	if (data != nullptr)
 	{
 		memset(data, 0xFF, size);
+		data[size] = 0x00;
 	}
 
 	return data;
@@ -332,12 +335,19 @@ FlashPage * TICALL tifiles_fp_realloc_data(FlashPage* fp, size_t size)
 {
 	if (fp != nullptr)
 	{
-		uint8_t * data = (uint8_t *)g_realloc(fp->data, (size+1) * sizeof(uint8_t));
-		if (size > fp->size)
+		uint8_t * data = (uint8_t *)g_realloc(fp->data, (size + 1) * sizeof(uint8_t));
+		if (nullptr != data)
 		{
-			memset(data + fp->size, 0xFF, size - fp->size);
+			if (size > fp->size)
+			{
+				memset(data + fp->size, 0xFF, size - fp->size);
+			}
+			fp->data = data;
 		}
-		fp->data = data;
+		else
+		{
+			return nullptr;
+		}
 	}
 	return fp;
 }
@@ -398,7 +408,7 @@ FlashPage* TICALL tifiles_fp_create_with_data2(uint32_t size, uint8_t * data)
 	if (ve != nullptr)
 	{
 		ve->data = data;
-		ve->size = size;
+		ve->size = (uint16_t)size;
 	}
 
 	return ve;

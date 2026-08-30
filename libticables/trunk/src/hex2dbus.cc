@@ -94,9 +94,9 @@ static int is_a_command_id(unsigned char id)
 
 #define WIDTH	12
 
-static int fill_buf(FILE *f, char data, int flush)
+static int fill_buf(FILE *f, unsigned char data, int flush)
 {
-	static char buf[WIDTH];
+	static unsigned char buf[WIDTH];
 	static unsigned int cnt = 0;
 	unsigned int i;
 

@@ -194,7 +194,7 @@ static int		is_ready	(CalcHandle* handle)
 		ret = nsp_session_open(handle, NSP_SID_ECHO);
 		if (!ret)
 		{
-			ret = nsp_cmd_s_echo(handle, sizeof(echostr), (uint8_t *)echostr);
+			ret = nsp_cmd_s_echo(handle, sizeof(echostr), (const uint8_t *)echostr);
 			if (!ret)
 			{
 				ret = nsp_cmd_r_echo(handle, &size, &data);
@@ -379,7 +379,7 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 			// We might have to remove some extensions.
 			if (fe->type == NSP_TNS)
 			{
-				char * ext = tifiles_fext_get(varname);
+				char * ext = (char*)tifiles_fext_get((const char*)varname);
 				// Just a sanity check
 				if (ext)
 				{

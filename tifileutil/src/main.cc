@@ -313,7 +313,7 @@ static int tifileutil_dump(int * argc, char *** argv, unsigned int offset)
 			fputc('\n', outfile);
 		}
 		// TODO: 2 last digits.
-		fprintf(outfile, "};\nstatic unsigned int %s = sizeof(%s)/sizeof(%s[0]); // %lu\n", arraysizename, arrayname, arrayname, length);
+		fprintf(outfile, "};\nstatic uint16_t %s = sizeof(%s)/sizeof(%s[0]); // %lu\n", arraysizename, arrayname, arrayname, length);
 
 		if (outfile != stdout) {
 			fclose(outfile);

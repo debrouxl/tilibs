@@ -442,7 +442,7 @@ int TICALL rd_read_dump(CalcHandle* handle, const char *filename)
 		ticalcs_update_pbar(handle);
 	}
 
-	ticalcs_info("Saved %i blocks on %i blocks\n", handle->priv.romdump_sav_blk, handle->priv.romdump_sav_blk + handle->priv.romdump_std_blk);
+	ticalcs_info("Saved %u blocks on %u blocks\n", handle->priv.romdump_sav_blk, handle->priv.romdump_sav_blk + handle->priv.romdump_std_blk);
 
 	// finished
 exit:
@@ -483,7 +483,7 @@ int TICALL rd_is_ready(CalcHandle* handle)
 
 int TICALL rd_send_dumper(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *data)
 {
-	char*tempfname;
+	char * tempfname;
 	int ret;
 
 	VALIDATE_HANDLE(handle);
@@ -511,7 +511,7 @@ int TICALL rd_send_dumper(CalcHandle *handle, const char *prgname, uint16_t size
 		goto end;
 	}
 
-	ret = write(fd, data, size);
+	ret = (int)write(fd, data, size);
 	close(fd);
 	if (ret == size)
 	{

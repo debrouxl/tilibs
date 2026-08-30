@@ -245,7 +245,7 @@ int TICALL dusb_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_
 
 	if (len < 5U + dusbrawpackets[raw_type - 1].data)
 	{
-		ticalcs_critical("Length %ld is too small for a valid data part in DUSB raw packet of type %u", (unsigned long)len, raw_type);
+		ticalcs_critical("Length %lu is too small for a valid data part in DUSB raw packet of type %u", (unsigned long)len, raw_type);
 		return ERR_INVALID_PACKET;
 	}
 
@@ -350,6 +350,9 @@ int TICALL dusb_dissect(CalcModel model, FILE * f, const uint8_t * data, uint32_
 			}
 		}
 		break;
+
+		default:
+			break;
 	}
 
 	return ret;

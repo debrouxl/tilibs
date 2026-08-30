@@ -66,19 +66,19 @@ static int compare_files(const char *src, const char *dst)
 		if ((s = fgetc(fs)) != (d = fgetc(fd)))
 		{
 			printf("\nFiles %s and %s do not match !!!\n", src, dst);
-			printf("Offset: %08X %i\n", (int)ftell(fs), (int)ftell(fs));
+			printf("Offset: %08X %u\n", (unsigned int)ftell(fs), (unsigned int)ftell(fs));
 
-			printf("Data  (src): %02X ", s);
+			printf("Data  (src): %02X ", (unsigned int)s);
 			for (i=0; i<16 && !feof(fs); i++)
 			{
-				printf("%02X ", fgetc(fs));
+				printf("%02X ", (unsigned int)fgetc(fs));
 			}
 			printf("\n");
 
-			printf("Data  (dst): %02X ", d);
+			printf("Data  (dst): %02X ", (unsigned int)d);
 			for(i=0; i<16 && !feof(fd); i++)
 			{
-				printf("%02X ", fgetc(fd));
+				printf("%02X ", (unsigned int)fgetc(fd));
 			}
 			printf("\n");
 

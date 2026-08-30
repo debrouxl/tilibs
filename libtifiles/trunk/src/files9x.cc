@@ -447,6 +447,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 			// doesn't have any 'legal' existence.
 			case 8: content->device_type = DEVICE_TYPE_92P; break;	// V200PLT
 			case 9: content->device_type = DEVICE_TYPE_89; break;	// Titanium
+			default: break; // content->device_type was already initialized by the memset() above.
 		}
 
 		content->next = nullptr;
@@ -646,7 +647,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 
 		if (fentry == nullptr)
 		{
-			tifiles_warning("%s: skipping null content entry %d", __FUNCTION__, i);
+			tifiles_warning("%s: skipping null content entry %u", __FUNCTION__, i);
 			continue;
 		}
 
@@ -876,7 +877,7 @@ int ti9x_content_display_backup(Ti9xBackup *content)
 	}
 
 	tifiles_info("BackupContent for TI-9x: %p", content);
-	tifiles_info("Model:          %02X (%u)", content->model, content->model);
+	tifiles_info("Model:          %02X (%d)", (unsigned int)content->model, content->model);
 	tifiles_info("Signature:      %s", tifiles_calctype2signature(content->model));
 	tifiles_info("Comment:        %s", content->comment);
 	tifiles_info("ROM version:    %s", content->rom_version);
@@ -903,9 +904,9 @@ int ti9x_content_display_flash(Ti9xFlash *content)
 	for (Ti9xFlash* ptr = content; ptr != nullptr; ptr = ptr->next)
 	{
 		tifiles_info("FlashContent for TI-9x: %p", ptr);
-		tifiles_info("Model:           %02X (%u)", ptr->model, ptr->model);
+		tifiles_info("Model:           %02X (%d)", (unsigned int)ptr->model, ptr->model);
 		tifiles_info("Signature:       %s", tifiles_calctype2signature(ptr->model));
-		tifiles_info("model_dst:       %02X (%u)", ptr->model_dst, ptr->model_dst);
+		tifiles_info("model_dst:       %02X (%d)", (unsigned int)ptr->model_dst, ptr->model_dst);
 		tifiles_info("Revision:        %u.%u", ptr->revision_major, ptr->revision_minor);
 		tifiles_info("Flags:           %02X", ptr->flags);
 		tifiles_info("Object type:     %02X", ptr->object_type);

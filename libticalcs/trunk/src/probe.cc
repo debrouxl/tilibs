@@ -144,7 +144,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 		}
 		err = tixx_recv_ACK(handle, &data);
 
-		ticalcs_info("<%02X-%02X> ", DBUS_MID_PC_TI86, data);
+		ticalcs_info("<%02X-%02X> ", (unsigned int)DBUS_MID_PC_TI86, (unsigned int)data);
 
 		if (!err && (data == DBUS_MID_TI86_PC))
 		{
@@ -168,7 +168,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 		}
 		err = tixx_recv_ACK(handle, &data);
 
-		ticalcs_info("<%02X-%02X> ", DBUS_MID_PC_TI85, data);
+		ticalcs_info("<%02X-%02X> ", (unsigned int)DBUS_MID_PC_TI85, (unsigned int)data);
 
 		if (!err && (data == DBUS_MID_TI85_PC))
 		{
@@ -192,7 +192,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 		}
 		err = tixx_recv_ACK(handle, &data);
 
-		ticalcs_info("<%02X-%02X> ", DBUS_MID_PC_TI73, data);
+		ticalcs_info("<%02X-%02X> ", (unsigned int)DBUS_MID_PC_TI73, (unsigned int)data);
 
 		if (!err && (data == DBUS_MID_TI73_PC))
 		{
@@ -216,7 +216,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 		}
 		err = tixx_recv_ACK(handle, &data);
 
-		ticalcs_info("<%02X-%02X> ", DBUS_MID_PC_TI83, data);
+		ticalcs_info("<%02X-%02X> ", (unsigned int)DBUS_MID_PC_TI83, (unsigned int)data);
 
 		if (!err && (data == DBUS_MID_TI83_PC))
 		{
@@ -240,7 +240,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 		}
 		err = tixx_recv_ACK(handle, &data);
 
-		ticalcs_info("<%02X-%02X> ", DBUS_MID_PC_TI82, data);
+		ticalcs_info("<%02X-%02X> ", (unsigned int)DBUS_MID_PC_TI82, (unsigned int)data);
 
 		if (!err && (data == DBUS_MID_TI82_PC))
 		{
@@ -277,7 +277,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 			}
 			err = tixx_recv_ACK(handle, &data);
 
-			ticalcs_info("<%02X-%02X> ", DBUS_MID_CBL_TI92, data);
+			ticalcs_info("<%02X-%02X> ", (unsigned int)DBUS_MID_CBL_TI92, (unsigned int)data);
 
 			if (!err && (data == DBUS_MID_CBL_TI92))
 			{

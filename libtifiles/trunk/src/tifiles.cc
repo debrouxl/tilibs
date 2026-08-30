@@ -65,7 +65,7 @@ int TICALL tifiles_library_init()
 	hDll = GetModuleHandle("libtifiles2-11.dll");
 	GetModuleFileName(hDll, locale_dir, 65535);
 
-	for (i = strlen(locale_dir); i >= 0; i--)
+	for (i = (int)strlen(locale_dir); i >= 0; i--)
 	{
 		if (locale_dir[i] == '\\')
 		{

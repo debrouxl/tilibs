@@ -2166,9 +2166,7 @@ int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* filename)
 				break;
 			}
 
-			gchar* e = tifiles_fext_get(basename);
-
-			memcpy(e, "crt", 3);
+			memcpy((void*)tifiles_fext_get(basename), "crt", 3);
 
 			content = tifiles_content_create_flash(handle->model);
 			ret = ticalcs_calc_recv_cert(handle, content);

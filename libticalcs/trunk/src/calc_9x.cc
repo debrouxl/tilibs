@@ -775,6 +775,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		case ATTRB_LOCKED:   vartype = 0x26; break;
 		case ATTRB_PROTECTED:
 		case ATTRB_ARCHIVED: vartype = 0x27; break;
+		default: break;
 		}
 
 		uint32_t size = entry->size;
@@ -1140,7 +1141,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		}
 
 		ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
-		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
+		ticalcs_info(_("FLASH size: %u bytes."), ptr->data_length);
 
 		ticonv_varname_to_utf8_sn(handle->model, ptr->name, handle->updat->text, sizeof(handle->updat->text), ptr->data_type);
 		ticalcs_update_label(handle);
@@ -1229,6 +1230,46 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	case CALC_TI89T: content->device_type = DEVICE_TYPE_89; break;
 	case CALC_TI92P:
 	case CALC_V200:  content->device_type = DEVICE_TYPE_92P; break;
+	case CALC_NONE:
+	case CALC_TI73:
+	case CALC_TI82:
+	case CALC_TI83:
+	case CALC_TI83P:
+	case CALC_TI84P:
+	case CALC_TI85:
+	case CALC_TI86:
+	case CALC_TI92:
+	case CALC_TI84P_USB:
+	case CALC_TI89T_USB:
+	case CALC_NSPIRE:
+	case CALC_TI80:
+	case CALC_TI84PC:
+	case CALC_TI84PC_USB:
+	case CALC_TI83PCE_USB:
+	case CALC_TI84PCE_USB:
+	case CALC_TI82A_USB:
+	case CALC_TI84PT_USB:
+	case CALC_NSPIRE_CRADLE:
+	case CALC_NSPIRE_CLICKPAD:
+	case CALC_NSPIRE_CLICKPAD_CAS:
+	case CALC_NSPIRE_TOUCHPAD:
+	case CALC_NSPIRE_TOUCHPAD_CAS:
+	case CALC_NSPIRE_CX:
+	case CALC_NSPIRE_CX_CAS:
+	case CALC_NSPIRE_CMC:
+	case CALC_NSPIRE_CMC_CAS:
+	case CALC_NSPIRE_CXII:
+	case CALC_NSPIRE_CXII_CAS:
+	case CALC_NSPIRE_CXIIT:
+	case CALC_NSPIRE_CXIIT_CAS:
+	case CALC_TI82AEP_USB:
+	case CALC_CBL:
+	case CALC_CBR:
+	case CALC_CBL2:
+	case CALC_CBR2:
+	case CALC_LABPRO:
+	case CALC_TIPRESENTER:
+	case CALC_MAX:
 	default: return ERR_FATAL_ERROR;
 	}
 
@@ -1409,8 +1450,8 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	buffer[3] = 0;
 	buffer[4] = 0;
 	buffer[5] = 0;
-	buffer[6] = _clock->year >> 8;
-	buffer[7] = _clock->year & 0x00ff;
+	buffer[6] = (uint8_t)(_clock->year >> 8);
+	buffer[7] = (uint8_t)(_clock->year & 0x00ff);
 	buffer[8] = _clock->month;
 	buffer[9] = _clock->day;
 	buffer[10] = _clock->hours;
@@ -1672,6 +1713,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			case 7: infos->hw_version = buffer[5]; infos->model = CALC_TIPRESENTER; break; // Tentative
 			case 8: infos->hw_version = buffer[5]; infos->model = CALC_V200; break;
 			case 9: infos->hw_version = buffer[5] + 1; infos->model = CALC_TI89T; break;
+			default: infos->hw_version = 0; infos->model = CALC_NONE; break;
 			}
 			infos->language_id = buffer[6];
 			infos->sub_lang_id = buffer[7];
@@ -1751,7 +1793,47 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 		case CALC_TI89T: content->device_type = DEVICE_TYPE_89; break;
 		case CALC_TI92P: content->device_type = DEVICE_TYPE_92P; break;
 		case CALC_V200:  content->device_type = DEVICE_TYPE_92P; break;
-		default: content->device_type = DEVICE_TYPE_89; break;
+		case CALC_NONE:
+		case CALC_TI73:
+		case CALC_TI82:
+		case CALC_TI83:
+		case CALC_TI83P:
+		case CALC_TI84P:
+		case CALC_TI85:
+		case CALC_TI86:
+		case CALC_TI92:
+		case CALC_TI84P_USB:
+		case CALC_TI89T_USB:
+		case CALC_NSPIRE:
+		case CALC_TI80:
+		case CALC_TI84PC:
+		case CALC_TI84PC_USB:
+		case CALC_TI83PCE_USB:
+		case CALC_TI84PCE_USB:
+		case CALC_TI82A_USB:
+		case CALC_TI84PT_USB:
+		case CALC_NSPIRE_CRADLE:
+		case CALC_NSPIRE_CLICKPAD:
+		case CALC_NSPIRE_CLICKPAD_CAS:
+		case CALC_NSPIRE_TOUCHPAD:
+		case CALC_NSPIRE_TOUCHPAD_CAS:
+		case CALC_NSPIRE_CX:
+		case CALC_NSPIRE_CX_CAS:
+		case CALC_NSPIRE_CMC:
+		case CALC_NSPIRE_CMC_CAS:
+		case CALC_NSPIRE_CXII:
+		case CALC_NSPIRE_CXII_CAS:
+		case CALC_NSPIRE_CXIIT:
+		case CALC_NSPIRE_CXIIT_CAS:
+		case CALC_TI82AEP_USB:
+		case CALC_CBL:
+		case CALC_CBR:
+		case CALC_CBL2:
+		case CALC_CBR2:
+		case CALC_LABPRO:
+		case CALC_TIPRESENTER:
+		case CALC_MAX:
+		default: content->device_type = DEVICE_TYPE_NONE; break;
 		}
 		content->name[0] = 0;
 	}

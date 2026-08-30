@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <limits.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,6 +16,7 @@ fprintf(stderr, "%d\t" TYPE "\n", __LINE__, FUNCTION(__VA_ARGS__))
 FUNCTION(__VA_ARGS__); fprintf(stderr, "%d\n", __LINE__)
 
 #define INT "%d"
+#define UINT "%u"
 #define PTR "%p"
 #define STR "\"%s\""
 
@@ -621,11 +623,11 @@ int main(int argc, char **argv)
     PRINTF(tifiles_error_get, INT, -1, NULL);
     PRINTF(tifiles_error_free, INT, NULL);
     PRINTF(tifiles_model_to_string, STR, -1);
-    PRINTF(tifiles_string_to_model, INT, NULL);
+    PRINTF(tifiles_string_to_model, UINT, NULL);
     PRINTF(tifiles_attribute_to_string, STR, -1);
-    PRINTF(tifiles_string_to_attribute, INT, NULL);
+    PRINTF(tifiles_string_to_attribute, UINT, NULL);
     PRINTF(tifiles_class_to_string, STR, -1);
-    PRINTF(tifiles_string_to_class, INT, NULL);
+    PRINTF(tifiles_string_to_class, UINT, NULL);
     PRINTF(tifiles_fext_of_group, STR, -1);
     PRINTF(tifiles_fext_of_backup, STR, -1);
 
@@ -657,19 +659,19 @@ int main(int argc, char **argv)
     PRINTF(tifiles_file_has_tno_header, INT, NULL);
     PRINTF(tifiles_model_to_dev_type, INT, -1);
     PRINTF(tifiles_file_test, INT, NULL, -1, -1);
-    PRINTF(tifiles_file_get_model, INT, NULL);
-    PRINTF(tifiles_file_get_class, INT, NULL);
+    PRINTF(tifiles_file_get_model, UINT, NULL);
+    PRINTF(tifiles_file_get_class, UINT, NULL);
     PRINTF(tifiles_file_get_type, STR, NULL);
     PRINTF(tifiles_file_get_icon, STR, NULL);
-    PRINTF(tifiles_vartype2string, STR, -1, -1);
+    PRINTF(tifiles_vartype2string, STR, -1, 0xFF);
     PRINTF(tifiles_string2vartype, INT, -1, NULL);
 
-    PRINTF(tifiles_vartype2fext, STR, -1, -1);
+    PRINTF(tifiles_vartype2fext, STR, -1, 0xFF);
     PRINTF(tifiles_fext2vartype, INT, -1, NULL);
-    PRINTF(tifiles_vartype2type, STR, -1, -1);
-    PRINTF(tifiles_vartype2icon, STR, -1, -1);
+    PRINTF(tifiles_vartype2type, STR, -1, 0xFF);
+    PRINTF(tifiles_vartype2icon, STR, -1, 0xFF);
     PRINTF(tifiles_calctype2signature, STR, -1);
-    PRINTF(tifiles_signature2calctype, INT, NULL);
+    PRINTF(tifiles_signature2calctype, UINT, NULL);
     PRINTF(tifiles_folder_type, INT, -1);
     PRINTF(tifiles_flash_type, INT, -1);
     PRINTF(tifiles_idlist_type, INT, -1);
@@ -756,7 +758,7 @@ int main(int argc, char **argv)
     PRINTF(tifiles_group_add_file, INT, (void *)0x12345678, NULL);
     PRINTF(tifiles_group_del_file, INT, NULL, (void *)0x12345678);
     PRINTF(tifiles_group_del_file, INT, (void *)0x12345678, NULL);
-    ptr = tifiles_content_create_tigroup(-1, -1);
+    ptr = tifiles_content_create_tigroup(-1, UINT_MAX);
     PRINTF(, PTR, ptr);
     tifiles_content_delete_tigroup(ptr);
     PRINTF(tifiles_content_delete_tigroup, INT, NULL);

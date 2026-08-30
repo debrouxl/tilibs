@@ -85,6 +85,7 @@ const char * TICALL ticonv_model_to_string(CalcModel model)
 	case CALC_EASYLINK_GOLINK_USB: return "Vernier EasyLink / Go! Link";
 	case CALC_CBR2_GOMOTION_USB: return "Vernier Go! Motion";
 	case CALC_GODIRECT_USB: return "Vernier Go! Direct";
+	case CALC_MAX:
 	default: return "unknown";
 	}
 }
