@@ -90,7 +90,7 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 		VarEntry *entry = content->entries[0] = (VarEntry *)g_malloc0(sizeof(VarEntry));
 
 		gchar *basename = g_path_get_basename(filename);
-		gchar *ext = tifiles_fext_get(basename);
+		char *ext = tifiles_fext_get(basename);
 
 		entry->type = tifiles_fext2vartype(content->model, ext);
 		if (ext && ext[0]) *(ext-1) = '\0';

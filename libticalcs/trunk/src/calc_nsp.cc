@@ -342,7 +342,6 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 		{
 			VarEntry *fe;
 			GNode *node;
-			char *ext;
 			uint32_t varsize;
 			uint8_t vartype;
 
@@ -370,7 +369,7 @@ static int enumerate_folder(CalcHandle* handle, GNode** vars, const char * folde
 			fe->type = vartype;
 			fe->attr = ATTRB_NONE;
 
-			ext = tifiles_fext_get(varname);
+			char * ext = tifiles_fext_get(varname);
 			// Just a sanity check
 			if (ext)
 			{

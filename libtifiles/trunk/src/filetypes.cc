@@ -478,7 +478,7 @@ int TICALL tifiles_file_has_tib_header(const char *filename)
 	if (filename != NULL)
 	{
 #ifdef CHECK_FILE_EXTENSIONS
-		char *e = tifiles_fext_get(filename);
+		const char *e = tifiles_fext_get(filename);
 
 		if (   e[0] == 0
 		    || g_ascii_strcasecmp(e, "tib"))
@@ -525,7 +525,7 @@ int TICALL tifiles_file_has_tig_header(const char *filename)
 	if (filename != NULL)
 	{
 #ifdef CHECK_FILE_EXTENSIONS
-		char *e = tifiles_fext_get(filename);
+		const char *e = tifiles_fext_get(filename);
 
 		if (   e[0] == 0
 		    || g_ascii_strcasecmp(e, "tig"))
@@ -634,7 +634,7 @@ int TICALL tifiles_file_has_tno_header(const char *filename)
 	if (filename != NULL)
 	{
 #ifdef CHECK_FILE_EXTENSIONS
-		char *e = tifiles_fext_get(filename);
+		const char *e = tifiles_fext_get(filename);
 
 		if (   e[0] == 0
 		    || (   g_ascii_strcasecmp(e, "tno") && g_ascii_strcasecmp(e, "tnc")
@@ -756,8 +756,6 @@ static int is_regfile(const char *filename)
  **/
 int TICALL tifiles_file_is_ti(const char *filename)
 {
-	char *e;
-
 	if (filename != NULL)
 	{
 		// bug: check that file is not a FIFO
@@ -775,7 +773,7 @@ int TICALL tifiles_file_is_ti(const char *filename)
 			return !0;
 		}
 
-		e = tifiles_fext_get(filename);
+		const char * e = tifiles_fext_get(filename);
 
 #ifdef CHECK_FILE_EXTENSIONS
 		if (e[0] == 0)
@@ -834,7 +832,7 @@ int TICALL tifiles_file_is_single(const char *filename)
 int TICALL tifiles_file_is_group(const char *filename)
 {
 	int i;
-	char *e = tifiles_fext_get(filename);
+	const char *e = tifiles_fext_get(filename);
 
 #ifdef CHECK_FILE_EXTENSIONS
 	if (e[0] == 0)
@@ -887,7 +885,7 @@ int TICALL tifiles_file_is_regular(const char *filename)
 int TICALL tifiles_file_is_backup(const char *filename)
 {
 	int i;
-	char *e = tifiles_fext_get(filename);
+	const char *e = tifiles_fext_get(filename);
 
 #ifdef CHECK_FILE_EXTENSIONS
 	if (e[0] == 0)
@@ -1034,7 +1032,7 @@ int TICALL tifiles_file_is_tno(const char *filename)
  **/
 int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target)
 {
-	char *e = tifiles_fext_get(filename);
+	const char *e = tifiles_fext_get(filename);
 	uint8_t ctype, dtype;
 
 #ifdef CHECK_FILE_EXTENSIONS
@@ -1360,7 +1358,7 @@ CalcModel TICALL tifiles_fext_to_model(const char *ext)
  **/
 CalcModel TICALL tifiles_file_get_model(const char *filename)
 {
-	char *e = tifiles_fext_get(filename);
+	const char *e = tifiles_fext_get(filename);
 	return tifiles_fext_to_model(e);
 }
 
@@ -1410,7 +1408,7 @@ FileClass TICALL tifiles_file_get_class(const char *filename)
  **/
 const char *TICALL tifiles_file_get_type(const char *filename)
 {
-	char *e = tifiles_fext_get(filename);
+	const char *e = tifiles_fext_get(filename);
 #ifdef CHECK_FILE_EXTENSIONS
 	if (e[0] == 0)
 	{
@@ -1514,7 +1512,7 @@ const char *TICALL tifiles_file_get_type(const char *filename)
  **/
 const char *TICALL tifiles_file_get_icon(const char *filename)
 {
-	char *e = tifiles_fext_get(filename);
+	const char *e = tifiles_fext_get(filename);
 #ifdef CHECK_FILE_EXTENSIONS
 	if (e[0] == 0)
 	{
