@@ -1,0 +1,712 @@
+# Georgian translation for libticables2.
+# Copyright (C) 2026 Free Software Foundation, Inc.
+# This file is distributed under the same license as the libticables2 package.
+# Ekaterine Papava <papava.e@gtu.ge>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libticables2 1.3.6\n"
+"Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
+"POT-Creation-Date: 2023-09-13 22:35+0200\n"
+"PO-Revision-Date: 2026-03-01 15:42+0100\n"
+"Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
+"Language-Team: Georgian <(nothing)>\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+#: src/bsd/detect.cc:135 src/linux/detect.cc:176 src/macos/detect.cc:135
+#, c-format
+msgid "can't open '%s'."
+msgstr "'%s'-ის გახსნის შეცდომა."
+
+#: src/bsd/detect.cc:169 src/linux/detect.cc:210 src/macos/detect.cc:169
+#, c-format
+msgid "    node %s: exists"
+msgstr "    კვანძი %s: არსებობს"
+
+#: src/bsd/detect.cc:173 src/linux/detect.cc:214 src/macos/detect.cc:173
+#, c-format
+msgid "    node %s: does not exist"
+msgstr "    კვანძი %s: არ არებობს"
+
+#: src/bsd/detect.cc:174 src/linux/detect.cc:215 src/macos/detect.cc:174
+msgid "    => you will have to create the node."
+msgstr "    => ეს კვანძი უნდა შექმნათ."
+
+#: src/bsd/detect.cc:181 src/linux/detect.cc:222
+#, c-format
+msgid "    node %s: accessible"
+msgstr "    კვანძი %s: წვდომადია"
+
+#: src/bsd/detect.cc:188 src/linux/detect.cc:229 src/macos/detect.cc:182
+#, c-format
+msgid "    permissions/user/group:%s%s %s"
+msgstr "    წვდომები/მომხმარებელი/ჯგუფი:%s%s %s"
+
+#: src/bsd/detect.cc:201 src/linux/detect.cc:242 src/macos/detect.cc:195
+msgid "    user can r/w on device: yes"
+msgstr "    მომხმარებელს შეუძლია მოწყობილობაზე ჩაწ/წაკით: დიახ"
+
+#: src/bsd/detect.cc:202 src/bsd/detect.cc:243 src/linux/detect.cc:243
+#: src/linux/detect.cc:284
+msgid "    => device is inaccessible for unknown reasons"
+msgstr "    => მოწყობილობა ხელმიუწვდომელია უცნობი მიზეზით"
+
+#: src/bsd/detect.cc:207 src/linux/detect.cc:248 src/macos/detect.cc:200
+msgid "    user can r/w on device: no"
+msgstr "    მომხმარებელს შეუძლია მოწყობილობაზე ჩაწ/წაკით: არა"
+
+#: src/bsd/detect.cc:212 src/linux/detect.cc:253 src/macos/detect.cc:205
+msgid "    others can r/w on device: yes"
+msgstr "    სხვებს შეუძლიათ მოწყობილობაზე ჩაწ/წაკით: დიახ"
+
+#: src/bsd/detect.cc:218 src/linux/detect.cc:259 src/macos/detect.cc:211
+msgid "    others can r/w on device: no"
+msgstr "    სხვებს შეუძლიათ მოწყობილობაზე ჩაწ/წაკით: არა"
+
+#: src/bsd/detect.cc:225 src/linux/detect.cc:266 src/macos/detect.cc:218
+#, c-format
+msgid "    is the user '%s' in the group '%s': yes"
+msgstr "    არის მომხმარებელი '%s' ჯგუფში '%s': დიახ"
+
+#: src/bsd/detect.cc:230 src/linux/detect.cc:271 src/macos/detect.cc:223
+#, c-format
+msgid "    is the user '%s' in the group '%s': no"
+msgstr "    არის მომხმარებელი '%s' ჯგუფში '%s': არა"
+
+#: src/bsd/detect.cc:231 src/linux/detect.cc:272 src/macos/detect.cc:224
+#, c-format
+msgid "    => you should add your username at the group '%s' in '/etc/group'"
+msgstr ""
+"    => დაამატეთ თქვენი მომხმარებლის სახელი ჯგუფში '%s' ფაილში '/etc/group'"
+
+#: src/bsd/detect.cc:232 src/linux/detect.cc:273 src/macos/detect.cc:225
+msgid "    => you will have to restart your session, too"
+msgstr "    => ასევე მოგიწევთ, სესია თავიდან გაუშვათ"
+
+#: src/bsd/detect.cc:251 src/linux/detect.cc:292 src/macos/detect.cc:243
+#, c-format
+msgid "Check for super-user access: %s"
+msgstr "ზემომხმარებლის წვდომის შემოწმება: %s"
+
+#: src/bsd/detect.cc:261 src/linux/detect.cc:306
+msgid "Check for tty support:"
+msgstr "tty-ის მხარდაჭერის შემოწმება:"
+
+#: src/bsd/detect.cc:262 src/linux/detect.cc:308
+msgid "    tty support: available."
+msgstr "    tty-ის მხარდაჭერა: ხელმისაწვდომია."
+
+#: src/bsd/detect.cc:265 src/linux/detect.cc:315 src/macos/detect.cc:251
+msgid "Check for tty usability:"
+msgstr "tty-ის გამოყენებადობის შემოწმება:"
+
+#: src/bsd/detect.cc:277 src/linux/detect.cc:339 src/linux/detect.cc:386
+msgid "    is usable: yes"
+msgstr "    გამოყენებადია: დიახ"
+
+#: src/bsd/detect.cc:290 src/linux/detect.cc:404 src/macos/detect.cc:265
+msgid "Check for libusb support:"
+msgstr "libusb-ის მხარდაჭერის შემოწმება:"
+
+#: src/bsd/detect.cc:292 src/linux/detect.cc:406 src/macos/detect.cc:267
+msgid "    usb support: available."
+msgstr "    usb-ის მხარდაჭერა: ხელმისაწვდომია."
+
+#: src/bsd/detect.cc:295 src/linux/detect.cc:408 src/macos/detect.cc:270
+msgid "    usb support: not compiled."
+msgstr "    USB-ის მხარდაჭერა: არ ჩართულა აგებისას."
+
+#: src/error.cc:67
+msgid "Msg: link cable is busy."
+msgstr "შეტყ: კავშირის კაბელი დაკავებულია."
+
+#: src/error.cc:69
+msgid "Cause: a transfer is in progress."
+msgstr "მიზეზი: მიმდინარეობს გადაცემა."
+
+#: src/error.cc:75
+msgid "Msg: unable to use parallel/serial port: access refused."
+msgstr ""
+"შეტყ: პარალელური/სერიული პორტის გამოყენება შეუძლებელია: წვდომა აკრძალულია."
+
+#: src/error.cc:77
+msgid "Cause: you are not running program as root or setuid root."
+msgstr "მიზეზი: პროგრამა root-ით, ან setuid root-ით არაა გაშვებული."
+
+#: src/error.cc:83
+msgid "Msg: unable to use serial (/dev/ttySx) device."
+msgstr "შეტყ: სერიული (/dev/ttySx) მოწყობილობის გამოყენება შეუძლებელია."
+
+#: src/error.cc:85
+msgid ""
+"Cause: the /dev/ttySx node doesn't exist or you don't have required "
+"permissions. How to grant permission to devices to the user depends on the "
+"distribution, it may involve adding the user to a group such as 'dialout' or "
+"'uucp'. This can be done by editing /etc/group and add the username after "
+"the ':'. Example: dialout:x:20:romain "
+msgstr ""
+"მიზეზი: კვანძები /dev/ttySx არ არსებობს, ან მასზე წვდომა არ გაგაჩნიათ. როგორ "
+"მიიღოთ წვდომები ამ მოწყობილობებთან თქვენი მომხმარებლით, დამოკიდებულია "
+"დისტრიბუტივზე. ის შეიძლება, შეიცავდეს მომხმარებლის ჩამატებას ისეთი ჯგუფებში, "
+"როგორიცაა 'dialout', ან 'uucp'. ამიის გაკეთება /etc/group ფაილის ცასწორებით "
+"და მომხმარებლის ':'-ის შემდეგ ჩამატებით შეგიძლიათ: მაგ: dialout:x:20:romain "
+
+#: src/error.cc:97
+msgid "Msg: unable to use parport (/dev/parportX) device."
+msgstr "შეტყ: პარალელური (/dev/partportX) მოწყობილობის გამოყენება შეუძლებელია."
+
+#: src/error.cc:99
+msgid ""
+"Cause: the /dev/parportX node doesn't exist or you don't have required "
+"permissions. How to grant permission to devices to the user depends on the "
+"distribution, it may involve adding the user to a group such as 'lp'. This "
+"can be done by editing /etc/group and add the username after the ':'. "
+"Example: lp:x:7:romain "
+msgstr ""
+"მიზეზი: კვანძები /dev/parportX არ არსებობს, ან მასზე წვდომები არ გაქვთ. ის "
+"თუ როგორ უნდა მიანიჭოთ ეს წვდომა მომხმარებელს, დისტრიბუტივზეა დამოკიდებული. "
+"შეიძლება, დაგჭირდეთ თქვენი მომხმარებლის ჩამატება ისეთ ჯგუფში, როგორიცაა "
+"'lp'. ამისი გაკეთება /etc/group ფაილის ჩასწორებით და მომხმარებლის ':' "
+"სიმბოლოს შემდეგ დამატებით შეგიძლიათ. მაგ: lp:x:7:romain "
+
+#: src/error.cc:111
+msgid "Msg: unable to use USB pseudo file system."
+msgstr "შეტყ: USB-ის ფსევდოფაილური სისტემის გამოყენება შეუძლებელია."
+
+#: src/error.cc:113
+msgid ""
+"Cause: the USB filesystem is not mounted or cannot access USB device because "
+"current user doesn't have the necessary permissions. How to grant permission "
+"to devices to the user depends on the distribution; it may involve adding "
+"udev and/or pam_console configuration files, and you may in addition have to "
+"add your user to a group such as 'usb' or set-up libusb mounting "
+"parameters.If packages of TiLP and its libraries for your distribution "
+"exist, it is recommended to use those, as everything which can be configured "
+"automatically will be set up for you. Otherwise, manual setup steps, if any, "
+"are explained in the CONFIG file shipped with the ticables2 library. "
+msgstr ""
+"მიზეზი: USB-ის ფაილური სისტემა მიმაგრებული არაა, ან წვდომა USB "
+"მოწყობილობასთან შეუძლებელია იმიტომ, რომ მიმდინარე მომხმარებელს საჭირო "
+"წვდომები არ გააჩნია. ის, თუ როგორ უნდა მიანიჭოთ მომხმარებელს ეს წვდომა, "
+"დისტრიბუტივზეა დამოკიდებული. შეიძლება, დაგჭირდეთ udev ან/და pam_console-ის "
+"კონფიგურაციის ფაილების ჩასწორება, ან, დამატებით, ისეთ ჯგუფში ჩასმა თქვენი "
+"მომხმარებლის, როგორიცაა 'usb'. ან, მოირგეთ libusb-ის მიმაგრების "
+"პარამეტრები.თუ TiLP-ის პაკეტები და მისი ბიბლიოთეკები უკვე არსებობს თქვენი "
+"დისტრიბუტივისთვის, რეკომენდებულია, ისინი გამოიყენოთ, რადგან ისინი ამ "
+"ყველაფერს ავტომატურად იზამენ. სხვა შემთხვევაში, ხელით მორგების ნაბიჯები "
+"აღწერილია CONFIG ფაილში, რომელიც ticables2 ბიბლიოთეკას მოჰყვება. "
+
+#: src/error.cc:130
+msgid "Msg: illegal operation or argument."
+msgstr "შეტყ: მიუღებელი ოპერაცია, ან არგუმენტი."
+
+#: src/error.cc:132
+msgid ""
+"Cause: the program which uses this library is buggy. Fire-up the developer!"
+msgstr ""
+"მიზეზი: პროგრამა, რომელიც ამ ბიბლიოთეკას იყენებს, შეცდომებს შეიცავს. "
+"პროგრამისტი გამაიყვანეთ!"
+
+#: src/error.cc:138
+msgid "Msg: DhaHelper driver and/or library not found."
+msgstr "შეტყ: DhaHelper-ის დრაივერი ან/და ბიბლიოთეკა აღმოჩენილი არაა."
+
+#: src/error.cc:140 src/error.cc:148
+msgid ""
+"Cause: the driver may have been not started yet; it may have been "
+"uninstalled; the library has been installed without administrator privileges."
+msgstr ""
+"მიზეზი: შეიძლება, დრაივერი ჯერ კიდევ გაშვებული არაა. ან შეიძლება, ის "
+"წაშალეს, ან ბიბლიოთეკა ადმინისტრატორის უფლებების გარეშე იქნა დაყენებული."
+
+#: src/error.cc:146
+msgid "Msg: RwPorts driver and/or library not found."
+msgstr "შეტყ: RwPorts-ის დრაივერი ან/და ბიბლიოთეკა აღმოჩენილი არაა."
+
+#: src/error.cc:154
+msgid "Msg: error occurred while writing to the device."
+msgstr "შეტყ: მოწყობილობაში ჩაწერისას აღმოჩენილია შეცდომა."
+
+#: src/error.cc:159
+msgid "Msg: timeout occurred while writing to the device."
+msgstr "შეტყ: მოწყობილობაში ჩაწერისას მოლოდინის ვადა ამოიწურა."
+
+#: src/error.cc:161 src/error.cc:174
+msgid "Cause: check that link cable is plugged and/or the calculator is ready."
+msgstr ""
+"მიზეზი: შეამოწმეთ, მიერთებულია თუ არა კავშირის კაბელი ან/და რომ კალკულატორი "
+"მზადაა."
+
+#: src/error.cc:167
+msgid "Msg: error occurred while reading from the device."
+msgstr "შეტყ: მოწყობილობიდან წაკითხვისას აღმოჩენილია შეცდომა."
+
+#: src/error.cc:172
+msgid "Msg: timeout occurred while reading from the device."
+msgstr "შეტყ: მოწყობილობიდან წაკითხვისას მოლოდინის ვადა ამოიწურა."
+
+#: src/error.cc:180
+msgid "Msg: the probing of device failed."
+msgstr "შეტყ: მოწყობილობის ზონდირება ჩავარდა."
+
+#: src/error.cc:182
+msgid "Cause: internal error. If you get it, this is a bug!"
+msgstr "მიზეზი: შიდა შეცდომა. თუ ეს ნახეთ, ესე იგი, კოდში შეცდომაა!"
+
+#: src/error.cc:195
+msgid "Msg: unable to open serial port."
+msgstr "შეტყ: სერიული პორტის გახსნა შეუძლებელია."
+
+#: src/error.cc:197
+msgid "Cause: check that device is not used/locked by another application."
+msgstr ""
+"მიზეზი: შეამოწმეთ, ხომ არ გამოიყენება/დაბლოკა მოწყობილობა სხვა აპლიკაციამ."
+
+#: src/error.cc:205
+msgid "Msg: failed to get VTI handle."
+msgstr "შეტყ: VTI-ის დამმუშავებლის მიღება ჩავარდა."
+
+#: src/error.cc:207
+msgid "Cause: VTI may not be running. VTI must be launched before."
+msgstr "მიზეზი: შეიძლება, VTI გაშვებული არაა. VTI მანამდე უნდა გაუშვათ."
+
+#: src/error.cc:217
+msgid "Msg: unable to get a unique IPC (Inter Process Communication) key."
+msgstr ""
+"შეტყ: უნიკალური IPC-ის (პროცესთაშორისი კომუნიკაციის) გასაღების მიღება "
+"შეუძლებელია."
+
+#: src/error.cc:219
+msgid ""
+"Cause: check that you have enough resources for allocating a shared memory "
+"segment."
+msgstr ""
+"მიზეზი: დარწმუნდით, რომ გაქვთ საკმარისი რესურსები გაზიარებული მეხსიერების "
+"სეგმენტის გამოსაყოფად."
+
+#: src/error.cc:226
+msgid "Msg: unable to open/close pipes for virtual linking."
+msgstr ""
+"შეტყ: ვირტუალური კავშირისთვის კომუნიკაციის არხის გახსნა/დახურვა შეუძლებელია."
+
+#: src/error.cc:228
+msgid ""
+"Cause: check that you have permissions to create a pipe in the /tmp "
+"directory."
+msgstr ""
+"მიზეზი: შეამოწმეთ, გაქვთ, თუ არა წვდომა, შექმნათ საკომუნიკაციო არხი "
+"საქაღალდეში /tmp."
+
+#: src/error.cc:235
+msgid "Msg: unable to open serial device."
+msgstr "შეტყ: სერიული მოწყობილობის გახსნა შეუძლებელია."
+
+#: src/error.cc:237 src/error.cc:246
+msgid ""
+"Cause: check that you have permissions on /dev/ttySx device. Check that "
+"device is not locked."
+msgstr ""
+"მიზეზი: შეამოწმეთ, გაქვთ, თუ არა წვდომები მოწყობილობაზე /dev/ttySx. "
+"დარწმუნდით, რომ მოწყობილობა დაბლოკილი არაა."
+
+#: src/error.cc:244
+msgid "Msg: unable to issue a specific command on serial device."
+msgstr "შეტყ: სერიულ მოწყობილობაზე სპეციფიკური ბრძანების გაგზავნა შეუძლებელია."
+
+#: src/error.cc:252
+msgid "Msg: unable to open parallel device."
+msgstr "შეტყ: პარალელური მოწყობილობის გახსნა შეუძლებელია."
+
+#: src/error.cc:254 src/error.cc:262
+msgid ""
+"Cause: check that you have permissions on /dev/parportX device. Check that "
+"device is not locked."
+msgstr ""
+"მიზეზი: შეამოწმეთ, გაქვთ, თუ არა წვდომები მოწყობილობაზე /dev/parportX. "
+"დარწმუნდით, რომ მოწყობილობა დაბლოკილი არაა."
+
+#: src/error.cc:260
+msgid "Msg: unable to issue a specific command on parallel device."
+msgstr ""
+"შეტყ: პარალელურ მოწყობილობაზე სპეციფიკური ბრძანების გაგზავნა შეუძლებელია."
+
+#: src/error.cc:268
+msgid "Msg: unable to find the libusb-win32 driver."
+msgstr "შეტყ: დრაივერი libusb-win32 აღმოჩენილი არაა."
+
+#: src/error.cc:270
+msgid "Cause: the driver is not present and/or installed."
+msgstr "მიზეზი: დრაივერი წარმოდგენილი ან/და დაყენებული არაა."
+
+#: src/error.cc:278
+msgid "Msg: failed to open the USB device."
+msgstr "შეტყ: USB მოწყობილობის გახსნა ჩავარდა."
+
+#: src/error.cc:280
+msgid ""
+"Cause: Check that the USB cable is plugged in and that the calculator is "
+"turned ON! Also, check libusb and usbfs for valid permissions."
+msgstr ""
+"მიზეზი: შეამოწმეთ, მიერთებულია, თუ არა USB კაბელი და რომ კალკულატორი "
+"ჩართულია! ასევე შეამოწმეთ libusb-ის და usbfs-ის წვდომები."
+
+#: src/error.cc:286
+msgid "Msg: unable to reset USB device."
+msgstr "შეტყ: USB მოწყობილობის ჩამოყრა ჩავარდა."
+
+#: src/error.cc:288
+msgid ""
+"Cause: Check that cable is connected or not stalled. Try to unplug/plug it."
+msgstr ""
+"მიზეზი: შეამოწმეთ, რომ კაბელი კარგადაა მიერთებული და გაჭედილი არაა. სცადეთ, "
+"გამოაერთოთ და თავიდან შეაერთოთ ის."
+
+#: src/error.cc:294
+msgid "Msg: attempting to use a cable which has not been open before."
+msgstr "შეტყ: ვცდილობ, გამოვიყენო კაბელი, რომელიც ადრე ღია არ იყო."
+
+#: src/error.cc:296
+msgid "Cause: Internal error."
+msgstr "მიზეზი: შიდა შეცდომა."
+
+#: src/error.cc:302
+msgid "Msg: no cable found."
+msgstr "შეტყ: კაბელი აღმოჩენილი არაა."
+
+#: src/error.cc:304
+msgid "Cause: probing failed or invalid parameters."
+msgstr "მიზეზი: ზონდირება ჩავარდა, ან პარამეტრები არასწორია."
+
+#: src/error.cc:310
+msgid "Msg: DLL not found."
+msgstr "შეტყ: DLL აღმოჩენილი არაა."
+
+#: src/error.cc:312
+msgid "Cause: maybe you renamed the DLL ?"
+msgstr "მიზეზი: შეიძლება, DLL-ს სახელი გადაარქვით?"
+
+#: src/error.cc:318
+msgid "Msg: this cable does not support raw I/O."
+msgstr "შეტყ: ამ კაბელს დაუმუშავებელი შეტანა/გამოტანის მხარდაჭერა არ აქვს."
+
+#: src/error.cc:320
+msgid "Cause: unsupported operation type on cable."
+msgstr "მიზეზი: მხარდაუჭერელი ოპერაციის ტიპი კაბელზე."
+
+#: src/error.cc:329
+msgid "Msg: unable to open/close sockets for virtual linking."
+msgstr "შეტყ: ვირტუალური კავშირისთვის სოკეტების გახსნა/დახურვა შეუძლებელია."
+
+#: src/error.cc:331
+msgid "Cause: check that you have permissions to open sockets."
+msgstr "მიზეზი: შეამოწმეთ, გაქვთ, თუ არა წვდომა, გახსნათ სოკეტები."
+
+#: src/link_nul.cc:119
+msgid "Dummy link"
+msgstr "სულელი კავშირი"
+
+#: src/link_nul.cc:120
+msgid "Dummy link used when no cable is set"
+msgstr "სულელი კავშირი გამოიყენება, როცა კავშირი დაყენებული არაა"
+
+#: src/link_nul.cc:136
+msgid "Dummy link for TiEmu"
+msgstr "სულელი კავშირი TiEmu-ისთვის"
+
+#: src/link_nul.cc:137
+msgid "Internal Link Port cable for TiEmu (internal use)"
+msgstr "შიდა კავშირის პორტის კაბელი TiEmu-ისთვის (შიდა მოხმარებისთვის)"
+
+#: src/linux/detect.cc:310
+msgid "    tty support: not compiled."
+msgstr "    tty-ის მხარდაჭერა: კომპილაციის დროს ჩართული არ იყო."
+
+#: src/linux/detect.cc:318
+msgid "not usable"
+msgstr "გამოყენებადი არაა"
+
+#: src/linux/detect.cc:327
+#, c-format
+msgid "unable to open serial device '%s'"
+msgstr "გახსნის შეცდომა სერიული მოწყობილობისთვის '%s'"
+
+#: src/linux/detect.cc:334
+#, c-format
+msgid "Error running TIOCGSERIAL ioctl on device %s - %s"
+msgstr "TIOCGSERIAL ioctl-ის გაშვების შეცდომა მოწყობილობაზე %s - %s"
+
+#: src/linux/detect.cc:335 src/linux/detect.cc:343
+msgid ""
+"NOTE: proceeding nevertheless, in an attempt to help usage of libticables "
+"with some USB/RS232 adapters, though most do not work at all for the "
+"purposes of TI's protocol"
+msgstr ""
+"შენიშვნა: მცდელობა, დაგეხმაროთ libticables-ით ზოგიერთი USB/RS232 ადაპტერებით "
+"დაკავშირებაში, მაინც გაგრძელდება, თუმცა TI-ის პროტოკოლის საჭიროებისთვის "
+"უმრავლესობა არ მუშაობს"
+
+#: src/linux/detect.cc:342
+#, c-format
+msgid "Serial port has unknown type %d"
+msgstr "სერიულ პორტს აქვს უცნობი ტიპი %d"
+
+#: src/linux/detect.cc:357
+msgid "Check for parport support:"
+msgstr "partport-ის მხარდაჭერის შემოწმება:"
+
+#: src/linux/detect.cc:359
+msgid "    parport support: available."
+msgstr "    პარალელური პორტის მხარდაჭერა: ხელმისაწვდომია."
+
+#: src/linux/detect.cc:361
+msgid "    parport support: not compiled."
+msgstr "    პარალელური პორტის მხარდაჭერა: კომპილაციის დროს ჩართული არ იყო."
+
+#: src/linux/detect.cc:366
+msgid "Check for parport usability:"
+msgstr "პარალელური პორტის გამოყენებადობის შემოწმება:"
+
+#: src/linux/detect.cc:381
+msgid "    is usable: no"
+msgstr "    გამოყენებადია: არა"
+
+#: src/linux/detect.cc:412
+msgid "Check for libusb usability:"
+msgstr "libusb-ის გამოყენებადობის შემოწმება:"
+
+#: src/linux/detect.cc:416 src/linux/detect.cc:427 src/linux/detect.cc:435
+#: src/linux/detect.cc:438
+#, c-format
+msgid "    usb filesystem (%s): %s"
+msgstr "    usb ფაილური სისტემა (%s): %s"
+
+#: src/linux/detect.cc:444
+#, c-format
+msgid "    usb filesystem (/[proc|dev]/bus/usb): %s"
+msgstr "    usb ფაილური სისტემა (/[proc|dev]/bus/usb): %s"
+
+#: src/linux/detect.cc:445
+msgid "    => you must have udev or usbfs support."
+msgstr "    => უნდა გქონდეთ udev-ის, ან usbfs-ის მხარდაჭერა."
+
+#: src/linux/detect.cc:446
+msgid "    => take a look at the ticables2/CONFIG file."
+msgstr "    => ჩაიხედეთ ფაილში ticables2/CONFIG."
+
+#: src/linux/ioports.cc:71
+msgid "ioctl failed on parallel device: can't claim exclusive access."
+msgstr ""
+"ioctl ჩავარდა პარალელურ მოწყობილობაზე: ექსკლუზიური წვდომის გამოთხოვა "
+"შეუძლებელია."
+
+#: src/linux/ioports.cc:72
+msgid "we will do without that."
+msgstr "მაგის გარეშე ვიზამთ."
+
+#: src/linux/ioports.cc:78
+msgid "ioctl failed on parallel device: can't claim parport."
+msgstr ""
+"ioctl ჩავარდა პარალელურ მოწყობილობაზე: parport-ის გამოთხოვა შეუძლებელია."
+
+#: src/linux/ioports.cc:87
+msgid "ioctl failed on parallel device: can't change transfer mode."
+msgstr ""
+"ioctl ჩავარდა პარალელურ მოწყობილობაზე: გადაცემის რეჟიმის ცვლილება "
+"შეუძლებელია."
+
+#: src/linux/ioports.cc:99
+msgid "ioctl failed on parallel device: can't release parport."
+msgstr ""
+"ioctl ჩავარდა პარალელურ მოწყობილობაზე: parport-ის გათავისუფლება შეუძლებელია."
+
+#: src/linux/ioports.cc:113
+msgid "ioctl failed on parallel device: can't read status lines."
+msgstr ""
+"ioctl ჩავარდა პარალელურ მოწყობილობაზე: სტატუსის ხაზების წაკითხვა შეუძლებელია."
+
+#: src/linux/ioports.cc:124
+msgid "ioctl failed on parallel device: can't write on data lines."
+msgstr ""
+"ioctl ჩავარდა პარალელურ მოწყობილობაზე: მონაცემთა ხაზებზე ჩაწერა შეუძლებელია."
+
+#: src/linux/ioports.cc:163 src/linux/ioports.cc:179
+msgid "ioctl failed on serial device."
+msgstr "ioctl ჩავარდა სერიულ მოწყობილობაზე."
+
+#: src/linux/link_gry.cc:116
+#, c-format
+msgid "unable to open this serial port: %s (wrong permissions).\n"
+msgstr "სერიული პორტის გახსნა შეუძლებელია: %s (არასწორი წვდომები).\n"
+
+#: src/linux/link_gry.cc:120
+#, c-format
+msgid "unable to open this serial port: %s\n"
+msgstr "სერიული პორტის გახსნა შეუძლებელია: %s\n"
+
+#: src/linux/link_gry.cc:318 src/linux/link_par.cc:383
+#: src/linux/link_tcpc.cc:102 src/linux/link_tcps.cc:102
+#: src/linux/link_ser.cc:395 src/win32/link_gry2.cc:368
+#: src/win32/link_gry.cc:374 src/win32/link_par.cc:374
+#: src/win32/link_ser.cc:403
+#, c-format
+msgid "unable to set device %s.\n"
+msgstr "მოწყობილობის %s დაყენება შეუძლებელია.\n"
+
+#: src/linux/link_gry.cc:329 src/win32/link_gry2.cc:379
+#: src/win32/link_gry.cc:385
+msgid "GrayLink"
+msgstr "GrayLink"
+
+#: src/linux/link_gry.cc:330 src/win32/link_gry2.cc:380
+#: src/win32/link_gry.cc:386
+msgid "GrayLink serial cable"
+msgstr "სერიული კაბელი GrayLink"
+
+#: src/linux/link_par.cc:394 src/win32/link_par.cc:385
+msgid "Parallel"
+msgstr "პარალელური"
+
+#: src/linux/link_par.cc:395 src/win32/link_par.cc:386
+msgid "Home-made parallel cable"
+msgstr "სახლში გაკეთებული პარალელური კაბელი"
+
+#: src/linux/link_tcpc.cc:113
+msgid "TCPC"
+msgstr "TCPC"
+
+#: src/linux/link_tcpc.cc:114
+msgid "Virtual TCP client link"
+msgstr "ვირტუალური TCP კლიენტის კავშირი"
+
+#: src/linux/link_tcps.cc:113
+msgid "TCPS"
+msgstr "TCPS"
+
+#: src/linux/link_tcps.cc:114
+msgid "Virtual TCP server link"
+msgstr "ვირტუალური TCP სერვერის კავშირი"
+
+#: src/linux/link_ser.cc:406 src/win32/link_ser.cc:414
+msgid "BlackLink"
+msgstr "BlackLink"
+
+#: src/linux/link_ser.cc:407 src/win32/link_ser.cc:415
+msgid "BlackLink or home-made serial cable"
+msgstr "BlackLink, ან სახლში გაკეთებული სერიული კაბელი"
+
+#: src/linux/link_tie.cc:155
+#, c-format
+msgid "error: %s\n"
+msgstr "შეცდომა: %s\n"
+
+#: src/linux/link_tie.cc:354 src/win32/link_tie.cc:370
+msgid "TiEmu"
+msgstr "TiEmu"
+
+#: src/linux/link_tie.cc:355 src/win32/link_tie.cc:371
+msgid "Virtual link for TiEmu"
+msgstr "ვირტუალური კავშირი TiEmu-ისთვის"
+
+#: src/linux/link_usb1.cc:213
+#, c-format
+msgid " found %s on #%i, version <%x.%02x>\n"
+msgstr " აღმჩენილია %s #%i-ზე. ვერსია <%x.%02x>\n"
+
+#: src/linux/link_usb1.cc:240 src/linux/link_usb.cc:380
+msgid "no devices found!\n"
+msgstr "მოწყობილობები აღმოჩენილი არაა!\n"
+
+#: src/linux/link_usb1.cc:878 src/linux/link_usb.cc:1148
+msgid "SilverLink"
+msgstr "SilverLink"
+
+#: src/linux/link_usb1.cc:879 src/linux/link_usb.cc:1149
+msgid "SilverLink (TI-GRAPH LINK USB) cable"
+msgstr "კაბელი SilverLink (TI-GRAPH LINK USB)"
+
+#: src/linux/link_usb1.cc:895 src/linux/link_usb.cc:1165
+msgid "DirectLink"
+msgstr "DirectLink"
+
+#: src/linux/link_usb1.cc:896 src/linux/link_usb.cc:1166
+msgid "DirectLink (DIRECT USB) cable"
+msgstr "კაბელი DirectLink (DIRECT USB)"
+
+#: src/linux/link_usb.cc:364
+#, c-format
+msgid "usb_find_busses (%s).\n"
+msgstr "usb_find_busses (%s).\n"
+
+#: src/linux/link_usb.cc:372
+#, c-format
+msgid "usb_find_devices (%s).\n"
+msgstr "usb_find_devices (%s).\n"
+
+#: src/linux/link_vti.cc:241 src/win32/link_vti.cc:331
+msgid "Virtual TI"
+msgstr "Virtual TI"
+
+#: src/linux/link_vti.cc:242 src/win32/link_vti.cc:332
+msgid "Virtual link for VTi"
+msgstr "ვირტუალური კავშირი VTi-ისთვის"
+
+#: src/probe.cc:114
+msgid "Link cable probing:"
+msgstr "კავშირის კაბელის ზონდირება:"
+
+#: src/ticables.cc:176
+#, c-format
+msgid "ticables library version %s"
+msgstr "ticables ბიბლიოთეკის ვერსია %s"
+
+#: src/ticables.cc:552
+msgid "Link cable handle details:"
+msgstr "კავშირის კაბელის დამუშავების დეტალები:"
+
+#: src/ticables.cc:553
+#, c-format
+msgid "  model   : %s"
+msgstr "  მოდელი   : %s"
+
+#: src/ticables.cc:554
+#, c-format
+msgid "  port    : %s"
+msgstr "  პორტი    : %s"
+
+#: src/ticables.cc:555
+#, c-format
+msgid "  timeout : %2.1fs"
+msgstr "  მოლოდინის დრო : %2.1fs"
+
+#: src/ticables.cc:556
+#, c-format
+msgid "  delay   : %i us"
+msgstr "  დაყოვნება   : %i მკწმ"
+
+#: src/ticables.cc:559
+#, c-format
+msgid "  device  : %s"
+msgstr "  მოწყობილობა  : %s"
+
+#: src/ticables.cc:560
+#, c-format
+msgid "  address : 0x%03x"
+msgstr "  მისამართი : 0x%03x"
+
+#: src/win32/link_vti.cc:108
+msgid "FATAL ERROR: unable to get an handle on the ticables-2 library."
+msgstr ""
+"ფატალური შეცდომა: ბიბლიოთეკაზე ticables-2 დამმუშავებლის მიღება შეუძლებელია."
+
+#: src/win32/link_vti.cc:109
+msgid "Did you rename the library ?!"
+msgstr "ბიბლიოთეკას სახელი ხომ არ გადაარქვით ?!"
+
+#: src/win32/link_vti.cc:144
+#, c-format
+msgid "Opened %s"
+msgstr "%s გაიხსნა"
