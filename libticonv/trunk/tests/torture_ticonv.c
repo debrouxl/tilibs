@@ -83,14 +83,15 @@ int main(int argc, char **argv)
     PRINTF(ticonv_model_has_real_screen, INT, CALC_NONE);
     PRINTF(ticonv_model_has_monochrome_screen, INT, CALC_NONE);
     PRINTF(ticonv_model_has_color_screen, INT, CALC_NONE);
+    PRINTF(ticonv_model_to_product_id, INT, CALC_NONE);
     PRINTF(ticonv_varname_to_utf16_s, PTR, -1, NULL, (void *)0x12345678, 0);
     PRINTF(ticonv_varname_to_utf16_s, PTR, -1, (void *)0x12345678, NULL, 0);
     PRINTF(ticonv_varname_to_utf16, PTR, -1, NULL, 0);
     PRINTF(ticonv_varname_to_utf8_sn, STR, -1, NULL, (void *)0x12345678, 0x12345678, 0);
     PRINTF(ticonv_varname_to_utf8_sn, STR, -1, (void *)0x12345678, NULL, 0x12345678, 0);
     PRINTF(ticonv_varname_to_utf8_s, STR, -1, NULL, (void *)0x12345678, 0);
-    PRINTF(ticonv_varname_to_utf8_s, STR, -1, (void *)0x12345678, NULL, 0);
 
+    PRINTF(ticonv_varname_to_utf8_s, STR, -1, (void *)0x12345678, NULL, 0);
     PRINTF(ticonv_varname_to_utf8, STR, -1, NULL, 0);
     PRINTF(ticonv_varname_to_filename_sn, STR, -1, NULL, (void *)0x12345678, 0x12345678, 0);
     PRINTF(ticonv_varname_to_filename_sn, STR, -1, (void *)0x12345678, NULL, 0x12345678, 0);
@@ -100,8 +101,8 @@ int main(int argc, char **argv)
     PRINTF(ticonv_varname_to_tifile_sn, STR, -1, NULL, (void *)0x12345678, 0x12345678, 0);
     PRINTF(ticonv_varname_to_tifile_sn, STR, -1, (void *)0x12345678, NULL, 0x12345678, 0);
     PRINTF(ticonv_varname_to_tifile_s, STR, -1, NULL, (void *)0x12345678, 0);
-    PRINTF(ticonv_varname_to_tifile_s, STR, -1, (void *)0x12345678, NULL, 0);
 
+    PRINTF(ticonv_varname_to_tifile_s, STR, -1, (void *)0x12345678, NULL, 0);
     PRINTF(ticonv_varname_to_tifile, STR, -1, NULL, 0);
     PRINTF(ticonv_varname_from_tifile_sn, STR, -1, NULL, (void *)0x12345678, 0x12345678, 0);
     PRINTF(ticonv_varname_from_tifile_sn, STR, -1, (void *)0x12345678, NULL, 0x12345678, 0);
@@ -111,8 +112,8 @@ int main(int argc, char **argv)
     PRINTF(ticonv_model_to_string, STR, CALC_NONE);
     PRINTF(ticonv_string_to_model, INT, NULL);
     fprintf(stderr, "%d\t%p\n", __LINE__, ti73_charset);
-    fprintf(stderr, "%d\t%p\n", __LINE__, ti80_charset);
 
+    fprintf(stderr, "%d\t%p\n", __LINE__, ti80_charset);
     fprintf(stderr, "%d\t%p\n", __LINE__, ti82_charset);
     fprintf(stderr, "%d\t%p\n", __LINE__, ti83_charset);
     fprintf(stderr, "%d\t%p\n", __LINE__, ti83p_charset);

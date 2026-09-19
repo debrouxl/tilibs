@@ -619,37 +619,37 @@ msgstr "TiEmu"
 msgid "Virtual link for TiEmu"
 msgstr "Câble virtuel pour TiEmu"
 
-#: src/linux/link_usb1.cc:215
+#: src/linux/link_usb1.cc:217
 #, c-format
 msgid " found %s on #%i, version <%x.%02x>\n"
 msgstr " trouvé %s sur #%i, version <%x.%02x>\n"
 
-#: src/linux/link_usb1.cc:242 src/linux/link_usb.cc:380
+#: src/linux/link_usb1.cc:244 src/linux/link_usb.cc:382
 msgid "no devices found!\n"
 msgstr "aucun périphérique trouvé !\n"
 
-#: src/linux/link_usb1.cc:880 src/linux/link_usb.cc:1148
+#: src/linux/link_usb1.cc:899 src/linux/link_usb.cc:1163
 msgid "SilverLink"
 msgstr "SilverLink"
 
-#: src/linux/link_usb1.cc:881 src/linux/link_usb.cc:1149
+#: src/linux/link_usb1.cc:900 src/linux/link_usb.cc:1164
 msgid "SilverLink (TI-GRAPH LINK USB) cable"
 msgstr "Câble SilverLink (TI-GRAPH LINK USB)"
 
-#: src/linux/link_usb1.cc:897 src/linux/link_usb.cc:1165
+#: src/linux/link_usb1.cc:916 src/linux/link_usb.cc:1180
 msgid "DirectLink"
 msgstr "DirectLink"
 
-#: src/linux/link_usb1.cc:898 src/linux/link_usb.cc:1166
+#: src/linux/link_usb1.cc:917 src/linux/link_usb.cc:1181
 msgid "DirectLink (DIRECT USB) cable"
 msgstr "Câble DirectLink (DIRECT USB)"
 
-#: src/linux/link_usb.cc:364
+#: src/linux/link_usb.cc:366
 #, c-format
 msgid "usb_find_busses (%s).\n"
 msgstr "usb_find_busses (%s).\n"
 
-#: src/linux/link_usb.cc:372
+#: src/linux/link_usb.cc:374
 #, c-format
 msgid "usb_find_devices (%s).\n"
 msgstr "usb_find_devices (%s).\n"

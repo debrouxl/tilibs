@@ -33,6 +33,7 @@ extern const CalcFncts calc_83p;
 extern const CalcFncts calc_84p;
 extern const CalcFncts calc_85;
 extern const CalcFncts calc_86;
+
 extern const CalcFncts calc_89;
 extern const CalcFncts calc_89t;
 extern const CalcFncts calc_92;
@@ -52,5 +53,21 @@ extern const CalcFncts calc_83pce_usb;
 extern const CalcFncts calc_84pce_usb;
 extern const CalcFncts calc_82a_usb;
 extern const CalcFncts calc_84pt_usb;
+
+extern const CalcFncts calc_nsp_cradle;
+
+extern const CalcFncts calc_nsp_clickpad;
+extern const CalcFncts calc_nsp_clickpad_cas;
+extern const CalcFncts calc_nsp_touchpad;
+extern const CalcFncts calc_nsp_touchpad_cas;
+extern const CalcFncts calc_nsp_cx;
+extern const CalcFncts calc_nsp_cx_cas;
+extern const CalcFncts calc_nsp_cmc;
+extern const CalcFncts calc_nsp_cmc_cas;
+
+extern const CalcFncts calc_nsp_cxii;
+extern const CalcFncts calc_nsp_cxii_cas;
+extern const CalcFncts calc_nsp_cxiit;
+extern const CalcFncts calc_nsp_cxiit_cas;
 
 #endif

@@ -121,7 +121,29 @@ static char *detokenize_vartype(CalcModel model, const char *src, unsigned char 
 			return (dst = g_strdup("ZRCL"));
 		}
 		break;
-	default: 
+	case CALC_NONE:
+	case CALC_TI89:
+	case CALC_TI89T:
+	case CALC_TI92:
+	case CALC_TI92P:
+	case CALC_V200:
+	case CALC_TI89T_USB:
+	case CALC_NSPIRE:
+	case CALC_TI80:
+	case CALC_NSPIRE_CRADLE:
+	case CALC_NSPIRE_CLICKPAD:
+	case CALC_NSPIRE_CLICKPAD_CAS:
+	case CALC_NSPIRE_TOUCHPAD:
+	case CALC_NSPIRE_TOUCHPAD_CAS:
+	case CALC_NSPIRE_CX:
+	case CALC_NSPIRE_CX_CAS:
+	case CALC_NSPIRE_CMC:
+	case CALC_NSPIRE_CMC_CAS:
+	case CALC_NSPIRE_CXII:
+	case CALC_NSPIRE_CXII_CAS:
+	case CALC_NSPIRE_CXIIT:
+	case CALC_NSPIRE_CXIIT_CAS:
+	default:
 		break;
 	}
 
@@ -536,7 +558,22 @@ char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigne
 	case CALC_TI89T_USB:
 		return g_strdup(src);
 	case CALC_NSPIRE:
+	case CALC_NSPIRE_CRADLE:
+	case CALC_NSPIRE_CLICKPAD:
+	case CALC_NSPIRE_CLICKPAD_CAS:
+	case CALC_NSPIRE_TOUCHPAD:
+	case CALC_NSPIRE_TOUCHPAD_CAS:
+	case CALC_NSPIRE_CX:
+	case CALC_NSPIRE_CX_CAS:
+	case CALC_NSPIRE_CMC:
+	case CALC_NSPIRE_CMC_CAS:
+	case CALC_NSPIRE_CXII:
+	case CALC_NSPIRE_CXII_CAS:
+	case CALC_NSPIRE_CXIIT:
+	case CALC_NSPIRE_CXIIT_CAS:
 		return g_strdup(src);
+	case CALC_NONE:
+	case CALC_TI80:
 	default:
 		return g_strdup("________");
 	}
@@ -634,6 +671,34 @@ char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_, unsigned
 				return g_strdup("");
 			}
 		break;
+		case CALC_NONE:
+		case CALC_TI89:
+		case CALC_TI89T:
+		case CALC_TI92:
+		case CALC_TI92P:
+		case CALC_V200:
+		case CALC_TI84P_USB:
+		case CALC_TI89T_USB:
+		case CALC_NSPIRE:
+		case CALC_TI80:
+		case CALC_TI84PC_USB:
+		case CALC_TI83PCE_USB:
+		case CALC_TI84PCE_USB:
+		case CALC_TI82A_USB:
+		case CALC_TI84PT_USB:
+		case CALC_NSPIRE_CRADLE:
+		case CALC_NSPIRE_CLICKPAD:
+		case CALC_NSPIRE_CLICKPAD_CAS:
+		case CALC_NSPIRE_TOUCHPAD:
+		case CALC_NSPIRE_TOUCHPAD_CAS:
+		case CALC_NSPIRE_CX:
+		case CALC_NSPIRE_CX_CAS:
+		case CALC_NSPIRE_CMC:
+		case CALC_NSPIRE_CMC_CAS:
+		case CALC_NSPIRE_CXII:
+		case CALC_NSPIRE_CXII_CAS:
+		case CALC_NSPIRE_CXIIT:
+		case CALC_NSPIRE_CXIIT_CAS:
 		default:
 		break;
 	}

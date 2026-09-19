@@ -140,7 +140,7 @@ static void display_tree(TreeInfo * info, GNode * vars)
 		}
 
 		//ticalcs_info("parent has %d children", (int)g_node_n_children(parent));
-		if (info->model != CALC_NSPIRE)
+		if (!ticonv_model_is_tinspire(info->model))
 		{
 			for (j = 0; j < (int)g_node_n_children(parent); j++)
 			{

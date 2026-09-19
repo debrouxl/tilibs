@@ -90,12 +90,12 @@ int TICALL ticalcs_calc_isready(CalcHandle* handle)
 
 	ticalcs_info("%s", _("Checking hand-held status:"));
 	handle->busy = 1;
-	if (calc->is_ready)
+	if (calc->fncts.is_ready)
 	{
 		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_IS_READY);
 		if (!ret)
 		{
-			ret = calc->is_ready(handle);
+			ret = calc->fncts.is_ready(handle);
 		}
 		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_IS_READY);
 	}
@@ -129,7 +129,7 @@ int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint32_t key)
 
 	ticalcs_info(_("Sending key %08x:"), key);
 	handle->busy = 1;
-	if (calc->send_key)
+	if (calc->fncts.send_key)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_KEY);
@@ -137,7 +137,7 @@ int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint32_t key)
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->send_key(handle, key);
+			ret = calc->fncts.send_key(handle, key);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_KEY);
 		event.data.uintval = key;
@@ -176,7 +176,7 @@ int TICALL ticalcs_calc_execute(CalcHandle* handle, VarEntry* ve, const char* ar
 
 	ticalcs_info(_("Executing %s/%s with %s:"), ve->folder, ve->name, args);
 	handle->busy = 1;
-	if (calc->execute)
+	if (calc->fncts.execute)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_EXECUTE);
@@ -184,7 +184,7 @@ int TICALL ticalcs_calc_execute(CalcHandle* handle, VarEntry* ve, const char* ar
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->execute(handle, ve, args);
+			ret = calc->fncts.execute(handle, ve, args);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_EXECUTE);
 		event.data.ptrval = (void *)ve;
@@ -223,7 +223,7 @@ int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoord* sc, uin
 
 	ticalcs_info("%s", _("Requesting screenshot:"));
 	handle->busy = 1;
-	if (calc->recv_screen)
+	if (calc->fncts.recv_screen)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_SCREEN);
@@ -231,7 +231,7 @@ int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoord* sc, uin
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->recv_screen(handle, sc, bitmap);
+			ret = calc->fncts.recv_screen(handle, sc, bitmap);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_SCREEN);
 		event.data.ptrval = (void *)*bitmap;
@@ -331,12 +331,12 @@ int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, GNode **ap
 
 	ticalcs_info("%s", _("Requesting folder & vars & apps listing:"));
 	handle->busy = 1;
-	if (calc->get_dirlist)
+	if (calc->fncts.get_dirlist)
 	{
 		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_GET_DIRLIST);
 		if (!ret)
 		{
-			ret = calc->get_dirlist(handle, vars, apps);
+			ret = calc->fncts.get_dirlist(handle, vars, apps);
 		}
 		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_GET_DIRLIST);
 	}
@@ -390,12 +390,12 @@ int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram, uint32_t 
 
 	ticalcs_info("%s", _("Requesting RAM & FLASH free"));
 	handle->busy = 1;
-	if (calc->get_memfree)
+	if (calc->fncts.get_memfree)
 	{
 		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_GET_MEMFREE);
 		if (!ret)
 		{
-			ret = calc->get_memfree(handle, ram, flash);
+			ret = calc->fncts.get_memfree(handle, ram, flash);
 		}
 		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_GET_MEMFREE);
 	}
@@ -430,7 +430,7 @@ int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent* content)
 
 	ticalcs_info("%s", _("Sending backup:"));
 	handle->busy = 1;
-	if (calc->send_backup)
+	if (calc->fncts.send_backup)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_BACKUP);
@@ -438,7 +438,7 @@ int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent* content)
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->send_backup(handle, content);
+			ret = calc->fncts.send_backup(handle, content);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_BACKUP);
 		event.data.ptrval = (void *)content;
@@ -475,7 +475,7 @@ int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent* content)
 
 	ticalcs_info("%s", _("Requesting backup:"));
 	handle->busy = 1;
-	if (calc->recv_backup)
+	if (calc->fncts.recv_backup)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_BACKUP);
@@ -483,7 +483,7 @@ int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent* content)
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->recv_backup(handle, content);
+			ret = calc->fncts.recv_backup(handle, content);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_BACKUP);
 		event.data.ptrval = (void *)content;
@@ -518,7 +518,7 @@ static int ticalcs_calc_send_var_(CalcHandle* handle, CalcMode mode, FileContent
 
 	ticalcs_info("%s", _("Sending one or more variables:"));
 
-	if (calc->send_var)
+	if (calc->fncts.send_var)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_VAR);
@@ -526,7 +526,7 @@ static int ticalcs_calc_send_var_(CalcHandle* handle, CalcMode mode, FileContent
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->send_var(handle, mode, content);
+			ret = calc->fncts.send_var(handle, mode, content);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_VAR);
 		event.data.ptrval = (void *)content;
@@ -585,7 +585,7 @@ int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode, FileContent*
 
 	ticalcs_info(_("Requesting variable '%s':"), vr->name);
 	handle->busy = 1;
-	if (calc->recv_var)
+	if (calc->fncts.recv_var)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_VAR);
@@ -593,7 +593,7 @@ int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode, FileContent*
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->recv_var(handle, mode, content, vr);
+			ret = calc->fncts.recv_var(handle, mode, content, vr);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_VAR);
 		event.data.ptrval = (void *)content;
@@ -632,7 +632,7 @@ int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode, FileConte
 
 	ticalcs_info("%s", _("Sending variable (non-silent mode):"));
 	handle->busy = 1;
-	if (calc->send_var_ns)
+	if (calc->fncts.send_var_ns)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_VAR_NS);
@@ -640,7 +640,7 @@ int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode, FileConte
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->send_var_ns(handle, mode, content);
+			ret = calc->fncts.send_var_ns(handle, mode, content);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_VAR_NS);
 		event.data.ptrval = (void *)content;
@@ -680,7 +680,7 @@ int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode, FileConte
 
 	ticalcs_info("%s", _("Receiving variable (non-silent mode):"));
 	handle->busy = 1;
-	if (calc->recv_var_ns)
+	if (calc->fncts.recv_var_ns)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_VAR_NS);
@@ -688,7 +688,7 @@ int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode, FileConte
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->recv_var_ns(handle, mode, content, var);
+			ret = calc->fncts.recv_var_ns(handle, mode, content, var);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_VAR_NS);
 		event.data.ptrval = (void *)content;
@@ -725,7 +725,7 @@ int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* content)
 
 	ticalcs_info("%s", _("Sending FLASH application:"));
 	handle->busy = 1;
-	if (calc->send_app)
+	if (calc->fncts.send_app)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_APP);
@@ -733,7 +733,7 @@ int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* content)
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->send_app(handle, content);
+			ret = calc->fncts.send_app(handle, content);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_APP);
 		event.data.ptrval = (void *)content;
@@ -772,7 +772,7 @@ int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* content, VarR
 
 	ticalcs_info("%s", _("Requesting receiving of FLASH application:"));
 	handle->busy = 1;
-	if (calc->recv_app)
+	if (calc->fncts.recv_app)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_APP);
@@ -780,7 +780,7 @@ int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* content, VarR
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->recv_app(handle, content, vr);
+			ret = calc->fncts.recv_app(handle, content, vr);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_APP);
 		event.data.ptrval = (void *)content;
@@ -817,7 +817,7 @@ int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* content)
 
 	ticalcs_info("%s", _("Sending FLASH os:"));
 	handle->busy = 1;
-	if (calc->send_os)
+	if (calc->fncts.send_os)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_OS);
@@ -825,7 +825,7 @@ int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* content)
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->send_os(handle, content);
+			ret = calc->fncts.send_os(handle, content);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_OS);
 		event.data.ptrval = (void *)content;
@@ -862,7 +862,7 @@ int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlist)
 
 	ticalcs_info("%s", _("Requesting ID-LIST:"));
 	handle->busy = 1;
-	if (calc->recv_idlist)
+	if (calc->fncts.recv_idlist)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_IDLIST);
@@ -870,7 +870,7 @@ int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlist)
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->recv_idlist(handle, idlist);
+			ret = calc->fncts.recv_idlist(handle, idlist);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_IDLIST);
 		event.data.ptrval = (void *)idlist;
@@ -905,12 +905,12 @@ int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
 
 	ticalcs_info("%s", _("Sending ROM dumper:"));
 	handle->busy = 1;
-	if (calc->dump_rom_1)
+	if (calc->fncts.dump_rom_1)
 	{
 		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_DUMP_ROM1);
 		if (!ret)
 		{
-			ret = calc->dump_rom_1(handle);
+			ret = calc->fncts.dump_rom_1(handle);
 		}
 		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_DUMP_ROM1);
 	}
@@ -946,12 +946,12 @@ int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize size, const 
 
 	ticalcs_info("%s", _("Dumping ROM:"));
 	handle->busy = 1;
-	if (calc->dump_rom_2)
+	if (calc->fncts.dump_rom_2)
 	{
 		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_DUMP_ROM2);
 		if (!ret)
 		{
-			ret = calc->dump_rom_2(handle, size, filename);
+			ret = calc->fncts.dump_rom_2(handle, size, filename);
 		}
 		ret = ticalcs_event_send_simple_generic(handle, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_DUMP_ROM2);
 	}
@@ -986,7 +986,7 @@ int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* _clock)
 
 	ticalcs_info("%s", _("Setting clock:"));
 	handle->busy = 1;
-	if (calc->set_clock)
+	if (calc->fncts.set_clock)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SET_CLOCK);
@@ -994,7 +994,7 @@ int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* _clock)
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->set_clock(handle, _clock);
+			ret = calc->fncts.set_clock(handle, _clock);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SET_CLOCK);
 		event.data.ptrval = (void *)_clock;
@@ -1031,7 +1031,7 @@ int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* _clock)
 
 	ticalcs_info("%s", _("Getting clock:"));
 	handle->busy = 1;
-	if (calc->get_clock)
+	if (calc->fncts.get_clock)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_GET_CLOCK);
@@ -1039,7 +1039,7 @@ int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* _clock)
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->get_clock(handle, _clock);
+			ret = calc->fncts.get_clock(handle, _clock);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_GET_CLOCK);
 		event.data.ptrval = (void *)_clock;
@@ -1076,7 +1076,7 @@ int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
 
 	ticalcs_info(_("Deleting variable '%s':"), vr->name);
 	handle->busy = 1;
-	if (calc->del_var)
+	if (calc->fncts.del_var)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_DEL_VAR);
@@ -1084,7 +1084,7 @@ int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->del_var(handle, vr);
+			ret = calc->fncts.del_var(handle, vr);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_DEL_VAR);
 		event.data.ptrval = (void *)vr;
@@ -1121,7 +1121,7 @@ int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
 
 	ticalcs_info(_("Creating folder '%s':"), vr->folder);
 	handle->busy = 1;
-	if (calc->new_fld)
+	if (calc->fncts.new_fld)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_NEW_FOLDER);
@@ -1129,7 +1129,7 @@ int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->new_fld(handle, vr);
+			ret = calc->fncts.new_fld(handle, vr);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_NEW_FOLDER);
 		event.data.ptrval = (void *)vr;
@@ -1166,7 +1166,7 @@ int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* infos)
 
 	ticalcs_info("%s", _("Requesting version info:"));
 	handle->busy = 1;
-	if (calc->get_version)
+	if (calc->fncts.get_version)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_GET_VERSION);
@@ -1174,7 +1174,7 @@ int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* infos)
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->get_version(handle, infos);
+			ret = calc->fncts.get_version(handle, infos);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_GET_VERSION);
 		event.data.ptrval = (void *)infos;
@@ -1211,7 +1211,7 @@ int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* content)
 
 	ticalcs_info("%s", _("Sending certificate:"));
 	handle->busy = 1;
-	if (calc->send_cert)
+	if (calc->fncts.send_cert)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_CERT);
@@ -1219,7 +1219,7 @@ int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* content)
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->send_cert(handle, content);
+			ret = calc->fncts.send_cert(handle, content);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_CERT);
 		event.data.ptrval = (void *)content;
@@ -1256,7 +1256,7 @@ int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* content)
 
 	ticalcs_info("%s", _("Requesting receiving of certificate:"));
 	handle->busy = 1;
-	if (calc->recv_cert)
+	if (calc->fncts.recv_cert)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_CERT);
@@ -1264,7 +1264,7 @@ int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* content)
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->recv_cert(handle, content);
+			ret = calc->fncts.recv_cert(handle, content);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_CERT);
 		event.data.ptrval = (void *)content;
@@ -1311,7 +1311,7 @@ int TICALL ticalcs_calc_rename_var(CalcHandle* handle, VarRequest* oldname, VarR
 	}
 
 	handle->busy = 1;
-	if (calc->rename_var)
+	if (calc->fncts.rename_var)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RENAME);
@@ -1319,7 +1319,7 @@ int TICALL ticalcs_calc_rename_var(CalcHandle* handle, VarRequest* oldname, VarR
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->rename_var(handle, oldname, newname);
+			ret = calc->fncts.rename_var(handle, oldname, newname);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RENAME);
 		event.data.ptrval = (void *)newname;
@@ -1358,7 +1358,7 @@ int TICALL ticalcs_calc_change_attr(CalcHandle* handle, VarRequest* vr, FileAttr
 	ticalcs_info(_("Setting variable '%s' to %s:"), vr->name, tifiles_attribute_to_string(attr));
 
 	handle->busy = 1;
-	if (calc->change_attr)
+	if (calc->fncts.change_attr)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_CHATTR);
@@ -1366,7 +1366,7 @@ int TICALL ticalcs_calc_change_attr(CalcHandle* handle, VarRequest* vr, FileAttr
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->change_attr(handle, vr, attr);
+			ret = calc->fncts.change_attr(handle, vr, attr);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_CHATTR);
 		event.data.ptrval = (void *)vr;
@@ -1404,7 +1404,7 @@ int TICALL ticalcs_calc_send_all_vars_backup(CalcHandle* handle, FileContent* co
 
 	ticalcs_info("%s", _("Sending fake (all vars) backup:"));
 	handle->busy = 1;
-	if (calc->send_all_vars_backup)
+	if (calc->fncts.send_all_vars_backup)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_SEND_ALL_VARS_BACKUP);
@@ -1412,7 +1412,7 @@ int TICALL ticalcs_calc_send_all_vars_backup(CalcHandle* handle, FileContent* co
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->send_all_vars_backup(handle, content);
+			ret = calc->fncts.send_all_vars_backup(handle, content);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_SEND_ALL_VARS_BACKUP);
 		event.data.ptrval = (void *)content;
@@ -1449,7 +1449,7 @@ int TICALL ticalcs_calc_recv_all_vars_backup(CalcHandle* handle, FileContent* co
 
 	ticalcs_info("%s", _("Requesting fake (all vars) backup:"));
 	handle->busy = 1;
-	if (calc->recv_all_vars_backup)
+	if (calc->fncts.recv_all_vars_backup)
 	{
 		CalcEventData event;
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_BEFORE_GENERIC_OPERATION, /* retval */ 0, /* operation */ FNCT_RECV_ALL_VARS_BACKUP);
@@ -1457,7 +1457,7 @@ int TICALL ticalcs_calc_recv_all_vars_backup(CalcHandle* handle, FileContent* co
 		ret = ticalcs_event_send(handle, &event);
 		if (!ret)
 		{
-			ret = calc->recv_all_vars_backup(handle, content);
+			ret = calc->fncts.recv_all_vars_backup(handle, content);
 		}
 		ticalcs_event_fill_header(handle, &event, /* type */ CALC_EVENT_TYPE_AFTER_GENERIC_OPERATION, /* retval */ ret, /* operation */ FNCT_RECV_ALL_VARS_BACKUP);
 		event.data.ptrval = (void *)content;

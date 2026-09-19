@@ -58,7 +58,7 @@ msgstr "Réception de l'horloge..."
 
 #: src/calc_73.cc:1409 src/calc_84p.cc:1666 src/calc_8x.cc:1254
 #: src/calc_9x.cc:1563 src/calc_9x.cc:1595 src/calc_89t.cc:980
-#: src/calc_nsp.cc:862
+#: src/calc_nsp.cc:863
 #, c-format
 msgid "Deleting %s..."
 msgstr "Suppression de %s..."
@@ -207,7 +207,7 @@ msgstr "Lecture de %s/%s"
 msgid "Block #%2i"
 msgstr "Bloc n°%2i"
 
-#: src/calc_9x.cc:1625 src/calc_89t.cc:1076 src/calc_nsp.cc:892
+#: src/calc_9x.cc:1625 src/calc_89t.cc:1076 src/calc_nsp.cc:893
 #, c-format
 msgid "Creating %s..."
 msgstr "Création de %s..."
@@ -216,7 +216,7 @@ msgstr "Création de %s..."
 msgid "V200 Personal Learning Tool"
 msgstr "V200 Personal Learning Tool"
 
-#: src/calc_89t.cc:1011 src/calc_nsp.cc:1064
+#: src/calc_89t.cc:1011 src/calc_nsp.cc:1123
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr "Renommage de %s en %s..."
@@ -235,24 +235,76 @@ msgstr "TI-89 Titanium via DirectLink"
 msgid "Unknown calculator model with %d bpp\n"
 msgstr "Modèle de calculatrice inconnu, avec %d bpp\n"
 
-#: src/calc_nsp.cc:398
+#: src/calc_nsp.cc:399
 #, c-format
 msgid "Name: %s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr "Nom: %s | Type: %8s | Attr: %i  | Taille: %08X"
 
-#: src/calc_nsp.cc:431
+#: src/calc_nsp.cc:432
 #, c-format
 msgid "Not enumerating documents in %s because it's not a folder\n"
 msgstr "N'énumère pas les documents dans %s car ce n'est pas un répertoire\n"
 
-#: src/calc_nsp.cc:448
+#: src/calc_nsp.cc:449
 #, c-format
 msgid "Directory listing in <%s>...\n"
 msgstr "Listage du dossier dans <%s>...\n"
 
-#: src/calc_nsp.cc:1087
+#: src/calc_nsp.cc:1212
 msgid "Nspire thru DirectLink"
 msgstr "Nspire via DirectLink"
+
+#: src/calc_nsp.cc:1226
+msgid "Nspire Cradle thru DirectLink"
+msgstr "Nspire Cradle via DirectLink"
+
+#: src/calc_nsp.cc:1240
+msgid "Nspire Clickpad thru DirectLink"
+msgstr "Nspire Clickpad via DirectLink"
+
+#: src/calc_nsp.cc:1254
+msgid "Nspire Clickpad CAS thru DirectLink"
+msgstr "Nspire Clickpad CAS via DirectLink"
+
+#: src/calc_nsp.cc:1268
+msgid "Nspire Touchpad thru DirectLink"
+msgstr "Nspire Touchpad via DirectLink"
+
+#: src/calc_nsp.cc:1282
+msgid "Nspire Touchpad CAS thru DirectLink"
+msgstr "Nspire Touchpad CAS via DirectLink"
+
+#: src/calc_nsp.cc:1296
+msgid "Nspire CX thru DirectLink"
+msgstr "Nspire CX via DirectLink"
+
+#: src/calc_nsp.cc:1310
+msgid "Nspire CX CAS thru DirectLink"
+msgstr "Nspire CX CAS via DirectLink"
+
+#: src/calc_nsp.cc:1324
+msgid "Nspire CM-C thru DirectLink"
+msgstr "Nspire CM-C via DirectLink"
+
+#: src/calc_nsp.cc:1338
+msgid "Nspire CM-C CAS thru DirectLink"
+msgstr "Nspire CM-C CAS via DirectLink"
+
+#: src/calc_nsp.cc:1352
+msgid "Nspire CX II thru DirectLink"
+msgstr "Nspire CX II via DirectLink"
+
+#: src/calc_nsp.cc:1366
+msgid "Nspire CX II CAS thru DirectLink"
+msgstr "Nspire CX II CAS via DirectLink"
+
+#: src/calc_nsp.cc:1380
+msgid "Nspire CX II-T thru DirectLink"
+msgstr "Nspire CX II-T via DirectLink"
+
+#: src/calc_nsp.cc:1394
+msgid "Nspire CX II-T CAS thru DirectLink"
+msgstr "Nspire CX II-T CAS via DirectLink"
 
 #: src/calc_xx.cc:91
 msgid "Checking hand-held status:"
@@ -853,16 +905,16 @@ msgstr " Type de calculatrice: %s"
 msgid "Unknown pixel format %d\n"
 msgstr "Format de pixel %d inconnu\n"
 
-#: src/ticalcs.cc:245
+#: src/ticalcs.cc:325
 #, c-format
 msgid "ticalcs library version %s"
 msgstr "librairie ticalcs version %s"
 
-#: src/ticalcs.cc:574
+#: src/ticalcs.cc:654
 msgid "Link calc handle details:"
 msgstr "Détails du descripteur de calculatrice:"
 
-#: src/ticalcs.cc:575
+#: src/ticalcs.cc:655
 #, c-format
 msgid "  model   : %s"
 msgstr "  modèle  : %s"

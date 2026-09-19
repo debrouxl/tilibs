@@ -102,20 +102,20 @@ msgid ""
 "Cause: the program which uses this library is buggy. Fire-up the developer!"
 msgstr ""
 
-#: src/filetypes.cc:1424 src/filetypes.cc:1528 src/types68k.cc:74
+#: src/filetypes.cc:1634 src/filetypes.cc:1757 src/types68k.cc:74
 #: src/types83p.cc:70 src/typesoldz80.cc:75
 msgid "OS upgrade"
 msgstr ""
 
-#: src/filetypes.cc:1434 src/filetypes.cc:1538
+#: src/filetypes.cc:1645 src/filetypes.cc:1768
 msgid "TIGroup"
 msgstr ""
 
-#: src/filetypes.cc:1446 src/filetypes.cc:1550
+#: src/filetypes.cc:1658 src/filetypes.cc:1781
 msgid "Group/Backup"
 msgstr ""
 
-#: src/filetypes.cc:1448 src/filetypes.cc:1552
+#: src/filetypes.cc:1661 src/filetypes.cc:1784
 msgid "Group"
 msgstr ""
 

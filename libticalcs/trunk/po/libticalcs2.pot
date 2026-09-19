@@ -58,7 +58,7 @@ msgstr ""
 
 #: src/calc_73.cc:1409 src/calc_84p.cc:1666 src/calc_8x.cc:1254
 #: src/calc_9x.cc:1563 src/calc_9x.cc:1595 src/calc_89t.cc:980
-#: src/calc_nsp.cc:862
+#: src/calc_nsp.cc:863
 #, c-format
 msgid "Deleting %s..."
 msgstr ""
@@ -201,7 +201,7 @@ msgstr ""
 msgid "Block #%2i"
 msgstr ""
 
-#: src/calc_9x.cc:1625 src/calc_89t.cc:1076 src/calc_nsp.cc:892
+#: src/calc_9x.cc:1625 src/calc_89t.cc:1076 src/calc_nsp.cc:893
 #, c-format
 msgid "Creating %s..."
 msgstr ""
@@ -210,7 +210,7 @@ msgstr ""
 msgid "V200 Personal Learning Tool"
 msgstr ""
 
-#: src/calc_89t.cc:1011 src/calc_nsp.cc:1064
+#: src/calc_89t.cc:1011 src/calc_nsp.cc:1123
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr ""
@@ -229,23 +229,75 @@ msgstr ""
 msgid "Unknown calculator model with %d bpp\n"
 msgstr ""
 
-#: src/calc_nsp.cc:398
+#: src/calc_nsp.cc:399
 #, c-format
 msgid "Name: %s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr ""
 
-#: src/calc_nsp.cc:431
+#: src/calc_nsp.cc:432
 #, c-format
 msgid "Not enumerating documents in %s because it's not a folder\n"
 msgstr ""
 
-#: src/calc_nsp.cc:448
+#: src/calc_nsp.cc:449
 #, c-format
 msgid "Directory listing in <%s>...\n"
 msgstr ""
 
-#: src/calc_nsp.cc:1087
+#: src/calc_nsp.cc:1212
 msgid "Nspire thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1226
+msgid "Nspire Cradle thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1240
+msgid "Nspire Clickpad thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1254
+msgid "Nspire Clickpad CAS thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1268
+msgid "Nspire Touchpad thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1282
+msgid "Nspire Touchpad CAS thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1296
+msgid "Nspire CX thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1310
+msgid "Nspire CX CAS thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1324
+msgid "Nspire CM-C thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1338
+msgid "Nspire CM-C CAS thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1352
+msgid "Nspire CX II thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1366
+msgid "Nspire CX II CAS thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1380
+msgid "Nspire CX II-T thru DirectLink"
+msgstr ""
+
+#: src/calc_nsp.cc:1394
+msgid "Nspire CX II-T CAS thru DirectLink"
 msgstr ""
 
 #: src/calc_xx.cc:91
@@ -817,16 +869,16 @@ msgstr ""
 msgid "Unknown pixel format %d\n"
 msgstr ""
 
-#: src/ticalcs.cc:245
+#: src/ticalcs.cc:325
 #, c-format
 msgid "ticalcs library version %s"
 msgstr ""
 
-#: src/ticalcs.cc:574
+#: src/ticalcs.cc:654
 msgid "Link calc handle details:"
 msgstr ""
 
-#: src/ticalcs.cc:575
+#: src/ticalcs.cc:655
 #, c-format
 msgid "  model   : %s"
 msgstr ""
